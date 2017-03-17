@@ -5,11 +5,8 @@ import com.github.pedramrn.slick.parent.library.Interactor;
 import com.github.pedramrn.slick.parent.library.Middleware;
 import com.github.pedramrn.slick.parent.library.intractor.InteractorCompletable;
 import com.github.pedramrn.slick.parent.library.middleware.Callback;
-import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
 import com.github.pedramrn.slick.parent.library.middleware.RequestStack;
-import com.github.pedramrn.slick.parent.library.middleware.Response;
-import com.github.pedramrn.slick.parent.ui.App;
 
 import javax.inject.Inject;
 

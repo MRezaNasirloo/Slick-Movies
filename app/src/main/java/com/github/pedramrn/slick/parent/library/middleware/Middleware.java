@@ -9,5 +9,5 @@ package com.github.pedramrn.slick.parent.library.middleware;
 public interface Middleware {
 
 
-    boolean handle(RequestData date);
+    void handle(IRequest request, RequestData date);
 }

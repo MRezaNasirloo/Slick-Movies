@@ -1,14 +1,13 @@
 package com.github.pedramrn.slick.parent.library.middleware;
 
-import io.reactivex.Maybe;
-import io.reactivex.subjects.MaybeSubject;
+import io.reactivex.Single;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-03-13
  */
 
-public abstract class RxRequestMaybe<T extends Maybe<R>, R, P> extends IRequest {
+public abstract class RxRequestSingle<T extends Single<R>, R, P> extends IRequest {
     private Middleware[] middleware;
     private P data;
     private T rx;
@@ -16,7 +15,7 @@ public abstract class RxRequestMaybe<T extends Maybe<R>, R, P> extends IRequest 
 
     abstract public T letItPass(P data);
 
-    public RxRequestMaybe<T, R, P> with(P data) {
+    public RxRequestSingle<T, R, P> with(P data) {
         this.data = data;
         if (!(data instanceof RequestData)) {
             requestData = new RequestData().putParameter(data);
@@ -24,18 +23,14 @@ public abstract class RxRequestMaybe<T extends Maybe<R>, R, P> extends IRequest 
         return this;
     }
 
-    public RxRequestMaybe<T, R, P> through(Middleware... middleware) {
+    public RxRequestSingle<T, R, P> through(Middleware... middleware) {
         this.middleware = middleware;
         return this;
     }
 
-    @Override
     public void next() {
-//        for (Middleware middleware : this.middleware) {
-//            if (!middleware.handle(requestData == null ? (RequestData) data : requestData)) {
-//                return;
-//            }
-//        }
+        //        middleware.handle(this, requestData == null ? (RequestData) data : requestData);
+
         if (this != RequestStack.getInstance().pop()) throw new AssertionError();
         final T response = letItPass(data);
         if (rx != null) {
@@ -46,6 +41,4 @@ public abstract class RxRequestMaybe<T extends Maybe<R>, R, P> extends IRequest 
     public void destination(T rx) {
         this.rx = rx;
     }
-
-
 }

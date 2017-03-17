@@ -5,7 +5,6 @@ package com.github.pedramrn.slick.parent.library.middleware;
  *         Created on: 2017-03-16
  */
 
-public abstract class IRequest {
-    public abstract void next();
-    abstract void refill();
+public interface IRequestInternal {
+    void refill();
 }

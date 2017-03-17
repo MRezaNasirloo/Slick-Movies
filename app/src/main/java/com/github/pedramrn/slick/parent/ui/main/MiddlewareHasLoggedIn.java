@@ -1,10 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.main;
 
-import android.util.Log;
-
-import com.github.pedramrn.slick.parent.library.middleware.Callback;
+import com.github.pedramrn.slick.parent.library.middleware.IRequest;
 import com.github.pedramrn.slick.parent.library.middleware.Middleware;
-import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
 import com.github.pedramrn.slick.parent.ui.App;
 
@@ -37,15 +34,16 @@ public class MiddlewareHasLoggedIn implements Middleware {
     }
 
     @Override
-    public boolean handle(RequestData date) {
+    public void handle(IRequest request, RequestData date) {
         if (loggedIn()) {
 //            request.next(date);
-            return true;
+            request.next();
+            return;
         }
         router.route(null);
 //        dialog.show();
 //        snackbar.show();
 //        errorMechanism.display();
-        return false;
+//        return false;
     }
 }

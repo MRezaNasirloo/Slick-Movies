@@ -6,7 +6,6 @@ import com.github.pedramrn.slick.parent.library.middleware.Callback;
 import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
 import com.github.pedramrn.slick.parent.library.middleware.RequestStack;
-import com.github.pedramrn.slick.parent.library.middleware.Response;
 import com.github.pedramrn.slick.parent.ui.App;
 
 import javax.inject.Inject;

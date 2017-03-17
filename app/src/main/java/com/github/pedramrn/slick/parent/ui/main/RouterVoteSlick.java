@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.github.pedramrn.slick.parent.datasource.database.VoteRepository;
 import com.github.pedramrn.slick.parent.library.middleware.Callback;
+import com.github.pedramrn.slick.parent.library.middleware.IRequest;
 import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
 import com.github.pedramrn.slick.parent.library.middleware.RequestStack;
@@ -14,7 +15,10 @@ import com.github.pedramrn.slick.parent.ui.App;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.processors.PublishProcessor;
+import io.reactivex.subjects.MaybeSubject;
 import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.SingleSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -71,6 +75,7 @@ public class RouterVoteSlick extends RouterVote {
                 .through(middlewareHasLoggedIn, middlewareNoOp)
                 .destination(subject);
         requestStack.push(request);
+
         requestStack.processLastRequest();
         return subject;
     }

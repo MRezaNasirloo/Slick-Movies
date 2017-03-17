@@ -27,17 +27,19 @@ public class RequestStack {
     }
 
 
-    public IRequest push(IRequest IRequest) {
-        if (stack.contains(IRequest)) {
-            return IRequest;
+    public IRequest push(IRequest request) {
+        if (stack.contains(request)) {
+            return request;
         }
-        stack.push(IRequest);
-        return IRequest;
+        stack.push(request);
+        return request;
     }
 
     public void processLastRequest() {
         if (!changingConfigurations && stack.size() > 0) {
-            stack.peek().next();
+            final IRequest peek = stack.peek();
+            peek.refill();
+            peek.next();
         }
     }
 

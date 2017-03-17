@@ -7,13 +7,18 @@ import io.reactivex.Observable;
  *         Created on: 2017-03-13
  */
 
-public abstract class RxRequestObservable<T extends Observable<R>, R, P> implements IRequest {
+public abstract class RxRequestObservable<T extends Observable<R>, R, P> extends IRequest {
     private Middleware[] middleware;
     private P data;
     private T rx;
     private RequestData requestData;
 
     abstract public T letItPass(P data);
+
+    @Override
+    public void refill() {
+
+    }
 
     public RxRequestObservable<T, R, P> with(P data) {
         this.data = data;
@@ -29,11 +34,8 @@ public abstract class RxRequestObservable<T extends Observable<R>, R, P> impleme
     }
 
     public void next() {
-        for (Middleware middleware : this.middleware) {
-            if (!middleware.handle(requestData == null ? (RequestData) data : requestData)) {
-                return;
-            }
-        }
+//        middleware.handle(this, requestData == null ? (RequestData) data : requestData);
+
         if (this != RequestStack.getInstance().pop()) throw new AssertionError();
         final T response = letItPass(data);
         if (rx != null) {
@@ -44,12 +46,4 @@ public abstract class RxRequestObservable<T extends Observable<R>, R, P> impleme
     public void destination(T rx) {
         this.rx = rx;
     }
-
-    /*public void destination(Callback<R> callback) {
-        this.callback = callback;
-    }
-
-    public void destination(Callback<R> callback) {
-        this.callback = callback;
-    }*/
 }

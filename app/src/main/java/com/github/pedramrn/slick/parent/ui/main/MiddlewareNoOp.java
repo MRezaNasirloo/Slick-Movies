@@ -1,9 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.main;
 
+import com.github.pedramrn.slick.parent.library.middleware.IRequest;
 import com.github.pedramrn.slick.parent.library.middleware.Middleware;
-import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
-import com.github.pedramrn.slick.parent.ui.App;
 
 import javax.inject.Inject;
 
@@ -31,8 +30,7 @@ public class MiddlewareNoOp implements Middleware {
     }
 
     @Override
-    public boolean handle(RequestData date) {
-//        request.next(date);
-        return true;
+    public void handle(IRequest request, RequestData date) {
+        request.next();
     }
 }

@@ -56,7 +56,7 @@ public class HomeController extends Controller implements HomeView, Observer<Lis
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.voteDown("1");
+                presenter.voteUp();
 //                Snackbar.make(getView(), "dadada", Snackbar.LENGTH_INDEFINITE).show();
             }
         });
@@ -117,4 +117,9 @@ public class HomeController extends Controller implements HomeView, Observer<Lis
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.disposeMainComponent();
+    }
 }

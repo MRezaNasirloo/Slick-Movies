@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.library.middleware;
 
+import io.reactivex.Completable;
 import io.reactivex.subjects.CompletableSubject;
 
 /**
@@ -7,7 +8,7 @@ import io.reactivex.subjects.CompletableSubject;
  *         Created on: 2017-03-13
  */
 
-public abstract class RxRequestCompletable<T extends CompletableSubject, P> implements IRequest {
+public abstract class RxRequestCompletable<T extends Completable, P> extends IRequest {
     private Middleware[] middleware;
     private P data;
     private T rx;
@@ -30,11 +31,11 @@ public abstract class RxRequestCompletable<T extends CompletableSubject, P> impl
 
     @Override
     public void next() {
-        for (Middleware middleware : this.middleware) {
+        /*for (Middleware middleware : this.middleware) {
             if (!middleware.handle(requestData == null ? (RequestData) data : requestData)) {
                 return;
             }
-        }
+        }*/
         if (this != RequestStack.getInstance().pop()) throw new AssertionError();
         final T response = letItPass(data);
         if (rx != null) {
@@ -45,12 +46,4 @@ public abstract class RxRequestCompletable<T extends CompletableSubject, P> impl
     public void destination(T rx) {
         this.rx = rx;
     }
-
-    /*public void destination(Callback<R> callback) {
-        this.callback = callback;
-    }
-
-    public void destination(Callback<R> callback) {
-        this.callback = callback;
-    }*/
 }
