@@ -7,7 +7,6 @@ import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
 import com.github.pedramrn.slick.parent.library.middleware.RequestStack;
 import com.github.pedramrn.slick.parent.library.router.SlickRouter;
-import com.github.pedramrn.slick.parent.ui.App;
 import com.github.pedramrn.slick.parent.ui.login.ControllerLogin;
 
 import javax.inject.Inject;
@@ -37,14 +36,14 @@ public class RouterLogin extends SlickRouter {
     public void route(Callback<Void> callback) {
         final Request<Void, RequestData> request = new Request<Void, RequestData>() {
             @Override
-            public Void letItPass(RequestData data) {
+            public Void destination(RequestData data) {
                  route();
                 return null;
             }
         };
         request.with(null)
                 .through()
-                .destination(callback);
+                .destinationCallback(callback);
         routerStack.push(request);
         routerStack.processLastRequest();
     }

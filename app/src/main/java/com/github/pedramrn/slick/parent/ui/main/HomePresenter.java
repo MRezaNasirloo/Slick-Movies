@@ -31,20 +31,24 @@ import io.reactivex.subjects.BehaviorSubject;
 public class HomePresenter extends SlickPresenter<HomeView> {
 
     private static final String TAG = HomePresenter.class.getSimpleName();
-    private final BoxOfficeInteractor interactor;
-    private final VoteInteractor voteInteractor;
+//    private final BoxOfficeInteractor interactor;
+//    private final VoteInteractor voteInteractor;
     RequestStack requestStack = RequestStack.getInstance();
 
     private BehaviorSubject<List<BoxOfficeItem>> items = BehaviorSubject.create();
 
     @Inject
-    public HomePresenter(BoxOfficeInteractor interactor, VoteInteractor voteInteractor) {
-        this.interactor = interactor;
-        this.voteInteractor = voteInteractor;
+    public HomePresenter() {
     }
 
+
+    /*public HomePresenter(BoxOfficeInteractor interactor, VoteInteractor voteInteractor) {
+        this.interactor = interactor;
+        this.voteInteractor = voteInteractor;
+    }*/
+
     public void getBoxOffice() {
-        interactor.execute()
+        /*interactor.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableObserver<List<BoxOfficeItem>>() {
@@ -64,11 +68,11 @@ public class HomePresenter extends SlickPresenter<HomeView> {
                     public void onComplete() {
                         Log.d(TAG, "onComplete() called");
                     }
-                });
+                });*/
     }
 
     public void voteDown(String s) {
-        voteInteractor.voteDown(new RequestData()).subscribe(new Observer<String>() {
+        /*voteInteractor.voteDown(new RequestData()).subscribe(new Observer<String>() {
             @Override
             public void onNext(String s) {
                 Log.d(TAG, "onNext() called " + s);
@@ -89,16 +93,16 @@ public class HomePresenter extends SlickPresenter<HomeView> {
             public void onError(Throwable e) {
                 Log.d(TAG, "onError() called");
             }
-        });
+        });*/
     }
 
     public void voteUp() {
-        voteInteractor.voteUp(new RequestData(), new Callback<String>() {
-            @Override
-            public void onPass(String s) {
-                Log.d(TAG, "onPass() called");
-            }
-        });
+//        voteInteractor.voteUp(new RequestData(), new Callback<String>() {
+//            @Override
+//            public void onPass(String s) {
+//                Log.d(TAG, "onPass() called");
+//            }
+//        });
     }
 
     @Override

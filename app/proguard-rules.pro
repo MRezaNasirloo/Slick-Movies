@@ -15,3 +15,32 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keep class com.github.slick.*
+#-keep class **HomeController** {*;}
+-keep public class * implements com.github.slick.OnDestroyListener { public <init>(...); }
+#-keepclasseswithmembernames class * { @com.github.slick.* <methods>; }
+-keepclasseswithmembernames class * { @com.github.slick.* <fields>; }
+
+#-dontwarn javax.**
+-dontwarn com.squareup.**
+-dontwarn retrofit2.**
+-dontwarn rx.internal.**
+-dontwarn okio.**
+
+-dontwarn org.hamcrest.**
+-dontwarn android.test.**
+-dontwarn android.support.test.**
+
+-keep class org.hamcrest.** {
+   *;
+}
+
+-keep class org.junit.** { *; }
+-dontwarn org.junit.**
+
+-keep class junit.** { *; }
+-dontwarn junit.**
+
+-keep class sun.misc.** { *; }
+-dontwarn sun.misc.**

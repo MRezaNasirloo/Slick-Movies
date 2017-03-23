@@ -1,14 +1,13 @@
 package com.github.pedramrn.slick.parent.library.middleware;
 
 import io.reactivex.Flowable;
-import io.reactivex.processors.FlowableProcessor;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-03-13
  */
 
-public abstract class RxRequestFlowableProcessor<T extends Flowable<R>, R, P> extends IRequest {
+public abstract class RxRequestFlowable<T extends Flowable<R>, R, P> extends IRequest {
     private Middleware[] middleware;
     private P data;
     private T rx;
@@ -16,7 +15,7 @@ public abstract class RxRequestFlowableProcessor<T extends Flowable<R>, R, P> ex
 
     abstract public T letItPass(P data);
 
-    public RxRequestFlowableProcessor<T, R, P> with(P data) {
+    public RxRequestFlowable<T, R, P> with(P data) {
         this.data = data;
         if (!(data instanceof RequestData)) {
             requestData = new RequestData().putParameter(data);
@@ -24,7 +23,7 @@ public abstract class RxRequestFlowableProcessor<T extends Flowable<R>, R, P> ex
         return this;
     }
 
-    public RxRequestFlowableProcessor<T, R, P> through(Middleware... middleware) {
+    public RxRequestFlowable<T, R, P> through(Middleware... middleware) {
         this.middleware = middleware;
         return this;
     }

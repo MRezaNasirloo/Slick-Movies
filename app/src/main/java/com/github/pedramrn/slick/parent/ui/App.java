@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.bluelinelabs.conductor.Router;
+//import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
+import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.di.AppComponent;
 import com.github.pedramrn.slick.parent.di.AppModule;
 import com.github.pedramrn.slick.parent.di.DaggerAppComponent;
@@ -21,6 +24,7 @@ public class App extends Application {
     private static MainComponent mainComponent;
 
     public static boolean loggedIn = false;
+    private static final String TAG = App.class.getSimpleName();
 
     @Override
     public void onCreate() {
@@ -30,10 +34,15 @@ public class App extends Application {
             // You should not init your app in this process.
             return;
         }
+        final long before = System.currentTimeMillis();
         LeakCanary.install(this);
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
+//        if (BuildConfig.DEBUG) {
+//            AndroidDevMetrics.initWith(this);
+//        }
+        Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
     }
 
     public AppComponent getAppComponent() {

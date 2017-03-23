@@ -20,9 +20,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final long before = System.currentTimeMillis();
         setContentView(R.layout.activity_main);
         ViewGroup container = (ViewGroup) findViewById(R.id.controller_container);
 
+        Log.e(TAG, "It took for main:" + (System.currentTimeMillis() - before));
         router = Conductor.attachRouter(this, container, savedInstanceState);
         if (!router.hasRootController()) {
             router.setRoot(RouterTransaction.with(new HomeController()));

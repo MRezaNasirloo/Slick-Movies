@@ -15,6 +15,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.ui.App;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
+import com.github.slick.Slick2;
 
 import java.util.List;
 
@@ -48,7 +49,11 @@ public class HomeController extends Controller implements HomeView, Observer<Lis
     @Override
     protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
         App.getMainComponent(getRouter()).inject(this);
+
+        long before = System.currentTimeMillis();
         Slick.bind(this);
+        Log.e(TAG, "It took to bind : " + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         final View view = layoutInflater.inflate(R.layout.controller_home, viewGroup, false);
         textView = ((TextView) view.findViewById(R.id.text_view_temp));
         textView.setMovementMethod(new ScrollingMovementMethod());
@@ -66,6 +71,7 @@ public class HomeController extends Controller implements HomeView, Observer<Lis
                 presenter.navigate();
             }
         });
+        Log.e(TAG, "It took to create views:" + (System.currentTimeMillis() - before));
         return view;
     }
 

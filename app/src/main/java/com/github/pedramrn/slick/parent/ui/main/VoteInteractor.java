@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import okhttp3.Call;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -19,17 +20,17 @@ import io.reactivex.Observable;
  */
 
 @Interactor(middleware = @Middleware(value = MiddlewareHasLoggedIn.class, methods = {"execute", "doStuff"}))
-public class VoteInteractor extends InteractorCompletable<String> {
+public class VoteInteractor {
 
     private static final String TAG = VoteInteractor.class.getSimpleName();
 
     private final VoteRepository voteRepository;
 
-    protected final MiddlewareHasLoggedIn middlewareHasLoggedIn;
-    private final RouterLogin routerLogin;
-    private final RouterCart routerCart;
-    private final RouterVote routerVote;
-    private final MiddlewareNoOp middlewareNoOp;
+    protected MiddlewareHasLoggedIn middlewareHasLoggedIn;
+    private RouterLogin routerLogin;
+    private RouterCart routerCart;
+    private RouterVote routerVote;
+    private MiddlewareNoOp middlewareNoOp;
     RequestStack routerStack;
 
     @Inject
@@ -44,10 +45,9 @@ public class VoteInteractor extends InteractorCompletable<String> {
         this.routerStack = RequestStack.getInstance();
     }
 
-    @Override
     @Middleware(MiddlewareHasLoggedIn.class)
-    public Completable execute(String s) {
-        return routerVote.deleteVote(s);
+    public <R> R execute(R r) throws IllegalArgumentException {
+        return r;
     }
 
     @Middleware(MiddlewareHasLoggedIn.class)
@@ -56,7 +56,7 @@ public class VoteInteractor extends InteractorCompletable<String> {
     }
 
     public String voteUp(RequestData data, Callback<String> callback) {
-        return routerVote.voteUp(data, callback);
+        return routerVote.voteUp(data);
     }
 
     /*public void voteUp(RequestData data, Callback<String> callback) {

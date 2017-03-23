@@ -5,27 +5,22 @@ import android.util.Log;
 
 import com.github.pedramrn.slick.parent.datasource.database.VoteRepository;
 import com.github.pedramrn.slick.parent.library.middleware.Callback;
-import com.github.pedramrn.slick.parent.library.middleware.IRequest;
 import com.github.pedramrn.slick.parent.library.middleware.Request;
 import com.github.pedramrn.slick.parent.library.middleware.RequestData;
 import com.github.pedramrn.slick.parent.library.middleware.RequestStack;
 import com.github.pedramrn.slick.parent.library.middleware.RxRequestObservable;
-import com.github.pedramrn.slick.parent.ui.App;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.processors.PublishProcessor;
-import io.reactivex.subjects.MaybeSubject;
 import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.SingleSubject;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-03-15
  */
 
-public class RouterVoteSlick extends RouterVote {
+public class RouterVoteSlick<B> extends RouterVote<B> {
 
 
     private final MiddlewareHasLoggedIn middlewareHasLoggedIn;
@@ -41,22 +36,22 @@ public class RouterVoteSlick extends RouterVote {
     }
 
 
-    @Override
+    /*@Override
     @Nullable
     public String voteUp(RequestData data, Callback<String> callback) {
         final Request<String, RequestData> request = new Request<String, RequestData>() {
             @Override
-            public String letItPass(RequestData data) {
+            public String destination(RequestData data) {
                 return RouterVoteSlick.super.voteUp(data, null);
             }
         };
         request.with(data)
                 .through(middlewareHasLoggedIn, middlewareNoOp)
-                .destination(callback);
+                .destinationCallback(callback);
         requestStack.push(request);
         requestStack.processLastRequest();
         return null;
-    }
+    }*/
 
     private static final String TAG = RouterVoteSlick.class.getSimpleName();
 

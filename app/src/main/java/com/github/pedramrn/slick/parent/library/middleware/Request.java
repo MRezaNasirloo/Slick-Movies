@@ -18,7 +18,7 @@ public abstract class Request<R, P> extends IRequest {
     private int middlewareBackStack = 0;
     private boolean tooLateAlreadyFinished = false;
 
-    abstract public R letItPass(P data);
+    abstract public R destination(P data);
 
     public Request<R, P> with(P data) {
         this.data = data;
@@ -57,14 +57,14 @@ public abstract class Request<R, P> extends IRequest {
         }
 
         if (this != routerStack.pop()) throw new AssertionError();
-        final R response = letItPass(data);
+        final R response = destination(data);
         if (callback != null) {
             callback.onPass(response);
         }
         tooLateAlreadyFinished = true;
     }
 
-    public void destination(Callback<R> callback) {
+    public void destinationCallback(Callback<R> callback) {
         this.callback = callback;
     }
 }

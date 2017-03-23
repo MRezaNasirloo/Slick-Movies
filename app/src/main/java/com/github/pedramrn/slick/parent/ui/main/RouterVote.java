@@ -18,7 +18,7 @@ import io.reactivex.Observable;
  *         Created on: 2017-03-15
  */
 
-public class RouterVote {
+public class RouterVote<B> {
 
     private final VoteRepository repository;
     private final RequestStack requestStack = RequestStack.getInstance();
@@ -29,7 +29,7 @@ public class RouterVote {
     }
 
     @Middleware(MiddlewareHasLoggedIn.class)
-    public String voteUp(RequestData data, Callback<String> callback) {
+    public String voteUp(RequestData data) {
         return repository.voteUp("1");
     }
 
