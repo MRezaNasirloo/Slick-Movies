@@ -1,26 +1,23 @@
 package com.github.pedramrn.slick.parent.ui.main;
 
-import android.util.Log;
-
-import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
-import com.github.pedramrn.slick.parent.library.middleware.Callback;
-import com.github.pedramrn.slick.parent.library.middleware.RequestData;
-import com.github.pedramrn.slick.parent.library.middleware.RequestStack;
-import com.github.pedramrn.slick.parent.ui.App;
+import com.github.pedramrn.slick.parent.domain.model.MovieItem;
+import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
+import com.github.pedramrn.slick.parent.ui.main.router.RouterBoxOfficeImpl;
 import com.github.slick.SlickPresenter;
 
+import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.internal.operators.flowable.FlowablePublish;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.processors.FlowableProcessor;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -29,103 +26,50 @@ import io.reactivex.subjects.BehaviorSubject;
  *         Created on: 2017-02-28
  */
 public class HomePresenter extends SlickPresenter<HomeView> {
-
     private static final String TAG = HomePresenter.class.getSimpleName();
-//    private final BoxOfficeInteractor interactor;
-//    private final VoteInteractor voteInteractor;
-    RequestStack requestStack = RequestStack.getInstance();
+    private final RouterBoxOffice routerBoxOffice;
 
-    private BehaviorSubject<List<BoxOfficeItem>> items = BehaviorSubject.create();
+
+    private BehaviorSubject<HomeViewState> state = BehaviorSubject.create();
+    private Subscription s;
+
 
     @Inject
-    public HomePresenter() {
+    public HomePresenter(RouterBoxOfficeImpl routerBoxOffice) {
+        this.routerBoxOffice = routerBoxOffice;
     }
-
-
-    /*public HomePresenter(BoxOfficeInteractor interactor, VoteInteractor voteInteractor) {
-        this.interactor = interactor;
-        this.voteInteractor = voteInteractor;
-    }*/
 
     public void getBoxOffice() {
-        /*interactor.execute()
-                .subscribeOn(Schedulers.io())
+
+    }
+
+    public void getMore(Observable<Object> observable) {
+        routerBoxOffice.getStream(observable)
+                .map(new Function<MovieItem, List<MovieItem>>() {
+                    @Override
+                    public List<MovieItem> apply(@NonNull MovieItem movieItem) throws Exception {
+                        final ArrayList<MovieItem> list = new ArrayList<>();
+                        list.add(movieItem);
+                        return list;
+                    }
+                }).scan(new BiFunction<List<MovieItem>, List<MovieItem>, List<MovieItem>>() {
+            @Override
+            public List<MovieItem> apply(@NonNull List<MovieItem> movieItems, @NonNull List<MovieItem> movieItems2) throws Exception {
+                movieItems.addAll(movieItems2);
+                return movieItems;
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableObserver<List<BoxOfficeItem>>() {
+                .subscribe(new Consumer<List<MovieItem>>() {
                     @Override
-                    public void onNext(List<BoxOfficeItem> boxOfficeItems) {
-                        items.onNext(boxOfficeItems);
+                    public void accept(@NonNull List<MovieItem> movieItems) throws Exception {
+                        state.onNext(HomeViewState.create(movieItems));
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        items.onError(e);
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete() called");
-                    }
-                });*/
+                });
     }
 
-    public void voteDown(String s) {
-        /*voteInteractor.voteDown(new RequestData()).subscribe(new Observer<String>() {
-            @Override
-            public void onNext(String s) {
-                Log.d(TAG, "onNext() called " + s);
-            }
-
-            @Override
-            public void onSubscribe(Disposable d) {
-                Log.d(TAG, "onSubscribe() called");
-//                RequestStack.processLastRequest();
-            }
-
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "onComplete() called");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "onError() called");
-            }
-        });*/
-    }
-
-    public void voteUp() {
-//        voteInteractor.voteUp(new RequestData(), new Callback<String>() {
-//            @Override
-//            public void onPass(String s) {
-//                Log.d(TAG, "onPass() called");
-//            }
-//        });
-    }
-
-    @Override
-    public void onViewUp(HomeView view) {
-        super.onViewUp(view);
-        requestStack.processLastRequest();
-        Log.d(TAG, "onViewUp() called");
-    }
-
-    @Override
-    public void onViewDown() {
-        super.onViewDown();
-        Log.d(TAG, "onViewDown() called");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
-    }
-
-    public BehaviorSubject<List<BoxOfficeItem>> updateStream() {
-        return items;
+    public BehaviorSubject<HomeViewState> updateStream() {
+        return state;
     }
 
     public void navigate() {

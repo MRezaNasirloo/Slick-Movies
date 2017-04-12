@@ -5,9 +5,12 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,48 +22,23 @@ import static org.junit.Assert.assertEquals;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        final List<Integer> integers = Arrays.asList(1, 2, 3);
-        final Integer reduce = reduce(0, integers, new CallBack<Integer, Integer, Integer>() {
-            @Override
-            public Integer apply(Integer integer, @NonNull Integer integer2) {
-                return integer + integer2;
-            }
-        });
-        assertEquals(6, reduce.intValue());
+        final Flowable<Integer> observable = Flowable.just(1, 2, 3, 4);
 
+        observable.take(1).test().assertValue(1);
+        observable.take(1).test().assertValue(2);
+
+        getPage(0).concatWith(Observable.range(0, 10)
+            .concatMap(new Function<Integer, ObservableSource<? extends String>>() {
+                @Override
+                public ObservableSource<? extends String> apply(@NonNull Integer integer) throws Exception {
+                    return null;
+                }
+            })
+        );
     }
 
-    @SuppressWarnings("TypeParameterHidesVisibleType")
-    public <R> R reduce(List<R> list, CallBack<R, R, R> callBack) {
-        R acc = null;
-        for (R integer : list) {
-            acc = callBack.apply(acc, integer);
-        }
-
-        return acc;
+    Observable<String> getPage(final int page) {
+        return Observable.just("id");
     }
 
-    @SuppressWarnings("TypeParameterHidesVisibleType")
-    public <R> R reduce(R seed, List<R> list, CallBack<R, R, R> callBack) {
-        R acc = seed;
-        for (R integer : list) {
-            acc = callBack.apply(acc, integer);
-        }
-
-        return acc;
-    }
-
-    public int reduce() {
-        return Observable.just(1, 2, 3).reduce(new BiFunction<Integer, Integer, Integer>() {
-            @Override
-            public Integer apply(@NonNull Integer integer, @NonNull Integer integer2) throws Exception {
-                return integer + integer2;
-            }
-        }).blockingGet();
-    }
-
-    private interface CallBack<T, T1, T2> {
-
-        public T apply(T acc, T integer);
-    }
 }

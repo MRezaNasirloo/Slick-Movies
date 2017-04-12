@@ -13,10 +13,10 @@
         />
 
     <Button
-        android:id="@+id/button_cart"
+        android:id="@+id/button_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cart"
+        android:text="More"
         />
 
     <TextView
