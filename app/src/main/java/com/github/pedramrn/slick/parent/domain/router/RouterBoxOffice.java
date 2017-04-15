@@ -10,7 +10,5 @@ import io.reactivex.Observable;
  */
 
 public interface RouterBoxOffice {
-    Observable<MovieItem> boxOffice();
-
-    Observable<MovieItem> getStream(Observable<Object> observable);
+    Observable<MovieItem> boxOffice(Observable<Integer> trigger, int buffer);
 }

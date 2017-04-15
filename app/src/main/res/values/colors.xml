@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">@color/color_box_office</color>
+    <color name="colorPrimaryDark">#941616</color>
+    <color name="color_gray">#607D8B</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="color_box_office">#B71C1C</color>
+    <color name="color_blue">#439bf2</color>
 </resources>

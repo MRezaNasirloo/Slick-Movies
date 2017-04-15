@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    app:bbn_badgeColor="#FFFF0000"
+    app:bbn_itemAnimationDuration="200"
+    app:bbn_itemColorActive="#f1f1f1"
+    app:bbn_itemColorInactive="#cdefefef"
+    app:bbn_rippleColor="#33ffffff">
+
+    <item
+        android:color="@color/color_box_office"
+        android:id="@+id/navigation_box_office"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_box_office"/>
+
+    <item
+        android:color="@color/color_blue"
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_up_coming"/>
+
+    <item
+        android:color="@color/color_gray"
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/title_popular"/>
+
+</menu>

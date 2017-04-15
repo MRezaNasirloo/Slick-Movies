@@ -17,7 +17,7 @@
 #}
 
 -keep class com.github.slick.*
-#-keep class **HomeController** {*;}
+#-keep class **ControllerMain** {*;}
 -keep public class * implements com.github.slick.OnDestroyListener { public <init>(...); }
 #-keepclasseswithmembernames class * { @com.github.slick.* <methods>; }
 -keepclasseswithmembernames class * { @com.github.slick.* <fields>; }
@@ -44,3 +44,6 @@
 
 -keep class sun.misc.** { *; }
 -dontwarn sun.misc.**
+
+#Retrolambda
+-dontwarn java.lang.invoke.*

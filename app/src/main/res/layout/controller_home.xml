@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <Button
-        android:id="@+id/button"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Box Office"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-    <Button
-        android:id="@+id/button_more"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="More"
-        />
+        <com.github.pedramrn.slick.parent.ui.main.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
-    <TextView
-        android:id="@+id/text_view_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        />
+        <it.sephiroth.android.library.bottomnavigation.BottomNavigation
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:bbn_entries="@menu/navigation"
 
-</LinearLayout>
+            app:layout_behavior="@string/bbn_phone_view_behavior"
+            />
+    </android.support.design.widget.CoordinatorLayout>
+
+</layout>

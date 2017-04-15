@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.main;
+package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.google.auto.value.AutoValue;
@@ -11,11 +11,11 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class HomeViewState {
+public abstract class ViewStateBoxOffice {
     public abstract List<MovieItem> movieItems();
 
-    public static HomeViewState create(List<MovieItem> movieItems) {
-        return new AutoValue_HomeViewState(movieItems);
+    public static ViewStateBoxOffice create(List<MovieItem> movieItems) {
+        return new AutoValue_ViewStateBoxOffice(movieItems);
     }
 
 }

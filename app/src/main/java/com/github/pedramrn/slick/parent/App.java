@@ -1,16 +1,15 @@
-package com.github.pedramrn.slick.parent.ui;
+package com.github.pedramrn.slick.parent;
 
 import android.app.Application;
 import android.util.Log;
 
 import com.bluelinelabs.conductor.Router;
+import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.github.pedramrn.slick.parent.di.AppComponent;
 import com.github.pedramrn.slick.parent.di.AppModule;
 import com.github.pedramrn.slick.parent.di.DaggerAppComponent;
 import com.github.pedramrn.slick.parent.ui.main.di.MainComponent;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
-import com.letv.sarrsdesktop.blockcanaryex.jrt.BlockCanaryEx;
-import com.letv.sarrsdesktop.blockcanaryex.jrt.Config;
 import com.squareup.leakcanary.LeakCanary;
 
 //import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
@@ -36,17 +35,17 @@ public class App extends Application {
             // You should not init your app in this process.
             return;
         }
-        if (!BlockCanaryEx.isInSamplerProcess(this)) {
-            BlockCanaryEx.install(new Config(this));
-        }
+//        if (!BlockCanaryEx.isInSamplerProcess(this)) {
+//            BlockCanaryEx.install(new Config(this));
+//        }
         final long before = System.currentTimeMillis();
         LeakCanary.install(this);
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
-        //        if (BuildConfig.DEBUG) {
-        //            AndroidDevMetrics.initWith(this);
-        //        }
+        if (BuildConfig.DEBUG) {
+            AndroidDevMetrics.initWith(this);
+        }
         Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
     }
 
