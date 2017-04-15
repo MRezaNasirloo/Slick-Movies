@@ -1,7 +1,7 @@
 package com.github.pedramrn.slick.parent.di;
 
-import com.github.pedramrn.slick.parent.datasource.network.OmdbApi;
-import com.github.pedramrn.slick.parent.datasource.network.TraktApi;
+import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
+import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.ui.main.di.MainComponent;
 import com.google.gson.Gson;
@@ -55,13 +55,13 @@ public class AppModule {
     }
 
     @Provides
-    public OmdbApi omdbClient(Retrofit.Builder builder) {
+    public ApiOmdb omdbClient(Retrofit.Builder builder) {
         return builder.baseUrl("http://www.omdbapi.com").build()
-                .create(OmdbApi.class);
+                .create(ApiOmdb.class);
     }
 
     @Provides
-    public TraktApi boxOfficeWeekend(OkHttpClient okHttpClient) {
+    public ApiTrakt boxOfficeWeekend(OkHttpClient okHttpClient) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -79,7 +79,7 @@ public class AppModule {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("https://api.trakt.tv").build()
-                .create(TraktApi.class);
+                .create(ApiTrakt.class);
     }
 
 

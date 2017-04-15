@@ -13,6 +13,7 @@
             android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/movie_cover_image"
             android:minHeight="200dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -63,11 +64,13 @@
             android:layout_marginTop="0dp"
             android:layout_weight="2.63"
             android:contentDescription="@string/logo_imdb"
+            android:transformPivotX="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_score_imdb"
             app:layout_constraintEnd_toStartOf="@+id/textView_score_imdb"
             app:layout_constraintTop_toTopOf="@+id/textView_score_imdb"
             app:layout_constraintVertical_bias="0.428"
             app:srcCompat="@drawable/ic_logo_imdb_2016"
+
             />
 
         <android.support.constraint.Guideline

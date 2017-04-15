@@ -25,15 +25,15 @@ import io.reactivex.subjects.BehaviorSubject;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-02-28
  */
-public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> {
+public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements Observer<List<MovieItem>> {
     private static final String TAG = PresenterBoxOffice.class.getSimpleName();
 
     private final RouterBoxOffice routerBoxOffice;
     private BehaviorSubject<ViewStateBoxOffice> state = BehaviorSubject.create();
-    private final BehaviorSubject<Integer> trigger = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> triggerSubject = BehaviorSubject.create();
 
     private CompositeDisposable disposable = new CompositeDisposable();
-    private boolean hasSubscribe = false;
+    private Observable<List<MovieItem>> boxOffice;
 
 
     @Inject
@@ -41,8 +41,23 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> {
         this.routerBoxOffice = routerBoxOffice;
     }
 
-    public void getBoxOffice() {
-        routerBoxOffice.boxOffice(trigger, 2)
+    public void getBoxOffice(Observable<Integer> trigger, int pageSize) {
+        trigger.subscribe(triggerSubject);
+        if (boxOffice == null) {
+            boxOffice = boxOffice(triggerSubject, pageSize).share();
+            boxOffice.subscribe(this);
+        }
+    }
+
+    public void pullToRefresh(Observable<Integer> trigger, int pageSize) {
+        trigger.subscribe(triggerSubject);
+        disposable.dispose();
+        boxOffice = boxOffice(triggerSubject, pageSize).share();
+        boxOffice.subscribe(this);
+    }
+
+    private Observable<List<MovieItem>> boxOffice(Observable<Integer> trigger, int pageSize) {
+        return routerBoxOffice.boxOffice(trigger, pageSize)
                 .map(new Function<MovieItem, List<MovieItem>>() {
                     @Override
                     public List<MovieItem> apply(@NonNull MovieItem movieItem) throws Exception {
@@ -51,47 +66,40 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> {
                         return list;
                     }
                 }).scan(new BiFunction<List<MovieItem>, List<MovieItem>, List<MovieItem>>() {
-            @Override
-            public List<MovieItem> apply(@NonNull List<MovieItem> movieItems, @NonNull List<MovieItem> movieItems2) throws Exception {
-                movieItems.addAll(movieItems2);
-                return movieItems;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<MovieItem>>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable.add(d);
-
+                    public List<MovieItem> apply(@NonNull List<MovieItem> movieItems, @NonNull List<MovieItem> movieItems2) throws Exception {
+                        movieItems.addAll(movieItems2);
+                        return movieItems;
                     }
-
-                    @Override
-                    public void onNext(List<MovieItem> movieItems) {
-                        state.onNext(ViewStateBoxOffice.create(movieItems));
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        state.onError(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        //                        state.onComplete();
-                    }
-                });
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ViewStateBoxOffice> updateStream() {
         return state;
     }
 
-    public void loadMore() {
-        trigger.onNext(0);
-        if (!hasSubscribe) {
-            hasSubscribe = true;
-            getBoxOffice();
+    @Override
+    public void onSubscribe(Disposable d) {
+        disposable.add(d);
 
-        }
+    }
+
+    @Override
+    public void onNext(List<MovieItem> movieItems) {
+        state.onNext(ViewStateBoxOffice.create(movieItems));
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        state.onError(e);
+
+    }
+
+    @Override
+    public void onComplete() {
+        // We don't want to terminate the update stream.
+        //state.onComplete();
     }
 }

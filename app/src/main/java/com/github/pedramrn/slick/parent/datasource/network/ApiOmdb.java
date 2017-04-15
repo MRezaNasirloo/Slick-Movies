@@ -11,7 +11,7 @@ import retrofit2.http.Query;
  *         Created on: 2017-03-09
  */
 
-public interface OmdbApi {
+public interface ApiOmdb {
 
     @GET("/")
     Observable<MovieOmdb> get(@Query("i") String id);

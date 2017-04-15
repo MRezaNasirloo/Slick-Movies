@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
-import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
@@ -19,11 +19,11 @@ import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 
 /**
@@ -52,7 +52,7 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice, Ob
         adapter = new RecyclerViewBoxOffice();
         binding.recyclerView.setAdapter(adapter);
 
-        RxRecyclerView.scrollEvents(binding.recyclerView).filter(new Predicate<RecyclerViewScrollEvent>() {
+        final Observable<Integer> trigger = RxRecyclerView.scrollEvents(binding.recyclerView).filter(new Predicate<RecyclerViewScrollEvent>() {
             @Override
             public boolean test(@io.reactivex.annotations.NonNull RecyclerViewScrollEvent recyclerViewScrollEvent) throws Exception {
                 final boolean reachedBottom = !recyclerViewScrollEvent.view().canScrollVertically(RecyclerView.FOCUS_DOWN);
@@ -67,12 +67,9 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice, Ob
                                  @io.reactivex.annotations.NonNull RecyclerViewScrollEvent recyclerViewScrollEvent) throws Exception {
                 return integer + 1;
             }
-        }).subscribe(new Consumer<Integer>() {
-            @Override
-            public void accept(@io.reactivex.annotations.NonNull Integer integer) throws Exception {
-                presenter.loadMore();
-            }
         });
+
+        presenter.getBoxOffice(trigger, 2);
 
         presenter.updateStream().subscribe(this);
 

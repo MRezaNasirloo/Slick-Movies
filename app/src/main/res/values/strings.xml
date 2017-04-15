@@ -6,4 +6,5 @@
     <string name="place_holder_tittle">Title</string>
     <string name="place_holder_score_imdb">7.8</string>
     <string name="logo_imdb">IMDB Logo</string>
+    <string name="movie_cover_image">Movie cover image</string>
 </resources>

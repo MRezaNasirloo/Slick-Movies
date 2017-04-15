@@ -1,0 +1,132 @@
+[
+  {
+    "revenue": 26300000,
+    "movie": {
+      "title": "The Boss Baby",
+      "year": 2017,
+      "ids": {
+        "trakt": 195864,
+        "slug": "the-boss-baby-2017",
+        "imdb": "tt3874544",
+        "tmdb": 295693
+      }
+    }
+  },
+  {
+    "revenue": 25000000,
+    "movie": {
+      "title": "Beauty and the Beast",
+      "year": 2017,
+      "ids": {
+        "trakt": 202286,
+        "slug": "beauty-and-the-beast-2017",
+        "imdb": "tt2771200",
+        "tmdb": 321612
+      }
+    }
+  },
+  {
+    "revenue": 14000000,
+    "movie": {
+      "title": "Smurfs: The Lost Village",
+      "year": 2017,
+      "ids": {
+        "trakt": 92232,
+        "slug": "smurfs-the-lost-village-2017",
+        "imdb": "tt2398241",
+        "tmdb": 137116
+      }
+    }
+  },
+  {
+    "revenue": 12500000,
+    "movie": {
+      "title": "Going in Style",
+      "year": 2017,
+      "ids": {
+        "trakt": 225931,
+        "slug": "going-in-style-2017",
+        "imdb": "tt2568862",
+        "tmdb": 353070
+      }
+    }
+  },
+  {
+    "revenue": 7400000,
+    "movie": {
+      "title": "Ghost in the Shell",
+      "year": 2017,
+      "ids": {
+        "trakt": 196549,
+        "slug": "ghost-in-the-shell-2017",
+        "imdb": "tt1219827",
+        "tmdb": 315837
+      }
+    }
+  },
+  {
+    "revenue": 6200000,
+    "movie": {
+      "title": "Power Rangers",
+      "year": 2017,
+      "ids": {
+        "trakt": 194894,
+        "slug": "power-rangers-2017",
+        "imdb": "tt3717490",
+        "tmdb": 305470
+      }
+    }
+  },
+  {
+    "revenue": 5800000,
+    "movie": {
+      "title": "Kong: Skull Island",
+      "year": 2017,
+      "ids": {
+        "trakt": 189952,
+        "slug": "kong-skull-island-2017",
+        "imdb": "tt3731562",
+        "tmdb": 293167
+      }
+    }
+  },
+  {
+    "revenue": 4099999,
+    "movie": {
+      "title": "Logan",
+      "year": 2017,
+      "ids": {
+        "trakt": 161972,
+        "slug": "logan-2017",
+        "imdb": "tt3315342",
+        "tmdb": 263115
+      }
+    }
+  },
+  {
+    "revenue": 4000000,
+    "movie": {
+      "title": "Get Out",
+      "year": 2017,
+      "ids": {
+        "trakt": 264623,
+        "slug": "get-out-2017",
+        "imdb": "tt5052448",
+        "tmdb": 419430
+      }
+    }
+  },
+  {
+    "revenue": 3900000,
+    "movie": {
+      "title": "The Case for Christ",
+      "year": 2017,
+      "ids": {
+        "trakt": 281622,
+        "slug": "the-case-for-christ-2017",
+        "imdb": "tt6113488",
+        "tmdb": 424998
+      }
+    }
+  }
+]
