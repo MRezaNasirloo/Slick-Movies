@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
+import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
 import com.google.auto.value.AutoValue;
 
 /**
@@ -37,6 +38,7 @@ public abstract class MovieItem {
 
     public abstract String production();
 
+    @IncludeHashEquals
     public abstract String imdb();
 
     public abstract int trakt();

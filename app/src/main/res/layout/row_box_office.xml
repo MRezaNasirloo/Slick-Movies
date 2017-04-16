@@ -4,6 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
+    <data>
+
+        <variable
+            name="vm"
+            type="com.github.pedramrn.slick.parent.domain.model.MovieItem"
+            />
+    </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +24,7 @@
             android:contentDescription="@string/movie_cover_image"
             android:minHeight="200dp"
             android:scaleType="centerCrop"
+            app:imageUrl="@{vm.poster()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -33,11 +42,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:drawablePadding="8dp"
-            android:text="@string/place_holder_tittle"
+            android:text="@{vm.name()}"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline"
+            tools:text="@string/place_holder_tittle"
             />
 
 
@@ -49,10 +59,11 @@
             android:layout_marginEnd="16dp"
             android:layout_weight="4.52"
             android:gravity="bottom"
-            android:text="@string/place_holder_score_imdb"
+            android:text="@{vm.scoreImdb()}"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            tools:text="@string/place_holder_score_imdb"
             />
 
         <ImageView
