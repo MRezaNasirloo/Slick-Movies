@@ -14,18 +14,22 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         >
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
             android:contentDescription="@string/movie_cover_image"
             android:minHeight="200dp"
             android:scaleType="centerCrop"
             app:imageUrl="@{vm.poster()}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/footer"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -34,19 +38,33 @@
             tools:background="@color/color_box_office"
             />
 
+        <View
+            android:id="@+id/footer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/gradient_shadow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline_footer"
+            />
+
         <TextView
             android:id="@+id/textView_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="0dp"
             android:drawablePadding="8dp"
             android:text="@{vm.name()}"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/guideline_footer"
             tools:text="@string/place_holder_tittle"
             />
 
@@ -62,7 +80,7 @@
             android:text="@{vm.scoreImdb()}"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/footer"
             tools:text="@string/place_holder_score_imdb"
             />
 
@@ -70,18 +88,16 @@
             android:id="@+id/imageView_logo_imdb"
             android:layout_width="32dp"
             android:layout_height="16dp"
-            android:layout_marginBottom="0dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="0dp"
             android:layout_weight="2.63"
             android:contentDescription="@string/logo_imdb"
             android:transformPivotX="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_score_imdb"
             app:layout_constraintEnd_toStartOf="@+id/textView_score_imdb"
+            app:layout_constraintRight_toLeftOf="@+id/textView_score_imdb"
             app:layout_constraintTop_toTopOf="@+id/textView_score_imdb"
-            app:layout_constraintVertical_bias="0.428"
+            app:layout_constraintVertical_bias="0.333"
             app:srcCompat="@drawable/ic_logo_imdb_2016"
-
             />
 
         <android.support.constraint.Guideline
@@ -90,6 +106,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5"
+            />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline_footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.65"
             />
 
     </android.support.constraint.ConstraintLayout>
