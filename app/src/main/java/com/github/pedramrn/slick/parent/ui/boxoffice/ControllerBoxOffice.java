@@ -35,7 +35,7 @@ import io.reactivex.subjects.BehaviorSubject;
  *         Created on: 2017-04-13
  */
 
-public class ControllerBoxOffice extends Controller implements ViewBoxOffice, Observer<ViewStateBoxOffice> {
+public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
     private static final String TAG = ControllerBoxOffice.class.getSimpleName();
 
     @Inject
@@ -43,17 +43,21 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice, Ob
     @Presenter
     PresenterBoxOffice presenter;
 
+    ViewModelBoxOffice viewModel;
+
     private CompositeDisposable disposable = new CompositeDisposable();
-    private BehaviorSubject<List<MovieItem>> movieItems = BehaviorSubject.create();
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.getMainComponent(getRouter()).inject(this);
         ControllerBoxOffice_Slick.bind(this);
+        if (viewModel == null){
+            viewModel = new ViewModelBoxOffice(presenter, this);
+        }
         final ControllerBoxOfficeBinding binding = ControllerBoxOfficeBinding.inflate(inflater, container, false);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        RecyclerViewBoxOffice adapter = new RecyclerViewBoxOffice(movieItems);
+        RecyclerViewBoxOffice adapter = new RecyclerViewBoxOffice(viewModel);
         adapter.setHasStableIds(true);
         binding.recyclerView.setAdapter(adapter);
 
@@ -71,37 +75,16 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice, Ob
                     }
                 });
 
-        presenter.getBoxOffice(trigger, 2);
 
-        presenter.updateStream().subscribe(this);
+        viewModel.listTrigger(trigger, 2);
 
         return binding.getRoot();
     }
 
     @Override
     public void render(ViewStateBoxOffice viewState) {
-        movieItems.onNext(viewState.movieItems());
     }
 
-    @Override
-    public void onSubscribe(Disposable d) {
-        disposable.add(d);
-    }
-
-    @Override
-    public void onNext(ViewStateBoxOffice viewStateBoxOffice) {
-        render(viewStateBoxOffice);
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onComplete() {
-        Toast.makeText(getApplicationContext(), "onComplete", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     protected void onDestroy() {

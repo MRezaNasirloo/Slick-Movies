@@ -11,11 +11,12 @@ import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.support.RouterPagerAdapter;
+import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
-import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImpl;
+import com.github.pedramrn.slick.parent.ui.popular.ControllerPopular;
 import com.github.pedramrn.slick.parent.ui.upcoming.ControllerUpComing;
 import com.github.slick.Presenter;
 
@@ -49,7 +50,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
 
             @Override
             public int getCount() {
-                return 2;
+                return 3;
             }
 
             @Override
@@ -61,6 +62,9 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
                             break;
                         case 1:
                             router.setRoot(RouterTransaction.with(new ControllerUpComing()));
+                            break;
+                        case 2:
+                            router.setRoot(RouterTransaction.with(new ControllerPopular()));
                             break;
                     }
                 }
@@ -77,18 +81,6 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        //        presenter.updateStream().subscribe(this);
-    }
-
-    @Override
-    protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        //        disposable.dispose();
     }
 
 
@@ -117,5 +109,6 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
 
     @Override
     public void onMenuItemReselect(@IdRes int itemId, int position, boolean fromUser) {
+        Log.e(TAG, "onMenuItemReselect() called with: itemId = [" + itemId + "], position = [" + position + "], fromUser = [" + fromUser + "]");
     }
 }

@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent;
 
+import android.util.Log;
+
 import org.junit.Test;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -12,6 +14,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiPredicate;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -24,37 +27,20 @@ import io.reactivex.subjects.PublishSubject;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        final Flowable<Integer> observable = Flowable.just(1, 2, 3, 4);
+        final Flowable<Integer> observable = Flowable.just(1, 2, 3, 4, 4 , 4 ,5 ,6);
 
-        final PublishSubject<Integer> subject = PublishSubject.create();
-
-
-        final Scheduler executor = Schedulers.from(new ThreadPoolExecutor(2, 2, 3000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(2)));
-        subject.subscribeOn(Schedulers.single())
-                .observeOn(executor)
-                .subscribe(new Consumer<Integer>() {
-                    @Override
-                    public void accept(@NonNull Integer integer) throws Exception {
-                        System.out.println(Thread.currentThread().getName() + " integer = [" + integer + "]");
-                    }
-                });
-
-        new Thread(new Runnable() {
+        observable.distinctUntilChanged(new BiPredicate<Integer, Integer>() {
             @Override
-            public void run() {
-
+            public boolean test(@NonNull Integer integer, @NonNull Integer integer2) throws Exception {
+                System.out.println("comparing integer = [" + integer + "], integer2 = [" + integer2 + "]");
+                return integer.equals(integer2);
             }
-        }).run();
-        subject.onNext(1);
-        Observable.defer(new Callable<ObservableSource<?>>() {
+        }).subscribe(new Consumer<Integer>() {
             @Override
-            public ObservableSource<?> call() throws Exception {
-                subject.onNext(2);
-                return Observable.just(1);
+            public void accept(@NonNull Integer integer) throws Exception {
+                System.out.println("integer = [" + integer + "]");
             }
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread()).subscribe();
-
+        });
 
     }
 

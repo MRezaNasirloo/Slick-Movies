@@ -39,9 +39,9 @@ public class App extends Application {
 //            BlockCanaryEx.install(new Config(this));
 //        }
         final long before = System.currentTimeMillis();
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule())
+                .appModule(new AppModule(this))
                 .build();
         if (BuildConfig.DEBUG) {
             AndroidDevMetrics.initWith(this);

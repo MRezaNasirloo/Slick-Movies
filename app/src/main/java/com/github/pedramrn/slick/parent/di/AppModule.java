@@ -1,5 +1,10 @@
 package com.github.pedramrn.slick.parent.di;
 
+import android.content.Context;
+
+import com.github.pedramrn.slick.parent.BuildConfig;
+import com.github.pedramrn.slick.parent.datasource.database.Models;
+import com.github.pedramrn.slick.parent.datasource.database.UserEntity;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
@@ -15,6 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import io.requery.Persistable;
+import io.requery.android.sqlite.DatabaseSource;
+import io.requery.reactivex.ReactiveEntityStore;
+import io.requery.reactivex.ReactiveSupport;
+import io.requery.sql.Configuration;
+import io.requery.sql.EntityDataStore;
+import io.requery.sql.TableCreationMode;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,6 +43,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module(subcomponents = MainComponent.class)
 public class AppModule {
     private static final String TAG = AppModule.class.getSimpleName();
+    private final Context context;
+
+    public AppModule(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
+    @Provides
+    public Context getContext() {
+        return context;
+    }
 
     @Provides
     public OkHttpClient okHttpClient() {
@@ -89,6 +111,28 @@ public class AppModule {
         }.getType();
         final Gson gson = new GsonBuilder().registerTypeAdapter(type, null).create();
         return GsonConverterFactory.create(gson);
+    }
+
+    @Provides
+    public ReactiveEntityStore<Persistable> entityStore(Context context) {
+        final DatabaseSource source = new DatabaseSource(context, Models.DEFAULT, 1);
+        if (BuildConfig.DEBUG) {
+            // use this in development mode to drop and recreate the tables on every upgrade
+            source.setTableCreationMode(TableCreationMode.DROP_CREATE);
+            source.setLoggingEnabled(true);
+        }
+        final Configuration configuration = source.getConfiguration();
+        final ReactiveEntityStore<Persistable> entityStore =
+                ReactiveSupport.toReactiveStore(new EntityDataStore<Persistable>(configuration));
+
+        if (entityStore.select(UserEntity.class).get().firstOrNull() == null) {
+            final UserEntity userEntity = new UserEntity();
+            userEntity.setBio("You're awesome");
+            userEntity.setAwesome(true);
+            userEntity.setName("joe");
+            entityStore.insert(userEntity).subscribe();
+        }
+        return entityStore;
     }
 
 }

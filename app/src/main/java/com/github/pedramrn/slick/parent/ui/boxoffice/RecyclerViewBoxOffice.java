@@ -11,6 +11,8 @@ import com.android.databinding.library.baseAdapters.BR;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.squareup.picasso.Picasso;
+import com.varunest.sparkbutton.SparkButton;
+import com.varunest.sparkbutton.SparkEventListener;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +32,8 @@ public class RecyclerViewBoxOffice extends RecyclerView.Adapter<RecyclerViewBoxO
     private List<MovieItem> movieItems = Collections.emptyList();
     private final Disposable disposable;
 
-    public RecyclerViewBoxOffice(Observable<List<MovieItem>> movieItems) {
-        disposable = movieItems.subscribe(this);
+    public RecyclerViewBoxOffice(ViewModelBoxOffice viewModelBoxOffice) {
+        disposable = viewModelBoxOffice.subscribeToBoxOfficeList(this);
     }
 
     @Override
@@ -44,8 +46,7 @@ public class RecyclerViewBoxOffice extends RecyclerView.Adapter<RecyclerViewBoxO
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final RowBoxOfficeBinding binding = RowBoxOfficeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        final View view = binding.getRoot();
-        return new ViewHolder(view, binding);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -73,8 +74,8 @@ public class RecyclerViewBoxOffice extends RecyclerView.Adapter<RecyclerViewBoxO
 
         private final RowBoxOfficeBinding binding;
 
-        public ViewHolder(View itemView, RowBoxOfficeBinding binding) {
-            super(itemView);
+        public ViewHolder(RowBoxOfficeBinding binding) {
+            super(binding.getRoot());
             this.binding = binding;
         }
     }
@@ -83,5 +84,25 @@ public class RecyclerViewBoxOffice extends RecyclerView.Adapter<RecyclerViewBoxO
     public static void bindImageUrl(ImageView imageView, String url) {
         //        Glide.with(holder.textViewTitle.getContext().getApplicationContext()).load(movieItems.get(position).poster()).into(holder.imageView);
         Picasso.with(imageView.getContext().getApplicationContext()).load(url).into(imageView);
+    }
+
+    @BindingAdapter("like")
+    public static void bindLikeButton(SparkButton button, String imdb) {
+        button.setEventListener(new SparkEventListener() {
+            @Override
+            public void onEvent(ImageView button, boolean buttonState) {
+
+            }
+
+            @Override
+            public void onEventAnimationEnd(ImageView button, boolean buttonState) {
+
+            }
+
+            @Override
+            public void onEventAnimationStart(ImageView button, boolean buttonState) {
+
+            }
+        });
     }
 }
