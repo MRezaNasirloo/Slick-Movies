@@ -14,6 +14,7 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.domain.model.User;
 import com.github.slick.Presenter;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -56,8 +57,6 @@ public class ControllerPopular extends Controller implements ViewPopular {
         ControllerPopular_Slick.bind(this);
         final View view = inflater.inflate(R.layout.controller_popular, container, false);
 
-        final EditText editText = (EditText) view.findViewById(R.id.editText_bio_2);
-        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox_awesome_2);
         final CheckBox checkBoxDataBinding = (CheckBox) view.findViewById(R.id.checkBox_data_binding);
         checkBoxDataBinding.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -65,53 +64,11 @@ public class ControllerPopular extends Controller implements ViewPopular {
                 presenter.getUser("joe").take(1).flatMapCompletable(new Function<User, CompletableSource>() {
                     @Override
                     public CompletableSource apply(@io.reactivex.annotations.NonNull User user) throws Exception {
-                        return presenter.updateUser(user.getBio(), isChecked).toCompletable();
+                        return presenter.updateUser("change from 3rd page", isChecked).toCompletable();
                     }
                 }).subscribe();
             }
         });
-
-        Observable<User> observable = presenter.getUser("joe");
-        final BehaviorSubject<Boolean> subject = BehaviorSubject.create();
-        observable.subscribe(new Consumer<User>() {
-            @Override
-            public void accept(@io.reactivex.annotations.NonNull User user) throws Exception {
-                subject.onNext(false);
-
-                Log.d(TAG, "accept() called with: user = [" + user + "]");
-                if (!user.getBio().equals(editText.getText().toString())) {
-                    editText.setText(user.getBio());
-                }
-                if (checkBox.isChecked() != user.isAwesome()) {
-                    checkBox.setChecked(user.isAwesome());
-                }
-            }
-        });
-
-        Observable<Boolean> observableCheckBox = RxCompoundButton.checkedChanges(checkBox).skipInitialValue().debounce(500, TimeUnit.MILLISECONDS);
-        Observable<CharSequence> observableEditText = RxTextView.textChanges(editText).skipInitialValue().debounce(500, TimeUnit.MILLISECONDS);
-
-        Observable.combineLatest(observableCheckBox, observableEditText, new BiFunction<Boolean, CharSequence, Single<Integer>>() {
-            @Override
-            public Single<Integer> apply(@io.reactivex.annotations.NonNull Boolean aBoolean,
-                                     @io.reactivex.annotations.NonNull CharSequence text) throws Exception {
-                Log.d(TAG, "apply() called with: aBoolean = [" + aBoolean + "], text = [" + text + "]");
-                return presenter.updateUser(text.toString(), aBoolean);
-            }
-        }).filter(new Predicate<Single<Integer>>() {
-            @Override
-            public boolean test(@io.reactivex.annotations.NonNull Single<Integer> integerSingle) throws Exception {
-                boolean oldFromUser = fromUser;
-                fromUser = true;
-                return oldFromUser;
-            }
-        }).flatMapCompletable(new Function<Single<Integer>, CompletableSource>() {
-            @Override
-            public CompletableSource apply(@io.reactivex.annotations.NonNull Single<Integer> integerSingle) throws Exception {
-                return integerSingle.toCompletable();
-            }
-        }).subscribe();
-
         return view;
     }
 }
