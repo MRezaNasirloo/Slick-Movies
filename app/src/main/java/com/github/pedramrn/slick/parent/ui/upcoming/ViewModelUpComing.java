@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.upcoming;
 
 import android.databinding.ObservableField;
-import android.util.Log;
 import android.util.Pair;
 
 import com.github.pedramrn.slick.parent.domain.model.User;
@@ -28,60 +27,52 @@ public class ViewModelUpComing implements ViewUpComing {
     private static final String TAG = ViewModelUpComing.class.getSimpleName();
     public final ObservableField<String> bio;
     public final ObservableField<Boolean> isAwesome;
-    private Disposable disposable;
+    private final Disposable disposable;
 
     public ViewModelUpComing(final PresenterUpComing presenter) {
-        final Observable<User> observable = presenter.getUser("joe").share();
+        final Observable<User> observable = presenter.getUser("joe").debounce(1, TimeUnit.SECONDS).share();
         final Observable<String> startBio = observable.map(new Function<User, String>() {
             @Override
             public String apply(@NonNull User user) throws Exception {
-                Log.d(TAG, "apply()1 called with: user = [" + user + "]");
                 return user.getBio();
             }
         });
         final Observable<Boolean> startAwesome = observable.map(new Function<User, Boolean>() {
             @Override
             public Boolean apply(@NonNull User user) throws Exception {
-                Log.d(TAG, "apply()2 called with: user = [" + user + "]");
                 return user.isAwesome();
             }
         });
 
-        bio = toField(startBio);
-        isAwesome = toField(startAwesome);
+        bio = toField(startBio.distinctUntilChanged());
+        isAwesome = toField(startAwesome.distinctUntilChanged());
 
-        Observable.combineLatest(
+        disposable = Observable.combineLatest(
                 toObservable(isAwesome).debounce(1, TimeUnit.SECONDS),
                 toObservable(bio).debounce(1, TimeUnit.SECONDS),
                 new BiFunction<Boolean, String, User>() {
                     @Override
                     public User apply(@NonNull Boolean oldAwesome, @NonNull String oldBio) throws Exception {
-                        Log.d(TAG, "apply()3 called with: oldAwesome = [" + oldAwesome + "], oldBio = [" + oldBio + "]");
-                        return User.create(-1, bio.get(), isAwesome.get(), "");
+                        return User.create(-1, oldBio, oldAwesome, "");
                     }
-                })
+                }).debounce(1, TimeUnit.SECONDS)
                 .withLatestFrom(observable, new BiFunction<User, User, Pair<Boolean, User>>() {
                     @Override
                     public Pair<Boolean, User> apply(@NonNull User user, @NonNull User user2) throws Exception {
-                        Log.d(TAG, "apply()4 called with: user = [" + user + "], user2 = [" + user2 + "]");
                         boolean filter = user.getBio().equals(user2.getBio()) && (user.isAwesome() == user2.isAwesome());
                         return new Pair<>(!filter, user);
                     }
                 }).filter(new Predicate<Pair<Boolean, User>>() {
-            @Override
-            public boolean test(@NonNull Pair<Boolean, User> pair) throws Exception {
-                return pair.first;
-            }
-        }).flatMapCompletable(new Function<Pair<Boolean, User>, CompletableSource>() {
-            @Override
-            public CompletableSource apply(@NonNull Pair<Boolean, User> pair) throws Exception {
-                Log.d(TAG, "apply()5 called");
-                return presenter.updateUser(pair.second.getBio(), pair.second.isAwesome()).toCompletable();
-            }
-        }).subscribe();
-        //                ,
-        //
-        //                .skip(1).subscribe();
+                    @Override
+                    public boolean test(@NonNull Pair<Boolean, User> pair) throws Exception {
+                        return pair.first;
+                    }
+                }).flatMapCompletable(new Function<Pair<Boolean, User>, CompletableSource>() {
+                    @Override
+                    public CompletableSource apply(@NonNull Pair<Boolean, User> pair) throws Exception {
+                        return presenter.updateUser(pair.second.getBio(), pair.second.isAwesome()).toCompletable();
+                    }
+                }).subscribe();
     }
 
     public void onDestroy() {
