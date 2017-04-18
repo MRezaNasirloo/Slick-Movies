@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.popular;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +16,22 @@ import com.github.pedramrn.slick.parent.domain.model.User;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.jakewharton.rxbinding2.widget.TextViewBeforeTextChangeEvent;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.BehaviorSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -43,6 +47,8 @@ public class ControllerPopular extends Controller implements ViewPopular {
     @Presenter
     PresenterPopular presenter;
 
+    private boolean fromUser = false;
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -55,15 +61,24 @@ public class ControllerPopular extends Controller implements ViewPopular {
         final CheckBox checkBoxDataBinding = (CheckBox) view.findViewById(R.id.checkBox_data_binding);
         checkBoxDataBinding.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                presenter.updateUser(buttonView.getText().toString(), checkBox.isChecked())
-                        .subscribe();
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                presenter.getUser("joe").take(1).flatMapCompletable(new Function<User, CompletableSource>() {
+                    @Override
+                    public CompletableSource apply(@io.reactivex.annotations.NonNull User user) throws Exception {
+                        return presenter.updateUser(user.getBio(), isChecked).toCompletable();
+                    }
+                }).subscribe();
             }
         });
 
-        presenter.getUser("joe").subscribe(new Consumer<User>() {
+        Observable<User> observable = presenter.getUser("joe");
+        final BehaviorSubject<Boolean> subject = BehaviorSubject.create();
+        observable.subscribe(new Consumer<User>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull User user) throws Exception {
+                subject.onNext(false);
+
+                Log.d(TAG, "accept() called with: user = [" + user + "]");
                 if (!user.getBio().equals(editText.getText().toString())) {
                     editText.setText(user.getBio());
                 }
@@ -73,28 +88,29 @@ public class ControllerPopular extends Controller implements ViewPopular {
             }
         });
 
-        Observable<Boolean> observableCheckBox = RxCompoundButton.checkedChanges(checkBox).skipInitialValue().skip(1);
-        Observable<String> observableEditText = RxTextView.beforeTextChangeEvents(editText).skipInitialValue().skip(1)
-                .map(new Function<TextViewBeforeTextChangeEvent, String>() {
-                    @Override
-                    public String apply(
-                            @io.reactivex.annotations.NonNull TextViewBeforeTextChangeEvent textViewBeforeTextChangeEvent) throws Exception {
-                        return textViewBeforeTextChangeEvent.text().toString();
-                    }
-                });
+        Observable<Boolean> observableCheckBox = RxCompoundButton.checkedChanges(checkBox).skipInitialValue().debounce(500, TimeUnit.MILLISECONDS);
+        Observable<CharSequence> observableEditText = RxTextView.textChanges(editText).skipInitialValue().debounce(500, TimeUnit.MILLISECONDS);
 
-        Observable.combineLatest(observableCheckBox, observableEditText, new BiFunction<Boolean, String, Single<Integer>>() {
+        Observable.combineLatest(observableCheckBox, observableEditText, new BiFunction<Boolean, CharSequence, Single<Integer>>() {
             @Override
             public Single<Integer> apply(@io.reactivex.annotations.NonNull Boolean aBoolean,
-                                         @io.reactivex.annotations.NonNull String text) throws Exception {
-                return presenter.updateUser(text, aBoolean);
+                                     @io.reactivex.annotations.NonNull CharSequence text) throws Exception {
+                Log.d(TAG, "apply() called with: aBoolean = [" + aBoolean + "], text = [" + text + "]");
+                return presenter.updateUser(text.toString(), aBoolean);
             }
-        }).flatMap(new Function<Single<Integer>, ObservableSource<Integer>>() {
+        }).filter(new Predicate<Single<Integer>>() {
             @Override
-            public ObservableSource<Integer> apply(@io.reactivex.annotations.NonNull Single<Integer> integerSingle) throws Exception {
-                return integerSingle.toObservable();
+            public boolean test(@io.reactivex.annotations.NonNull Single<Integer> integerSingle) throws Exception {
+                boolean oldFromUser = fromUser;
+                fromUser = true;
+                return oldFromUser;
             }
-        }).skip(1).subscribe();
+        }).flatMapCompletable(new Function<Single<Integer>, CompletableSource>() {
+            @Override
+            public CompletableSource apply(@io.reactivex.annotations.NonNull Single<Integer> integerSingle) throws Exception {
+                return integerSingle.toCompletable();
+            }
+        }).subscribe();
 
         return view;
     }
