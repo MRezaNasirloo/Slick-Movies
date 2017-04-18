@@ -1,23 +1,13 @@
 package com.github.pedramrn.slick.parent;
 
-import android.util.Log;
-
 import org.junit.Test;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Scheduler;
+import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiPredicate;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -27,21 +17,65 @@ import io.reactivex.subjects.PublishSubject;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        final Flowable<Integer> observable = Flowable.just(1, 2, 3, 4, 4 , 4 ,5 ,6);
 
-        observable.distinctUntilChanged(new BiPredicate<Integer, Integer>() {
-            @Override
-            public boolean test(@NonNull Integer integer, @NonNull Integer integer2) throws Exception {
-                System.out.println("comparing integer = [" + integer + "], integer2 = [" + integer2 + "]");
-                return integer.equals(integer2);
-            }
-        }).subscribe(new Consumer<Integer>() {
-            @Override
-            public void accept(@NonNull Integer integer) throws Exception {
-                System.out.println("integer = [" + integer + "]");
-            }
-        });
 
+    final Observable<Long> interval1 = Observable.intervalRange(0, 5, 0, 1000, TimeUnit.MILLISECONDS);
+    final Observable<Long> interval2 = Observable.intervalRange(20, 5, 2000, 2000, TimeUnit.MILLISECONDS);
+
+    Observable<Long> observable = interval2.mergeWith(new Observable<Long>() {
+        @Override
+        protected void subscribeActual(Observer<? super Long> observer) {
+            interval1.subscribe(observer);
+        }
+    });
+    observable.subscribe(new Consumer<Long>() {
+        @Override
+        public void accept(@NonNull Long aLong) throws Exception {
+            System.out.println("observable1 aLong = [" + aLong + "]");
+        }
+    });
+
+    observable.subscribe(new Consumer<Long>() {
+        @Override
+        public void accept(@NonNull Long aLong) throws Exception {
+            System.out.println("observable2 aLong = [" + aLong + "]");
+        }
+    });
+
+    /* out put
+    observable1 aLong = [0]
+    observable2 aLong = [0]
+    observable1 aLong = [1]
+    observable2 aLong = [1]
+    observable1 aLong = [2]
+    observable1 aLong = [20]
+    observable1 aLong = [3]
+    observable1 aLong = [21]
+    observable1 aLong = [4]
+    observable1 aLong = [22]
+    observable1 aLong = [23]
+    observable1 aLong = [24]
+    ---------
+    expected
+    observable1 aLong = [0]
+    observable2 aLong = [0]
+    observable1 aLong = [1]
+    observable2 aLong = [1]
+    observable1 aLong = [2]
+    observable1 aLong = [2]
+    observable1 aLong = [20]
+    observable1 aLong = [3]
+    observable2 aLong = [3]
+    observable1 aLong = [21]
+    observable1 aLong = [4]
+    observable2 aLong = [4]
+    observable1 aLong = [22]
+    observable1 aLong = [23]
+    observable1 aLong = [24]
+    */
+        while (true) {
+
+        }
     }
 
 }

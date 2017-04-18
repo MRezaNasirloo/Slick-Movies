@@ -40,17 +40,17 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
         ControllerUpComing_Slick.bind(this);
 
         if (viewModelUpComing == null) {
-            viewModelUpComing = new ViewModelUpComing(presenter);
+//            viewModelUpComing = new ViewModelUpComing(presenter);
         }
 
         final ControllerUpComingBinding binding = ControllerUpComingBinding.inflate(inflater, container, false);
-        binding.setViewModelUser(viewModelUpComing);
+//        binding.setViewModelUser(viewModelUpComing);
         return binding.getRoot();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        viewModelUpComing.onDestroy();
+//        viewModelUpComing.onDestroy();
     }
 }

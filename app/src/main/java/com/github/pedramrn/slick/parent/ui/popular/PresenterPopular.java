@@ -1,8 +1,9 @@
-package com.github.pedramrn.slick.parent.ui.upcoming;
+package com.github.pedramrn.slick.parent.ui.popular;
 
-import com.github.pedramrn.slick.parent.datasource.database.RepositoryUserImpl;
 import com.github.pedramrn.slick.parent.domain.model.User;
 import com.github.pedramrn.slick.parent.domain.repository.RepositoryUser;
+import com.github.pedramrn.slick.parent.datasource.database.RepositoryUserImpl;
+import com.github.pedramrn.slick.parent.ui.upcoming.ViewUpComing;
 import com.github.slick.SlickPresenter;
 
 import javax.inject.Inject;
@@ -18,12 +19,12 @@ import io.reactivex.schedulers.Schedulers;
  *         Created on: 2017-04-17
  */
 
-public class PresenterUpComing extends SlickPresenter<ViewUpComing> {
+public class PresenterPopular extends SlickPresenter<ViewPopular> {
 
     private final RepositoryUser repositoryUser;
 
     @Inject
-    public PresenterUpComing(RepositoryUserImpl repositoryUser) {
+    public PresenterPopular(RepositoryUserImpl repositoryUser) {
         this.repositoryUser = repositoryUser;
     }
 

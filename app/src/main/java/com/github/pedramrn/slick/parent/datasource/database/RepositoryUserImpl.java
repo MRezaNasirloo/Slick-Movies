@@ -1,6 +1,5 @@
-package com.github.pedramrn.slick.parent.ui.upcoming;
+package com.github.pedramrn.slick.parent.datasource.database;
 
-import com.github.pedramrn.slick.parent.datasource.database.UserEntity;
 import com.github.pedramrn.slick.parent.domain.model.User;
 import com.github.pedramrn.slick.parent.domain.repository.RepositoryUser;
 
