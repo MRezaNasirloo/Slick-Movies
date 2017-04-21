@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
+import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import com.android.databinding.library.baseAdapters.BR;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
+import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
@@ -29,10 +31,12 @@ import io.reactivex.disposables.Disposable;
 public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolder> implements Observer<List<MovieItem>> {
     private static final String TAG = AdapterBoxOffice.class.getSimpleName();
     private final CompositeDisposable disposable;
+    private static ImageLoader imageLoader;
     private List<MovieItem> movieItems = Collections.emptyList();
 
-    public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice) {
+    public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice, ImageLoader imageLoader) {
         this.disposable = disposable;
+        this.imageLoader = imageLoader;
         viewModelBoxOffice.boxOfficeList().subscribe(this);
     }
 
@@ -114,6 +118,8 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     @BindingAdapter("imageUrl")
     public static void bindImageUrl(ImageView imageView, String url) {
         //        Glide.with(holder.textViewTitle.getContext().getApplicationContext()).load(movieItems.get(position).poster()).into(holder.imageView);
-        Picasso.with(imageView.getContext().getApplicationContext()).load(url).into(imageView);
+        imageLoader.with(imageView.getContext().getApplicationContext()).load(url).into(imageView);
     }
+
+
 }
