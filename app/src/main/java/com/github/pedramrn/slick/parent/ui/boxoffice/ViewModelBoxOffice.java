@@ -65,7 +65,7 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
         presenter.getBoxOffice(trigger, page);
     }
 
-    public void boxOfficeList(AdapterBoxOffice adapterBoxOffice) {
-        movieItems.subscribe(adapterBoxOffice);
+    public Observable<List<MovieItem>> boxOfficeList() {
+        return movieItems;
     }
 }

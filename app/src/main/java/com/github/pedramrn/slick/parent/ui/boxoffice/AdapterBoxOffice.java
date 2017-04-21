@@ -33,7 +33,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
     public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice) {
         this.disposable = disposable;
-        viewModelBoxOffice.boxOfficeList(this);
+        viewModelBoxOffice.boxOfficeList().subscribe(this);
     }
 
     @Override

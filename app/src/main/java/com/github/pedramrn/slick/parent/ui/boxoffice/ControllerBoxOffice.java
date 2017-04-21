@@ -39,20 +39,21 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
     @Presenter
     PresenterBoxOffice presenter;
 
-    ViewModelBoxOffice viewModel;
 
-    private CompositeDisposable disposable = new CompositeDisposable();
+    private CompositeDisposable disposable;
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.getMainComponent(getRouter()).inject(this);
         ControllerBoxOffice_Slick.bind(this);
-        if (viewModel == null) {
-            viewModel = new ViewModelBoxOffice(disposable, presenter, this);
-        }
+
         final ControllerBoxOfficeBinding binding = ControllerBoxOfficeBinding.inflate(inflater, container, false);
+
+        disposable = new CompositeDisposable();
+
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        ViewModelBoxOffice viewModel = new ViewModelBoxOffice(disposable, presenter, this);
         AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel);
         binding.recyclerView.setAdapter(adapter);
 
@@ -74,6 +75,12 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
         viewModel.onLoadMoreTrigger(trigger, 2);
 
         return binding.getRoot();
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        disposable.dispose();
     }
 
     @Override
