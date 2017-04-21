@@ -31,7 +31,7 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
         this.view = view;
         this.presenter = presenter;
         this.disposable = disposable;
-        presenter.updateStream().subscribe();
+        presenter.updateStream().subscribe(this);
     }
 
     public void adapterUpdateCommand(Observable<Integer> observable) {

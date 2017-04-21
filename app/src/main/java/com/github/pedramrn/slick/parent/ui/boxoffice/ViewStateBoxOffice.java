@@ -17,5 +17,4 @@ public abstract class ViewStateBoxOffice {
     public static ViewStateBoxOffice create(List<MovieItem> movieItems) {
         return new AutoValue_ViewStateBoxOffice(movieItems);
     }
-
 }

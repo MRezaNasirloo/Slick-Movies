@@ -63,7 +63,6 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                 .map(new Function<MovieItem, List<MovieItem>>() {
                     @Override
                     public List<MovieItem> apply(@NonNull MovieItem movieItem) throws Exception {
-                        Log.d(TAG, "apply() called with: movieItem = [" + movieItem + "]");
                         final ArrayList<MovieItem> list = new ArrayList<>();
                         list.add(movieItem);
                         return list;
@@ -71,7 +70,6 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                 }).scan(new BiFunction<List<MovieItem>, List<MovieItem>, List<MovieItem>>() {
                     @Override
                     public List<MovieItem> apply(@NonNull List<MovieItem> movieItems, @NonNull List<MovieItem> movieItems2) throws Exception {
-                        Log.d(TAG, "apply() called with: movieItems = [" + movieItems + "], movieItems2 = [" + movieItems2 + "]");
                         movieItems.addAll(movieItems2);
                         return movieItems;
                     }
@@ -91,7 +89,7 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
 
     @Override
     public void onNext(List<MovieItem> movieItems) {
-        state.onNext(ViewStateBoxOffice.create(movieItems));
+        state.onNext(ViewStateBoxOffice.create(new ArrayList<>(movieItems)));
 
     }
 

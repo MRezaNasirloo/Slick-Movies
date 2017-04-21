@@ -59,13 +59,11 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
     @Override
     public void onSubscribe(Disposable d) {
-        Log.d(TAG, "onSubscribe() called");
         disposable.add(d);
     }
 
     @Override
     public void onNext(final List<MovieItem> newMovieItems) {
-        Log.d(TAG, "onNext() called");
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
