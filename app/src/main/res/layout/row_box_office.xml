@@ -46,21 +46,6 @@
             app:layout_constraintTop_toTopOf="@+id/guideline_footer"
             />
 
-        <com.varunest.sparkbutton.SparkButton
-            android:id="@+id/button_like"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="0dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
-            app:sparkbutton_activeImage="@drawable/ic_like_black_24dp"
-            app:sparkbutton_animationSpeed="0.8"
-            app:sparkbutton_iconSize="35dp"
-            app:sparkbutton_inActiveImage="@drawable/ic_unlike_black_24dp"
-            app:like="@{vm.imdb()}"
-            />
-
         <TextView
             android:id="@+id/textView_title"
             android:layout_width="wrap_content"

@@ -1,12 +1,17 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
+import android.util.Log;
+
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.BehaviorSubject;
 
 /**
@@ -15,45 +20,52 @@ import io.reactivex.subjects.BehaviorSubject;
  */
 
 public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
+    private static final String TAG = ViewModelBoxOffice.class.getSimpleName();
+    private final CompositeDisposable disposable;
     private final PresenterBoxOffice presenter;
-    private Observable<ViewStateBoxOffice> viewStateBoxOffice;
-    private final ViewBoxOffice viewBoxOffice;
+    private final ViewBoxOffice view;
     private BehaviorSubject<List<MovieItem>> movieItems = BehaviorSubject.create();
 
 
-    public ViewModelBoxOffice(PresenterBoxOffice presenter, ViewBoxOffice viewBoxOffice) {
+    public ViewModelBoxOffice(CompositeDisposable disposable, PresenterBoxOffice presenter, ViewBoxOffice view) {
+        this.view = view;
         this.presenter = presenter;
-        this.viewStateBoxOffice = presenter.updateStream();
-        this.viewBoxOffice = viewBoxOffice;
-        this.viewStateBoxOffice.subscribe(this);
+        this.disposable = disposable;
+        presenter.updateStream().subscribe();
+    }
+
+    public void adapterUpdateCommand(Observable<Integer> observable) {
+        disposable.add(observable.subscribe());
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-
+        disposable.add(d);
     }
 
     @Override
     public void onNext(ViewStateBoxOffice viewStateBoxOffice) {
-        viewBoxOffice.render(viewStateBoxOffice);
+        view.render(viewStateBoxOffice);
         movieItems.onNext(viewStateBoxOffice.movieItems());
     }
 
     @Override
     public void onError(Throwable e) {
-//        viewBoxOffice.onError(e);
+        e.printStackTrace();
+        //        view.onError(e);
     }
 
     @Override
     public void onComplete() {
-//        viewBoxOffice.onComplete();
+        //        view.onComplete();
+        Log.d(TAG, "onComplete() called");
     }
 
-    public void listTrigger(Observable<Integer> trigger, int i) {
-        presenter.getBoxOffice(trigger, 2);
+    public void onLoadMoreTrigger(Observable<Integer> trigger, int page) {
+        presenter.getBoxOffice(trigger, page);
     }
 
-    public Disposable subscribeToBoxOfficeList(RecyclerViewBoxOffice recyclerViewBoxOffice) {
-        return movieItems.subscribe(recyclerViewBoxOffice);
+    public void boxOfficeList(AdapterBoxOffice adapterBoxOffice) {
+        movieItems.subscribe(adapterBoxOffice);
     }
 }
