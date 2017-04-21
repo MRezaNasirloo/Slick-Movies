@@ -10,13 +10,15 @@ import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -27,12 +29,14 @@ public class RouterBoxOfficeImpl implements RouterBoxOffice {
 
     private final ApiTrakt apiTrakt;
     private final ApiOmdb apiOmdb;
+    private final Scheduler io;
     private static final String TAG = RouterBoxOfficeImpl.class.getSimpleName();
 
     @Inject
-    public RouterBoxOfficeImpl(ApiTrakt apiTrakt, ApiOmdb apiOmdb) {
+    public RouterBoxOfficeImpl(ApiTrakt apiTrakt, ApiOmdb apiOmdb, @Named("io") Scheduler io) {
         this.apiTrakt = apiTrakt;
         this.apiOmdb = apiOmdb;
+        this.io = io;
     }
 
     @Override
@@ -59,7 +63,7 @@ public class RouterBoxOfficeImpl implements RouterBoxOffice {
                                     @Override
                                     public ObservableSource<MovieItem> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
                                         return apiOmdb.get(boxOfficeItem.movie.ids.imdb)
-                                                .subscribeOn(Schedulers.io())
+                                                .subscribeOn(io)
                                                 .map(new Function<MovieOmdb, MovieItem>() {
                                                     @Override
                                                     public MovieItem apply(@NonNull MovieOmdb movieOmdb) throws Exception {

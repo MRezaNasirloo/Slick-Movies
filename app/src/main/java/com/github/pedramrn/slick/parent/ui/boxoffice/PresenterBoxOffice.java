@@ -1,7 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import android.util.Log;
-
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImpl;
@@ -11,16 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
 /**
@@ -31,6 +29,8 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
     private static final String TAG = PresenterBoxOffice.class.getSimpleName();
 
     private final RouterBoxOffice routerBoxOffice;
+    private final Scheduler main;
+    private final Scheduler io;
     private BehaviorSubject<ViewStateBoxOffice> state = BehaviorSubject.create();
     private final BehaviorSubject<Integer> triggerSubject = BehaviorSubject.create();
 
@@ -39,8 +39,10 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
 
 
     @Inject
-    public PresenterBoxOffice(RouterBoxOfficeImpl routerBoxOffice) {
+    public PresenterBoxOffice(RouterBoxOfficeImpl routerBoxOffice, @Named("main") Scheduler main, @Named("io") Scheduler io) {
         this.routerBoxOffice = routerBoxOffice;
+        this.main = main;
+        this.io = io;
     }
 
     public void getBoxOffice(Observable<Integer> trigger, int pageSize) {
@@ -73,8 +75,8 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                         movieItems.addAll(movieItems2);
                         return movieItems;
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(io)
+                .observeOn(main);
     }
 
     public Observable<ViewStateBoxOffice> updateStream() {
@@ -96,12 +98,10 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
     @Override
     public void onError(Throwable e) {
         state.onError(e);
-
     }
 
     @Override
     public void onComplete() {
-        Log.d(TAG, "onComplete() called");
         // We don't want to terminate the update stream.
         //state.onComplete();
     }

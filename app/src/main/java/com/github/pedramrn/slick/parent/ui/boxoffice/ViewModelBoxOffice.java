@@ -1,17 +1,13 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import android.util.Log;
-
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.BehaviorSubject;
 
 /**
@@ -58,10 +54,9 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
     @Override
     public void onComplete() {
         //        view.onComplete();
-        Log.d(TAG, "onComplete() called");
     }
 
-    public void onLoadMoreTrigger(Observable<Integer> trigger, int page) {
+    public void pagination(Observable<Integer> trigger, int page) {
         presenter.getBoxOffice(trigger, page);
     }
 

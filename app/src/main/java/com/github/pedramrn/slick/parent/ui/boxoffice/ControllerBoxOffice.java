@@ -19,11 +19,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 
 /**
@@ -69,10 +67,17 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
                                          @io.reactivex.annotations.NonNull RecyclerViewScrollEvent event) throws Exception {
                         return integer + 1;
                     }
+                }).doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Log.d(TAG, "doOnComplete() called");
+                    }
                 });
 
 
-        viewModel.onLoadMoreTrigger(trigger, 2);
+
+
+        viewModel.pagination(trigger, 2);
 
         return binding.getRoot();
     }
