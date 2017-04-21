@@ -11,7 +11,7 @@ import com.squareup.picasso.RequestCreator;
  *         Created on: 2017-04-22
  */
 
-class ImageLoaderPicassoImpl extends ImageLoader {
+class ImageLoaderPicassoImpl implements ImageLoader {
 
     private RequestCreator requestCreator;
     private Picasso picasso;

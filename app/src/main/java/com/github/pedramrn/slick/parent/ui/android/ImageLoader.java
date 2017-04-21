@@ -8,12 +8,12 @@ import android.widget.ImageView;
  *         Created on: 2017-04-22
  */
 
-public abstract class ImageLoader {
+public interface ImageLoader {
 
-    public abstract ImageLoader with(Context context);
+    ImageLoader with(Context context);
 
-    public abstract ImageLoader load(String url);
+    ImageLoader load(String url);
 
-    public abstract void into(ImageView imageView);
+    void into(ImageView imageView);
 
 }
