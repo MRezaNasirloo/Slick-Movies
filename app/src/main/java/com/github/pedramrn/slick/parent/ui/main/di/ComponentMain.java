@@ -14,7 +14,7 @@ import dagger.Subcomponent;
  */
 @ActivityScope
 @Subcomponent(modules = MainModule.class)
-public interface MainComponent {
+public interface ComponentMain {
     void inject(ActivityMain activity);
 
     void inject(ControllerMain homeController);
@@ -29,7 +29,7 @@ public interface MainComponent {
     interface Builder {
         Builder mainModule(MainModule module);
 
-        MainComponent build();
+        ComponentMain build();
 
     }
 

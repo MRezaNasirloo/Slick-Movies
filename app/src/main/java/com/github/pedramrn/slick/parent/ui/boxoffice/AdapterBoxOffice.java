@@ -6,8 +6,10 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
@@ -47,8 +49,14 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.binding.setVariable(BR.vm, movieItems.get(position));
+        holder.binding.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(holder.binding.getRoot().getContext(), holder.getAdapterPosition() + " clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

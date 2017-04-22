@@ -26,6 +26,10 @@ import javax.inject.Provider;
 import io.reactivex.disposables.CompositeDisposable;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
+import static com.github.pedramrn.slick.parent.App.componentMain;
+import static com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding.inflate;
+import static com.github.pedramrn.slick.parent.ui.main.ControllerMain_Slick.bind;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-02-13
@@ -75,9 +79,9 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
-        App.getMainComponent(getRouter()).inject(this);
-        ControllerMain_Slick.bind(this);
-        binding = ControllerHomeBinding.inflate(layoutInflater, viewGroup, false);
+        componentMain().inject(this);
+        bind(this);
+        binding = inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
         return binding.getRoot();
@@ -87,7 +91,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        App.disposeMainComponent();
+        App.disposeComponentMain();
     }
 
     @Override

@@ -17,6 +17,11 @@ import javax.inject.Provider;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
 
+import static android.widget.CompoundButton.OnCheckedChangeListener;
+import static com.github.pedramrn.slick.parent.App.componentMain;
+import static com.github.pedramrn.slick.parent.databinding.ControllerUpComingBinding.inflate;
+import static com.github.pedramrn.slick.parent.ui.upcoming.ControllerUpComing_Slick.bind;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-13
@@ -37,18 +42,18 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        App.getMainComponent(getRouter()).inject(this);
-        ControllerUpComing_Slick.bind(this);
+        componentMain().inject(this);
+        bind(this);
 
         if (viewModelUpComing == null) {
             viewModelUpComing = new ViewModelUpComing(presenter);
         }
 
 
-        final ControllerUpComingBinding binding = ControllerUpComingBinding.inflate(inflater, container, false);
+        final ControllerUpComingBinding binding = inflate(inflater, container, false);
         binding.setViewModelUser(viewModelUpComing);
 
-        binding.checkBoxShouldBeSame.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.checkBoxShouldBeSame.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 presenter.updateUser("from checkbox up there ^", isChecked).toCompletable().subscribe();

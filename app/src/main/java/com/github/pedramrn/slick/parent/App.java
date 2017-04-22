@@ -1,14 +1,17 @@
 package com.github.pedramrn.slick.parent;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.bluelinelabs.conductor.Router;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
-import com.github.pedramrn.slick.parent.di.AppComponent;
-import com.github.pedramrn.slick.parent.di.AppModule;
-import com.github.pedramrn.slick.parent.di.DaggerAppComponent;
-import com.github.pedramrn.slick.parent.ui.main.di.MainComponent;
+import com.github.pedramrn.slick.parent.di.ComponentApp;
+import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
+import com.github.pedramrn.slick.parent.di.ModuleApp;
+import com.github.pedramrn.slick.parent.di.ModuleDatabase;
+import com.github.pedramrn.slick.parent.di.ModuleNetwork;
+import com.github.pedramrn.slick.parent.di.ModuleScheduler;
+import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -21,27 +24,28 @@ import com.squareup.leakcanary.LeakCanary;
 
 public class App extends Application {
 
-    private static AppComponent appComponent;
-    private static MainComponent mainComponent;
+    private static App app;
+    protected ComponentApp componentApp;
+    private ComponentMain componentMain;
 
     public static boolean loggedIn = false;
     private static final String TAG = App.class.getSimpleName();
 
     @Override
     public void onCreate() {
+        app = ((App) getApplicationContext());
         super.onCreate();
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
-//        if (!BlockCanaryEx.isInSamplerProcess(this)) {
-//            BlockCanaryEx.install(new Config(this));
-//        }
+        //        if (!BlockCanaryEx.isInSamplerProcess(this)) {
+        //            BlockCanaryEx.install(new Config(this));
+        //        }
         final long before = System.currentTimeMillis();
-//        LeakCanary.install(this);
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
+        //        LeakCanary.install(this);
+        componentApp = prepareDi()
                 .build();
         if (BuildConfig.DEBUG) {
             AndroidDevMetrics.initWith(this);
@@ -49,18 +53,27 @@ public class App extends Application {
         Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    @NonNull
+    protected DaggerComponentApp.Builder prepareDi() {
+        return DaggerComponentApp.builder()
+                .moduleApp(new ModuleApp(this))
+                .moduleDatabase(new ModuleDatabase())
+                .moduleNetwork(new ModuleNetwork())
+                .moduleScheduler(new ModuleScheduler());
     }
 
-    public static MainComponent getMainComponent(Router router) {
-        //        if (mainComponent == null) {
-        mainComponent = appComponent.plus().mainModule(new MainModule(router)).build();
-        //        }
-        return mainComponent;
+    public static ComponentMain componentMain() {
+        if (app.componentMain == null) {
+            app.componentMain = app.componentMainBuilder().build();
+        }
+        return app.componentMain;
     }
 
-    public static void disposeMainComponent() {
-        mainComponent = null;
+    protected ComponentMain.Builder componentMainBuilder() {
+        return componentApp.plus().mainModule(new MainModule());
+    }
+
+    public static void disposeComponentMain() {
+        app.componentMain = null;
     }
 }

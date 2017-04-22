@@ -60,7 +60,7 @@ public class FieldUtils {
     }
 
     /**
-     * A convenient wrapper for {@code ReadOnlyField#create(Observable)}
+     * A convenient wrapper for {@code ReadOnlyField#componentMainBuilder(Observable)}
      * @return DataBinding field created from the specified Observable
      */
     @NonNull

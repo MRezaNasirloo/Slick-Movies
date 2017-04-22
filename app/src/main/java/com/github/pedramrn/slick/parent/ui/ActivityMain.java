@@ -50,7 +50,7 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if (isFinishing()) {
-            App.disposeMainComponent();
+            App.disposeComponentMain();
         }
         super.onDestroy();
     }

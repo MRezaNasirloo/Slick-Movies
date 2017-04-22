@@ -1,38 +1,31 @@
 package com.github.pedramrn.slick.parent.ui.popular;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.domain.model.User;
 import com.github.slick.Presenter;
-import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxCompoundButton;
-import com.jakewharton.rxbinding2.widget.RxTextView;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.Completable;
 import io.reactivex.CompletableSource;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Single;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.subjects.BehaviorSubject;
+
+import static android.widget.CompoundButton.OnCheckedChangeListener;
+import static com.github.pedramrn.slick.parent.App.componentMain;
+import static com.github.pedramrn.slick.parent.R.id;
+import static com.github.pedramrn.slick.parent.R.id.checkBox_data_binding;
+import static com.github.pedramrn.slick.parent.R.layout;
+import static com.github.pedramrn.slick.parent.R.layout.controller_popular;
+import static com.github.pedramrn.slick.parent.ui.popular.ControllerPopular_Slick.bind;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -53,12 +46,12 @@ public class ControllerPopular extends Controller implements ViewPopular {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        App.getMainComponent(getRouter()).inject(this);
-        ControllerPopular_Slick.bind(this);
-        final View view = inflater.inflate(R.layout.controller_popular, container, false);
+        componentMain().inject(this);
+        bind(this);
+        final View view = inflater.inflate(controller_popular, container, false);
 
-        final CheckBox checkBoxDataBinding = (CheckBox) view.findViewById(R.id.checkBox_data_binding);
-        checkBoxDataBinding.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox checkBoxDataBinding = (CheckBox) view.findViewById(checkBox_data_binding);
+        checkBoxDataBinding.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 presenter.getUser("joe").take(1).flatMapCompletable(new Function<User, CompletableSource>() {

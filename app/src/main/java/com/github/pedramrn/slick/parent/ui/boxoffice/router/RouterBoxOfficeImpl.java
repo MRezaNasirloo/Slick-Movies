@@ -67,13 +67,13 @@ public class RouterBoxOfficeImpl implements RouterBoxOffice {
                                                 .map(new Function<MovieOmdb, MovieItem>() {
                                                     @Override
                                                     public MovieItem apply(@NonNull MovieOmdb movieOmdb) throws Exception {
-                                                        return MovieItem.create(movieOmdb.title, boxOfficeItem.revenue.toString(), movieOmdb.poster,
-                                                                movieOmdb.metascore,
-                                                                movieOmdb.imdbRating, movieOmdb.imdbVotes, movieOmdb.rated, movieOmdb.runtime,
-                                                                movieOmdb.genre,
-                                                                movieOmdb.director,
-                                                                movieOmdb.writer, movieOmdb.actors, movieOmdb.plot, movieOmdb.production,
-                                                                movieOmdb.imdbID,
+                                                        return MovieItem.create(movieOmdb.title(), boxOfficeItem.revenue.toString(), movieOmdb.poster(),
+                                                                movieOmdb.metascore(),
+                                                                movieOmdb.imdbRating(), movieOmdb.imdbVotes(), movieOmdb.rated(), movieOmdb.runtime(),
+                                                                movieOmdb.genre(),
+                                                                movieOmdb.director(),
+                                                                movieOmdb.writer(), movieOmdb.actors(), movieOmdb.plot(), movieOmdb.production(),
+                                                                movieOmdb.imdbID(),
                                                                 boxOfficeItem.movie.ids.trakt);
                                                     }
                                                 });

@@ -1,8 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.main.di;
 
-import com.bluelinelabs.conductor.Router;
-
-import java.util.UUID;
+import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
+import com.github.pedramrn.slick.parent.ui.android.ImageLoaderPicassoImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,9 +11,15 @@ import dagger.Provides;
  *         Created on: 2017-03-01
  */
 @Module
+@ControllerScope
 public class MainModule {
 
-    private final Router router;
+    @Provides
+    public ImageLoader imageLoader() {
+        return new ImageLoaderPicassoImpl();
+    }
+
+    /*private final Router router;
 
     public MainModule(Router router) {
         this.router = router;
@@ -29,5 +34,5 @@ public class MainModule {
     @Provides
     public Router getRouter() {
         return router;
-    }
+    }*/
 }
