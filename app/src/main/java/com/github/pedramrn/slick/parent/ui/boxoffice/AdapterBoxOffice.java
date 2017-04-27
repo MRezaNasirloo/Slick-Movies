@@ -1,21 +1,18 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
-import com.squareup.picasso.Picasso;
+import com.github.pedramrn.slick.parent.ui.custom.VerticalMovingStyle;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +28,7 @@ import io.reactivex.disposables.Disposable;
  */
 
 public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolder> implements Observer<List<MovieItem>> {
+
     private static final String TAG = AdapterBoxOffice.class.getSimpleName();
     private final CompositeDisposable disposable;
     private static ImageLoader imageLoader;
@@ -45,6 +43,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final RowBoxOfficeBinding binding = RowBoxOfficeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        binding.imageView.setParallaxStyles(new VerticalMovingStyle(0.1f));
         return new ViewHolder(binding);
     }
 
@@ -52,13 +51,8 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.binding.setVariable(BR.vm, movieItems.get(position));
         holder.binding.setRank(movieItems.get(position).rank(position));
-        holder.binding.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(holder.binding.getRoot().getContext(), holder.getAdapterPosition() + " clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
+
 
     @Override
     public long getItemId(int position) {

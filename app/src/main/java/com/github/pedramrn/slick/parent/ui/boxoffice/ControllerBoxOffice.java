@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoaderPicassoImpl;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
+import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

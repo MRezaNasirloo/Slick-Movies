@@ -38,13 +38,13 @@ public class ControllerBoxOfficeTest {
 
 
         onView(withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(0, R.id.textView_score_imdb))
+                .atPositionOnView(0, R.id.textView_title))
                 .check(matches(withText("6.1")));
 
         onView(recyclerView).perform(RecyclerViewActions.scrollToPosition(7));
 
         onView(withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(7, R.id.textView_score_imdb))
+                .atPositionOnView(7, R.id.textView_title))
                 .check(matches(withText("6.1")));
 
         //checks more items loaded at the end of list

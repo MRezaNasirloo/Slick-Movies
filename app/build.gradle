@@ -152,5 +152,6 @@ dependencies {
     //views
     compile 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.1-rc1'
     compile 'com.github.varunest:sparkbutton:1.0.5'
+    compile 'com.gjiazhe:scrollparallaximageview:1.0'
 
 }
