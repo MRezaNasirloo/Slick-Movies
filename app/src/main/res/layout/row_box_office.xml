@@ -10,6 +10,11 @@
             name="vm"
             type="com.github.pedramrn.slick.parent.domain.model.MovieItem"
             />
+
+        <variable
+            name="rank"
+            type="String"
+            />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -38,12 +43,13 @@
             android:id="@+id/footer"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/gradient_shadow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline_footer"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
             />
 
         <TextView
@@ -51,11 +57,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:drawablePadding="8dp"
             android:text="@{vm.name()}"
             android:textSize="30sp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline_footer"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
             tools:text="@string/place_holder_tittle"
             />
 
@@ -77,8 +84,8 @@
 
         <ImageView
             android:id="@+id/imageView_logo_imdb"
-            android:layout_width="32dp"
-            android:layout_height="16dp"
+            android:layout_width="36dp"
+            android:layout_height="0dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="2.63"
             android:contentDescription="@string/logo_imdb"
@@ -109,6 +116,57 @@
             app:layout_constraintGuide_percent="0.65"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="211dp"
+            />
+
+        <com.github.pedramrn.slick.parent.ui.custom.TextViewCompatTint
+            android:id="@+id/textView_runtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_time_black_24dp"
+            android:gravity="center"
+            android:text="@{vm.runtime()}"
+            android:textSize="16sp"
+            app:drawableTint="#CCC"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_score_imdb"
+            app:layout_constraintRight_toLeftOf="@+id/imageView_logo_imdb"
+            tools:text="130 min"
+            />
+
+        <com.github.pedramrn.slick.parent.ui.custom.TextViewCompatTint
+            android:id="@+id/textView_revenue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:drawableStart="@drawable/ic_money_black_24dp"
+            android:gravity="center"
+            android:text="@{vm.revenue()}"
+            android:textSize="16sp"
+            app:drawableTint="#CCC"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_score_imdb"
+            app:layout_constraintRight_toLeftOf="@+id/textView_runtime"
+            tools:text="234.2 m"
+            />
+
+        <TextView
+            android:id="@+id/textView_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{rank}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView_revenue"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title"
+            app:layout_constraintVertical_bias="0.666"
+            tools:text="#1"
             />
 
     </android.support.constraint.ConstraintLayout>

@@ -51,6 +51,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.binding.setVariable(BR.vm, movieItems.get(position));
+        holder.binding.setRank(movieItems.get(position).rank(position));
         holder.binding.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
