@@ -1,6 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 
@@ -13,12 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.pedramrn.slick.parent.utils.recyclerview.RecyclerViewItemCountAssertion.withItemCount;
 import static com.github.pedramrn.slick.parent.utils.recyclerview.TestUtils.withRecyclerView;
-import static org.junit.Assert.*;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -33,22 +33,41 @@ public class ControllerBoxOfficeTest {
     @Test
     public void useAppContext() throws Exception {
 
+        //        rule.launchActivity(null);
+
         Matcher<View> recyclerView = withId(R.id.recycler_view);
         onView(recyclerView).check(withItemCount(8));
 
 
         onView(withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(0, R.id.textView_title))
-                .check(matches(withText("6.1")));
+                .check(matches(withText("Beauty and the Beast")));
 
-        onView(recyclerView).perform(RecyclerViewActions.scrollToPosition(7));
+        onView(withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(0, R.id.textView_rank))
+                .check(matches(withText("#1")));
+
+        onView(recyclerView).perform(scrollToPosition(5)).perform(click());
+
+
+        onView(withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(5, R.id.textView_rank))
+                .check(matches(withText("#6")));
+
+        onView(recyclerView).perform(scrollToPosition(7)).perform(click());
 
         onView(withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(7, R.id.textView_title))
-                .check(matches(withText("6.1")));
+                .check(matches(withText("Beauty and the Beast")));
 
         //checks more items loaded at the end of list
         onView(recyclerView).check(withItemCount(10));
+
+        onView(recyclerView).perform(scrollToPosition(9)).perform(click());
+
+        onView(withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(9, R.id.textView_rank))
+                .check(matches(withText("#10")));
     }
 
 }

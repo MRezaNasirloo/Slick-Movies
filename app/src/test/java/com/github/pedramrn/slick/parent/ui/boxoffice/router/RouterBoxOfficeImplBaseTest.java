@@ -2,9 +2,11 @@ package com.github.pedramrn.slick.parent.ui.boxoffice.router;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
+import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.MovieOmdb;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -40,7 +42,7 @@ public class RouterBoxOfficeImplBaseTest {
         final InputStream inputStreamTrakt = ClassLoader.getSystemResourceAsStream("api_trakt.json");
         final InputStream inputStreamOmdb = ClassLoader.getSystemResourceAsStream("api_omdb.json");
 
-        final Gson gson = new Gson();
+        final Gson gson = new GsonBuilder().registerTypeAdapterFactory(TypeAdapterFactoryGson.create()).create();
         final List<BoxOfficeItem> boxOfficeItems = gson.fromJson(new JsonReader(new InputStreamReader(inputStreamTrakt)), type);
         final MovieOmdb movieOmdb = gson.fromJson(new JsonReader(new InputStreamReader(inputStreamOmdb)), MovieOmdb.class);
 
