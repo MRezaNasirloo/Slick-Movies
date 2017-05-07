@@ -63,6 +63,8 @@ dependencies {
 
     testCompile 'org.mockito:mockito-core:2.7.22'
     androidTestCompile 'org.mockito:mockito-android:2.7.22'
+    debugCompile 'org.mockito:mockito-core:2.7.22'
+    debugCompile 'org.mockito:mockito-android:2.7.22'
     androidTestCompile 'com.novoda:espresso-support-extras:0.0.3'
     debugCompile 'com.novoda:espresso-support-extras:0.0.3'
 

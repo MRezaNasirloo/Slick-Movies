@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.utils.di;
+package com.github.pedramrn.slick.parent.di;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -82,9 +82,14 @@ public class ApiMocker {
     }
 
     public Observable<MovieOmdb> movieOmdb() {
-        MovieOmdb movieOmdb = ApiMocker.movieOmdb.toBuilder().imdbID(UUID.randomUUID().toString()).build();
-
-        return Observable.just(movieOmdb);
+        return Observable.just(getMovieOmdb());
     }
 
+    public List<BoxOfficeItem> getBoxOfficeItems() {
+        return boxOfficeItems;
+    }
+
+    public MovieOmdb getMovieOmdb() {
+        return movieOmdb.toBuilder().imdbID(UUID.randomUUID().toString()).build();
+    }
 }

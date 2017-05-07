@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
+import com.github.pedramrn.slick.parent.di.ApiMocker;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleNetwork;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
