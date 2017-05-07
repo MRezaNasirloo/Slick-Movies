@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent;
 
 import android.app.Application;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -9,7 +10,7 @@ import com.github.pedramrn.slick.parent.di.ComponentApp;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleApp;
 import com.github.pedramrn.slick.parent.di.ModuleDatabase;
-import com.github.pedramrn.slick.parent.di.ModuleNetwork;
+import com.github.pedramrn.slick.parent.di.ModuleNetworkMock;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
@@ -51,6 +52,8 @@ public class App extends Application {
             AndroidDevMetrics.initWith(this);
         }
         Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
+
+        StrictMode.enableDefaults();
     }
 
     @NonNull
@@ -58,7 +61,7 @@ public class App extends Application {
         return DaggerComponentApp.builder()
                 .moduleApp(new ModuleApp(this))
                 .moduleDatabase(new ModuleDatabase())
-                .moduleNetwork(new ModuleNetwork())
+                .moduleNetwork(new ModuleNetworkMock(getApplicationContext()))
                 .moduleScheduler(new ModuleScheduler());
     }
 
