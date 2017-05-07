@@ -1,8 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
-import com.github.pedramrn.slick.parent.ui.android.ImageLoaderPicassoImpl;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
-import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -101,6 +99,13 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
     @Override
     public void render(ViewStateBoxOffice viewState) {
         Log.d(TAG, "render() called with: viewState = [" + viewState + "]");
+    }
+
+    @Override
+    public void showSnackBar(String s) {
+        if (getView() != null) {
+            Snackbar.make(getView(), s, Snackbar.LENGTH_LONG).show();
+        }
     }
 
 

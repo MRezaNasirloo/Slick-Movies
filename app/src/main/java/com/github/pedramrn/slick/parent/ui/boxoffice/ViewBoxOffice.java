@@ -7,4 +7,6 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 public interface ViewBoxOffice {
     void render(ViewStateBoxOffice viewState);
+
+    void showSnackBar(String s);
 }

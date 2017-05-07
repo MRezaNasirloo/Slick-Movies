@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -9,6 +10,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
+import retrofit2.HttpException;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -48,6 +50,11 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
+        if (e instanceof HttpException) {
+            if (((HttpException) e).code() == HttpURLConnection.HTTP_FORBIDDEN) {
+                view.showSnackBar("Network field. Reset your router, ip is blocked.");
+            }
+        }
         //        view.onError(e);
     }
 
