@@ -1,18 +1,21 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
+import android.content.res.Resources;
 import android.databinding.BindingAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.databinding.library.baseAdapters.BR;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
-import com.github.pedramrn.slick.parent.ui.custom.VerticalMovingStyle;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.Objects;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -32,27 +36,48 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     private static final String TAG = AdapterBoxOffice.class.getSimpleName();
     private final CompositeDisposable disposable;
     private static ImageLoader imageLoader;
+    private final Resources resources;
     private List<MovieItem> movieItems = Collections.emptyList();
+    private final PublishSubject<Pair<MovieItem, Integer>> command;
 
-    public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice, ImageLoader imageLoader) {
+    public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice, ImageLoader imageLoader, Resources resources) {
         this.disposable = disposable;
         this.imageLoader = imageLoader;
+        this.resources = resources;
         viewModelBoxOffice.boxOfficeList().subscribe(this);
+        command = PublishSubject.create();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final RowBoxOfficeBinding binding = RowBoxOfficeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        binding.imageView.setParallaxStyles(new VerticalMovingStyle(0.1f));
+        //        binding.imageView.setParallaxStyles(new VerticalMovingStyle(0.1f));
         return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final String transitionName = resources.getString(R.string.transition_poster, position);
+
         holder.binding.setVariable(BR.vm, movieItems.get(position));
         holder.binding.setRank(movieItems.get(position).rank(position));
+        //        holder.binding.textViewTitle.setText(movieItems.get(position).name());
+        imageLoader.with(holder.binding.imageView.getContext().getApplicationContext())
+                .load(movieItems.get(position).poster()).into(holder.binding.imageView);
+        holder.binding.imageView.setTransitionName(transitionName);
+        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = holder.getAdapterPosition();
+                Pair<MovieItem, Integer> pair = new Pair<>(movieItems.get(pos), pos);
+                command.onNext(pair);
+            }
+        });
     }
 
+    public PublishSubject<Pair<MovieItem, Integer>> streamCommand() {
+        return command;
+    }
 
     @Override
     public long getItemId(int position) {

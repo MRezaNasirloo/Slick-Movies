@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
+import android.os.Parcelable;
+
 import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
 import com.google.auto.value.AutoValue;
 
@@ -10,7 +12,7 @@ import java.util.Locale;
  *         Created on: 2017-04-11
  */
 @AutoValue
-public abstract class MovieItem {
+public abstract class MovieItem implements Parcelable {
 
     public String rank(int position) {
         return String.format(Locale.getDefault(), "#%s", position + 1);

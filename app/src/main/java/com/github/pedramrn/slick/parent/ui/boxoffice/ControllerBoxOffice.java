@@ -4,13 +4,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
+import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
+import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 
@@ -21,6 +26,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 
 import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
@@ -62,8 +68,19 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), VERTICAL, false));
         ViewModelBoxOffice viewModel = new ViewModelBoxOffice(disposable, presenter, this);
-        AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel, imageLoader);
+        AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel, imageLoader, getResources());
         binding.recyclerView.setAdapter(adapter);
+
+        adapter.streamCommand().subscribe(new Consumer<Pair<MovieItem, Integer>>() {
+            @Override
+            public void accept(@io.reactivex.annotations.NonNull Pair<MovieItem, Integer> pair) throws Exception {
+                RouterTransaction transaction = RouterTransaction.with(new ControllerDetails(pair.first, pair.second))
+                        .pushChangeHandler(new ArcFadeMoveChangeHandler())
+                        .popChangeHandler(new ArcFadeMoveChangeHandler());
+
+                getRouter().pushController(transaction);
+            }
+        });
 
         final Observable<Integer> trigger = scrollEvents(binding.recyclerView)
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
