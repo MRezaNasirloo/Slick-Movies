@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.di;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
+import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
@@ -59,6 +60,26 @@ public class ModuleNetwork {
     public ApiOmdb omdbClient(Retrofit.Builder builder) {
         return builder.baseUrl("http://www.omdbapi.com").build()
                 .create(ApiOmdb.class);
+    }
+
+    @Provides
+    public ApiTmdb tmdbClient(OkHttpClient okHttpClient, Gson gson) {
+        final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                final Request request = chain.request()
+                        .newBuilder()
+                        .url(chain.request().url().url().toString() + "api_key=413d5af6c55f8b73b74d947fa6542ba1")
+                        .build();
+                return chain.proceed(request);
+            }
+        }).build();
+        return new Retrofit.Builder()
+                .client(httpClient)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl("https://api.themoviedb.org/3").build()
+                .create(ApiTmdb.class);
     }
 
     @Provides

@@ -1,9 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice.router;
 
-import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
+import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
-import com.github.pedramrn.slick.parent.datasource.network.models.MovieOmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.MovieTmdb;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 
@@ -16,7 +16,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
@@ -25,17 +24,17 @@ import io.reactivex.functions.Function;
  *         Created on: 2017-04-10
  */
 
-public class RouterBoxOfficeImpl implements RouterBoxOffice {
+public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
 
     private final ApiTrakt apiTrakt;
-    private final ApiOmdb apiOmdb;
+    private final ApiTmdb apiTmdb;
     private final Scheduler io;
-    private static final String TAG = RouterBoxOfficeImpl.class.getSimpleName();
+    private static final String TAG = RouterBoxOfficeTmdbImpl.class.getSimpleName();
 
     @Inject
-    public RouterBoxOfficeImpl(ApiTrakt apiTrakt, ApiOmdb apiOmdb, @Named("io") Scheduler io) {
+    public RouterBoxOfficeTmdbImpl(ApiTrakt apiTrakt, ApiTmdb apiTmdb, @Named("io") Scheduler io) {
         this.apiTrakt = apiTrakt;
-        this.apiOmdb = apiOmdb;
+        this.apiTmdb = apiTmdb;
         this.io = io;
     }
 
@@ -62,18 +61,18 @@ public class RouterBoxOfficeImpl implements RouterBoxOffice {
                                 .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieItem>>() {
                                     @Override
                                     public ObservableSource<MovieItem> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
-                                        return apiOmdb.get(boxOfficeItem.movie.ids.imdb)
+                                        return apiTmdb.get(boxOfficeItem.movie.ids.tmdb.toString())
                                                 .subscribeOn(io)
-                                                .map(new Function<MovieOmdb, MovieItem>() {
+                                                .map(new Function<MovieTmdb, MovieItem>() {
                                                     @Override
-                                                    public MovieItem apply(@NonNull MovieOmdb movieOmdb) throws Exception {
-                                                        return MovieItem.create(movieOmdb.title(), boxOfficeItem.revenue.toString(), movieOmdb.poster(),
-                                                                movieOmdb.metascore(),
-                                                                movieOmdb.imdbRating(), movieOmdb.imdbVotes(), movieOmdb.rated(), movieOmdb.runtime(),
-                                                                movieOmdb.genre(),
-                                                                movieOmdb.director(),
-                                                                movieOmdb.writer(), movieOmdb.actors(), movieOmdb.plot(), movieOmdb.production(),
-                                                                movieOmdb.released(), movieOmdb.imdbID(), boxOfficeItem.movie.ids.trakt);
+                                                    public MovieItem apply(@NonNull MovieTmdb movieTmdb) throws Exception {
+                                                        return MovieItem.create(movieTmdb.title(), boxOfficeItem.revenue.toString(),
+                                                                movieTmdb.posterPath(), "N/A",
+                                                                "N/A", "N/A", "", movieTmdb.runtime() + "min",
+                                                                movieTmdb.genres().get(0).name(),
+                                                                "", "", "", movieTmdb.overview(),
+                                                                movieTmdb.productionCompanies().get(0).name(),
+                                                                movieTmdb.releaseDate(), movieTmdb.imdbId(), boxOfficeItem.movie.ids.trakt);
                                                     }
                                                 });
                                     }

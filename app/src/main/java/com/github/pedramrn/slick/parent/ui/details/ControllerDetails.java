@@ -3,7 +3,6 @@ package com.github.pedramrn.slick.parent.ui.details;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +43,16 @@ public class ControllerDetails extends Controller {
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
         String transitionName = getResources().getString(R.string.transition_poster, pos);
-        binding.imageViewHeader.setTransitionName(transitionName);
-        Picasso.with(getApplicationContext()).load(movieItem.poster()).into(binding.imageViewHeader);
+        binding.imageViewIcon.setTransitionName(transitionName);
+        binding.textViewTitle.setText(movieItem.name());
+        binding.textViewGenre.setText(movieItem.genre());
+        binding.textViewPlot.setText(movieItem.plot());
+        binding.textViewRelease.setText(movieItem.released());
+        binding.textViewScore.setText(movieItem.scoreImdb());
+        binding.textViewRuntime.setText(movieItem.runtime());
+        binding.textViewRated.setText(movieItem.certification());
+        Picasso.with(getApplicationContext()).load(movieItem.poster()).noFade().into(binding.imageViewIcon);
+        Picasso.with(getApplicationContext()).load(movieItem.poster()).noFade().into(binding.imageViewHeader);
 
         return binding.getRoot();
     }

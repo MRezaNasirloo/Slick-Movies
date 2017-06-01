@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <ScrollView
@@ -19,57 +19,185 @@
             <ImageView
                 android:id="@+id/imageView_header"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/ic_launcher"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="8dp"
+                tools:ignore="ContentDescription"
+                tools:src="@mipmap/ic_launcher"
                 />
 
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline2"
+            <View
+                android:id="@+id/view"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:background="#70000000"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/imageView_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="98dp"
+                android:scaleType="fitEnd"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView_header"
+                tools:ignore="ContentDescription"
+                tools:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:id="@+id/textView_plot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.5"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="8dp"
+                android:textColor="#434343"
+                android:textSize="18sp"
+                android:visibility="visible"
+                app:layout_constraintHorizontal_bias="0.437"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+                tools:text="Pol, a bene liberi.Cur planeta favere?Caculas sunt urias de placidus musa.Devirginatos sunt orexiss de dexter acipenser.Nuclear vexatum iacere de raptus species, aperto planeta!Magnum vitas ducunt ad heuretes."
                 />
 
             <TextView
-                android:id="@+id/textView3"
-                android:layout_width="0dp"
+                android:id="@+id/textView_title"
+                style="@style/DetailsWhiteText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@+id/view"
+                app:layout_constraintHorizontal_bias="0.029"
+                app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView_icon"
+                app:layout_constraintVertical_bias="0.8"
+                tools:text="Title"
+                />
+
+            <TextView
+                android:id="@+id/textView_genre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView_release"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_header"
+                tools:text="Genre"
+                />
+
+            <TextView
+                android:id="@+id/textView_release"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView_score"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
+                app:layout_constraintRight_toLeftOf="@+id/textView_runtime"
+                app:layout_constraintTop_toBottomOf="@+id/textView_genre"
+                tools:text="27 May 2016"
+                />
+
+            <TextView
+                android:id="@+id/textView_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_icon"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
+                app:layout_constraintRight_toLeftOf="@+id/textView_logo_imdb"
+                app:layout_constraintTop_toBottomOf="@+id/textView_release"
+                tools:text="7.5/10"
+                />
+
+            <TextView
+                android:id="@+id/textView_logo_imdb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/oval"
+                android:gravity="center"
+                android:text=" IMDB "
+                android:textColor="#000"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_score"
+                app:layout_constraintLeft_toRightOf="@+id/textView_score"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="HardcodedText"
+                />
+
+            <TextView
+                android:id="@+id/textView_runtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_release"
+                app:layout_constraintLeft_toRightOf="@+id/textView_release"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="129min"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Lamia cresceres, tanquam grandis messor.Hercle, secula alter!, salvus heuretes!Torquis volares, tanquam mirabilis valebat.Sunt capioes perdere secundus, albus nuclear vexatum iacerees.Ubi est regius nomen?Cum fluctui resistere, omnes devirginatoes transferre albus, clemens fugaes."
-                android:textColor="@color/color_gray"
-                android:textSize="32sp"
+                android:orientation="horizontal"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView_header"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_icon"
                 />
 
             <TextView
-                android:id="@+id/textView4"
-                android:layout_width="0dp"
+                android:id="@+id/textView_rated"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Calcarias studere in germanus lutetia!Accentor barbatus particula est.Homos cantare in divio!Nunquam captis diatria.Bassus luras ducunt ad epos.Adelphiss trabem, tanquam magnum fermium.Eheu.Bi-color bullas ducunt ad medicina."
-                android:textColor="@color/color_gray"
-                android:textSize="32sp"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:background="@drawable/oval"
+                android:backgroundTint="#2ca0ff"
+                android:textColor="#ffffff"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_logo_imdb"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintLeft_toRightOf="@+id/textView_logo_imdb"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                tools:text=" PG-13 "
                 />
-
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

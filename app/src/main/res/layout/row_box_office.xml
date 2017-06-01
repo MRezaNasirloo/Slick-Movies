@@ -54,6 +54,7 @@
 
         <TextView
             android:id="@+id/textView_title"
+            style="@style/BoxOffice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -72,6 +73,7 @@
 
         <TextView
             android:id="@+id/textView_rank"
+            style="@style/BoxOffice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
