@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
+import com.github.pedramrn.slick.parent.domain.model.MovieItem;
+
 import io.reactivex.Observable;
 
 /**
@@ -9,5 +11,5 @@ import io.reactivex.Observable;
 
 public interface RouterMovieDetails {
 
-//    Observable<Movi>
+//    Observable<MovieItem>
 }

@@ -14,6 +14,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
+import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
 import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.slick.Presenter;
@@ -71,9 +72,9 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
         AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel, imageLoader, getResources());
         binding.recyclerView.setAdapter(adapter);
 
-        adapter.streamCommand().subscribe(new Consumer<Pair<MovieItem, Integer>>() {
+        adapter.streamCommand().subscribe(new Consumer<Pair<Movie, Integer>>() {
             @Override
-            public void accept(@io.reactivex.annotations.NonNull Pair<MovieItem, Integer> pair) throws Exception {
+            public void accept(@io.reactivex.annotations.NonNull Pair<Movie, Integer> pair) throws Exception {
                 RouterTransaction transaction = RouterTransaction.with(new ControllerDetails(pair.first, pair.second))
                         .pushChangeHandler(new ArcFadeMoveChangeHandler())
                         .popChangeHandler(new ArcFadeMoveChangeHandler());

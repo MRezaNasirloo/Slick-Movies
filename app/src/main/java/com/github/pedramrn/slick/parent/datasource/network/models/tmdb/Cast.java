@@ -34,10 +34,10 @@ public abstract class Cast {
     public abstract Integer order();
 
     @SerializedName("profile_path")
-    public abstract Object profilePath();
+    public abstract String profilePath();
 
     public static Cast create(Integer castId, String character, String creditId, Integer gender, Integer id, String name, Integer order,
-                              Object profilePath) {
+                              String profilePath) {
         return builder()
                 .castId(castId)
                 .character(character)
@@ -70,7 +70,7 @@ public abstract class Cast {
 
         public abstract Builder order(Integer order);
 
-        public abstract Builder profilePath(Object profilePath);
+        public abstract Builder profilePath(String profilePath);
 
         public abstract Cast build();
     }

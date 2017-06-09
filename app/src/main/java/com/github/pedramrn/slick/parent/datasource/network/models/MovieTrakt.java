@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  *         Created on: 2017-03-09
  */
 
-public class Movie {
+public class MovieTrakt {
 
     @SerializedName("title")
     @Expose
@@ -22,7 +22,7 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" +
+        return "MovieTrakt{" +
                 "title='" + title + '\'' +
                 ", year=" + year +
                 ", ids=" + ids +

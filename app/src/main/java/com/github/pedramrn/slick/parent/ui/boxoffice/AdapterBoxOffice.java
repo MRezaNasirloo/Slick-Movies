@@ -16,6 +16,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
+import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,14 +32,14 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-04-13
  */
 
-public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolder> implements Observer<List<MovieItem>> {
+public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolder> implements Observer<List<Movie>> {
 
     private static final String TAG = AdapterBoxOffice.class.getSimpleName();
     private final CompositeDisposable disposable;
     private static ImageLoader imageLoader;
     private final Resources resources;
-    private List<MovieItem> movieItems = Collections.emptyList();
-    private final PublishSubject<Pair<MovieItem, Integer>> command;
+    private List<Movie> movieItems = Collections.emptyList();
+    private final PublishSubject<Pair<Movie, Integer>> command;
 
     public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice, ImageLoader imageLoader, Resources resources) {
         this.disposable = disposable;
@@ -69,13 +70,13 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
             @Override
             public void onClick(View v) {
                 int pos = holder.getAdapterPosition();
-                Pair<MovieItem, Integer> pair = new Pair<>(movieItems.get(pos), pos);
+                Pair<Movie, Integer> pair = new Pair<>(movieItems.get(pos), pos);
                 command.onNext(pair);
             }
         });
     }
 
-    public PublishSubject<Pair<MovieItem, Integer>> streamCommand() {
+    public PublishSubject<Pair<Movie, Integer>> streamCommand() {
         return command;
     }
 
@@ -95,7 +96,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     }
 
     @Override
-    public void onNext(final List<MovieItem> newMovieItems) {
+    public void onNext(final List<Movie> newMovies) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
@@ -104,20 +105,20 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
             @Override
             public int getNewListSize() {
-                return newMovieItems.size();
+                return newMovies.size();
             }
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return Objects.equals(movieItems.get(oldItemPosition).imdb(), newMovieItems.get(newItemPosition).imdb());
+                return Objects.equals(movieItems.get(oldItemPosition).imdb(), newMovies.get(newItemPosition).imdb());
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return movieItems.get(oldItemPosition).hashCode() == newMovieItems.get(newItemPosition).hashCode();
+                return movieItems.get(oldItemPosition).hashCode() == newMovies.get(newItemPosition).hashCode();
             }
         });
-        this.movieItems = newMovieItems;
+        this.movieItems = newMovies;
         diffResult.dispatchUpdatesTo(this);
 
     }

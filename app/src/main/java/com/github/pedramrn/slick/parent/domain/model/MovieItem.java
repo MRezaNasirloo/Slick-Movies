@@ -1,22 +1,14 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
-import android.os.Parcelable;
-
 import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
 import com.google.auto.value.AutoValue;
-
-import java.util.Locale;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-11
  */
 @AutoValue
-public abstract class MovieItem implements Parcelable {
-
-    public String rank(int position) {
-        return String.format(Locale.getDefault(), "#%s", position + 1);
-    }
+public abstract class MovieItem {
 
     public abstract String name();
 
@@ -30,7 +22,7 @@ public abstract class MovieItem implements Parcelable {
 
     public abstract String votesImdb();
 
-    protected abstract String rated();
+    public abstract String rated();
 
     public abstract String runtime();
 
@@ -52,10 +44,6 @@ public abstract class MovieItem implements Parcelable {
     public abstract String imdb();
 
     public abstract int trakt();
-
-    public String certification() {
-        return " " + rated() + " ";
-    }
 
     public static MovieItem create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb, String rated,
                                    String runtime, String genre, String director, String writer, String actors, String plot, String production,

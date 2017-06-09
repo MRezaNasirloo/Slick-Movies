@@ -91,18 +91,17 @@ public abstract class MovieTmdb {
     public abstract Integer voteCount();
 
     @SerializedName("credits")
-    public abstract Integer credits();
+    public abstract Credit credits();
 
     @SerializedName("images")
-    public abstract Integer images();
+    public abstract Image images();
 
     public static MovieTmdb create(Boolean adult, String backdropPath, Object belongsToCollection, Integer budget, List<Genre> genres,
                                    String homepage,
                                    Integer id, String imdbId, String originalLanguage, String originalTitle, String overview, Float popularity,
                                    String posterPath, List<ProductionCompany> productionCompanies, List<ProductionCountry> productionCountries,
                                    String releaseDate, Integer revenue, Integer runtime, List<SpokenLanguage> spokenLanguages, String status,
-                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Integer credits,
-                                   Integer images) {
+                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Credit credits, Image images) {
         return builder()
                 .adult(adult)
                 .backdropPath(backdropPath)
@@ -190,9 +189,9 @@ public abstract class MovieTmdb {
 
         public abstract Builder voteCount(Integer voteCount);
 
-        public abstract Builder credits(Integer credits);
+        public abstract Builder credits(Credit credits);
 
-        public abstract Builder images(Integer images);
+        public abstract Builder images(Image images);
 
         public abstract MovieTmdb build();
     }

@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
-import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -22,9 +22,9 @@ import com.squareup.picasso.Picasso;
 public class ControllerDetails extends Controller {
 
     private int pos;
-    private MovieItem movieItem;
+    private Movie movieItem;
 
-    public ControllerDetails(MovieItem movieItem, int position) {
+    public ControllerDetails(Movie movieItem, int position) {
         this(new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movieItem)
                 .putInt("POS", position).build());

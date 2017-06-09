@@ -14,7 +14,7 @@ public class BoxOfficeItem {
     public Integer revenue;
     @SerializedName("movie")
     @Expose
-    public Movie movie;
+    public MovieTrakt movie;
 
     @Override
     public String toString() {
