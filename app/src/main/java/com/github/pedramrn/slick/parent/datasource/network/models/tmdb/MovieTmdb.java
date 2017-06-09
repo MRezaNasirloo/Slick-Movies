@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.datasource.network.models;
+package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
@@ -90,12 +90,19 @@ public abstract class MovieTmdb {
     @SerializedName("vote_count")
     public abstract Integer voteCount();
 
+    @SerializedName("credits")
+    public abstract Integer credits();
+
+    @SerializedName("images")
+    public abstract Integer images();
+
     public static MovieTmdb create(Boolean adult, String backdropPath, Object belongsToCollection, Integer budget, List<Genre> genres,
                                    String homepage,
                                    Integer id, String imdbId, String originalLanguage, String originalTitle, String overview, Float popularity,
                                    String posterPath, List<ProductionCompany> productionCompanies, List<ProductionCountry> productionCountries,
                                    String releaseDate, Integer revenue, Integer runtime, List<SpokenLanguage> spokenLanguages, String status,
-                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount) {
+                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Integer credits,
+                                   Integer images) {
         return builder()
                 .adult(adult)
                 .backdropPath(backdropPath)
@@ -122,11 +129,13 @@ public abstract class MovieTmdb {
                 .video(video)
                 .voteAverage(voteAverage)
                 .voteCount(voteCount)
+                .credits(credits)
+                .images(images)
                 .build();
     }
 
     public static Builder builder() {
-        return new AutoValue_MovieTmdb.Builder();
+        return new $AutoValue_MovieTmdb.Builder();
     }
 
     @AutoValue.Builder
@@ -180,6 +189,10 @@ public abstract class MovieTmdb {
         public abstract Builder voteAverage(Float voteAverage);
 
         public abstract Builder voteCount(Integer voteCount);
+
+        public abstract Builder credits(Integer credits);
+
+        public abstract Builder images(Integer images);
 
         public abstract MovieTmdb build();
     }

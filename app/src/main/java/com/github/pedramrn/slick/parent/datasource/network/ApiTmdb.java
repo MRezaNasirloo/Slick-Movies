@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.datasource.network;
 
-import com.github.pedramrn.slick.parent.datasource.network.models.MovieTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;

@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.datasource.network.models;
+package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
@@ -26,7 +26,7 @@ public abstract class Genre {
 
 
     public static Builder builder() {
-        return new AutoValue_Genre.Builder();
+        return new $AutoValue_Genre.Builder();
     }
 
     @AutoValue.Builder

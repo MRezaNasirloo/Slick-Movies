@@ -3,7 +3,7 @@ package com.github.pedramrn.slick.parent.ui.boxoffice.router;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
-import com.github.pedramrn.slick.parent.datasource.network.models.MovieTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 
