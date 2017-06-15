@@ -67,9 +67,9 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                     @Override
                     public Movie apply(@NonNull MovieItem movieItem) throws Exception {
                         return Movie.create(movieItem.name(), movieItem.revenue(), movieItem.poster(), movieItem.scoreMeta(), movieItem.scoreImdb(),
-                                movieItem.votesImdb(), movieItem.rated(), movieItem.runtime(), movieItem.name(), movieItem.director(), movieItem.writer(),
-                                movieItem.actors(), movieItem.plot(), movieItem.production(), movieItem.released(), movieItem.imdb(),
-                                movieItem.trakt());
+                                movieItem.votesImdb(), movieItem.rated(), movieItem.runtime(), movieItem.genre(), movieItem.director(),
+                                movieItem.writer(), movieItem.actors(), movieItem.plot(), movieItem.production(), movieItem.released(),
+                                movieItem.imdb(), movieItem.trakt(), movieItem.tmdb());
                     }
                 }).map(new Function<Movie, List<Movie>>() {
                     @Override

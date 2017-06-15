@@ -12,7 +12,7 @@ import java.util.List;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class Image {
+public abstract class ImageTmdb {
 
 
     @SerializedName("id")
@@ -24,7 +24,7 @@ public abstract class Image {
     @SerializedName("posters")
     public abstract List<Poster> posters();
 
-    public static Image create(Integer id, List<Backdrop> backdrops, List<Poster> posters) {
+    public static ImageTmdb create(Integer id, List<Backdrop> backdrops, List<Poster> posters) {
         return builder()
                 .id(id)
                 .backdrops(backdrops)
@@ -33,7 +33,7 @@ public abstract class Image {
     }
 
     public static Builder builder() {
-        return new $AutoValue_Image.Builder();
+        return new AutoValue_ImageTmdb.Builder();
     }
 
     @AutoValue.Builder
@@ -44,10 +44,10 @@ public abstract class Image {
 
         public abstract Builder posters(List<Poster> posters);
 
-        public abstract Image build();
+        public abstract ImageTmdb build();
     }
 
-    public static TypeAdapter<Image> typeAdapter(Gson gson) {
-        return new AutoValue_Image.GsonTypeAdapter(gson);
+    public static TypeAdapter<ImageTmdb> typeAdapter(Gson gson) {
+        return new AutoValue_ImageTmdb.GsonTypeAdapter(gson);
     }
 }

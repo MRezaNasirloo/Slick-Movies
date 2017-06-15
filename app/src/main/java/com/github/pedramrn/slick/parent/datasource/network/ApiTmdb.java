@@ -13,6 +13,6 @@ import retrofit2.http.Path;
 
 public interface ApiTmdb {
 
-    @GET("/movie/{movie_id}")
-    Observable<MovieTmdb> get(@Path("movie_id") String id);
+    @GET("movie/{movie_id}?append_to_response=credits,images")
+    Observable<MovieTmdb> get(@Path("movie_id") Integer id);
 }

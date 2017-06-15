@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.main.di;
 
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
 import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.github.pedramrn.slick.parent.ui.popular.ControllerPopular;
@@ -24,6 +25,8 @@ public interface ComponentMain {
     void inject(ControllerUpComing controllerUpComing);
 
     void inject(ControllerPopular controllerPopular);
+
+    void inject(ControllerDetails controllerDetails);
 
     @Subcomponent.Builder
     interface Builder {

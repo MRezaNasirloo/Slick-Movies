@@ -53,13 +53,15 @@ public abstract class Movie implements Parcelable {
 
     public abstract int trakt();
 
+    public abstract int tmdb();
+
     public String certification(){
      return " " + rated() + " ";
     }
 
     public static Movie create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb, String rated,
                                String runtime, String genre, String director, String writer, String actors, String plot, String production,
-                               String released, String imdb, int trakt) {
+                               String released, String imdb, int trakt, int tmdb) {
         return builder()
                 .name(name)
                 .revenue(revenue)
@@ -78,11 +80,12 @@ public abstract class Movie implements Parcelable {
                 .released(released)
                 .imdb(imdb)
                 .trakt(trakt)
+                .tmdb(tmdb)
                 .build();
     }
 
     public static Builder builder() {
-        return new $$AutoValue_Movie.Builder();
+        return new AutoValue_Movie.Builder();
     }
 
 
@@ -121,6 +124,8 @@ public abstract class Movie implements Parcelable {
         public abstract Builder trakt(int trakt);
 
         public abstract Builder rated(String rated);
+
+        public abstract Builder tmdb(int tmdb);
 
         public abstract Movie build();
     }

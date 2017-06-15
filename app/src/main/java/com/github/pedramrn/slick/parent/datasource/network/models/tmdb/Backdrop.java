@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
+import com.github.pedramrn.slick.parent.domain.SimpleData;
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -10,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class Backdrop {
+public abstract class Backdrop implements SimpleData {
 
 
     @SerializedName("aspect_ratio")
@@ -28,6 +29,11 @@ public abstract class Backdrop {
     @SerializedName("width")
     public abstract Integer width();
 
+    @Override
+    public String get() {
+        return filePath();
+    }
+
     public static Backdrop create(Float aspectRatio, String filePath, Integer height, Object iso6391, Integer voteAverage, Integer voteCount,
                                   Integer width) {
         return builder()
@@ -42,7 +48,7 @@ public abstract class Backdrop {
     }
 
     public static Builder builder() {
-        return new $AutoValue_Backdrop.Builder();
+        return new AutoValue_Backdrop.Builder();
     }
 
     @AutoValue.Builder

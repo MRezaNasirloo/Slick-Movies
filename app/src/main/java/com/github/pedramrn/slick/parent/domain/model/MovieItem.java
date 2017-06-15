@@ -45,11 +45,13 @@ public abstract class MovieItem {
 
     public abstract int trakt();
 
+    public abstract int tmdb();
+
     public static MovieItem create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb, String rated,
                                    String runtime, String genre, String director, String writer, String actors, String plot, String production,
-                                   String released, String imdb, int trakt) {
+                                   String released, String imdb, int trakt, int tmdb) {
         return new AutoValue_MovieItem(name, revenue, poster, scoreMeta, scoreImdb, votesImdb, rated, runtime, genre, director, writer, actors, plot,
-                production, released, imdb, trakt);
+                production, released, imdb, trakt, tmdb);
     }
 
 

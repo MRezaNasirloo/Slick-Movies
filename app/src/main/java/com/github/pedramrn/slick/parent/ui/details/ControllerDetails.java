@@ -8,21 +8,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
+import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
+import com.github.slick.Presenter;
+import com.github.slick.Slick;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-28
  */
 
-public class ControllerDetails extends Controller {
+public class ControllerDetails extends Controller implements Observer<ViewStateDetails>{
+
+    @Inject
+    Provider<PresenterDetails> provider;
+    @Presenter
+    PresenterDetails presenter;
 
     private int pos;
     private Movie movieItem;
+    private Disposable disposable;
+    private ControllerDetailsBinding binding;
 
     public ControllerDetails(Movie movieItem, int position) {
         this(new BundleBuilder(new Bundle())
@@ -41,7 +57,9 @@ public class ControllerDetails extends Controller {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
+        App.componentMain().inject(this);
+        Slick.bind(this);
+        binding = ControllerDetailsBinding.inflate(inflater, container, false);
         String transitionName = getResources().getString(R.string.transition_poster, pos);
         binding.imageViewIcon.setTransitionName(transitionName);
         binding.textViewTitle.setText(movieItem.name());
@@ -54,6 +72,31 @@ public class ControllerDetails extends Controller {
         Picasso.with(getApplicationContext()).load(movieItem.poster()).noFade().into(binding.imageViewIcon);
         Picasso.with(getApplicationContext()).load(movieItem.poster()).noFade().into(binding.imageViewHeader);
 
+        // TODO: 2017-06-15 set a progressive adapter
+        // binding.recyclerViewCasts.setAdapter();
+        presenter.updateStream().subscribe(this);
+        presenter.getMovieDetails(movieItem.tmdb());
+
         return binding.getRoot();
+    }
+
+    @Override
+    public void onSubscribe(Disposable d) {
+        disposable = d;
+    }
+
+    @Override
+    public void onNext(ViewStateDetails viewStateDetails) {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

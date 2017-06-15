@@ -73,7 +73,8 @@ public class RouterBoxOfficeImpl implements RouterBoxOffice {
                                                                 movieOmdb.genre(),
                                                                 movieOmdb.director(),
                                                                 movieOmdb.writer(), movieOmdb.actors(), movieOmdb.plot(), movieOmdb.production(),
-                                                                movieOmdb.released(), movieOmdb.imdbID(), boxOfficeItem.movie.ids.trakt);
+                                                                movieOmdb.released(), movieOmdb.imdbID(),
+                                                                boxOfficeItem.movie.ids.trakt, boxOfficeItem.movie.ids.tmdb);
                                                     }
                                                 });
                                     }

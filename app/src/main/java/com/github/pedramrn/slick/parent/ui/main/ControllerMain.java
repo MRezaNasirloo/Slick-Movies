@@ -27,8 +27,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
 import static com.github.pedramrn.slick.parent.App.componentMain;
-import static com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding.inflate;
-import static com.github.pedramrn.slick.parent.ui.main.ControllerMain_Slick.bind;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -58,7 +56,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
             }
 
             @Override
-            public void configureRouter(Router router, int position) {
+            public void configureRouter(@NonNull Router router, int position) {
                 if (!router.hasRootController()) {
                     switch (position) {
                         case 0:
@@ -80,8 +78,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
     @Override
     protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
         componentMain().inject(this);
-        bind(this);
-        binding = inflate(layoutInflater, viewGroup, false);
+        ControllerMain_Slick.bind(this);
+        binding = ControllerHomeBinding.inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
         return binding.getRoot();

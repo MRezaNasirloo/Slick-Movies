@@ -1,8 +1,5 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
-import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
-import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Cast;
-import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Image;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
@@ -13,6 +10,10 @@ import java.util.List;
  */
 @AutoValue
 public abstract class MovieDetails {
+
+    public abstract Integer id();
+
+    public abstract String imdbId();
 
     public abstract Boolean adult();
 
@@ -25,10 +26,6 @@ public abstract class MovieDetails {
     public abstract List<String> genres();
 
     public abstract String homepage();
-
-    public abstract Integer id();
-
-    public abstract String imdbId();
 
     public abstract String originalLanguage();
 
@@ -64,14 +61,19 @@ public abstract class MovieDetails {
 
     public abstract Integer voteCount();
 
-    public abstract Cast casts();
+    public abstract List<CastDomain> casts();
 
-    public abstract Image images();
+    public abstract ImageDomain images();
 
-    @IncludeHashEquals
-    public abstract String imdb();
-
-    public abstract int trakt();
+    public static MovieDetails create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
+                                      List<String> genres, String homepage, String originalLanguage, String originalTitle, String overview,
+                                      Float popularity, String posterPath, List<String> productionCompanies, List<String> productionCountries,
+                                      String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages, String status, String tagline,
+                                      String title, Boolean video, Float voteAverage, Integer voteCount, List<CastDomain> castDomainTmdbs, ImageDomain images) {
+        return new AutoValue_MovieDetails(id, imdbId, adult, backdropPath, belongsToCollection, budget, genres, homepage, originalLanguage,
+                originalTitle, overview, popularity, posterPath, productionCompanies, productionCountries, releaseDate, revenue, runtime,
+                spokenLanguages, status, tagline, title, video, voteAverage, voteCount, castDomainTmdbs, images);
+    }
 
 
 }

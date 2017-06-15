@@ -69,7 +69,7 @@ public class ModuleNetwork {
             public Response intercept(Chain chain) throws IOException {
                 final Request request = chain.request()
                         .newBuilder()
-                        .url(chain.request().url().url().toString() + "api_key=413d5af6c55f8b73b74d947fa6542ba1")
+                        .url(chain.request().url().url().toString() + "&api_key=413d5af6c55f8b73b74d947fa6542ba1")
                         .build();
                 return chain.proceed(request);
             }
@@ -78,7 +78,7 @@ public class ModuleNetwork {
                 .client(httpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("https://api.themoviedb.org/3").build()
+                .baseUrl("https://api.themoviedb.org/3/").build()
                 .create(ApiTmdb.class);
     }
 

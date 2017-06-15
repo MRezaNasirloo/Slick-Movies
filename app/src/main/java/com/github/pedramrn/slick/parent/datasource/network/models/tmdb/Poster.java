@@ -2,6 +2,7 @@
 
 package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
+import com.github.pedramrn.slick.parent.domain.SimpleData;
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -12,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class Poster {
+public abstract class Poster implements SimpleData {
 
 
     @SerializedName("aspect_ratio")
@@ -30,6 +31,11 @@ public abstract class Poster {
     @SerializedName("width")
     public abstract Integer width();
 
+    @Override
+    public String get() {
+        return filePath();
+    }
+
     public static Poster create(Float aspectRatio, String filePath, Integer height, String iso6391, Integer voteAverage, Integer voteCount,
                                 Integer width) {
         return builder()
@@ -44,7 +50,7 @@ public abstract class Poster {
     }
 
     public static Builder builder() {
-        return new $AutoValue_Poster.Builder();
+        return new AutoValue_Poster.Builder();
     }
 
     @AutoValue.Builder

@@ -18,15 +18,15 @@ public abstract class Credit {
     public abstract Integer id();
 
     @SerializedName("cast")
-    public abstract List<Cast> cast();
+    public abstract List<CastTmdb> cast();
 
     @SerializedName("crew")
     public abstract List<Crew> crew();
 
-    public static Credit create(Integer id, List<Cast> cast, List<Crew> crew) {
+    public static Credit create(Integer id, List<CastTmdb> castTmdb, List<Crew> crew) {
         return builder()
                 .id(id)
-                .cast(cast)
+                .cast(castTmdb)
                 .crew(crew)
                 .build();
     }
@@ -44,7 +44,7 @@ public abstract class Credit {
     public abstract static class Builder {
         public abstract Builder id(Integer id);
 
-        public abstract Builder cast(List<Cast> cast);
+        public abstract Builder cast(List<CastTmdb> castTmdb);
 
         public abstract Builder crew(List<Crew> crew);
 

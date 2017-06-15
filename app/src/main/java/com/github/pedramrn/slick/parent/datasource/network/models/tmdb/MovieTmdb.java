@@ -15,6 +15,12 @@ import java.util.List;
 @AutoValue
 public abstract class MovieTmdb {
 
+    @SerializedName("id")
+    public abstract Integer id();
+
+    @SerializedName("imdb_id")
+    public abstract String imdbId();
+
     @SerializedName("adult")
     public abstract Boolean adult();
 
@@ -32,12 +38,6 @@ public abstract class MovieTmdb {
 
     @SerializedName("homepage")
     public abstract String homepage();
-
-    @SerializedName("id")
-    public abstract Integer id();
-
-    @SerializedName("imdb_id")
-    public abstract String imdbId();
 
     @SerializedName("original_language")
     public abstract String originalLanguage();
@@ -94,109 +94,22 @@ public abstract class MovieTmdb {
     public abstract Credit credits();
 
     @SerializedName("images")
-    public abstract Image images();
+    public abstract ImageTmdb images();
 
-    public static MovieTmdb create(Boolean adult, String backdropPath, Object belongsToCollection, Integer budget, List<Genre> genres,
-                                   String homepage,
-                                   Integer id, String imdbId, String originalLanguage, String originalTitle, String overview, Float popularity,
+    public static MovieTmdb create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
+                                   List<Genre> genres, String homepage, String originalLanguage, String originalTitle, String overview,
+                                   Float popularity,
                                    String posterPath, List<ProductionCompany> productionCompanies, List<ProductionCountry> productionCountries,
                                    String releaseDate, Integer revenue, Integer runtime, List<SpokenLanguage> spokenLanguages, String status,
-                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Credit credits, Image images) {
-        return builder()
-                .adult(adult)
-                .backdropPath(backdropPath)
-                .belongsToCollection(belongsToCollection)
-                .budget(budget)
-                .genres(genres)
-                .homepage(homepage)
-                .id(id)
-                .imdbId(imdbId)
-                .originalLanguage(originalLanguage)
-                .originalTitle(originalTitle)
-                .overview(overview)
-                .popularity(popularity)
-                .posterPath(posterPath)
-                .productionCompanies(productionCompanies)
-                .productionCountries(productionCountries)
-                .releaseDate(releaseDate)
-                .revenue(revenue)
-                .runtime(runtime)
-                .spokenLanguages(spokenLanguages)
-                .status(status)
-                .tagline(tagline)
-                .title(title)
-                .video(video)
-                .voteAverage(voteAverage)
-                .voteCount(voteCount)
-                .credits(credits)
-                .images(images)
-                .build();
+                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Credit credits, ImageTmdb images) {
+        return new AutoValue_MovieTmdb(id, imdbId, adult, backdropPath, belongsToCollection, budget, genres, homepage, originalLanguage,
+                originalTitle, overview, popularity, posterPath, productionCompanies, productionCountries, releaseDate, revenue, runtime,
+                spokenLanguages, status, tagline, title, video, voteAverage, voteCount, credits, images);
     }
 
-    public static Builder builder() {
-        return new $AutoValue_MovieTmdb.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder adult(Boolean adult);
-
-        public abstract Builder backdropPath(String backdropPath);
-
-        public abstract Builder belongsToCollection(Object belongsToCollection);
-
-        public abstract Builder budget(Integer budget);
-
-        public abstract Builder genres(List<Genre> genres);
-
-        public abstract Builder homepage(String homepage);
-
-        public abstract Builder id(Integer id);
-
-        public abstract Builder imdbId(String imdbId);
-
-        public abstract Builder originalLanguage(String originalLanguage);
-
-        public abstract Builder originalTitle(String originalTitle);
-
-        public abstract Builder overview(String overview);
-
-        public abstract Builder popularity(Float popularity);
-
-        public abstract Builder posterPath(String posterPath);
-
-        public abstract Builder productionCompanies(List<ProductionCompany> productionCompanies);
-
-        public abstract Builder productionCountries(List<ProductionCountry> productionCountries);
-
-        public abstract Builder releaseDate(String releaseDate);
-
-        public abstract Builder revenue(Integer revenue);
-
-        public abstract Builder runtime(Integer runtime);
-
-        public abstract Builder spokenLanguages(List<SpokenLanguage> spokenLanguages);
-
-        public abstract Builder status(String status);
-
-        public abstract Builder tagline(String tagline);
-
-        public abstract Builder title(String title);
-
-        public abstract Builder video(Boolean video);
-
-        public abstract Builder voteAverage(Float voteAverage);
-
-        public abstract Builder voteCount(Integer voteCount);
-
-        public abstract Builder credits(Credit credits);
-
-        public abstract Builder images(Image images);
-
-        public abstract MovieTmdb build();
-    }
 
     public static TypeAdapter<MovieTmdb> typeAdapter(Gson gson) {
         return new AutoValue_MovieTmdb.GsonTypeAdapter(gson);
     }
+
 }
