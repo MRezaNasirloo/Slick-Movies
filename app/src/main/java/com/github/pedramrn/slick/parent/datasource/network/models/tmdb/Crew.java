@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -30,6 +32,7 @@ public abstract class Crew {
     @SerializedName("name")
     public abstract String name();
 
+    @Nullable
     @SerializedName("profile_path")
     public abstract String profilePath();
 

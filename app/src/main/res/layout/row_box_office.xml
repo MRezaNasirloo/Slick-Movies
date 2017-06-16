@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie"
+            type="com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice"
             />
 
         <variable

@@ -1,34 +1,47 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
+import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.model.Cast;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.squareup.picasso.Picasso;
+import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
+import com.xwray.groupie.Section;
+
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-28
  */
 
-public class ControllerDetails extends Controller implements Observer<ViewStateDetails>{
+public class ControllerDetails extends Controller implements Observer<ViewStateDetails> {
 
     @Inject
     Provider<PresenterDetails> provider;
@@ -36,20 +49,23 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
     PresenterDetails presenter;
 
     private int pos;
-    private Movie movieItem;
+    private MovieBoxOffice movieBoxOffice;
     private Disposable disposable;
     private ControllerDetailsBinding binding;
+    private Section progressiveSection;
+    private GroupAdapter adapterCasts;
+    private GroupAdapter adapterMain;
 
-    public ControllerDetails(Movie movieItem, int position) {
+    public ControllerDetails(MovieBoxOffice movieBoxOffice, int position) {
         this(new BundleBuilder(new Bundle())
-                .putParcelable("ITEM", movieItem)
+                .putParcelable("ITEM", movieBoxOffice)
                 .putInt("POS", position).build());
     }
 
     public ControllerDetails(@Nullable Bundle args) {
         super(args);
         pos = getArgs().getInt("POS");
-        movieItem = getArgs().getParcelable("ITEM");
+        movieBoxOffice = getArgs().getParcelable("ITEM");
     }
 
     private static final String TAG = ControllerDetails.class.getSimpleName();
@@ -60,22 +76,31 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
         App.componentMain().inject(this);
         Slick.bind(this);
         binding = ControllerDetailsBinding.inflate(inflater, container, false);
-        String transitionName = getResources().getString(R.string.transition_poster, pos);
-        binding.imageViewIcon.setTransitionName(transitionName);
-        binding.textViewTitle.setText(movieItem.name());
-        binding.textViewGenre.setText(movieItem.genre());
-        binding.textViewPlot.setText(movieItem.plot());
-        binding.textViewRelease.setText(movieItem.released());
-        binding.textViewScore.setText(movieItem.scoreImdb());
-        binding.textViewRuntime.setText(movieItem.runtime());
-        binding.textViewRated.setText(movieItem.certification());
-        Picasso.with(getApplicationContext()).load(movieItem.poster()).noFade().into(binding.imageViewIcon);
-        Picasso.with(getApplicationContext()).load(movieItem.poster()).noFade().into(binding.imageViewHeader);
+        Context context = getApplicationContext();
+        Picasso.with(context).load(movieBoxOffice.poster()).noFade().into(binding.imageViewHeader);
 
-        // TODO: 2017-06-15 set a progressive adapter
-        // binding.recyclerViewCasts.setAdapter();
+        adapterMain = new GroupAdapter();
+        adapterCasts = new GroupAdapter();
+
+        ItemCastList itemCastList = new ItemCastList(adapterCasts);
+        adapterMain.add(new ItemDetailsBasic(movieBoxOffice));//Summery from omdb
+        adapterMain.add(itemCastList);//Casts from tmdb
+
+        if (progressiveSection == null) {
+            ItemCastProgressive progressiveItem = new ItemCastProgressive();
+            progressiveSection = new Section();
+            progressiveSection.add(progressiveItem);
+            progressiveSection.add(progressiveItem);
+            progressiveSection.add(progressiveItem);
+            progressiveSection.add(progressiveItem);
+            progressiveSection.add(progressiveItem);
+        }
+        adapterCasts.add(progressiveSection);
+
+        binding.recyclerViewDetails.setAdapter(adapterMain);
+        binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         presenter.updateStream().subscribe(this);
-        presenter.getMovieDetails(movieItem.tmdb());
+        presenter.getMovieDetails(movieBoxOffice.tmdb());
 
         return binding.getRoot();
     }
@@ -87,11 +112,30 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
 
     @Override
     public void onNext(ViewStateDetails viewStateDetails) {
+        final Movie movie = viewStateDetails.movieDetails();
+        adapterCasts.remove(progressiveSection);
+        final List<Cast> casts = movie.casts();
+        final List<CastItem> castItems = Observable.fromIterable(casts).map(new Function<Cast, CastItem>() {
+            @Override
+            public CastItem apply(@io.reactivex.annotations.NonNull Cast cast) throws Exception {
+                return new CastItem(cast);
+            }
+        }).toList(casts.size()).blockingGet();
+        adapterCasts.addAll(castItems);
+        adapterCasts.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                // getRouter().pushController(RouterTransaction.with(ProfileController((castItems.get(item.getPosition(item))))));
+                Toast.makeText(ControllerDetails.this.getActivity(),
+                        String.format(Locale.ENGLISH, "You clicked %s", ((CastItem) item).getCast().name()), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
     @Override
     public void onError(Throwable e) {
+        e.printStackTrace();
 
     }
 

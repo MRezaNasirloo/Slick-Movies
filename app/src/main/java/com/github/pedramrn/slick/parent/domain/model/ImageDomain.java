@@ -11,15 +11,12 @@ import java.util.List;
 @AutoValue
 public abstract class ImageDomain {
 
-
-    public abstract Integer id();
-
     public abstract List<String> backdrops();
 
     public abstract List<String> posters();
 
-    public static ImageDomain create(Integer id, List<String> backdrops, List<String> posters) {
-        return new AutoValue_ImageDomain(id, backdrops, posters);
+    public static ImageDomain create(List<String> backdrops, List<String> posters) {
+        return new AutoValue_ImageDomain(backdrops, posters);
     }
 
 

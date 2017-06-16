@@ -14,19 +14,14 @@ import java.util.List;
 @AutoValue
 public abstract class ImageTmdb {
 
-
-    @SerializedName("id")
-    public abstract Integer id();
-
     @SerializedName("backdrops")
     public abstract List<Backdrop> backdrops();
 
     @SerializedName("posters")
     public abstract List<Poster> posters();
 
-    public static ImageTmdb create(Integer id, List<Backdrop> backdrops, List<Poster> posters) {
+    public static ImageTmdb create(List<Backdrop> backdrops, List<Poster> posters) {
         return builder()
-                .id(id)
                 .backdrops(backdrops)
                 .posters(posters)
                 .build();
@@ -38,7 +33,6 @@ public abstract class ImageTmdb {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Integer id);
 
         public abstract Builder backdrops(List<Backdrop> backdrops);
 

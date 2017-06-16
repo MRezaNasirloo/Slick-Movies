@@ -14,19 +14,15 @@ import java.util.List;
 @AutoValue
 public abstract class Credit {
 
-    @SerializedName("id")
-    public abstract Integer id();
-
     @SerializedName("cast")
     public abstract List<CastTmdb> cast();
 
     @SerializedName("crew")
     public abstract List<Crew> crew();
 
-    public static Credit create(Integer id, List<CastTmdb> castTmdb, List<Crew> crew) {
+    public static Credit create(List<CastTmdb> cast, List<Crew> crew) {
         return builder()
-                .id(id)
-                .cast(castTmdb)
+                .cast(cast)
                 .crew(crew)
                 .build();
     }
@@ -42,7 +38,6 @@ public abstract class Credit {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Integer id);
 
         public abstract Builder cast(List<CastTmdb> castTmdb);
 

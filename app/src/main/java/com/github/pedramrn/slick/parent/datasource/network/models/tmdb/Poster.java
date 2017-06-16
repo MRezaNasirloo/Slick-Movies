@@ -22,10 +22,8 @@ public abstract class Poster implements SimpleData {
     public abstract String filePath();
     @SerializedName("height")
     public abstract Integer height();
-    @SerializedName("iso_639_1")
-    public abstract String iso6391();
     @SerializedName("vote_average")
-    public abstract Integer voteAverage();
+    public abstract Float voteAverage();
     @SerializedName("vote_count")
     public abstract Integer voteCount();
     @SerializedName("width")
@@ -36,13 +34,11 @@ public abstract class Poster implements SimpleData {
         return filePath();
     }
 
-    public static Poster create(Float aspectRatio, String filePath, Integer height, String iso6391, Integer voteAverage, Integer voteCount,
-                                Integer width) {
+    public static Poster create(Float aspectRatio, String filePath, Integer height, Float voteAverage, Integer voteCount, Integer width) {
         return builder()
                 .aspectRatio(aspectRatio)
                 .filePath(filePath)
                 .height(height)
-                .iso6391(iso6391)
                 .voteAverage(voteAverage)
                 .voteCount(voteCount)
                 .width(width)
@@ -62,13 +58,11 @@ public abstract class Poster implements SimpleData {
 
         public abstract Builder height(Integer height);
 
-        public abstract Builder iso6391(String iso6391);
-
-        public abstract Builder voteAverage(Integer voteAverage);
-
         public abstract Builder voteCount(Integer voteCount);
 
         public abstract Builder width(Integer width);
+
+        public abstract Builder voteAverage(Float voteAverage);
 
         public abstract Poster build();
     }

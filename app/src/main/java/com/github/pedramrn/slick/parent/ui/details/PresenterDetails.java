@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import android.util.Log;
+
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
@@ -29,7 +31,7 @@ import io.reactivex.subjects.BehaviorSubject;
  */
 
 public class PresenterDetails extends SlickPresenter<ViewDetails> implements Observer<Movie> {
-
+    private static final String TAG = PresenterDetails.class.getSimpleName();
     private final RouterMovieDetails routerMovieDetails;
     private final Scheduler io;
     private final Scheduler main;
@@ -65,7 +67,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                             Image image = Observable.just((md.images())).map(new Function<ImageDomain, Image>() {
                                 @Override
                                 public Image apply(@NonNull ImageDomain im) throws Exception {
-                                    return Image.create(im.id(), im.backdrops(), im.posters());
+                                    return Image.create(im.backdrops(), im.posters());
                                 }
                             }).blockingFirst();
                             return Movie.create(md.id(), md.imdbId(), md.adult(), md.backdropPath(), md.budget(), md.genres(), md.homepage(),
@@ -86,6 +88,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
 
     @Override
     public void onNext(Movie movie) {
+        Log.d(TAG, "onNext() called");
         state.onNext(new ViewStateDetails(movie));
     }
 
@@ -93,6 +96,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
     public void onError(Throwable e) {
         // state.onNext(new ViewStateDetailsError(e));
         // TODO: 2017-06-15 show error with view state
+        e.printStackTrace();
     }
 
     @Override

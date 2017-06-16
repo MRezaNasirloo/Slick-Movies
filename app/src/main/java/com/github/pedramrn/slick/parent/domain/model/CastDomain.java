@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 /**
@@ -17,6 +19,7 @@ public abstract class CastDomain {
 
     public abstract String name();
 
+    @Nullable
     public abstract String profilePath();
 
     public abstract String character();

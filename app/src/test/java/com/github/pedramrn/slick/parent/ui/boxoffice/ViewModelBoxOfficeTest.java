@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
+import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImplBaseTest;
 
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class ViewModelBoxOfficeTest extends RouterBoxOfficeImplBaseTest {
         PresenterBoxOffice presenter = new PresenterBoxOffice(routerBoxOffice, Schedulers.trampoline(), Schedulers.trampoline());
         ViewModelBoxOffice viewModel = new ViewModelBoxOffice(new CompositeDisposable(), presenter, view);
 
-        TestObserver<List<Movie>> test = viewModel.boxOfficeList().test();
+        TestObserver<List<MovieBoxOffice>> test = viewModel.boxOfficeList().test();
         PublishSubject<Integer> subject = PublishSubject.create();
 
         viewModel.pagination(subject, 2);

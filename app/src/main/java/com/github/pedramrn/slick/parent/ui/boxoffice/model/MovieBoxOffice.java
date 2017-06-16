@@ -12,7 +12,7 @@ import java.util.Locale;
  *         Created on: 2017-04-11
  */
 @AutoValue
-public abstract class Movie implements Parcelable {
+public abstract class MovieBoxOffice implements Parcelable {
 
     public String rank(int position) {
         return String.format(Locale.getDefault(), "#%s", position + 1);
@@ -59,9 +59,9 @@ public abstract class Movie implements Parcelable {
      return " " + rated() + " ";
     }
 
-    public static Movie create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb, String rated,
-                               String runtime, String genre, String director, String writer, String actors, String plot, String production,
-                               String released, String imdb, int trakt, int tmdb) {
+    public static MovieBoxOffice create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb, String rated,
+                                        String runtime, String genre, String director, String writer, String actors, String plot, String production,
+                                        String released, String imdb, int trakt, int tmdb) {
         return builder()
                 .name(name)
                 .revenue(revenue)
@@ -85,7 +85,7 @@ public abstract class Movie implements Parcelable {
     }
 
     public static Builder builder() {
-        return new AutoValue_Movie.Builder();
+        return new AutoValue_MovieBoxOffice.Builder();
     }
 
 
@@ -127,6 +127,6 @@ public abstract class Movie implements Parcelable {
 
         public abstract Builder tmdb(int tmdb);
 
-        public abstract Movie build();
+        public abstract MovieBoxOffice build();
     }
 }

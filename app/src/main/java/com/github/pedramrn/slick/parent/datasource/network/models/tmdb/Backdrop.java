@@ -23,7 +23,7 @@ public abstract class Backdrop implements SimpleData {
     @SerializedName("iso_639_1")
     public abstract Object iso6391();
     @SerializedName("vote_average")
-    public abstract Integer voteAverage();
+    public abstract Float voteAverage();
     @SerializedName("vote_count")
     public abstract Integer voteCount();
     @SerializedName("width")
@@ -34,7 +34,7 @@ public abstract class Backdrop implements SimpleData {
         return filePath();
     }
 
-    public static Backdrop create(Float aspectRatio, String filePath, Integer height, Object iso6391, Integer voteAverage, Integer voteCount,
+    public static Backdrop create(Float aspectRatio, String filePath, Integer height, Object iso6391, Float voteAverage, Integer voteCount,
                                   Integer width) {
         return builder()
                 .aspectRatio(aspectRatio)
@@ -62,11 +62,11 @@ public abstract class Backdrop implements SimpleData {
 
         public abstract Builder iso6391(Object iso6391);
 
-        public abstract Builder voteAverage(Integer voteAverage);
-
         public abstract Builder voteCount(Integer voteCount);
 
         public abstract Builder width(Integer width);
+
+        public abstract Builder voteAverage(Float voteAverage);
 
         public abstract Backdrop build();
     }

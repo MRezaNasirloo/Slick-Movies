@@ -71,6 +71,6 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
                 spokenLanguages,
                 movieTmdb.status(), movieTmdb.tagline(),
                 movieTmdb.title(), movieTmdb.video(), movieTmdb.voteAverage(), movieTmdb.voteCount(), castDomains,
-                ImageDomain.create(movieTmdb.images().id(), backdrops, posters));
+                ImageDomain.create(backdrops, posters));
     }
 }

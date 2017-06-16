@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.Movie;
+import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImpl;
 import com.github.slick.SlickPresenter;
 
@@ -26,7 +26,7 @@ import io.reactivex.subjects.BehaviorSubject;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-02-28
  */
-public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements Observer<List<Movie>> {
+public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements Observer<List<MovieBoxOffice>> {
     private static final String TAG = PresenterBoxOffice.class.getSimpleName();
 
     private final RouterBoxOffice routerBoxOffice;
@@ -36,7 +36,7 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
     private final BehaviorSubject<Integer> triggerSubject = BehaviorSubject.create();
 
     private CompositeDisposable disposable = new CompositeDisposable();
-    private Observable<List<Movie>> boxOffice;
+    private Observable<List<MovieBoxOffice>> boxOffice;
 
 
     @Inject
@@ -61,28 +61,28 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
         boxOffice.subscribe(this);
     }
 
-    private Observable<List<Movie>> boxOffice(Observable<Integer> trigger, int pageSize) {
+    private Observable<List<MovieBoxOffice>> boxOffice(Observable<Integer> trigger, int pageSize) {
         return routerBoxOffice.boxOffice(trigger, pageSize)
-                .map(new Function<MovieItem, Movie>() {
+                .map(new Function<MovieItem, MovieBoxOffice>() {
                     @Override
-                    public Movie apply(@NonNull MovieItem movieItem) throws Exception {
-                        return Movie.create(movieItem.name(), movieItem.revenue(), movieItem.poster(), movieItem.scoreMeta(), movieItem.scoreImdb(),
+                    public MovieBoxOffice apply(@NonNull MovieItem movieItem) throws Exception {
+                        return MovieBoxOffice.create(movieItem.name(), movieItem.revenue(), movieItem.poster(), movieItem.scoreMeta(), movieItem.scoreImdb(),
                                 movieItem.votesImdb(), movieItem.rated(), movieItem.runtime(), movieItem.genre(), movieItem.director(),
                                 movieItem.writer(), movieItem.actors(), movieItem.plot(), movieItem.production(), movieItem.released(),
                                 movieItem.imdb(), movieItem.trakt(), movieItem.tmdb());
                     }
-                }).map(new Function<Movie, List<Movie>>() {
+                }).map(new Function<MovieBoxOffice, List<MovieBoxOffice>>() {
                     @Override
-                    public List<Movie> apply(@NonNull Movie movieItem) throws Exception {
-                        final ArrayList<Movie> list = new ArrayList<>();
-                        list.add(movieItem);
+                    public List<MovieBoxOffice> apply(@NonNull MovieBoxOffice movieBoxOfficeItem) throws Exception {
+                        final ArrayList<MovieBoxOffice> list = new ArrayList<>();
+                        list.add(movieBoxOfficeItem);
                         return list;
                     }
-                }).scan(new BiFunction<List<Movie>, List<Movie>, List<Movie>>() {
+                }).scan(new BiFunction<List<MovieBoxOffice>, List<MovieBoxOffice>, List<MovieBoxOffice>>() {
                     @Override
-                    public List<Movie> apply(@NonNull List<Movie> movieItems, @NonNull List<Movie> movieItems2) throws Exception {
-                        movieItems.addAll(movieItems2);
-                        return movieItems;
+                    public List<MovieBoxOffice> apply(@NonNull List<MovieBoxOffice> movieBoxOfficeItems, @NonNull List<MovieBoxOffice> movieBoxOfficeItems2) throws Exception {
+                        movieBoxOfficeItems.addAll(movieBoxOfficeItems2);
+                        return movieBoxOfficeItems;
                     }
                 }).subscribeOn(io)
                 .observeOn(main);
@@ -99,8 +99,8 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
     }
 
     @Override
-    public void onNext(List<Movie> movieItems) {
-        state.onNext(ViewStateBoxOffice.create(new ArrayList<>(movieItems)));
+    public void onNext(List<MovieBoxOffice> movieBoxOfficeItems) {
+        state.onNext(ViewStateBoxOffice.create(new ArrayList<>(movieBoxOfficeItems)));
 
     }
 
