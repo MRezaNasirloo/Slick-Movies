@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeUp;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -33,10 +33,10 @@ public class ControllerBoxOfficeTest {
     @Test
     public void useAppContext() throws Exception {
 
-        //        rule.launchActivity(null);
+        // rule.launchActivity(null);
 
         Matcher<View> recyclerView = withId(R.id.recycler_view);
-        onView(recyclerView).check(withItemCount(8));
+        onView(recyclerView).check(withItemCount(10));
 
 
         onView(withRecyclerView(R.id.recycler_view)
@@ -47,23 +47,10 @@ public class ControllerBoxOfficeTest {
                 .atPositionOnView(0, R.id.textView_rank))
                 .check(matches(withText("#1")));
 
-        onView(recyclerView).perform(scrollToPosition(5)).perform(click());
+        onView(recyclerView).perform(scrollToPosition(9)).perform();
 
+        onView(recyclerView).perform(swipeUp());
 
-        onView(withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(5, R.id.textView_rank))
-                .check(matches(withText("#6")));
-
-        onView(recyclerView).perform(scrollToPosition(7)).perform(click());
-
-        onView(withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(7, R.id.textView_title))
-                .check(matches(withText("Beauty and the Beast")));
-
-        //checks more items loaded at the end of list
-        onView(recyclerView).check(withItemCount(10));
-
-        onView(recyclerView).perform(scrollToPosition(9)).perform(click());
 
         onView(withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(9, R.id.textView_rank))
