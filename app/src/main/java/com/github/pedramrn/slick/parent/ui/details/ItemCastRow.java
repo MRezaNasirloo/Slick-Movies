@@ -11,11 +11,11 @@ import com.xwray.groupie.ViewHolder;
  *         Created on: 2017-06-16
  */
 
-public class CastItem extends Item<RowCastBinding> {
+public class ItemCastRow extends Item<RowCastBinding> {
 
     private final Cast cast;
 
-    public CastItem(Cast cast) {
+    public ItemCastRow(Cast cast) {
         this.cast = cast;
     }
 

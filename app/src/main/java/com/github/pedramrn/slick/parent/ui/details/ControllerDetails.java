@@ -115,19 +115,19 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
         final Movie movie = viewStateDetails.movieDetails();
         adapterCasts.remove(progressiveSection);
         final List<Cast> casts = movie.casts();
-        final List<CastItem> castItems = Observable.fromIterable(casts).map(new Function<Cast, CastItem>() {
+        final List<ItemCastRow> itemCastRows = Observable.fromIterable(casts).map(new Function<Cast, ItemCastRow>() {
             @Override
-            public CastItem apply(@io.reactivex.annotations.NonNull Cast cast) throws Exception {
-                return new CastItem(cast);
+            public ItemCastRow apply(@io.reactivex.annotations.NonNull Cast cast) throws Exception {
+                return new ItemCastRow(cast);
             }
         }).toList(casts.size()).blockingGet();
-        adapterCasts.addAll(castItems);
+        adapterCasts.addAll(itemCastRows);
         adapterCasts.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                // getRouter().pushController(RouterTransaction.with(ProfileController((castItems.get(item.getPosition(item))))));
+                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCastRows.get(item.getPosition(item))))));
                 Toast.makeText(ControllerDetails.this.getActivity(),
-                        String.format(Locale.ENGLISH, "You clicked %s", ((CastItem) item).getCast().name()), Toast.LENGTH_SHORT).show();
+                        String.format(Locale.ENGLISH, "You clicked %s", ((ItemCastRow) item).getCast().name()), Toast.LENGTH_SHORT).show();
             }
         });
 
