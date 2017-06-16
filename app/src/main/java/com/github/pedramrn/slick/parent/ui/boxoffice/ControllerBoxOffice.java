@@ -31,7 +31,6 @@ import io.reactivex.functions.Predicate;
 
 import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 import static android.util.Log.d;
-import static android.view.View.FOCUS_DOWN;
 import static com.github.pedramrn.slick.parent.App.componentMain;
 import static com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding.inflate;
 import static com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice_Slick.bind;
@@ -66,7 +65,8 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
 
         disposable = new CompositeDisposable();
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), VERTICAL, false));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, false);
+        binding.recyclerView.setLayoutManager(layoutManager);
         ViewModelBoxOffice viewModel = new ViewModelBoxOffice(disposable, presenter, this);
         AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel, imageLoader, getResources());
         binding.recyclerView.setAdapter(adapter);
@@ -86,7 +86,9 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@io.reactivex.annotations.NonNull RecyclerViewScrollEvent recyclerViewScrollEvent) throws Exception {
-                        return !recyclerViewScrollEvent.view().canScrollVertically(FOCUS_DOWN);
+                        int totalItemCount = layoutManager.getItemCount();
+                        int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                        return totalItemCount <= (lastVisibleItem + 1);
                     }
                 }).scan(0, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
                     @Override
