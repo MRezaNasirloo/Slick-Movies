@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import com.bumptech.glide.Glide;
 import com.github.pedramrn.slick.parent.R;
 
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -38,6 +38,8 @@ public class ImageViewGlide extends AppCompatImageView {
                 .load(url)
                 .placeholder(R.drawable.rectangle)
                 .crossFade()
+                .bitmapTransform(new RoundedCornersTransformation(context,
+                        context.getResources().getDimensionPixelSize(R.dimen.image_view_cast_corners), 0))
                 .into(this);
     }
 }
