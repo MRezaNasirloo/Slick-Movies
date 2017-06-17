@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.details;
+package com.github.pedramrn.slick.parent.ui.details.item;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastBinding;

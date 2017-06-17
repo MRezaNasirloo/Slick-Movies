@@ -13,7 +13,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
+import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImpl;
 import com.github.pedramrn.slick.parent.ui.popular.ControllerPopular;
@@ -44,7 +44,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
     @Presenter
     PresenterMain presenter;
     CompositeDisposable disposable = new CompositeDisposable();
-    private ControllerHomeBinding binding;
+    private ControllerMainBinding binding;
     private final RouterPagerAdapter routerPagerAdapter;
 
     public ControllerMain() {
@@ -79,9 +79,25 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
     protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
         componentMain().inject(this);
         ControllerMain_Slick.bind(this);
-        binding = ControllerHomeBinding.inflate(layoutInflater, viewGroup, false);
+        binding = ControllerMainBinding.inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
-        binding.navigation.setOnMenuItemClickListener(this);
+        /*AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(getActivity(), R.menu.navigation);
+        navigationAdapter.setupWithBottomNavigation(binding.bottomNavigation, new int[]{Color.CYAN,Color.GRAY,Color.DKGRAY});
+        binding.bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                binding.viewPager.setCurrentItem(position, false);
+                switch (position) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+                return true;
+            }
+        });*/
         return binding.getRoot();
     }
 

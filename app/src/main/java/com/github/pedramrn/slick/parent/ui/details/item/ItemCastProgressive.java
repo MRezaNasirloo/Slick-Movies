@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.details;
+package com.github.pedramrn.slick.parent.ui.details.item;
 
 import android.content.Context;
 import android.graphics.PorterDuff;

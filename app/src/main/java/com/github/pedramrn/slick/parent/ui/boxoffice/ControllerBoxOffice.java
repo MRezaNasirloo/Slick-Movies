@@ -57,7 +57,7 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull final ViewGroup container) {
         componentMain().inject(this);
         bind(this);
 
@@ -131,6 +131,8 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 }
