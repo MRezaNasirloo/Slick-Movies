@@ -15,16 +15,16 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  *         Created on: 2017-06-16
  */
 
-public class ImageViewGlideCircular extends AppCompatImageView {
-    public ImageViewGlideCircular(Context context) {
+public class ImageViewGlide extends AppCompatImageView {
+    public ImageViewGlide(Context context) {
         super(context);
     }
 
-    public ImageViewGlideCircular(Context context, @Nullable AttributeSet attrs) {
+    public ImageViewGlide(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ImageViewGlideCircular(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ImageViewGlide(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -36,9 +36,8 @@ public class ImageViewGlideCircular extends AppCompatImageView {
         Context context = getContext().getApplicationContext();
         Glide.with(context)
                 .load(url)
+                .placeholder(R.drawable.rectangle)
                 .crossFade()
-                .placeholder(R.drawable.circle)
-                .bitmapTransform(new CropCircleTransformation(context))
                 .into(this);
     }
 }

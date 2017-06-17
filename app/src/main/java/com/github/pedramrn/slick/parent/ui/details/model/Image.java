@@ -11,11 +11,11 @@ import java.util.List;
 @AutoValue
 public abstract class Image {
 
-    public abstract List<String> backdrops();
+    public abstract List<Backdrop> backdrops();
 
     public abstract List<String> posters();
 
-    public static Image create(List<String> backdrops, List<String> posters) {
+    public static Image create(List<Backdrop> backdrops, List<String> posters) {
         return new AutoValue_Image(backdrops, posters);
     }
 

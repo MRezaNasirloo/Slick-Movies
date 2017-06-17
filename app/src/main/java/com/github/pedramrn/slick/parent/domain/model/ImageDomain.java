@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
+import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;

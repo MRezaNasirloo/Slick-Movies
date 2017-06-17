@@ -3,7 +3,7 @@
     <color name="colorPrimary">@color/color_box_office</color>
     <color name="colorPrimaryDark">#941616</color>
     <color name="color_gray">#607D8B</color>
-    <color name="color_gray_1">#cbcbcb</color>
+    <color name="color_gray_1">#dedede</color>
     <color name="color_gray_2">#bababa</color>
     <color name="colorAccent">#FF4081</color>
     <color name="color_box_office">#B71C1C</color>

@@ -17,6 +17,11 @@ import com.xwray.groupie.ViewHolder;
  */
 
 public class ItemCastProgressive extends Item<RowCastBinding> {
+
+    public ItemCastProgressive(long id) {
+        super(id);
+    }
+
     @Override
     public int getLayout() {
         return R.layout.row_cast;

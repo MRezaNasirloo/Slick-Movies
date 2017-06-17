@@ -4,7 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.databinding.RowDetailsCastBinding;
+import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.Item;
 
 /**
@@ -12,7 +12,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-16
  */
 
-public class ItemCastList extends Item<RowDetailsCastBinding> {
+public class ItemCastList extends Item<RowCastListBinding> {
 
 
     private final RecyclerView.Adapter adapter;
@@ -23,15 +23,17 @@ public class ItemCastList extends Item<RowDetailsCastBinding> {
 
     @Override
     public int getLayout() {
-        return R.layout.row_details_cast;
+        return R.layout.row_cast_list;
     }
 
     @Override
-    public void bind(RowDetailsCastBinding viewBinding, int position) {
+    public void bind(RowCastListBinding viewBinding, int position) {
         RecyclerView recyclerView = viewBinding.recyclerViewCasts;
         LinearLayoutManager manager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.getItemAnimator().setChangeDuration(0);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-        recyclerView.setNestedScrollingEnabled(false);
+
     }
 }

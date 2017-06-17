@@ -3,9 +3,9 @@ package com.github.pedramrn.slick.parent.ui.details;
 import android.util.Log;
 
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
-import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
+import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Image;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -57,6 +57,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     .map(new Function<MovieDetails, Movie>() {
                         @Override
                         public Movie apply(@NonNull MovieDetails md) throws Exception {
+                            //casts
                             List<Cast> casts = Observable.fromIterable(md.casts()).map(new Function<CastDomain, Cast>() {
                                 @Override
                                 public Cast apply(@NonNull CastDomain cd) throws Exception {
@@ -64,12 +65,18 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                                             cd.profilePath(), cd.character(), cd.gender(), cd.order());
                                 }
                             }).toList().blockingGet();
-                            Image image = Observable.just((md.images())).map(new Function<ImageDomain, Image>() {
+
+                            //backdrops
+                            final List<Backdrop> backdrops = Observable.fromIterable(md.images().backdrops()).map(new Function<String, Backdrop>() {
                                 @Override
-                                public Image apply(@NonNull ImageDomain im) throws Exception {
-                                    return Image.create(im.backdrops(), im.posters());
+                                public Backdrop apply(@NonNull String s) throws Exception {
+                                    return Backdrop.create(s);
                                 }
-                            }).blockingFirst();
+                            }).toList(md.images().backdrops().size()).blockingGet();
+
+                            //image
+                            Image image = Image.create(backdrops, md.images().posters());
+
                             return Movie.create(md.id(), md.imdbId(), md.adult(), md.backdropPath(), md.budget(), md.genres(), md.homepage(),
                                     md.overview(), md.popularity(), md.posterPath(), md.productionCompanies(), md.productionCountries(),
                                     md.releaseDate(), md.revenue(), md.runtime(), md.spokenLanguages(), md.status(), md.tagline(), md.title(),

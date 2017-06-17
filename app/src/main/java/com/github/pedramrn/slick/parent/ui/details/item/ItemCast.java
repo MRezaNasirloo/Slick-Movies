@@ -1,27 +1,20 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-16
  */
 
-public class ItemCastRow extends Item<RowCastBinding> {
+public class ItemCast extends ItemCastProgressive {
 
     private final Cast cast;
 
-    public ItemCastRow(Cast cast) {
+    public ItemCast(int id, Cast cast) {
+        super(id);
         this.cast = cast;
-    }
-
-    @Override
-    public int getLayout() {
-        return R.layout.row_cast;
     }
 
     @Override

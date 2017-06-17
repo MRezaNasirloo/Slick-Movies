@@ -15,12 +15,13 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropList;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastList;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemCastRow;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemDetailsBasic;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
-import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
@@ -28,25 +29,24 @@ import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
-import com.xwray.groupie.Section;
+import com.xwray.groupie.UpdatingGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-28
  */
 
-public class ControllerDetails extends Controller implements Observer<ViewStateDetails> {
+public class ControllerDetails extends Controller implements ViewDetails, Observer<ViewStateDetails> {
 
     @Inject
     Provider<PresenterDetails> provider;
@@ -57,9 +57,13 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
     private MovieBoxOffice movieBoxOffice;
     private Disposable disposable;
     private ControllerDetailsBinding binding;
-    private Section progressiveSection;
-    private GroupAdapter adapterCasts;
+    private UpdatingGroup progressiveCast;
+    private UpdatingGroup progressiveBackdrop;
     private GroupAdapter adapterMain;
+    private GroupAdapter adapterCasts;
+    private GroupAdapter adapterBackdrop;
+    private List<ItemBackdropProgressive> progressiveBackdropList = new ArrayList<>(5);
+    private List<ItemCastProgressive> progressiveCastList = new ArrayList<>(5);
 
     public ControllerDetails(MovieBoxOffice movieBoxOffice, int position) {
         this(new BundleBuilder(new Bundle())
@@ -86,28 +90,52 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
 
         adapterMain = new GroupAdapter();
         adapterCasts = new GroupAdapter();
+        adapterBackdrop = new GroupAdapter();
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
+        ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
         adapterMain.add(new ItemDetailsBasic(movieBoxOffice));//Summery from omdb
         adapterMain.add(itemCastList);//Casts from tmdb
+        adapterMain.add(itemBackdropList);//Backdrops from tmdb
 
-        if (progressiveSection == null) {
-            ItemCastProgressive progressiveItem = new ItemCastProgressive();
-            progressiveSection = new Section();
-            progressiveSection.add(progressiveItem);
-            progressiveSection.add(progressiveItem);
-            progressiveSection.add(progressiveItem);
-            progressiveSection.add(progressiveItem);
-            progressiveSection.add(progressiveItem);
+        if (progressiveCast == null) {
+            progressiveBackdropList = new ArrayList<>(5);
+            progressiveBackdropList = new ArrayList<>(5);
+            this.progressiveCast = new UpdatingGroup();
+            this.progressiveBackdrop = new UpdatingGroup();
+            for (int i = 0; i < 5; i++) {
+                progressiveCastList.add(new ItemCastProgressive(i));
+                progressiveBackdropList.add(new ItemBackdropProgressive(i));
+            }
         }
-        adapterCasts.add(progressiveSection);
+        adapterCasts.add(progressiveCast);
+        adapterBackdrop.add(progressiveBackdrop);
+        progressiveCast.update(progressiveCastList);
+        progressiveBackdrop.update(progressiveBackdropList);
 
         binding.recyclerViewDetails.setAdapter(adapterMain);
         binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         presenter.updateStream().subscribe(this);
         presenter.getMovieDetails(movieBoxOffice.tmdb());
 
+        adapterCasts.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCasts.get(item.getPosition(item))))));
+                Toast.makeText(ControllerDetails.this.getActivity(),
+                        String.format(Locale.ENGLISH, "You clicked %s", ((ItemCast) item).getCast().name()), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return binding.getRoot();
+    }
+
+    @Override
+    public void render(ViewStateDetails state) {
+        final Movie movie = state.movieDetails();
+        adapterMain.add(new ItemOverview(movie.overview()));
+        progressiveCast.update(state.itemCasts());
+        progressiveBackdrop.update(state.itemBackdrops());
     }
 
     @Override
@@ -116,38 +144,24 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
     }
 
     @Override
-    public void onNext(ViewStateDetails viewStateDetails) {
-        final Movie movie = viewStateDetails.movieDetails();
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterCasts.remove(progressiveSection);
-        final List<Cast> casts = movie.casts();
-        final List<ItemCastRow> itemCastRows = Observable.fromIterable(casts).map(new Function<Cast, ItemCastRow>() {
-            @Override
-            public ItemCastRow apply(@io.reactivex.annotations.NonNull Cast cast) throws Exception {
-                return new ItemCastRow(cast);
-            }
-        }).toList(casts.size()).blockingGet();
-        adapterCasts.addAll(itemCastRows);
-        adapterCasts.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCastRows.get(item.getPosition(item))))));
-                Toast.makeText(ControllerDetails.this.getActivity(),
-                        String.format(Locale.ENGLISH, "You clicked %s", ((ItemCastRow) item).getCast().name()), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
+    public void onNext(ViewStateDetails state) {
+        render(state);
     }
+
 
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-
     }
 
     @Override
     public void onComplete() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null) disposable.dispose();
     }
 }

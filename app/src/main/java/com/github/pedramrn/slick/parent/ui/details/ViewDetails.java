@@ -6,4 +6,5 @@ package com.github.pedramrn.slick.parent.ui.details;
  */
 
 public interface ViewDetails {
+    void render(ViewStateDetails viewStateDetails);
 }
