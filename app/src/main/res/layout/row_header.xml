@@ -11,49 +11,55 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:scrollbars="vertical"
-            android:padding="8dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
         >
 
         <!--style="@style/DetailsWhiteText"-->
 
         <TextView
             android:id="@+id/textView_title"
-            android:layout_width="wrap_content"
+            style="@style/DetailsBlackText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="48dp"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView_genre"
+            android:layout_marginTop="8dp"
+            android:paddingTop="48dp"
+            android:paddingEnd="48dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Title"
-            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintHorizontal_bias="0.0"
+            tools:text="Nunquam anhelare terror."
+            />
+
+        <ImageView
+            android:id="@+id/imageView_icon"
+            android:layout_width="120dp"
+            android:layout_height="180dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/color_gray_1"
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView_title"
+            app:layout_constraintTop_toTopOf="@+id/textView_title"
             />
 
         <TextView
             android:id="@+id/textView_genre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/textView_release"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_title"
-            tools:text="Genre"
             app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="spread"
+            tools:text="Genre"
             />
 
         <TextView
@@ -65,10 +71,10 @@
             app:layout_constraintBottom_toTopOf="@+id/textView_score"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             app:layout_constraintRight_toLeftOf="@+id/textView_runtime"
             app:layout_constraintTop_toBottomOf="@+id/textView_genre"
             tools:text="27 May 2016"
-            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             />
 
         <TextView
@@ -77,15 +83,16 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
             android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView_icon"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             app:layout_constraintRight_toLeftOf="@+id/textView_logo_imdb"
             app:layout_constraintTop_toBottomOf="@+id/textView_release"
             tools:text="7.5/10"
-            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             />
 
         <TextView
@@ -93,10 +100,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/oval"
             android:gravity="center"
             android:text=" IMDB "
             android:textColor="#000"
+            android:visibility="invisible"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView_score"
             app:layout_constraintLeft_toRightOf="@+id/textView_score"
             app:layout_constraintRight_toLeftOf="@+id/textView_rated"
@@ -122,29 +131,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="0dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/oval"
             android:backgroundTint="#2ca0ff"
             android:textColor="#ffffff"
+            android:visibility="invisible"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView_logo_imdb"
             app:layout_constraintLeft_toRightOf="@+id/textView_logo_imdb"
             app:layout_constraintRight_toRightOf="parent"
             tools:text=" PG-13 "
-            />
-
-        <ImageView
-            android:id="@+id/imageView_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginLeft="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:src="@mipmap/ic_launcher"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             />
 
     </android.support.constraint.ConstraintLayout>

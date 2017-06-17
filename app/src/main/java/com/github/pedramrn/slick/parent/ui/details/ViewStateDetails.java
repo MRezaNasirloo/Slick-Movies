@@ -45,7 +45,7 @@ class ViewStateDetails {
                     public ItemCast apply(@io.reactivex.annotations.NonNull Indexed<Cast> cast) throws Exception {
                         return new ItemCast(cast.index(), cast.value());
                     }
-                }).toList(casts.size()).blockingGet();
+                }).toList().blockingGet();
 
         casts.clear();
 
@@ -69,7 +69,7 @@ class ViewStateDetails {
                     public ItemBackdrop apply(@io.reactivex.annotations.NonNull Indexed<Backdrop> backdropIndexed) throws Exception {
                         return new ItemBackdrop(backdropIndexed.index(), backdropIndexed.value());
                     }
-                }).toList(backdrops.size()).blockingGet();
+                }).toList().blockingGet();
 
         backdrops.clear();
 

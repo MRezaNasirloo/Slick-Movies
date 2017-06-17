@@ -33,7 +33,7 @@ public abstract class MovieBoxOffice implements Parcelable {
 
     protected abstract String rated();
 
-    public abstract String runtime();
+    protected abstract String runtime();
 
     public abstract List<String> genre();
 
@@ -62,6 +62,10 @@ public abstract class MovieBoxOffice implements Parcelable {
 
     public String posterMedium() {
         return "http://image.tmdb.org/t/p/w342" + poster();
+    }
+
+    public String runtimePretty() {
+        return runtime() + "min";
     }
 
     public static MovieBoxOffice create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb,

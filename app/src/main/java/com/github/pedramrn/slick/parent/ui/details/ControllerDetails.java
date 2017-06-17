@@ -20,7 +20,7 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastList;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemDetailsBasic;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.slick.Presenter;
@@ -95,7 +95,7 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
         ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
-        adapterMain.add(new ItemDetailsBasic(movieBoxOffice, pos));//Summery from omdb
+        adapterMain.add(new ItemHeader(movieBoxOffice, pos));//Summery from omdb
         adapterMain.add(itemCastList);//Casts from tmdb
         adapterMain.add(itemBackdropList);//Backdrops from tmdb
 

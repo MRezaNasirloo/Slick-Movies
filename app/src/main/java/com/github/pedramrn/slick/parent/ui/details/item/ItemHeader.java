@@ -3,7 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 import android.content.Context;
 
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.databinding.SummeryBinding;
+import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.Item;
@@ -17,23 +17,23 @@ import io.reactivex.functions.BiFunction;
  *         Created on: 2017-06-16
  */
 
-public class ItemDetailsBasic extends Item<SummeryBinding> {
+public class ItemHeader extends Item<RowHeaderBinding> {
 
     private final MovieBoxOffice movieBoxOffice;
     private final int pos;
 
-    public ItemDetailsBasic(MovieBoxOffice movieBoxOffice, int pos) {
+    public ItemHeader(MovieBoxOffice movieBoxOffice, int pos) {
         this.movieBoxOffice = movieBoxOffice;
         this.pos = pos;
     }
 
     @Override
     public int getLayout() {
-        return R.layout.summery;
+        return R.layout.row_header;
     }
 
     @Override
-    public void bind(SummeryBinding viewBinding, int position) {
+    public void bind(RowHeaderBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
         String transitionName = context.getResources().getString(R.string.transition_poster, pos);
         viewBinding.imageViewIcon.setTransitionName(transitionName);
@@ -43,15 +43,14 @@ public class ItemDetailsBasic extends Item<SummeryBinding> {
         viewBinding.textViewGenre.setText(Observable.fromIterable(movieBoxOffice.genre())
                 .take(4)
                 .reduce(new BiFunction<String, String, String>() {
-            @Override
-            public String apply(@NonNull String s, @NonNull String s2) throws Exception {
-                return s + " | " + s2;
-            }
-        }).blockingGet());
-        // viewBinding.textViewPlot.setText(movieBoxOffice.plot());
+                    @Override
+                    public String apply(@NonNull String s, @NonNull String s2) throws Exception {
+                        return s + " | " + s2;
+                    }
+                }).blockingGet());
         viewBinding.textViewRelease.setText(movieBoxOffice.released());
         viewBinding.textViewScore.setText(movieBoxOffice.scoreImdb());
-        viewBinding.textViewRuntime.setText(movieBoxOffice.runtime());
+        viewBinding.textViewRuntime.setText(movieBoxOffice.runtimePretty());
         viewBinding.textViewRated.setText(movieBoxOffice.certification());
         Picasso.with(context)
                 .load(movieBoxOffice.posterMedium())
