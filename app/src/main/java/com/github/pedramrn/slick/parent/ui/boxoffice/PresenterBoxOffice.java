@@ -3,7 +3,8 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
-import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImpl;
+import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeOmdbImpl;
+import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeTmdbImpl;
 import com.github.slick.SlickPresenter;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
 
 
     @Inject
-    public PresenterBoxOffice(RouterBoxOfficeImpl routerBoxOffice, @Named("main") Scheduler main, @Named("io") Scheduler io) {
+    public PresenterBoxOffice(RouterBoxOfficeTmdbImpl routerBoxOffice, @Named("main") Scheduler main, @Named("io") Scheduler io) {
         this.routerBoxOffice = routerBoxOffice;
         this.main = main;
         this.io = io;

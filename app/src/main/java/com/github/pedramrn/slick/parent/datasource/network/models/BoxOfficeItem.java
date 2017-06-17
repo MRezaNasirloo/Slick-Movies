@@ -1,6 +1,9 @@
 package com.github.pedramrn.slick.parent.datasource.network.models;
 
-import com.google.gson.annotations.Expose;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,19 +11,15 @@ import com.google.gson.annotations.SerializedName;
  *         Created on: 2017-03-09
  */
 
-public class BoxOfficeItem {
+@AutoValue
+public abstract class BoxOfficeItem {
     @SerializedName("revenue")
-    @Expose
-    public Integer revenue;
-    @SerializedName("movie")
-    @Expose
-    public MovieTrakt movie;
+    public abstract Integer revenue();
 
-    @Override
-    public String toString() {
-        return "BoxOfficeItem{" +
-                "revenue=" + revenue +
-                ", movie=" + movie +
-                '}';
+    @SerializedName("movie")
+    public abstract MovieTraktMetadata movie();
+
+    public static TypeAdapter<BoxOfficeItem> typeAdapter(Gson gson) {
+        return new AutoValue_BoxOfficeItem.GsonTypeAdapter(gson);
     }
 }

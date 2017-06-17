@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -90,9 +92,11 @@ public abstract class MovieTmdb {
     @SerializedName("vote_count")
     public abstract Integer voteCount();
 
+    @Nullable
     @SerializedName("credits")
     public abstract Credit credits();
 
+    @Nullable
     @SerializedName("images")
     public abstract ImageTmdb images();
 

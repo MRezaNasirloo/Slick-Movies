@@ -27,7 +27,7 @@ public class RouterMovieDetailsImpl implements RouterMovieDetails {
 
     @Override
     public Observable<MovieDetails> get(final Integer tmdbId) {
-        return apiTmdb.get(tmdbId).map(mapperMovie);
+        return apiTmdb.getFull(tmdbId).map(mapperMovie);
     }
 
 }

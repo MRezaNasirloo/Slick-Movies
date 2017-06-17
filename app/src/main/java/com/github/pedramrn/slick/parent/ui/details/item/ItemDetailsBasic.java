@@ -8,6 +8,10 @@ import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.Item;
 
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-16
@@ -33,14 +37,20 @@ public class ItemDetailsBasic extends Item<SummeryBinding> {
         viewBinding.imageViewIcon.setTransitionName(transitionName);
 
         viewBinding.textViewTitle.setText(movieBoxOffice.name());
-        viewBinding.textViewGenre.setText(movieBoxOffice.genre());
+        // TODO: 2017-06-18 use recycler view for this
+        viewBinding.textViewGenre.setText(Observable.fromIterable(movieBoxOffice.genre()).reduce(new BiFunction<String, String, String>() {
+            @Override
+            public String apply(@NonNull String s, @NonNull String s2) throws Exception {
+                return s + " |";
+            }
+        }).blockingGet());
         // viewBinding.textViewPlot.setText(movieBoxOffice.plot());
         viewBinding.textViewRelease.setText(movieBoxOffice.released());
         viewBinding.textViewScore.setText(movieBoxOffice.scoreImdb());
         viewBinding.textViewRuntime.setText(movieBoxOffice.runtime());
         viewBinding.textViewRated.setText(movieBoxOffice.certification());
         Picasso.with(context)
-                .load(movieBoxOffice.poster())
+                .load(movieBoxOffice.posterMedium())
                 .noFade()
                 .into(viewBinding.imageViewIcon);
 

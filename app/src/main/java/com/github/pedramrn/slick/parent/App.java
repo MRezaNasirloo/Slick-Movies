@@ -10,6 +10,7 @@ import com.github.pedramrn.slick.parent.di.ComponentApp;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleApp;
 import com.github.pedramrn.slick.parent.di.ModuleDatabase;
+import com.github.pedramrn.slick.parent.di.ModuleNetwork;
 import com.github.pedramrn.slick.parent.di.ModuleNetworkMock;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
@@ -61,7 +62,7 @@ public class App extends Application {
         return DaggerComponentApp.builder()
                 .moduleApp(new ModuleApp(this))
                 .moduleDatabase(new ModuleDatabase())
-                .moduleNetwork(new ModuleNetworkMock(getApplicationContext()))
+                .moduleNetwork(new ModuleNetwork())
                 .moduleScheduler(new ModuleScheduler());
     }
 

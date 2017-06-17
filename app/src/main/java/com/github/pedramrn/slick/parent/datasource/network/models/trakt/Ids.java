@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.datasource.network.models;
+package com.github.pedramrn.slick.parent.datasource.network.models.trakt;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

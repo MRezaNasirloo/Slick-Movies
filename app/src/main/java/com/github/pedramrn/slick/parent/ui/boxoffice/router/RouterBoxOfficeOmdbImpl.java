@@ -7,6 +7,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.MovieOmdb;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +17,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
@@ -25,15 +25,15 @@ import io.reactivex.functions.Function;
  *         Created on: 2017-04-10
  */
 
-public class RouterBoxOfficeImpl implements RouterBoxOffice {
+public class RouterBoxOfficeOmdbImpl implements RouterBoxOffice {
 
     private final ApiTrakt apiTrakt;
     private final ApiOmdb apiOmdb;
     private final Scheduler io;
-    private static final String TAG = RouterBoxOfficeImpl.class.getSimpleName();
+    private static final String TAG = RouterBoxOfficeOmdbImpl.class.getSimpleName();
 
     @Inject
-    public RouterBoxOfficeImpl(ApiTrakt apiTrakt, ApiOmdb apiOmdb, @Named("io") Scheduler io) {
+    public RouterBoxOfficeOmdbImpl(ApiTrakt apiTrakt, ApiOmdb apiOmdb, @Named("io") Scheduler io) {
         this.apiTrakt = apiTrakt;
         this.apiOmdb = apiOmdb;
         this.io = io;
@@ -62,19 +62,21 @@ public class RouterBoxOfficeImpl implements RouterBoxOffice {
                                 .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieItem>>() {
                                     @Override
                                     public ObservableSource<MovieItem> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
-                                        return apiOmdb.get(boxOfficeItem.movie.ids.imdb)
+                                        return apiOmdb.get(boxOfficeItem.movie().ids().imdb)
                                                 .subscribeOn(io)
                                                 .map(new Function<MovieOmdb, MovieItem>() {
                                                     @Override
                                                     public MovieItem apply(@NonNull MovieOmdb movieOmdb) throws Exception {
-                                                        return MovieItem.create(movieOmdb.title(), boxOfficeItem.revenue.toString(), movieOmdb.poster(),
+                                                        return MovieItem.create(movieOmdb.title(), boxOfficeItem.revenue().toString(),
+                                                                movieOmdb.poster(),
                                                                 movieOmdb.metascore(),
                                                                 movieOmdb.imdbRating(), movieOmdb.imdbVotes(), movieOmdb.rated(), movieOmdb.runtime(),
-                                                                movieOmdb.genre(),
+                                                                Collections.singletonList(movieOmdb.genre()),
                                                                 movieOmdb.director(),
-                                                                movieOmdb.writer(), movieOmdb.actors(), movieOmdb.plot(), movieOmdb.production(),
+                                                                movieOmdb.writer(), movieOmdb.actors(), movieOmdb.plot(),
+                                                                Collections.singletonList(movieOmdb.production()),
                                                                 movieOmdb.released(), movieOmdb.imdbID(),
-                                                                boxOfficeItem.movie.ids.trakt, boxOfficeItem.movie.ids.tmdb);
+                                                                boxOfficeItem.movie().ids().trakt, boxOfficeItem.movie().ids().tmdb);
                                                     }
                                                 });
                                     }

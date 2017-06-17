@@ -68,7 +68,8 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
     public ControllerDetails(MovieBoxOffice movieBoxOffice, int position) {
         this(new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movieBoxOffice)
-                .putInt("POS", position).build());
+                .putInt("POS", position)
+                .build());
     }
 
     public ControllerDetails(@Nullable Bundle args) {
@@ -86,7 +87,7 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
         Slick.bind(this);
         binding = ControllerDetailsBinding.inflate(inflater, container, false);
         Context context = getApplicationContext();
-        Picasso.with(context).load(movieBoxOffice.poster()).noFade().into(binding.imageViewHeader);
+        Picasso.with(context).load(movieBoxOffice.posterMedium()).noFade().into(binding.imageViewHeader);
 
         adapterMain = new GroupAdapter();
         adapterCasts = new GroupAdapter();
@@ -121,7 +122,7 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
         adapterCasts.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCasts.get(item.getPosition(item))))));
+                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCasts.getFull(item.getPosition(item))))));
                 Toast.makeText(ControllerDetails.this.getActivity(),
                         String.format(Locale.ENGLISH, "You clicked %s", ((ItemCast) item).getCast().name()), Toast.LENGTH_SHORT).show();
             }

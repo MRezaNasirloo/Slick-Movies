@@ -15,7 +15,7 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
-import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImpl;
+import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeOmdbImpl;
 import com.github.pedramrn.slick.parent.ui.popular.ControllerPopular;
 import com.github.pedramrn.slick.parent.ui.upcoming.ControllerUpComing;
 import com.github.slick.Presenter;
@@ -37,7 +37,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
 
     private static final String TAG = ControllerMain.class.getSimpleName();
     @Inject
-    RouterBoxOfficeImpl routerBoxOffice;
+    RouterBoxOfficeOmdbImpl routerBoxOffice;
 
     @Inject
     Provider<PresenterMain> provider;

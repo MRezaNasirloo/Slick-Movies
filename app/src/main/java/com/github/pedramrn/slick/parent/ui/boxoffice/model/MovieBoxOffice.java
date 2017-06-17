@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
 import com.google.auto.value.AutoValue;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -22,7 +23,7 @@ public abstract class MovieBoxOffice implements Parcelable {
 
     public abstract String revenue();
 
-    public abstract String poster();
+    protected abstract String poster();
 
     public abstract String scoreMeta();
 
@@ -34,7 +35,7 @@ public abstract class MovieBoxOffice implements Parcelable {
 
     public abstract String runtime();
 
-    public abstract String genre();
+    public abstract List<String> genre();
 
     public abstract String director();
 
@@ -44,7 +45,7 @@ public abstract class MovieBoxOffice implements Parcelable {
 
     public abstract String plot();
 
-    public abstract String production();
+    public abstract List<String> production();
 
     public abstract String released();
 
@@ -55,78 +56,21 @@ public abstract class MovieBoxOffice implements Parcelable {
 
     public abstract int tmdb();
 
-    public String certification(){
-     return " " + rated() + " ";
+    public String certification() {
+        return " " + rated() + " ";
     }
 
-    public static MovieBoxOffice create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb, String rated,
-                                        String runtime, String genre, String director, String writer, String actors, String plot, String production,
-                                        String released, String imdb, int trakt, int tmdb) {
-        return builder()
-                .name(name)
-                .revenue(revenue)
-                .poster(poster)
-                .scoreMeta(scoreMeta)
-                .scoreImdb(scoreImdb)
-                .votesImdb(votesImdb)
-                .rated(rated)
-                .runtime(runtime)
-                .genre(genre)
-                .director(director)
-                .writer(writer)
-                .actors(actors)
-                .plot(plot)
-                .production(production)
-                .released(released)
-                .imdb(imdb)
-                .trakt(trakt)
-                .tmdb(tmdb)
-                .build();
+    public String posterMedium() {
+        return "http://image.tmdb.org/t/p/w342" + poster();
     }
 
-    public static Builder builder() {
-        return new AutoValue_MovieBoxOffice.Builder();
+    public static MovieBoxOffice create(String name, String revenue, String poster, String scoreMeta, String scoreImdb, String votesImdb,
+                                        String rated,
+                                        String runtime, List<String> genre, String director, String writer, String actors, String plot,
+                                        List<String> production, String released, String imdb, int trakt, int tmdb) {
+        return new AutoValue_MovieBoxOffice(name, revenue, poster, scoreMeta, scoreImdb, votesImdb, rated, runtime, genre, director, writer, actors,
+                plot, production, released, imdb, trakt, tmdb);
     }
 
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder name(String name);
-
-        public abstract Builder revenue(String revenue);
-
-        public abstract Builder poster(String poster);
-
-        public abstract Builder scoreMeta(String scoreMeta);
-
-        public abstract Builder scoreImdb(String scoreImdb);
-
-        public abstract Builder votesImdb(String votesImdb);
-
-        public abstract Builder runtime(String runtime);
-
-        public abstract Builder genre(String genre);
-
-        public abstract Builder director(String director);
-
-        public abstract Builder writer(String writer);
-
-        public abstract Builder actors(String actors);
-
-        public abstract Builder plot(String plot);
-
-        public abstract Builder production(String production);
-
-        public abstract Builder released(String released);
-
-        public abstract Builder imdb(String imdb);
-
-        public abstract Builder trakt(int trakt);
-
-        public abstract Builder rated(String rated);
-
-        public abstract Builder tmdb(int tmdb);
-
-        public abstract MovieBoxOffice build();
-    }
 }

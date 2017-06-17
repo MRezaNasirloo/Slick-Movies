@@ -8,7 +8,7 @@ import io.reactivex.Observable;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-15
  */
-public class RouterBoxOfficeImplTest extends RouterBoxOfficeImplBaseTest {
+public class RouterBoxOfficeOmdbImplTest extends RouterBoxOfficeImplBaseTest {
 
     @Test
     public void boxOffice() throws Exception {
