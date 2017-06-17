@@ -61,6 +61,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
         holder.binding.setVariable(BR.vm, movieBoxOfficeItems.get(position));
         holder.binding.setRank(movieBoxOfficeItems.get(position).rank(position));
+        holder.binding.textViewTitle.setSelected(true);
         //        holder.binding.textViewTitle.setText(movieBoxOfficeItems.getFull(position).name());
         imageLoader.with(holder.binding.imageView.getContext().getApplicationContext())
                 .load(movieBoxOfficeItems.get(position).posterMedium()).into(holder.binding.imageView);
