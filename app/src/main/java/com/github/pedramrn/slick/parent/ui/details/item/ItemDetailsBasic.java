@@ -20,9 +20,11 @@ import io.reactivex.functions.BiFunction;
 public class ItemDetailsBasic extends Item<SummeryBinding> {
 
     private final MovieBoxOffice movieBoxOffice;
+    private final int pos;
 
-    public ItemDetailsBasic(MovieBoxOffice movieBoxOffice) {
+    public ItemDetailsBasic(MovieBoxOffice movieBoxOffice, int pos) {
         this.movieBoxOffice = movieBoxOffice;
+        this.pos = pos;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class ItemDetailsBasic extends Item<SummeryBinding> {
     @Override
     public void bind(SummeryBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
-        String transitionName = context.getResources().getString(R.string.transition_poster, position);
+        String transitionName = context.getResources().getString(R.string.transition_poster, pos);
         viewBinding.imageViewIcon.setTransitionName(transitionName);
 
         viewBinding.textViewTitle.setText(movieBoxOffice.name());

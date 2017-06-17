@@ -95,7 +95,7 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
         ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
-        adapterMain.add(new ItemDetailsBasic(movieBoxOffice));//Summery from omdb
+        adapterMain.add(new ItemDetailsBasic(movieBoxOffice, pos));//Summery from omdb
         adapterMain.add(itemCastList);//Casts from tmdb
         adapterMain.add(itemBackdropList);//Backdrops from tmdb
 
