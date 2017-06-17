@@ -40,10 +40,12 @@ public class ItemDetailsBasic extends Item<SummeryBinding> {
 
         viewBinding.textViewTitle.setText(movieBoxOffice.name());
         // TODO: 2017-06-18 use recycler view for this
-        viewBinding.textViewGenre.setText(Observable.fromIterable(movieBoxOffice.genre()).reduce(new BiFunction<String, String, String>() {
+        viewBinding.textViewGenre.setText(Observable.fromIterable(movieBoxOffice.genre())
+                .take(4)
+                .reduce(new BiFunction<String, String, String>() {
             @Override
             public String apply(@NonNull String s, @NonNull String s2) throws Exception {
-                return s + " |";
+                return s + " | " + s2;
             }
         }).blockingGet());
         // viewBinding.textViewPlot.setText(movieBoxOffice.plot());
