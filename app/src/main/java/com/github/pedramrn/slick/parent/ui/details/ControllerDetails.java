@@ -89,17 +89,6 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
         adapterMain.add(new ItemDetailsBasic(movieBoxOffice));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
-        adapterMain.add(new ItemOverview("Heu, mens!Urias prarere in ferox tornacum!Teres zirbuss ducunt ad gallus.Cum navis ire, omnes plasmatores manifestum salvus, azureus fluctuies."));//Summery from omdb
         adapterMain.add(itemCastList);//Casts from tmdb
 
         if (progressiveSection == null) {
@@ -130,11 +119,7 @@ public class ControllerDetails extends Controller implements Observer<ViewStateD
     public void onNext(ViewStateDetails viewStateDetails) {
         final Movie movie = viewStateDetails.movieDetails();
         adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        // adapterCasts.remove(progressiveSection);
+        adapterCasts.remove(progressiveSection);
         final List<Cast> casts = movie.casts();
         final List<ItemCastRow> itemCastRows = Observable.fromIterable(casts).map(new Function<Cast, ItemCastRow>() {
             @Override

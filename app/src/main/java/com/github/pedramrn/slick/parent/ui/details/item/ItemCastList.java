@@ -32,5 +32,6 @@ public class ItemCastList extends Item<RowDetailsCastBinding> {
         LinearLayoutManager manager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 }
