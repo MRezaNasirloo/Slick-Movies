@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
+import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
@@ -62,6 +63,9 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
         bind(this);
 
         final ControllerBoxOfficeBinding binding = inflate(inflater, container, false);
+        if (getActivity() != null) {
+            ((ToolbarHost) getActivity()).setToolbar(binding.toolbar);
+        }
 
         disposable = new CompositeDisposable();
 

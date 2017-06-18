@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropList;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
@@ -86,8 +88,15 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
         App.componentMain().inject(this);
         Slick.bind(this);
         binding = ControllerDetailsBinding.inflate(inflater, container, false);
+        if (getActivity() != null) {
+            ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(true);
+        }
         Context context = getApplicationContext();
         Picasso.with(context).load(movieBoxOffice.posterMedium()).noFade().into(binding.imageViewHeader);
+
+        // binding.toolbar.setTitle(movieBoxOffice.name());
+        binding.collapsingToolbar.setTitle(movieBoxOffice.name());
+        binding.recyclerViewDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         adapterMain = new GroupAdapter();
         adapterCasts = new GroupAdapter();
