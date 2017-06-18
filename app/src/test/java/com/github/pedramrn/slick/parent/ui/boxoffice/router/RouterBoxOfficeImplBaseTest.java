@@ -35,7 +35,7 @@ public class RouterBoxOfficeImplBaseTest {
     ApiOmdb apiOmdb;
     private Type type = new TypeToken<List<BoxOfficeItem>>() {}.getType();
 
-    protected RouterBoxOfficeOmdbImpl routerBoxOffice;
+    protected RouterBoxOfficeTmdbImpl routerBoxOffice;
 
     @Before
     public void setUp() throws Exception {
@@ -50,6 +50,6 @@ public class RouterBoxOfficeImplBaseTest {
         Mockito.when(apiTrakt.get()).thenReturn(Observable.just(boxOfficeItems));
         Mockito.when(apiOmdb.get(Mockito.anyString())).thenReturn(Observable.just(movieOmdb));
 
-        routerBoxOffice = new RouterBoxOfficeOmdbImpl(apiTrakt, apiOmdb, Schedulers.trampoline());
+        routerBoxOffice = new RouterBoxOfficeTmdbImpl(apiTrakt, apiOmdb, Schedulers.trampoline());
     }
 }

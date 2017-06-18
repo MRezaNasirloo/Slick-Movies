@@ -4,14 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
@@ -25,6 +23,7 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.squareup.picasso.Picasso;
@@ -41,6 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -48,17 +48,19 @@ import io.reactivex.disposables.Disposable;
  *         Created on: 2017-04-28
  */
 
-public class ControllerDetails extends Controller implements ViewDetails, Observer<ViewStateDetails> {
+public class ControllerDetails extends ControllerBase implements ViewDetails, Observer<ViewStateDetails> {
 
     @Inject
     Provider<PresenterDetails> provider;
     @Presenter
     PresenterDetails presenter;
 
+    @Inject
+    BottomNavigationHandlerImpl bottomNavigationHandler;
+
     private int pos;
     private MovieBoxOffice movieBoxOffice;
-    private Disposable disposable;
-    private ControllerDetailsBinding binding;
+    private CompositeDisposable disposable;
     private UpdatingGroup progressiveCast;
     private UpdatingGroup progressiveBackdrop;
     private GroupAdapter adapterMain;
@@ -87,16 +89,20 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
         Slick.bind(this);
-        binding = ControllerDetailsBinding.inflate(inflater, container, false);
+        ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(true);
         }
+        disposable = new CompositeDisposable();
         Context context = getApplicationContext();
         Picasso.with(context).load(movieBoxOffice.posterMedium()).noFade().into(binding.imageViewHeader);
 
         // binding.toolbar.setTitle(movieBoxOffice.name());
         binding.collapsingToolbar.setTitle(movieBoxOffice.name());
-        binding.recyclerViewDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+
+        Disposable d = bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails);
+
+        disposable.add(d);
 
         adapterMain = new GroupAdapter();
         adapterCasts = new GroupAdapter();
@@ -141,8 +147,20 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
     }
 
     @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        if (disposable != null) disposable.dispose();
+    }
+
+    @Override
     public void render(ViewStateDetails state) {
         final Movie movie = state.movieDetails();
+        adapterMain.add(new ItemOverview(movie.overview()));
+        adapterMain.add(new ItemOverview(movie.overview()));
+        adapterMain.add(new ItemOverview(movie.overview()));
+        adapterMain.add(new ItemOverview(movie.overview()));
+        adapterMain.add(new ItemOverview(movie.overview()));
+        adapterMain.add(new ItemOverview(movie.overview()));
         adapterMain.add(new ItemOverview(movie.overview()));
         progressiveCast.update(state.itemCasts());
         progressiveBackdrop.update(state.itemBackdrops());
@@ -150,7 +168,7 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
 
     @Override
     public void onSubscribe(Disposable d) {
-        disposable = d;
+        disposable.add(d);
     }
 
     @Override
@@ -172,6 +190,5 @@ public class ControllerDetails extends Controller implements ViewDetails, Observ
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (disposable != null) disposable.dispose();
     }
 }

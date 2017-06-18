@@ -15,11 +15,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
+#-dontobfuscate
 -keep class com.github.slick.*
-#-keep class **ControllerMain** {*;}
--keep public class * implements com.github.slick.OnDestroyListener { public <init>(...); }
-#-keepclasseswithmembernames class * { @com.github.slick.* <methods>; }
+-keep public class * implements com.github.slick.OnDestroyListener { *; }
+-keepclasseswithmembernames class * { @com.github.slick.* <methods>; }
 -keepclasseswithmembernames class * { @com.github.slick.* <fields>; }
 
 #-dontwarn javax.**

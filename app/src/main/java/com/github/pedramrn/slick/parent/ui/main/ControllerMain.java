@@ -33,7 +33,7 @@ import static com.github.pedramrn.slick.parent.App.componentMain;
  *         Created on: 2017-02-13
  */
 
-public class ControllerMain extends Controller implements ViewMain, BottomNavigation.OnMenuItemSelectionListener {
+public class ControllerMain extends Controller implements ViewMain, BottomBarHost, BottomNavigation.OnMenuItemSelectionListener {
 
     private static final String TAG = ControllerMain.class.getSimpleName();
     @Inject
@@ -81,6 +81,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
         ControllerMain_Slick.bind(this);
         binding = ControllerMainBinding.inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
+        binding.navigation.setOnMenuItemClickListener(this);
         /*AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(getActivity(), R.menu.navigation);
         navigationAdapter.setupWithBottomNavigation(binding.bottomNavigation, new int[]{Color.CYAN,Color.GRAY,Color.DKGRAY});
         binding.bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
@@ -128,5 +129,22 @@ public class ControllerMain extends Controller implements ViewMain, BottomNaviga
     @Override
     public void onMenuItemReselect(@IdRes int itemId, int position, boolean fromUser) {
         Log.e(TAG, "onMenuItemReselect() called with: itemId = [" + itemId + "], position = [" + position + "], fromUser = [" + fromUser + "]");
+    }
+
+    @Override
+    public void show() {
+        BottomNavigation navigation = binding.navigation;
+        if (!navigation.isExpanded()) {
+            navigation.setExpanded(true, true);
+        }
+    }
+
+    @Override
+    public void hide() {
+        BottomNavigation navigation = binding.navigation;
+        if (navigation.isExpanded()) {
+            navigation.setExpanded(false, true);
+        }
+
     }
 }

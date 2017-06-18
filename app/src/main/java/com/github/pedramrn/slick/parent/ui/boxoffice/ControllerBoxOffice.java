@@ -34,7 +34,6 @@ import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 import static android.util.Log.d;
 import static com.github.pedramrn.slick.parent.App.componentMain;
 import static com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding.inflate;
-import static com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice_Slick.bind;
 import static com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView.scrollEvents;
 
 /**
@@ -60,7 +59,7 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull final ViewGroup container) {
         componentMain().inject(this);
-        bind(this);
+        ControllerBoxOffice_Slick.bind(this);
 
         final ControllerBoxOfficeBinding binding = inflate(inflater, container, false);
         if (getActivity() != null) {
