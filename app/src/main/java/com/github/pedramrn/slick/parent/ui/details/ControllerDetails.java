@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
@@ -100,9 +102,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         // binding.toolbar.setTitle(movieBoxOffice.name());
         binding.collapsingToolbar.setTitle(movieBoxOffice.name());
 
-        Disposable d = bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails);
-
-        disposable.add(d);
 
         adapterMain = new GroupAdapter();
         adapterCasts = new GroupAdapter();
@@ -129,8 +128,13 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveCast.update(progressiveCastList);
         progressiveBackdrop.update(progressiveBackdropList);
 
-        binding.recyclerViewDetails.setAdapter(adapterMain);
         binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        binding.recyclerViewDetails.addItemDecoration(
+                new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
+        binding.recyclerViewDetails.setAdapter(adapterMain);
+
+        disposable.add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
+
         presenter.updateStream().subscribe(this);
         presenter.getMovieDetails(movieBoxOffice.tmdb());
 
