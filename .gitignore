@@ -3,6 +3,12 @@
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
+/.idea/dictionaries/
+/.idea/dbnavigator.xml
+/.idea/markdown-navigator
+/.idea/markdown-navigator.xml
+/.idea/markdown-exported-files.xml
+!/.idea
 .DS_Store
 /build
 /captures
