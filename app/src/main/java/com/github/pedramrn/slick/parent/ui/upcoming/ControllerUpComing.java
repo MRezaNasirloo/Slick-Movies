@@ -4,10 +4,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.bluelinelabs.conductor.Controller;
-import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerUpComingBinding;
 import com.github.slick.Presenter;
 
@@ -17,7 +15,6 @@ import javax.inject.Provider;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
 
-import static android.widget.CompoundButton.OnCheckedChangeListener;
 import static com.github.pedramrn.slick.parent.App.componentMain;
 import static com.github.pedramrn.slick.parent.databinding.ControllerUpComingBinding.inflate;
 import static com.github.pedramrn.slick.parent.ui.upcoming.ControllerUpComing_Slick.bind;
@@ -35,7 +32,7 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
     @Presenter
     PresenterUpComing presenter;
 
-        ViewModelUpComing viewModelUpComing;
+    ViewModelUpComing viewModelUpComing;
     @Inject
     ReactiveEntityStore<Persistable> entityStore;
 
@@ -45,20 +42,12 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
         componentMain().inject(this);
         bind(this);
 
-        if (viewModelUpComing == null) {
+        /*if (viewModelUpComing == null) {
             viewModelUpComing = new ViewModelUpComing(presenter);
-        }
+        }*/
 
 
         final ControllerUpComingBinding binding = inflate(inflater, container, false);
-        binding.setViewModelUser(viewModelUpComing);
-
-        binding.checkBoxShouldBeSame.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                presenter.updateUser("from checkbox up there ^", isChecked).toCompletable().subscribe();
-            }
-        });
 
         return binding.getRoot();
     }
@@ -66,6 +55,6 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        viewModelUpComing.onDestroy();
+        //        viewModelUpComing.onDestroy();
     }
 }
