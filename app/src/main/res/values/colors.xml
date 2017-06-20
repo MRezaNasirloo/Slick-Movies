@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/color_box_office</color>
-    <color name="colorPrimaryDark">#941616</color>
-    <color name="color_gray">#607D8B</color>
+    <color name="box_office">#C02C39</color>
+    <color name="colorPrimary">@color/box_office</color>
+    <color name="colorPrimaryDark">#a42530</color>
+    <color name="colorAccent">#2FBE76</color>
+    <color name="color_neutral">#F2F4F3</color>
     <color name="color_gray_1">#dedede</color>
     <color name="color_gray_2">#bababa</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="color_box_office">#B71C1C</color>
+    <color name="color_gray_3">#607D8B</color>
     <color name="color_blue">#439bf2</color>
 </resources>
