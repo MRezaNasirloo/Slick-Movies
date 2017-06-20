@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.details;
+package com.github.pedramrn.slick.parent.ui;
 
 import android.support.v7.widget.RecyclerView;
 

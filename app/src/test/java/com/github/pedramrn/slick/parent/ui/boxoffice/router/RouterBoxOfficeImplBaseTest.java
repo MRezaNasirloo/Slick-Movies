@@ -50,6 +50,6 @@ public class RouterBoxOfficeImplBaseTest {
         Mockito.when(apiTrakt.get()).thenReturn(Observable.just(boxOfficeItems));
         Mockito.when(apiOmdb.get(Mockito.anyString())).thenReturn(Observable.just(movieOmdb));
 
-        routerBoxOffice = new RouterBoxOfficeTmdbImpl(apiTrakt, apiOmdb, Schedulers.trampoline());
+        // routerBoxOffice = new RouterBoxOfficeTmdbImpl(apiTrakt, apiOmdb, Schedulers.trampoline());
     }
 }

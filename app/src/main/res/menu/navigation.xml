@@ -8,20 +8,23 @@
     app:bbn_rippleColor="#33ffffff">
 
     <item
-        android:id="@+id/navigation_box_office"
+        android:id="@+id/navigation_home"
         android:color="@color/color_neutral"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_box_office"/>
+        android:title="@string/title_home"
+        />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_box_office"
         android:color="@color/color_neutral"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_up_coming"/>
+        android:title="@string/title_box_office"
+        />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_popular"/>
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/ic_like_black_24dp"
+        android:title="@string/title_favorite"
+        />
 
 </menu>

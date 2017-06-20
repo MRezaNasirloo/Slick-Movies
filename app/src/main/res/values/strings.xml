@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Slick Movies</string>
     <string name="title_box_office">Box Office</string>
-    <string name="title_up_coming">Up Coming</string>
-    <string name="title_popular">Popular</string>
+    <string name="title_home">Home</string>
+    <string name="title_favorite">Favorite</string>
     <string name="place_holder_tittle">Some Long Ass Title</string>
     <string name="place_holder_score_imdb">7.8</string>
     <string name="logo_imdb">IMDB Logo</string>
