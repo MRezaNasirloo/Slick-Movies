@@ -91,7 +91,7 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
                     public boolean test(@io.reactivex.annotations.NonNull RecyclerViewScrollEvent recyclerViewScrollEvent) throws Exception {
                         int totalItemCount = layoutManager.getItemCount();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                        return totalItemCount <= (lastVisibleItem + 1);
+                        return totalItemCount == (lastVisibleItem + 1);
                     }
                 }).scan(0, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
                     @Override
@@ -107,7 +107,7 @@ public class ControllerBoxOffice extends Controller implements ViewBoxOffice {
                 });
 
 
-        viewModel.pagination(trigger, 2);
+        viewModel.pagination(trigger, 1);
 
         return binding.getRoot();
     }
