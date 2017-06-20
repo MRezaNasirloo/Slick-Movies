@@ -34,17 +34,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="1dp"
                     android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
                     tools:ignore="ContentDescription"
                     tools:src="@mipmap/ic_launcher"
-                    app:layout_collapseMode="parallax"
 
                     />
 
                 <View
-                    android:background="#65222222"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:background="#65222222"
+                    />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
