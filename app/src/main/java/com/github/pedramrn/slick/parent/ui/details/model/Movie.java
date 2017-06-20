@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
+import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
@@ -60,13 +61,17 @@ public abstract class Movie {
 
     public abstract Image images();
 
+    public abstract List<Video> videos();
+
     public static Movie create(Integer id, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres, String homepage,
                                String overview, Float popularity, String posterPath, List<String> productionCompanies,
                                List<String> productionCountries,
                                String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages, String status, String tagline,
-                               String title, Boolean video, Float voteAverage, Integer voteCount, List<Cast> casts, Image images) {
+                               String title, Boolean video, Float voteAverage, Integer voteCount, List<Cast> casts, Image images,
+                               List<Video> videos) {
         return new AutoValue_Movie(id, imdbId, adult, backdropPath, budget, genres, homepage, overview, popularity, posterPath, productionCompanies,
                 productionCountries, releaseDate, revenue, runtime, spokenLanguages, status, tagline, title, video, voteAverage, voteCount, casts,
-                images);
+                images, videos);
     }
+
 }

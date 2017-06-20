@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.domain.mapper;
 
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Backdrop;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.CastTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Credit;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Genre;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.ImageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
@@ -8,9 +10,11 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Poster;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.ProductionCompany;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.ProductionCountry;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.SpokenLanguage;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb;
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
+import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,20 +40,18 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
     }
 
     @Override
-    public MovieDetails apply(@NonNull MovieTmdb movieTmdb) throws Exception {
+    public MovieDetails apply(@NonNull MovieTmdb mt) throws Exception {
 
-        List<CastDomain> castDomains = Observable.fromIterable(movieTmdb.credits().cast())
-                .map(mapperCast)
-                .toList(/*TODO: check null*/movieTmdb.credits().cast().size())
-                .blockingGet();
-
-        ImageTmdb images = movieTmdb.images();
+        Credit credits = mt.credits();
+        ImageTmdb images = mt.images();
         List<String> backdrops = Collections.emptyList();
         List<String> posters = Collections.emptyList();
         List<String> genres = Collections.emptyList();
         List<String> productionCompanies = Collections.emptyList();
         List<String> productionCountries = Collections.emptyList();
         List<String> spokenLanguages = Collections.emptyList();
+        List<CastDomain> castDomains = Collections.emptyList();
+        List<VideoDomain> videosDomains = Collections.emptyList();
 
         if (images != null) {
             List<Backdrop> backdropsTemp = images.backdrops();
@@ -66,7 +68,16 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
                     .blockingGet();
         }
 
-        List<Genre> genresTemp = movieTmdb.genres();
+        if (credits != null) {
+            List<CastTmdb> castTmdb = credits.cast();
+            int size = castTmdb.size();
+            castDomains = Observable.fromIterable(castTmdb)
+                    .map(mapperCast)
+                    .toList(size == 0 ? 1 : size)
+                    .blockingGet();
+        }
+
+        List<Genre> genresTemp = mt.genres();
         if (genresTemp != null) {
             int size = genresTemp.size();
             genres = Observable.fromIterable(genresTemp)
@@ -75,7 +86,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
                     .blockingGet();
         }
 
-        List<ProductionCompany> companies = movieTmdb.productionCompanies();
+        List<ProductionCompany> companies = mt.productionCompanies();
         if (companies != null) {
             int size = companies.size();
             productionCompanies = Observable.fromIterable(companies)
@@ -84,7 +95,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
                     .blockingGet();
         }
 
-        List<ProductionCountry> countries = movieTmdb.productionCountries();
+        List<ProductionCountry> countries = mt.productionCountries();
         if (countries != null) {
             int size = countries.size();
             productionCountries = Observable.fromIterable(countries)
@@ -93,7 +104,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
                     .blockingGet();
         }
 
-        List<SpokenLanguage> languages = movieTmdb.spokenLanguages();
+        List<SpokenLanguage> languages = mt.spokenLanguages();
         if (languages != null) {
             int size = languages.size();
             spokenLanguages = Observable.fromIterable(languages)
@@ -102,17 +113,45 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
                     .blockingGet();
         }
 
-        return MovieDetails.create(movieTmdb.id(), movieTmdb.imdbId(), movieTmdb.adult(), movieTmdb.backdropPath(),
-                movieTmdb.belongsToCollection(), movieTmdb.budget(),
+        List<VideoTmdb> videoTmdb = mt.videos().results();
+        if (videoTmdb != null) {
+            int size = videoTmdb.size();
+            videosDomains = Observable.fromIterable(videoTmdb).map(new Function<VideoTmdb, VideoDomain>() {
+                @Override
+                public VideoDomain apply(@NonNull VideoTmdb vt) throws Exception {
+                    return VideoDomain.create(vt.type(), vt.key(), vt.name());
+                }
+            }).toList(size == 0 ? 1 : size).blockingGet();
+        }
+
+
+        return MovieDetails.create(mt.id(),
+                mt.imdbId(),
+                mt.adult(),
+                mt.backdropPath(),
+                mt.belongsToCollection(),
+                mt.budget(),
                 genres,
-                movieTmdb.homepage(), movieTmdb.originalLanguage(),
-                movieTmdb.originalTitle(), movieTmdb.overview(), movieTmdb.popularity(), movieTmdb.posterPath(),
+                mt.homepage(),
+                mt.originalLanguage(),
+                mt.originalTitle(),
+                mt.overview(),
+                mt.popularity(),
+                mt.posterPath(),
                 productionCompanies,
                 productionCountries,
-                movieTmdb.releaseDate(), movieTmdb.revenue(), movieTmdb.runtime(),
+                mt.releaseDate(),
+                mt.revenue(),
+                mt.runtime(),
                 spokenLanguages,
-                movieTmdb.status(), movieTmdb.tagline(),
-                movieTmdb.title(), movieTmdb.video(), movieTmdb.voteAverage(), movieTmdb.voteCount(), castDomains,
-                ImageDomain.create(backdrops, posters));
+                mt.status(),
+                mt.tagline(),
+                mt.title(),
+                mt.video(),
+                mt.voteAverage(),
+                mt.voteCount(),
+                castDomains,
+                ImageDomain.create(backdrops, posters),
+                videosDomains);
     }
 }
