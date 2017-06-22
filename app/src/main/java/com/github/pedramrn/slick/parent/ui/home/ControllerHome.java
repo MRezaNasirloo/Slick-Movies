@@ -93,12 +93,12 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void onError(Throwable e) {
-
+e.printStackTrace();
     }
 
     @Override
     public void onComplete() {
-
+        Log.wtf(TAG, "onComplete() called x_X");
     }
 
     @Override

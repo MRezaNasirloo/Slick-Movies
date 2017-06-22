@@ -30,6 +30,7 @@ public class ItemAnticipatedList extends Item<RowAnticipatedListBinding> {
 
     @Override
     public void bind(RowAnticipatedListBinding viewBinding, int position) {
+        // TODO: 2017-06-22 add pager indicator
         Context context = viewBinding.getRoot().getContext();
         RecyclerView recyclerView = viewBinding.recyclerViewAnticipated;
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));

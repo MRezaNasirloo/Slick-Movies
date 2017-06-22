@@ -27,6 +27,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -61,6 +62,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     public void start() {
         if (home == null) {
             Observable<ViewStateHomePartial.ProgressivePopular> popular = Observable.just(new ViewStateHomePartial.ProgressivePopular());
+            Observable<ViewStateHomePartial.ProgressivePopular> subject = PublishSubject.create();
             Observable<ViewStateHomePartial> videos =
                     routerAnticipated.anticipated3().map(new Function<VideoDomain, ItemVideo>() {
                         @Override
@@ -81,16 +83,16 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                                     return new ViewStateHomePartial.VideosErrorImpl(throwable);
                                 }
                             });
-            home = Observable.merge(videos, popular)
+            home = Observable.merge(videos, popular, subject)
+                    .subscribeOn(io)
+                    .observeOn(main)
                     .scan(ViewStateHome.builder().build(), new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
                         @Override
                         public ViewStateHome apply(@NonNull ViewStateHome viewStateHome, @NonNull ViewStateHomePartial vp) throws Exception {
                             return vp.reduce(viewStateHome);
                         }
                     });
-            home.subscribeOn(io)
-                    .observeOn(main)
-                    .subscribe(this);
+            home.subscribe(this);
         }
     }
 

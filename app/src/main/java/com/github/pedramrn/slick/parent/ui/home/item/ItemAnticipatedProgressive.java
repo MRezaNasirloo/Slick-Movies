@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.res.ResourcesCompat;
@@ -40,6 +41,7 @@ public class ItemAnticipatedProgressive extends ItemAnticipated {
 
     @Override
     public void unbind(ViewHolder<RowAnticipatedBinding> holder) {
+        holder.binding.textViewTitleAnticipated.setBackgroundColor(Color.TRANSPARENT);
         holder.binding.textViewTitleAnticipated.setBackground(null);
         super.unbind(holder);
     }
