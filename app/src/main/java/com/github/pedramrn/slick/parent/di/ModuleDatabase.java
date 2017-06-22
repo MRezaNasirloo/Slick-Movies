@@ -27,7 +27,7 @@ import io.requery.sql.TableCreationMode;
 @Module(subcomponents = ComponentMain.class)
 public class ModuleDatabase {
 
-    @Provides
+    /*@Provides
     public ReactiveEntityStore<Persistable> entityStore(Context context) {
         final DatabaseSource source = new DatabaseSource(context, Models.DEFAULT, 1);
         if (BuildConfig.DEBUG) {
@@ -47,5 +47,5 @@ public class ModuleDatabase {
             entityStore.insert(userEntity).subscribe();
         }
         return entityStore;
-    }
+    }*/
 }

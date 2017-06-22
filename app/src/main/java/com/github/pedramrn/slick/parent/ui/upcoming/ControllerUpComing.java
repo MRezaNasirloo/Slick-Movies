@@ -33,8 +33,8 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
     PresenterUpComing presenter;
 
     ViewModelUpComing viewModelUpComing;
-    @Inject
-    ReactiveEntityStore<Persistable> entityStore;
+    // @Inject
+    // ReactiveEntityStore<Persistable> entityStore;
 
     @NonNull
     @Override

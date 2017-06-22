@@ -24,10 +24,10 @@ public class RepositoryUserImpl implements RepositoryUser {
 
     ReactiveEntityStore<Persistable> entityStore;
 
-    @Inject
+    /*@Inject
     public RepositoryUserImpl(ReactiveEntityStore<Persistable> entityStore) {
         this.entityStore = entityStore;
-    }
+    }*/
 
     @Override
     public Observable<User> get(String name) {

@@ -20,11 +20,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PresenterUpComing extends SlickPresenter<ViewUpComing> {
 
-    private final RepositoryUser repositoryUser;
+    private RepositoryUser repositoryUser;
 
     @Inject
-    public PresenterUpComing(RepositoryUserImpl repositoryUser) {
-        this.repositoryUser = repositoryUser;
+    public PresenterUpComing() {
+        // this.repositoryUser = repositoryUser;
     }
 
 

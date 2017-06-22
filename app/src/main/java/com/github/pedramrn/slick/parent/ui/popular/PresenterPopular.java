@@ -21,11 +21,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PresenterPopular extends SlickPresenter<ViewPopular> {
 
-    private final RepositoryUser repositoryUser;
+    private RepositoryUser repositoryUser;
 
     @Inject
-    public PresenterPopular(RepositoryUserImpl repositoryUser) {
-        this.repositoryUser = repositoryUser;
+    public PresenterPopular(/*RepositoryUserImpl repositoryUser*/) {
+        // this.repositoryUser = repositoryUser;
     }
 
 
