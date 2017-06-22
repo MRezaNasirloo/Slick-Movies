@@ -23,7 +23,7 @@ import retrofit2.http.Query;
 
 public class ModuleNetworkMock extends ModuleNetwork {
 
-    private final Context context;
+    /*private final Context context;
 
     public ModuleNetworkMock(Context context) {
         this.context = context;
@@ -47,5 +47,5 @@ public class ModuleNetworkMock extends ModuleNetwork {
                 return Observable.just(ApiMocker.apiMocker(context).getBoxOfficeItems());
             }
         };
-    }
+    }*/
 }

@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.trakt;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -12,7 +14,7 @@ import java.util.List;
  *         Created on: 2017-03-09
  */
 @AutoValue
-public abstract class MovieTrakFull {
+public abstract class MovieTraktFull {
 
     @SerializedName("title")
     public abstract String title();
@@ -35,9 +37,11 @@ public abstract class MovieTrakFull {
     @SerializedName("runtime")
     public abstract Integer runtime();
 
+    @Nullable
     @SerializedName("trailer")
     public abstract String trailer();
 
+    @Nullable
     @SerializedName("homepage")
     public abstract String homepage();
 
@@ -59,18 +63,19 @@ public abstract class MovieTrakFull {
     @SerializedName("genres")
     public abstract List<String> genres();
 
+    @Nullable
     @SerializedName("certification")
     public abstract String certification();
 
-    public static MovieTrakFull create(String title, Integer year, Ids ids, String tagline, String overview, String released, Integer runtime,
-                                       String trailer, String homepage, Float rating, Integer votes, String updatedAt, String language,
-                                       List<String> availableTranslations, List<String> genres, String certification) {
-        return new AutoValue_MovieTrakFull(title, year, ids, tagline, overview, released, runtime, trailer, homepage, rating, votes, updatedAt,
+    public static MovieTraktFull create(String title, Integer year, Ids ids, String tagline, String overview, String released, Integer runtime,
+                                        String trailer, String homepage, Float rating, Integer votes, String updatedAt, String language,
+                                        List<String> availableTranslations, List<String> genres, String certification) {
+        return new AutoValue_MovieTraktFull(title, year, ids, tagline, overview, released, runtime, trailer, homepage, rating, votes, updatedAt,
                 language, availableTranslations, genres, certification);
     }
 
-    public static TypeAdapter<MovieTrakFull> typeAdapter(Gson gson) {
-        return new AutoValue_MovieTrakFull.GsonTypeAdapter(gson);
+    public static TypeAdapter<MovieTraktFull> typeAdapter(Gson gson) {
+        return new AutoValue_MovieTraktFull.GsonTypeAdapter(gson);
     }
 
 }

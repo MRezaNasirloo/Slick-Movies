@@ -141,7 +141,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterCasts.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCasts.getFull(item.getPosition(item))))));
+                // getRouter().pushController(RouterTransaction.with(ProfileController((itemCasts.movieFull(item.getPosition(item))))));
                 Toast.makeText(ControllerDetails.this.getActivity(),
                         String.format(Locale.ENGLISH, "You clicked %s", ((ItemCast) item).getCast().name()), Toast.LENGTH_SHORT).show();
             }

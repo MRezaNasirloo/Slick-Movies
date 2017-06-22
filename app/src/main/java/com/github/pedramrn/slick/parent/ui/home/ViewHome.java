@@ -6,4 +6,5 @@ package com.github.pedramrn.slick.parent.ui.home;
  */
 
 public interface ViewHome {
+    void render(ViewStateHome state);
 }

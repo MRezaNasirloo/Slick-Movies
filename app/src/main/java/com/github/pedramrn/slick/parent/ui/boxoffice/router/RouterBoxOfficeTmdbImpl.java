@@ -64,7 +64,7 @@ public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
                                 .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieItem>>() {
                                     @Override
                                     public ObservableSource<MovieItem> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
-                                        return apiTmdb.get(boxOfficeItem.movie().ids().tmdb)
+                                        return apiTmdb.movie(boxOfficeItem.movie().ids().tmdb())
                                                 .subscribeOn(io)
                                                 .map(new Function<MovieTmdb, MovieItem>() {
                                                     @Override
@@ -84,7 +84,7 @@ public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
                                                                         .toList()
                                                                         .blockingGet(),
                                                                 movieTmdb.releaseDate(), movieTmdb.imdbId(),
-                                                                boxOfficeItem.movie().ids().trakt, boxOfficeItem.movie().ids().tmdb);
+                                                                boxOfficeItem.movie().ids().trakt(), boxOfficeItem.movie().ids().tmdb());
                                                     }
                                                 });
                                     }

@@ -62,7 +62,7 @@ public class RouterBoxOfficeOmdbImpl implements RouterBoxOffice {
                                 .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieItem>>() {
                                     @Override
                                     public ObservableSource<MovieItem> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
-                                        return apiOmdb.get(boxOfficeItem.movie().ids().imdb)
+                                        return apiOmdb.get(boxOfficeItem.movie().ids().imdb())
                                                 .subscribeOn(io)
                                                 .map(new Function<MovieOmdb, MovieItem>() {
                                                     @Override
@@ -76,7 +76,7 @@ public class RouterBoxOfficeOmdbImpl implements RouterBoxOffice {
                                                                 movieOmdb.writer(), movieOmdb.actors(), movieOmdb.plot(),
                                                                 Collections.singletonList(movieOmdb.production()),
                                                                 movieOmdb.released(), movieOmdb.imdbID(),
-                                                                boxOfficeItem.movie().ids().trakt, boxOfficeItem.movie().ids().tmdb);
+                                                                boxOfficeItem.movie().ids().trakt(), boxOfficeItem.movie().ids().tmdb());
                                                     }
                                                 });
                                     }

@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.model;
 
+import com.github.pedramrn.slick.parent.ui.home.ItemVideo;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipated;
 import com.google.auto.value.AutoValue;
 
 /**
@@ -8,12 +10,27 @@ import com.google.auto.value.AutoValue;
  */
 
 @AutoValue
-public abstract class Video {
+public abstract class Video implements ItemVideo {
+
+    public abstract Integer tmdb();
+
     public abstract String type();
+
     public abstract String key();
+
     public abstract String name();
 
-    public static Video create(String type, String key, String name) {
-        return new AutoValue_Video(type, key, name);
+    public String thumbnail(){
+        return String.format("https://i1.ytimg.com/vi/%s/hqdefault.jpg", key());
     }
+
+    @Override
+    public ItemAnticipated render(int id) {
+        return new ItemAnticipated(id, this);
+    }
+
+    public static Video create(Integer tmdb, String type, String key, String name) {
+        return new AutoValue_Video(tmdb, type, key, name);
+    }
+
 }

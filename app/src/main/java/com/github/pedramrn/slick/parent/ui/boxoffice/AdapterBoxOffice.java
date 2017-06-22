@@ -62,7 +62,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         holder.binding.setVariable(BR.vm, movieBoxOfficeItems.get(position));
         holder.binding.setRank(movieBoxOfficeItems.get(position).rank(position));
         holder.binding.textViewTitle.setSelected(true);
-        //        holder.binding.textViewTitle.setText(movieBoxOfficeItems.getFull(position).name());
+        //        holder.binding.textViewTitle.setText(movieBoxOfficeItems.movieFull(position).name());
         imageLoader.with(holder.binding.imageView.getContext().getApplicationContext())
                 .load(movieBoxOfficeItems.get(position).posterMedium()).into(holder.binding.imageView);
         holder.binding.imageView.setTransitionName(transitionName);
@@ -146,7 +146,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
     @BindingAdapter("imageUrl")
     public static void bindImageUrl(ImageView imageView, String url) {
-        //        Glide.with(holder.textViewTitle.getContext().getApplicationContext()).load(movieBoxOfficeItems.getFull(position).poster()).into(holder.imageView);
+        //        Glide.with(holder.textViewTitle.getContext().getApplicationContext()).load(movieBoxOfficeItems.movieFull(position).poster()).into(holder.imageView);
         imageLoader.with(imageView.getContext().getApplicationContext()).load(url).into(imageView);
     }
 

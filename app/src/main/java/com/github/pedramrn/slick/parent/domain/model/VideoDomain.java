@@ -11,14 +11,17 @@ import com.google.gson.TypeAdapter;
 
 @AutoValue
 public abstract class VideoDomain {
+
+    public abstract Integer tmdb();
+
     public abstract String type();
 
     public abstract String key();
 
     public abstract String name();
 
-    public static VideoDomain create(String type, String key, String name) {
-        return new AutoValue_VideoDomain(type, key, name);
+    public static VideoDomain create(Integer tmdb, String type, String key, String name) {
+        return new AutoValue_VideoDomain(tmdb, type, key, name);
     }
 
 }

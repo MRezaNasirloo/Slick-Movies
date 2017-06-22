@@ -40,7 +40,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
     }
 
     @Override
-    public MovieDetails apply(@NonNull MovieTmdb mt) throws Exception {
+    public MovieDetails apply(@NonNull final MovieTmdb mt) throws Exception {
 
         Credit credits = mt.credits();
         ImageTmdb images = mt.images();
@@ -119,7 +119,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
             videosDomains = Observable.fromIterable(videoTmdb).map(new Function<VideoTmdb, VideoDomain>() {
                 @Override
                 public VideoDomain apply(@NonNull VideoTmdb vt) throws Exception {
-                    return VideoDomain.create(vt.type(), vt.key(), vt.name());
+                    return VideoDomain.create(mt.id(), vt.type(), vt.key(), vt.name());
                 }
             }).toList(size == 0 ? 1 : size).blockingGet();
         }

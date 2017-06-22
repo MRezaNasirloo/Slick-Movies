@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
+import android.util.Log;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowAnticipatedBinding;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
@@ -12,7 +14,14 @@ import com.xwray.groupie.Item;
 
 public class ItemAnticipated extends Item<RowAnticipatedBinding> {
 
+    private Video video;
+
     public ItemAnticipated(long id, Video video) {
+        super(id);
+        this.video = video;
+    }
+
+    public ItemAnticipated(long id) {
         super(id);
     }
 
@@ -23,6 +32,10 @@ public class ItemAnticipated extends Item<RowAnticipatedBinding> {
 
     @Override
     public void bind(RowAnticipatedBinding viewBinding, int position) {
-        viewBinding.imageViewThumbnail.load("url");
+        viewBinding.imageViewThumbnail.load(video.thumbnail());
+        Log.d(TAG, "bind() called" + video.thumbnail());
+        viewBinding.textViewTitleAnticipated.setText(video.name());
     }
+
+    private static final String TAG = ItemAnticipated.class.getSimpleName();
 }

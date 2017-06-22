@@ -87,7 +87,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                             final List<Video> videos = Observable.fromIterable(videosDomain).map(new Function<VideoDomain, Video>() {
                                 @Override
                                 public Video apply(@NonNull VideoDomain vd) throws Exception {
-                                    return Video.create(vd.type(), vd.key(), vd.name());
+                                    return Video.create(vd.tmdb(), vd.type(), vd.key(), vd.name());
                                 }
                             }).toList(size == 0 ? 1 : size).blockingGet();
 

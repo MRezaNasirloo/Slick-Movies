@@ -75,7 +75,7 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                 }).map(new Function<MovieBoxOffice, List<MovieBoxOffice>>() {
                     @Override
                     public List<MovieBoxOffice> apply(@NonNull MovieBoxOffice movieBoxOfficeItem) throws Exception {
-                        final ArrayList<MovieBoxOffice> list = new ArrayList<>();
+                        final ArrayList<MovieBoxOffice> list = new ArrayList<>(1);
                         list.add(movieBoxOfficeItem);
                         return list;
                     }
