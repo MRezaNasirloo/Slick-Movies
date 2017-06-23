@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -34,6 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ModuleNetwork {
 
     @Provides
+    @Singleton
     public OkHttpClient okHttpClient() {
         final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -46,7 +48,7 @@ public class ModuleNetwork {
     }
 
     @Provides
-    public Retrofit.Builder retrofit(OkHttpClient okHttpClient, Gson gson) {
+    public Retrofit.Builder retrofit(@Singleton OkHttpClient okHttpClient, Gson gson) {
         return new Retrofit.Builder()
                 //                .baseUrl("https://api.themoviedb.org/3/")
                 //                .baseUrl("http://www.omdbapi.com")
@@ -64,7 +66,7 @@ public class ModuleNetwork {
     }
 
     @Provides
-    public ApiTmdb tmdbClient(@Named("tmdb") String url, OkHttpClient okHttpClient, Gson gson) {
+    public ApiTmdb tmdbClient(@Named("tmdb") HttpUrl url, @Singleton OkHttpClient okHttpClient, Gson gson) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -84,7 +86,7 @@ public class ModuleNetwork {
     }
 
     @Provides
-    public ApiTrakt boxOfficeWeekend(@Named("trakt") String url, OkHttpClient okHttpClient, Gson gson) {
+    public ApiTrakt boxOfficeWeekend(@Named("trakt") HttpUrl url, @Singleton OkHttpClient okHttpClient, Gson gson) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -106,6 +108,7 @@ public class ModuleNetwork {
     }
 
     @Provides
+    @Singleton
     public Gson gsonConverterFactory() {
         return new GsonBuilder()
                 .registerTypeAdapterFactory(TypeAdapterFactoryGson.create())
@@ -118,15 +121,15 @@ public class ModuleNetwork {
 
     @Provides
     @Named("trakt")
-    public String apiUrlTrakt() {
-        return "https://api.trakt.tv";
+    public HttpUrl apiUrlTrakt() {
+        return HttpUrl.parse("https://api.trakt.tv");
     }
 
 
     @Provides
     @Named("tmdb")
-    public String apiUrlTmdb() {
-        return "https://api.themoviedb.org/3/";
+    public HttpUrl apiUrlTmdb() {
+        return HttpUrl.parse("https://api.themoviedb.org/3/");
     }
 
 }

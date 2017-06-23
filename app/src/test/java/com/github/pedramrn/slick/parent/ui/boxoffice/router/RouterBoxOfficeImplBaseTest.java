@@ -64,8 +64,8 @@ public class RouterBoxOfficeImplBaseTest {
         HttpUrl url = server.url("/");
 
         ModuleNetwork mn = new ModuleNetwork();
-        ApiTrakt apiTrakt = mn.boxOfficeWeekend(url.toString(), mn.okHttpClient(), mn.gsonConverterFactory());
-        ApiTmdb apiTmdb = mn.tmdbClient(url.toString(), mn.okHttpClient(), mn.gsonConverterFactory());
+        ApiTrakt apiTrakt = mn.boxOfficeWeekend(url, mn.okHttpClient(), mn.gsonConverterFactory());
+        ApiTmdb apiTmdb = mn.tmdbClient(url, mn.okHttpClient(), mn.gsonConverterFactory());
 
         routerBoxOffice = new RouterBoxOfficeTmdbImpl(apiTrakt, apiTmdb, new MapperSimpleData(), Schedulers.trampoline());
     }

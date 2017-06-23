@@ -3,7 +3,6 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
-import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeOmdbImpl;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeTmdbImpl;
 import com.github.slick.SlickPresenter;
 
@@ -67,7 +66,8 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                 .map(new Function<MovieItem, MovieBoxOffice>() {
                     @Override
                     public MovieBoxOffice apply(@NonNull MovieItem movieItem) throws Exception {
-                        return MovieBoxOffice.create(movieItem.name(), movieItem.revenue(), movieItem.poster(), movieItem.scoreMeta(), movieItem.scoreImdb(),
+                        return MovieBoxOffice.create(movieItem.name(), movieItem.revenue(), movieItem.poster(), movieItem.scoreMeta(),
+                                movieItem.scoreImdb(),
                                 movieItem.votesImdb(), movieItem.rated(), movieItem.runtime(), movieItem.genre(), movieItem.director(),
                                 movieItem.writer(), movieItem.actors(), movieItem.plot(), movieItem.production(), movieItem.released(),
                                 movieItem.imdb(), movieItem.trakt(), movieItem.tmdb());
@@ -81,9 +81,10 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
                     }
                 }).scan(new BiFunction<List<MovieBoxOffice>, List<MovieBoxOffice>, List<MovieBoxOffice>>() {
                     @Override
-                    public List<MovieBoxOffice> apply(@NonNull List<MovieBoxOffice> movieBoxOfficeItems, @NonNull List<MovieBoxOffice> movieBoxOfficeItems2) throws Exception {
-                        movieBoxOfficeItems.addAll(movieBoxOfficeItems2);
-                        return movieBoxOfficeItems;
+                    public List<MovieBoxOffice> apply(@NonNull List<MovieBoxOffice> boxOfficeList, @NonNull List<MovieBoxOffice> boxOfficeList2)
+                            throws Exception {
+                        boxOfficeList.addAll(boxOfficeList2);
+                        return boxOfficeList;
                     }
                 }).subscribeOn(io)
                 .observeOn(main);

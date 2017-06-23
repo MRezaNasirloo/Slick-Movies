@@ -6,15 +6,15 @@ import android.support.annotation.NonNull;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleNetwork;
-import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
+import com.jakewharton.espresso.OkHttp3IdlingResource;
 
 import org.mockito.Mockito;
 
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -27,23 +27,31 @@ import static org.mockito.Mockito.when;
 
 public class TestApp extends App {
 
+    private static HttpUrl httpUrl = HttpUrl.parse("/");
+    private static OkHttp3IdlingResource okHttp3IdlingResource;
+    private static OkHttpClient okHttpClient;
+
+    public static void setBaseUrl(HttpUrl baseUrl) {
+        TestApp.httpUrl = baseUrl;
+    }
+
     @NonNull
     @Override
     protected DaggerComponentApp.Builder prepareDi() {
         return super.prepareDi().moduleNetwork(new ModuleNetwork() {
             @Override
-            public String apiUrlTrakt() {
-                return "https://api.test.com/";
+            public HttpUrl apiUrlTrakt() {
+                return TestApp.httpUrl;
             }
 
             @Override
-            public String apiUrlTmdb() {
-                return "https://api.test.com/";
+            public HttpUrl apiUrlTmdb() {
+                return TestApp.httpUrl;
             }
-        }).moduleScheduler(new ModuleScheduler() {
+
             @Override
-            public Scheduler provideBackgroundThreadScheduler() {
-                return AndroidSchedulers.mainThread();
+            public OkHttpClient okHttpClient() {
+                return TestApp.okHttpClient;
             }
         });
     }
@@ -63,5 +71,15 @@ public class TestApp extends App {
 
     }
 
+    public static OkHttp3IdlingResource getOkHttp3IdlingResource() {
+        return okHttp3IdlingResource;
+    }
 
+    public static void setOkHttpClient(OkHttpClient okHttpClient) {
+        TestApp.okHttpClient = okHttpClient;
+    }
+
+    public static OkHttpClient getOkHttpClient() {
+        return okHttpClient;
+    }
 }

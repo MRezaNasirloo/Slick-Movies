@@ -55,8 +55,10 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
         if (e instanceof HttpException) {
             if (((HttpException) e).code() == HttpURLConnection.HTTP_FORBIDDEN) {
                 view.showSnackBar("Network field. Reset your router, ip is blocked.");
+                return;
             }
         }
+        throw new RuntimeException(e);
         //        view.onError(e);
     }
 
