@@ -56,10 +56,6 @@ public interface ViewStateHomePartial {
             progressive.add(new ItemVideoProgressiveImpl());
         }
 
-        public List<ItemVideo> getProgressive() {
-            return progressive;
-        }
-
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             return viewStateHome.toBuilder().items(progressive).build();

@@ -8,6 +8,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -24,4 +25,7 @@ public interface ApiTrakt {
 
     @GET("/movies/anticipated")
     Observable<List<AnticipatedTraktMetadata>> anticipatedMetadata();
+
+    @GET("/movies/anticipated")
+    Observable<List<AnticipatedTraktMetadata>> anticipatedMetadata(@Query("page") int page, @Query("limit") int size);
 }

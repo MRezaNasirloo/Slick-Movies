@@ -8,6 +8,7 @@ import org.mockito.Mock;
 
 import java.util.List;
 
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -24,7 +25,8 @@ public class ViewModelBoxOfficeTest extends RouterBoxOfficeImplBaseTest {
 
     @Test
     public void test() throws Exception {
-        PresenterBoxOffice presenter = new PresenterBoxOffice(routerBoxOffice, Schedulers.trampoline(), Schedulers.trampoline());
+        Scheduler scheduler = Schedulers.trampoline();
+        PresenterBoxOffice presenter = new PresenterBoxOffice(routerBoxOffice, scheduler, scheduler);
         ViewModelBoxOffice viewModel = new ViewModelBoxOffice(new CompositeDisposable(), presenter, view);
 
         TestObserver<List<MovieBoxOffice>> test = viewModel.boxOfficeList().test();

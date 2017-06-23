@@ -23,6 +23,7 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
     private final PresenterBoxOffice presenter;
     private final ViewBoxOffice view;
     private BehaviorSubject<List<MovieBoxOffice>> movieItems = BehaviorSubject.create();
+    private boolean isLoading = false;
 
 
     public ViewModelBoxOffice(CompositeDisposable disposable, PresenterBoxOffice presenter, ViewBoxOffice view) {
@@ -43,6 +44,7 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
 
     @Override
     public void onNext(ViewStateBoxOffice viewStateBoxOffice) {
+        isLoading = false;
         view.render(viewStateBoxOffice);
         movieItems.onNext(viewStateBoxOffice.movieItems());
     }
@@ -69,5 +71,13 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
 
     public Observable<List<MovieBoxOffice>> boxOfficeList() {
         return movieItems;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading() {
+        isLoading = true;
     }
 }

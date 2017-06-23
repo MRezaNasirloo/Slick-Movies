@@ -8,6 +8,7 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.MovieOmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +34,7 @@ public class ApiMocker {
 
     private static List<BoxOfficeItem> boxOfficeItems;
     private static MovieOmdb movieOmdb;
+    private final MovieTmdb movieTmdb;
     private static ApiMocker apiMocker;
 
     @SuppressWarnings("ConstantConditions")
@@ -42,11 +44,14 @@ public class ApiMocker {
         }.getType();
         InputStream inputStreamTrakt = null;
         InputStream inputStreamOmdb = null;
+        InputStream inputStreamTmdb = null;
         try {
             inputStreamTrakt = assets.open("api_trakt.json");
             inputStreamOmdb = assets.open("api_omdb.json");
+            inputStreamTmdb = assets.open("api_tmdb_simple.json");
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         Gson gson = new GsonBuilder()
@@ -54,6 +59,7 @@ public class ApiMocker {
                 .create();
         boxOfficeItems = gson.fromJson(new JsonReader(new InputStreamReader(inputStreamTrakt)), type);
         movieOmdb = gson.fromJson(new JsonReader(new InputStreamReader(inputStreamOmdb)), MovieOmdb.class);
+        movieTmdb = gson.fromJson(new JsonReader(new InputStreamReader(inputStreamTmdb)), MovieTmdb.class);
     }
 
     public static ApiMocker apiMocker(Context context) {

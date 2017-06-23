@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -23,8 +24,9 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
 
     @Override
     public ToolbarHost setToolbar(Toolbar toolbar) {
-        if (getActivity() != null) {
-            return ((ToolbarHost) getActivity()).setToolbar(toolbar);
+        Activity activity = getActivity();
+        if (activity != null && activity instanceof ToolbarHost) {
+            return ((ToolbarHost) activity).setToolbar(toolbar);
         }
         //emulate no-op impl
         return this;
@@ -33,8 +35,9 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
 
     @Override
     public ToolbarHost setupButton(boolean enable) {
-        if (getActivity() != null) {
-            return ((ToolbarHost) getActivity()).setupButton(enable);
+        Activity activity = getActivity();
+        if (activity != null && activity instanceof ToolbarHost) {
+            return ((ToolbarHost) activity).setupButton(enable);
         }//emulate no-op impl
         return this;
     }

@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -63,7 +64,7 @@ public class ModuleNetwork {
     }
 
     @Provides
-    public ApiTmdb tmdbClient(OkHttpClient okHttpClient, Gson gson) {
+    public ApiTmdb tmdbClient(@Named("tmdb") String url, OkHttpClient okHttpClient, Gson gson) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -78,12 +79,12 @@ public class ModuleNetwork {
                 .client(httpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("https://api.themoviedb.org/3/").build()
+                .baseUrl(url).build()
                 .create(ApiTmdb.class);
     }
 
     @Provides
-    public ApiTrakt boxOfficeWeekend(OkHttpClient okHttpClient, Gson gson) {
+    public ApiTrakt boxOfficeWeekend(@Named("trakt") String url, OkHttpClient okHttpClient, Gson gson) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -100,7 +101,7 @@ public class ModuleNetwork {
                 .client(httpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("https://api.trakt.tv").build()
+                .baseUrl(url).build()
                 .create(ApiTrakt.class);
     }
 
@@ -114,4 +115,18 @@ public class ModuleNetwork {
         final Gson gson = new GsonBuilder().registerTypeAdapter(type, null).componentMainBuilder();
         return GsonConverterFactory.componentMainBuilder(gson);*/
     }
+
+    @Provides
+    @Named("trakt")
+    public String apiUrlTrakt() {
+        return "https://api.trakt.tv";
+    }
+
+
+    @Provides
+    @Named("tmdb")
+    public String apiUrlTmdb() {
+        return "https://api.themoviedb.org/3/";
+    }
+
 }
