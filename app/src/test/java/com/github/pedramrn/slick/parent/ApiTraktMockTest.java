@@ -2,16 +2,21 @@ package com.github.pedramrn.slick.parent;
 
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.TraktPageMetadata;
+import com.github.pedramrn.slick.parent.util.ListToObserable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.List;
+
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Predicate;
 
 import static com.github.pedramrn.slick.parent.TestUtils.readFile;
 
@@ -25,13 +30,17 @@ public class ApiTraktMockTest {
 
     @Before
     public void setUp() throws Exception {
-        final InputStream inputStreamTrakt = ClassLoader.getSystemResourceAsStream("api_trakt.json");
+        final InputStream inputStreamTrakt = ClassLoader.getSystemResourceAsStream("api_trakt_trending_200.json");
         final String bufferTrakt = readFile(inputStreamTrakt);
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(TypeAdapterFactoryGson.create())
                 .create();
 
-        apiTraktMock = new ApiTraktMock(bufferTrakt, gson);
+        Type type = new TypeToken<List<TraktPageMetadata>>() {
+        }.getType();
+
+        List<TraktPageMetadata> trendingList = gson.fromJson(bufferTrakt, type);
+        apiTraktMock = new ApiTraktMock(gson, trendingList);
 
     }
 
@@ -42,8 +51,22 @@ public class ApiTraktMockTest {
 
     @Test
     public void trending() throws Exception {
-        List<List<TraktPageMetadata>> values = apiTraktMock.trending(1, 10).test().assertValueCount(1).values();
-        Assert.assertEquals(values.get(0).size(), 10);
-    }
+        apiTraktMock.trending(1, 10)
+                .flatMap(new ListToObserable<TraktPageMetadata>())
+                .test()
+                .assertValueCount(10)
+                .assertComplete();
 
+        apiTraktMock.trending(2, 3)
+                .flatMap(new ListToObserable<TraktPageMetadata>())
+                .test()
+                .assertValueCount(3)
+                .assertValueAt(0, new Predicate<TraktPageMetadata>() {
+                    @Override
+                    public boolean test(@NonNull TraktPageMetadata tpm) throws Exception {
+                        return tpm.movie().ids().tmdb().equals(417644);
+                    }
+                })
+                .assertComplete();
+    }
 }

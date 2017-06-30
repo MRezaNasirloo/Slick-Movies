@@ -20,25 +20,29 @@ public abstract class ApiMockBase<API> {
     protected final BehaviorDelegate<API> delegate;
     protected final Gson gson;
 
-    public ApiMockBase(BehaviorDelegate<API> delegate, String jsonData, Gson gson) {
+    public ApiMockBase(BehaviorDelegate<API> delegate, Gson gson) {
         this.delegate = delegate;
         this.gson = gson;
-        init(jsonData, gson);
 
     }
 
-    public ApiMockBase(String jsonData, Gson gson) {
+    public ApiMockBase(NetworkBehavior behavior, Gson gson) {
         this.gson = gson;
-        delegate = createBehavior(gson);
-        init(jsonData, gson);
+        delegate = createBehavior(behavior, gson);
     }
 
-    protected BehaviorDelegate<API> createBehavior(Gson gson) {
+    public ApiMockBase(Gson gson) {
+        this.gson = gson;
+        delegate = createBehavior(NetworkBehavior.create(), gson);
+    }
+
+
+    protected BehaviorDelegate<API> createBehavior(NetworkBehavior behavior, Gson gson) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(getBaseUrl()).build();
-        MockRetrofit mockRetrofit = new MockRetrofit.Builder(retrofit).networkBehavior(NetworkBehavior.create()).build();
+        MockRetrofit mockRetrofit = new MockRetrofit.Builder(retrofit).networkBehavior(behavior).build();
         return mockRetrofit.create(getApiClassType());
     }
 
@@ -49,5 +53,4 @@ public abstract class ApiMockBase<API> {
 
     protected abstract Class<API> getApiClassType();
 
-    protected abstract void init(String jsonData, Gson gson);
 }

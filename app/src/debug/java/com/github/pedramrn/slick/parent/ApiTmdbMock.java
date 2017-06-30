@@ -3,13 +3,10 @@ package com.github.pedramrn.slick.parent;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
-import com.github.pedramrn.slick.parent.datasource.network.models.trakt.TraktPageMetadata;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -17,6 +14,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 import retrofit2.http.Path;
 import retrofit2.mock.BehaviorDelegate;
+import retrofit2.mock.NetworkBehavior;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -25,18 +23,21 @@ import retrofit2.mock.BehaviorDelegate;
 
 public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
-    private final Type type = new TypeToken<List<TraktPageMetadata>>() {
-    }.getType();
+    private final List<MovieTmdb> popularList;
 
-    private List<MovieTmdb> popularList;
-
-    public ApiTmdbMock(BehaviorDelegate<ApiTmdb> delegate, String jsonData, Gson gson) {
-        super(delegate, jsonData, gson);
+    public ApiTmdbMock(BehaviorDelegate<ApiTmdb> delegate, Gson gson, List<MovieTmdb> popularList) {
+        super(delegate, gson);
+        this.popularList = popularList;
     }
 
-    public ApiTmdbMock(String jsonData, Gson gson) {
-        super(jsonData, gson);
+    public ApiTmdbMock(NetworkBehavior behavior, Gson gson, List<MovieTmdb> popularList) {
+        super(behavior, gson);
+        this.popularList = popularList;
+    }
 
+    public ApiTmdbMock(Gson gson, List<MovieTmdb> popularList) {
+        super(gson);
+        this.popularList = popularList;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
             public boolean test(@NonNull MovieTmdb movieTmdb) throws Exception {
                 return movieTmdb.id().equals(id);
             }
-        }).firstOrError().toObservable();
+        }).first(popularList.get(0)).toObservable();
     }
 
     @Override
@@ -67,14 +68,5 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
     @Override
     protected Class<ApiTmdb> getApiClassType() {
         return ApiTmdb.class;
-    }
-
-    @Override
-    protected void init(String jsonData, Gson gson) {
-        Type type = new TypeToken<List<TraktPageMetadata>>() {
-        }.getType();
-        Type type2 = new TypeToken<List<MovieTmdb>>() {
-        }.getType();
-        popularList = gson.fromJson(jsonData, type2);
     }
 }

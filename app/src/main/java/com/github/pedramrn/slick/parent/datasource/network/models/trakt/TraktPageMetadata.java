@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.trakt;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -20,9 +22,9 @@ public abstract class TraktPageMetadata {
         return new AutoValue_TraktPageMetadata(movie);
     }
 
-    /*public static TypeAdapter<TraktPageMetadata> typeAdapter(Gson gson) {
+    public static TypeAdapter<TraktPageMetadata> typeAdapter(Gson gson) {
         return new AutoValue_TraktPageMetadata.GsonTypeAdapter(gson);
-    }*/
+    }
 
 
 }
