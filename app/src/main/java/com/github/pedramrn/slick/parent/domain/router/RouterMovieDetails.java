@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
-import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
-import com.github.pedramrn.slick.parent.domain.model.MovieItem;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 
 import io.reactivex.Observable;
 
@@ -12,5 +11,5 @@ import io.reactivex.Observable;
 
 public interface RouterMovieDetails {
 
-   Observable<MovieDetails> get(Integer tmdbId);
+    Observable<MovieDomain> get(Integer tmdbId);
 }

@@ -7,11 +7,11 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.TraktPageMetadata;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
-import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 
 import java.util.List;
@@ -53,15 +53,15 @@ public class RouterAnticipatedImpl implements RouterAnticipated {
 
 
     @Override
-    public Observable<MovieDetails> anticipated2() {
+    public Observable<MovieDomain> anticipated2() {
         return apiTrakt.anticipated().flatMap(new Function<AnticipatedTrakt, Observable<MovieTraktFull>>() {
             @Override
             public Observable<MovieTraktFull> apply(@NonNull AnticipatedTrakt at) throws Exception {
                 return Observable.fromIterable(at.movie());
             }
-        }).concatMap(new Function<MovieTraktFull, ObservableSource<? extends MovieDetails>>() {
+        }).concatMap(new Function<MovieTraktFull, ObservableSource<? extends MovieDomain>>() {
             @Override
-            public ObservableSource<? extends MovieDetails> apply(@io.reactivex.annotations.NonNull MovieTraktFull movieTraktFull) throws Exception {
+            public ObservableSource<? extends MovieDomain> apply(@io.reactivex.annotations.NonNull MovieTraktFull movieTraktFull) throws Exception {
                 return apiTmdb.withVideos(movieTraktFull.ids().tmdb()).map(mapper);
             }
         });
@@ -69,12 +69,12 @@ public class RouterAnticipatedImpl implements RouterAnticipated {
 
     @Override
     public Observable<VideoDomain> anticipated3() {
-        return apiTrakt.anticipatedMetadata().flatMap(new Function<List<AnticipatedTraktMetadata>, Observable<MovieTraktMetadata>>() {
+        return apiTrakt.anticipatedMetadata().flatMap(new Function<List<TraktPageMetadata>, Observable<MovieTraktMetadata>>() {
             @Override
-            public Observable<MovieTraktMetadata> apply(@NonNull List<AnticipatedTraktMetadata> at) throws Exception {
-                return Observable.fromIterable(at).map(new Function<AnticipatedTraktMetadata, MovieTraktMetadata>() {
+            public Observable<MovieTraktMetadata> apply(@NonNull List<TraktPageMetadata> at) throws Exception {
+                return Observable.fromIterable(at).map(new Function<TraktPageMetadata, MovieTraktMetadata>() {
                     @Override
-                    public MovieTraktMetadata apply(@NonNull AnticipatedTraktMetadata atm) throws Exception {
+                    public MovieTraktMetadata apply(@NonNull TraktPageMetadata atm) throws Exception {
                         return atm.movie();
                     }
                 });

@@ -9,7 +9,7 @@ import java.util.List;
  *         Created on: 2017-04-11
  */
 @AutoValue
-public abstract class MovieDetails {
+public abstract class MovieDomain {
 
     public abstract Integer id();
 
@@ -67,14 +67,14 @@ public abstract class MovieDetails {
 
     public abstract List<VideoDomain> videos();
 
-    public static MovieDetails create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
-                                      List<String> genres, String homepage, String originalLanguage, String originalTitle, String overview,
-                                      Float popularity, String posterPath, List<String> productionCompanies, List<String> productionCountries,
-                                      String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages, String status,
-                                      String tagline,
-                                      String title, Boolean video, Float voteAverage, Integer voteCount, List<CastDomain> casts, ImageDomain images,
-                                      List<VideoDomain> videos) {
-        return new AutoValue_MovieDetails(id, imdbId, adult, backdropPath, belongsToCollection, budget, genres, homepage, originalLanguage,
+    public static MovieDomain create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
+                                     List<String> genres, String homepage, String originalLanguage, String originalTitle, String overview,
+                                     Float popularity, String posterPath, List<String> productionCompanies, List<String> productionCountries,
+                                     String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages, String status,
+                                     String tagline,
+                                     String title, Boolean video, Float voteAverage, Integer voteCount, List<CastDomain> casts, ImageDomain images,
+                                     List<VideoDomain> videos) {
+        return new AutoValue_MovieDomain(id, imdbId, adult, backdropPath, belongsToCollection, budget, genres, homepage, originalLanguage,
                 originalTitle, overview, popularity, posterPath, productionCompanies, productionCountries, releaseDate, revenue, runtime,
                 spokenLanguages, status, tagline, title, video, voteAverage, voteCount, casts, images, videos);
     }

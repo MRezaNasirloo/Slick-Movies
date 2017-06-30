@@ -3,7 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details;
 import android.util.Log;
 
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
-import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
@@ -56,9 +56,9 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
         if (details == null) {
             details = routerMovieDetails.get(tmdbId)
                     //Maps the domains Models to View Models which have android dependency
-                    .map(new Function<MovieDetails, Movie>() {
+                    .map(new Function<MovieDomain, Movie>() {
                         @Override
-                        public Movie apply(@NonNull MovieDetails md) throws Exception {
+                        public Movie apply(@NonNull MovieDomain md) throws Exception {
                             // TODO: 2017-06-20 Extract mapper
                             //casts
                             List<CastDomain> castDomains = md.casts();

@@ -13,7 +13,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.SpokenLan
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb;
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
-import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 
 import java.util.Collections;
@@ -29,7 +29,7 @@ import io.reactivex.functions.Function;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-15
  */
-public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
+public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
     private final MapperCast mapperCast;
     private final MapperSimpleData mapperData;
 
@@ -40,7 +40,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
     }
 
     @Override
-    public MovieDetails apply(@NonNull final MovieTmdb mt) throws Exception {
+    public MovieDomain apply(@NonNull final MovieTmdb mt) throws Exception {
 
         Credit credits = mt.credits();
         ImageTmdb images = mt.images();
@@ -125,7 +125,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDetails> {
         }
 
 
-        return MovieDetails.create(mt.id(),
+        return MovieDomain.create(mt.id(),
                 mt.imdbId(),
                 mt.adult(),
                 mt.backdropPath(),

@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.datasource.network;
 
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTraktMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.TraktPageMetadata;
 
 import java.util.List;
 
@@ -24,8 +24,12 @@ public interface ApiTrakt {
     Observable<AnticipatedTrakt> anticipated();
 
     @GET("/movies/anticipated")
-    Observable<List<AnticipatedTraktMetadata>> anticipatedMetadata();
+    Observable<List<TraktPageMetadata>> anticipatedMetadata();
 
     @GET("/movies/anticipated")
-    Observable<List<AnticipatedTraktMetadata>> anticipatedMetadata(@Query("page") int page, @Query("limit") int size);
+    Observable<List<TraktPageMetadata>> anticipatedMetadata(@Query("page") int page, @Query("limit") int size);
+
+    @GET("/movies/trending")
+    Observable<List<TraktPageMetadata>> trending(@Query("page") int page, @Query("limit") int size);
+
 }

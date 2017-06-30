@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home.router;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
-import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class RouterMovieDetailsVideoImpl implements RouterMovieDetails {
     }
 
     @Override
-    public Observable<MovieDetails> get(final Integer tmdbId) {
+    public Observable<MovieDomain> get(final Integer tmdbId) {
         return apiTmdb.withVideos(tmdbId).map(mapperMovie);
     }
 

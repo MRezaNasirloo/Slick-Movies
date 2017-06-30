@@ -1,8 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
-import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
-import com.github.pedramrn.slick.parent.domain.model.MovieDetails;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 
 import io.reactivex.Observable;
@@ -14,6 +13,7 @@ import io.reactivex.Observable;
 
 public interface RouterAnticipated {
     Observable<MovieTraktFull> anticipated();
-    Observable<MovieDetails> anticipated2();
+
+    Observable<MovieDomain> anticipated2();
     Observable<VideoDomain> anticipated3();
 }
