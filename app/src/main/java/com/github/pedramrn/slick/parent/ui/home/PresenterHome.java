@@ -6,6 +6,7 @@ import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipated;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipatedImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
 import com.github.pedramrn.slick.parent.util.Scan;

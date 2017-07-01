@@ -1,7 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.model;
 
-import com.github.pedramrn.slick.parent.ui.home.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipated;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.google.auto.value.AutoValue;
 
 /**

@@ -16,6 +16,7 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
 import javax.inject.Inject;
@@ -40,6 +41,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     UpdatingGroup progressiveAnticipated = new UpdatingGroup();
     ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
     private Disposable disposable;
+    private UpdatingGroup adapterTrending;
 
 
     @NonNull
@@ -53,6 +55,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         if (adapterMain.getAdapterPosition(itemAnticipatedList) == -1) {
             adapterMain.add(itemAnticipatedList);
             adapterAnticipated.add(progressiveAnticipated);
+
+            adapterTrending = new UpdatingGroup();
+            Section sectionTrending = new Section(adapterTrending);
+            adapterMain.add(sectionTrending);
 
             adapterMain.add(new ItemOverview("Nunquam carpseris candidatus.Hercle, domus neuter!, palus!"));
         }

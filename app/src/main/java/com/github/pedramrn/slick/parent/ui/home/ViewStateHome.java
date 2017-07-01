@@ -5,6 +5,7 @@ import android.support.annotation.UiThread;
 
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipated;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.github.pedramrn.slick.parent.util.Indexed;
 import com.google.auto.value.AutoValue;

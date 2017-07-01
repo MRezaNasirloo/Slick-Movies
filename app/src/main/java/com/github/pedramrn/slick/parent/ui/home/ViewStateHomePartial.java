@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemVideoProgressiveImpl;
 
 import java.util.ArrayList;
 import java.util.List;
