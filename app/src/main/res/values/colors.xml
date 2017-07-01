@@ -4,6 +4,7 @@
     <color name="colorPrimary">@color/box_office</color>
     <color name="colorPrimaryDark">#a42530</color>
     <color name="colorAccent">#2FBE76</color>
+    <color name="color_white">#FFF</color>
     <color name="color_neutral">#F2F4F3</color>
     <color name="color_gray_1">#dedede</color>
     <color name="color_gray_2">#bababa</color>

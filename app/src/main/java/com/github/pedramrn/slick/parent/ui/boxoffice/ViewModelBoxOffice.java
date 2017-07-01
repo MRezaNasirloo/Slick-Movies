@@ -58,7 +58,7 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
                 return;
             }
         }
-        throw new RuntimeException(e);
+        // throw new RuntimeException(e);
         //        view.onError(e);
     }
 
