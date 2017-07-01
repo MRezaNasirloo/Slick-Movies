@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.home.model;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipated;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.google.auto.value.AutoValue;
+import com.xwray.groupie.Item;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -25,7 +26,7 @@ public abstract class Video implements ItemVideo {
     }
 
     @Override
-    public ItemAnticipated render(int id) {
+    public Item render(int id) {
         return new ItemAnticipated(id, this);
     }
 

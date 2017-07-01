@@ -7,9 +7,17 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-22
  */
 
-public class ItemVideoProgressiveImpl implements ItemVideo {
+public class ItemCardProgressiveImpl implements ItemCard {
+    private int id;
+
     @Override
     public Item render(int id) {
-        return new ItemAnticipatedProgressive(id);
+        this.id = id;
+        return new ItemCardMovieProgressive(id);
+    }
+
+    @Override
+    public long itemId() {
+        return id;
     }
 }

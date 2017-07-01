@@ -7,6 +7,8 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-21
  */
 
-public interface ItemVideo {
+public interface ItemCard {
     Item render(int id);
+
+    long itemId();
 }

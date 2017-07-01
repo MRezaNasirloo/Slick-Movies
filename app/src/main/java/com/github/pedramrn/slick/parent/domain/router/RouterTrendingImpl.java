@@ -22,7 +22,7 @@ import io.reactivex.functions.Function;
  *         Created on: 2017-06-23
  */
 
-class RouterTrendingImpl implements RouterTrending {
+public class RouterTrendingImpl implements RouterTrending {
 
     private final ApiTrakt apiTrakt;
     private final ApiTmdb apiTmdb;

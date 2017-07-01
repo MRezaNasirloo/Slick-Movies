@@ -4,12 +4,12 @@
     >
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_backdrop"
+        android:id="@+id/recycler_view_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/row_backdrop"
+        tools:listitem="@layout/row_card"
         />
 
 </layout>

@@ -11,6 +11,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.Productio
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.ProductionCountry;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.SpokenLanguage;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
@@ -113,8 +114,9 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                     .blockingGet();
         }
 
-        List<VideoTmdb> videoTmdb = mt.videos().results();
-        if (videoTmdb != null) {
+        VideoTmdbResults videos = mt.videos();
+        if (videos != null && videos.results() != null) {
+            List<VideoTmdb> videoTmdb = videos.results();
             int size = videoTmdb.size();
             videosDomains = Observable.fromIterable(videoTmdb).map(new Function<VideoTmdb, VideoDomain>() {
                 @Override

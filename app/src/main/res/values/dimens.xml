@@ -5,4 +5,5 @@
     <dimen name="text_view_height_progressive">8dp</dimen>
     <dimen name="image_view_cast_corners">2dp</dimen>
     <dimen name="item_decoration_margin">8dp</dimen>
+    <dimen name="card_list_side_margin">12dp</dimen>
 </resources>

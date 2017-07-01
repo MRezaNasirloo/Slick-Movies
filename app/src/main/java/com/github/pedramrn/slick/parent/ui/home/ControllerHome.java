@@ -7,17 +7,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -36,12 +42,14 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     Provider<PresenterHome> provider;
     @Presenter
     PresenterHome presenter;
-    GroupAdapter adapterMain = new GroupAdapter();
-    GroupAdapter adapterAnticipated = new GroupAdapter();
-    UpdatingGroup progressiveAnticipated = new UpdatingGroup();
-    ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
+    private GroupAdapter adapterMain = new GroupAdapter();
+    private GroupAdapter adapterAnticipated = new GroupAdapter();
+    private GroupAdapter adapterTrending = new GroupAdapter();
+    private UpdatingGroup progressiveAnticipated = new UpdatingGroup();
+    private UpdatingGroup progressiveTrending = new UpdatingGroup();
+    private ItemCardList itemCardList = new ItemCardList(adapterTrending);
+    private ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
     private Disposable disposable;
-    private UpdatingGroup adapterTrending;
 
 
     @NonNull
@@ -52,12 +60,19 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
 
+
         if (adapterMain.getAdapterPosition(itemAnticipatedList) == -1) {
             adapterMain.add(itemAnticipatedList);
             adapterAnticipated.add(progressiveAnticipated);
 
-            adapterTrending = new UpdatingGroup();
-            Section sectionTrending = new Section(adapterTrending);
+            Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
+                }
+            }));
+            adapterTrending.add(progressiveTrending);
+            sectionTrending.add(itemCardList);
             adapterMain.add(sectionTrending);
 
             adapterMain.add(new ItemOverview("Nunquam carpseris candidatus.Hercle, domus neuter!, palus!"));
@@ -75,9 +90,22 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private static final String TAG = ControllerHome.class.getSimpleName();
     @Override
     public void render(@NonNull ViewStateHome state) {
+        ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
         Log.d(TAG, "render() called on " + Thread.currentThread().getName());
-        progressiveAnticipated.update(state.anticipated());
+        List<Item> trending = renderer.trending();
+        progressiveAnticipated.update(renderer.anticipated());
+        progressiveTrending.update(trending);
+
+        // TODO: 2017-07-01 extract this logic
+        Item item = progressiveTrending.getItem(0);
+        if (item != null && trending.size() > 0 && item.getId() != trending.get(0).getId()) {
+            progressiveTrending.remove(item);
+            progressiveTrending.remove(progressiveTrending.getItem(1));
+            progressiveTrending.remove(progressiveTrending.getItem(2));
+        }
+        // TODO: 2017-07-01 You're better than this...
         renderError(state.videosError());
+        renderError(state.trendingError());
 
     }
 

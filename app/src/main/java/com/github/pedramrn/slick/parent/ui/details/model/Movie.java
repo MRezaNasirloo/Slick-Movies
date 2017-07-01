@@ -1,7 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
+import android.support.annotation.Nullable;
+
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
+import com.xwray.groupie.Item;
 
 import java.util.List;
 
@@ -11,7 +16,7 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class Movie {
+public abstract class Movie implements ItemCard {
 
     public abstract Integer id();
 
@@ -31,7 +36,7 @@ public abstract class Movie {
 
     public abstract Float popularity();
 
-    public abstract String posterPath();
+    protected abstract String posterPath();
 
     public abstract List<String> productionCompanies();
 
@@ -62,6 +67,22 @@ public abstract class Movie {
     public abstract Image images();
 
     public abstract List<Video> videos();
+
+    @Nullable
+    public String posterThumbnail() {
+        if (backdropPath() == null) return null;
+        return "http://image.tmdb.org/t/p/w300" + posterPath();
+    }
+
+    @Override
+    public Item render(int id) {
+        return new ItemCardMovie(id(), this);
+    }
+
+    @Override
+    public long itemId() {
+        return id().longValue();
+    }
 
     public static Movie create(Integer id, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres, String homepage,
                                String overview, Float popularity, String posterPath, List<String> productionCompanies,

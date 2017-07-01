@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideoProgressiveImpl;
 
@@ -69,6 +71,54 @@ public interface ViewStateHomePartial {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             return viewStateHome.toBuilder().movies(new ArrayList<Movie>()).build();
+        }
+    }
+
+
+    class Trending implements ViewStateHomePartial {
+
+        private final List<ItemCard> movies;
+
+        public Trending(List<ItemCard> movies) {
+            this.movies = movies;
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            return viewStateHome.toBuilder().trending(movies).build();
+        }
+    }
+
+    class TrendingProgressive implements ViewStateHomePartial {
+
+        private final List<ItemCard> progressive;
+
+
+        public TrendingProgressive() {
+            // TODO: 2017-07-01 optimize for other screen sizes
+            progressive = new ArrayList<>(3);
+            progressive.add(new ItemCardProgressiveImpl());
+            progressive.add(new ItemCardProgressiveImpl());
+            progressive.add(new ItemCardProgressiveImpl());
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            return viewStateHome.toBuilder().trending(progressive).build();
+        }
+    }
+
+    class TrendingError implements ViewStateHomePartial {
+
+        private final Throwable throwable;
+
+        public TrendingError(Throwable throwable) {
+            this.throwable = throwable;
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            return viewStateHome.toBuilder().trendingError(throwable).build();
         }
     }
 
