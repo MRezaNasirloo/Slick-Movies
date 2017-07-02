@@ -96,10 +96,11 @@ public interface ViewStateHomePartial {
 
         public TrendingProgressive() {
             // TODO: 2017-07-01 optimize for other screen sizes
+            // TODO: 2017-07-02 these ids should be the same as the ones which get maps in presenter, very error prone.
             progressive = new ArrayList<>(3);
-            progressive.add(new ItemCardProgressiveImpl());
-            progressive.add(new ItemCardProgressiveImpl());
-            progressive.add(new ItemCardProgressiveImpl());
+            progressive.add(new ItemCardProgressiveImpl(0));
+            progressive.add(new ItemCardProgressiveImpl(1));
+            progressive.add(new ItemCardProgressiveImpl(2));
         }
 
         @Override

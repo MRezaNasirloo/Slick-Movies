@@ -8,22 +8,22 @@ import com.github.pedramrn.slick.parent.domain.router.RouterAnticipatedImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
+import com.github.pedramrn.slick.parent.ui.home.mappre.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
+import com.github.pedramrn.slick.parent.util.ListToObserable;
 import com.github.pedramrn.slick.parent.util.Scan;
 import com.github.slick.SlickPresenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.ObservableTransformer;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
@@ -94,6 +94,10 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
 
         Observable<ViewStateHomePartial> trending = routerTrending.trending(1, 20)
                 .map(mapper)
+                .map(new MapProgressive(3))// TODO: 2017-07-02 this 3 numbers should be related to the size of screen width
+                .cast(Movie.class)
+                .buffer(3)
+                .flatMap(new ListToObserable<Movie>())
                 .compose(new Scan<ItemCard>())
                 .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
                     @Override
@@ -146,26 +150,6 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         super.onDestroy();
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
-        }
-    }
-
-    private static class VideoListObservableTransformer implements ObservableTransformer<Video, List<Video>> {
-        @Override
-        public ObservableSource<List<Video>> apply(Observable<Video> upstream) {
-            return upstream.map(new Function<Video, List<Video>>() {
-                @Override
-                public List<Video> apply(@NonNull Video video) throws Exception {
-                    ArrayList<Video> videos = new ArrayList<>(1);
-                    videos.add(video);
-                    return videos;
-                }
-            }).scan(new BiFunction<List<Video>, List<Video>, List<Video>>() {
-                @Override
-                public List<Video> apply(@NonNull List<Video> videos, @NonNull List<Video> videos2) throws Exception {
-                    videos.addAll(videos2);
-                    return videos;
-                }
-            });
         }
     }
 

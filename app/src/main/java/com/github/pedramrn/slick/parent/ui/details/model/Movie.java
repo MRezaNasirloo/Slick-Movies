@@ -16,9 +16,11 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class Movie implements ItemCard {
+public abstract class Movie extends AutoBase implements ItemCard {
 
     public abstract Integer id();
+
+    public abstract Integer uniqueId();
 
     public abstract String imdbId();
 
@@ -76,7 +78,7 @@ public abstract class Movie implements ItemCard {
 
     @Override
     public Item render(int id) {
-        return new ItemCardMovie(id(), this);
+        return new ItemCardMovie(uniqueId(), this);
     }
 
     @Override
@@ -84,15 +86,101 @@ public abstract class Movie implements ItemCard {
         return id().longValue();
     }
 
-    public static Movie create(Integer id, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres, String homepage,
-                               String overview, Float popularity, String posterPath, List<String> productionCompanies,
-                               List<String> productionCountries,
-                               String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages, String status, String tagline,
-                               String title, Boolean video, Float voteAverage, Integer voteCount, List<Cast> casts, Image images,
-                               List<Video> videos) {
-        return new AutoValue_Movie(id, imdbId, adult, backdropPath, budget, genres, homepage, overview, popularity, posterPath, productionCompanies,
-                productionCountries, releaseDate, revenue, runtime, spokenLanguages, status, tagline, title, video, voteAverage, voteCount, casts,
-                images, videos);
+    public abstract Builder toBuilder();
+
+    public static Movie create(Integer id, Integer uniqueId, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
+                               String homepage, String overview, Float popularity, String posterPath, List<String> productionCompanies,
+                               List<String> productionCountries, String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages,
+                               String status, String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, List<Cast> casts,
+                               Image images, List<Video> videos) {
+        return builder()
+                .id(id)
+                .uniqueId(uniqueId)
+                .imdbId(imdbId)
+                .adult(adult)
+                .backdropPath(backdropPath)
+                .budget(budget)
+                .genres(genres)
+                .homepage(homepage)
+                .overview(overview)
+                .popularity(popularity)
+                .posterPath(posterPath)
+                .productionCompanies(productionCompanies)
+                .productionCountries(productionCountries)
+                .releaseDate(releaseDate)
+                .revenue(revenue)
+                .runtime(runtime)
+                .spokenLanguages(spokenLanguages)
+                .status(status)
+                .tagline(tagline)
+                .title(title)
+                .video(video)
+                .voteAverage(voteAverage)
+                .voteCount(voteCount)
+                .casts(casts)
+                .images(images)
+                .videos(videos)
+                .build();
     }
 
+    public static Builder builder() {
+        return new AutoValue_Movie.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BuilderBase {
+        public abstract Builder id(Integer id);
+
+        public abstract Builder uniqueId(Integer id);
+
+        public abstract Builder imdbId(String imdbId);
+
+        public abstract Builder adult(Boolean adult);
+
+        public abstract Builder backdropPath(String backdropPath);
+
+        public abstract Builder budget(Integer budget);
+
+        public abstract Builder genres(List<String> genres);
+
+        public abstract Builder homepage(String homepage);
+
+        public abstract Builder overview(String overview);
+
+        public abstract Builder popularity(Float popularity);
+
+        public abstract Builder posterPath(String posterPath);
+
+        public abstract Builder productionCompanies(List<String> productionCompanies);
+
+        public abstract Builder productionCountries(List<String> productionCountries);
+
+        public abstract Builder releaseDate(String releaseDate);
+
+        public abstract Builder revenue(Integer revenue);
+
+        public abstract Builder runtime(Integer runtime);
+
+        public abstract Builder spokenLanguages(List<String> spokenLanguages);
+
+        public abstract Builder status(String status);
+
+        public abstract Builder tagline(String tagline);
+
+        public abstract Builder title(String title);
+
+        public abstract Builder video(Boolean video);
+
+        public abstract Builder voteAverage(Float voteAverage);
+
+        public abstract Builder voteCount(Integer voteCount);
+
+        public abstract Builder casts(List<Cast> casts);
+
+        public abstract Builder images(Image images);
+
+        public abstract Builder videos(List<Video> videos);
+
+        public abstract Movie build();
+    }
 }

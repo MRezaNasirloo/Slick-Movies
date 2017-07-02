@@ -10,10 +10,13 @@ import com.xwray.groupie.Item;
 public class ItemCardProgressiveImpl implements ItemCard {
     private int id;
 
+    public ItemCardProgressiveImpl(int id) {
+        this.id = id;
+    }
+
     @Override
     public Item render(int id) {
-        this.id = id;
-        return new ItemCardMovieProgressive(id);
+        return new ItemCardMovieProgressive(this.id);
     }
 
     @Override

@@ -96,13 +96,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressiveAnticipated.update(renderer.anticipated());
         progressiveTrending.update(trending);
 
-        // TODO: 2017-07-01 extract this logic
+        /*// TODO: 2017-07-01 extract this logic
         Item item = progressiveTrending.getItem(0);
         if (item != null && trending.size() > 0 && item.getId() != trending.get(0).getId()) {
             progressiveTrending.remove(item);
             progressiveTrending.remove(progressiveTrending.getItem(1));
             progressiveTrending.remove(progressiveTrending.getItem(2));
-        }
+        }*/
         // TODO: 2017-07-01 You're better than this...
         renderError(state.videosError());
         renderError(state.trendingError());
