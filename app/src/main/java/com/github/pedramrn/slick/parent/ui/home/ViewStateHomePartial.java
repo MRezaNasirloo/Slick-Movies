@@ -1,6 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
@@ -66,14 +65,6 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class ProgressivePopular implements ViewStateHomePartial {
-
-        @Override
-        public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().movies(new ArrayList<Movie>()).build();
-        }
-    }
-
 
     class Trending implements ViewStateHomePartial {
 
@@ -89,12 +80,12 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class TrendingProgressive implements ViewStateHomePartial {
+    abstract class CardProgressive implements ViewStateHomePartial {
 
-        private final List<ItemCard> progressive;
+        protected final List<ItemCard> progressive;
 
 
-        public TrendingProgressive() {
+        public CardProgressive() {
             // TODO: 2017-07-01 optimize for other screen sizes
             // TODO: 2017-07-02 these ids should be the same as the ones which get maps in presenter, very error prone.
             progressive = new ArrayList<>(3);
@@ -102,6 +93,9 @@ public interface ViewStateHomePartial {
             progressive.add(new ItemCardProgressiveImpl(1));
             progressive.add(new ItemCardProgressiveImpl(2));
         }
+    }
+
+    class CardProgressiveTrending extends CardProgressive {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
@@ -109,18 +103,38 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class TrendingError implements ViewStateHomePartial {
+    class CardProgressivePopular extends CardProgressive {
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            return viewStateHome.toBuilder().popular(progressive).build();
+        }
+    }
+
+    class Error implements ViewStateHomePartial {
 
         private final Throwable throwable;
 
-        public TrendingError(Throwable throwable) {
+        public Error(Throwable throwable) {
             this.throwable = throwable;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().trendingError(throwable).build();
+            return viewStateHome.toBuilder().error(throwable).build();
         }
     }
 
+    class Popular implements ViewStateHomePartial {
+        private final List<ItemCard> movies;
+
+        public Popular(List<ItemCard> movies) {
+            this.movies = movies;
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            return viewStateHome.toBuilder().popular(movies).build();
+        }
+    }
 }

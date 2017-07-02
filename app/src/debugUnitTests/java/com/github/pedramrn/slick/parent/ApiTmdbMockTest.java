@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 
-import static com.github.pedramrn.slick.parent.TestUtils.readFile;
+import static com.github.pedramrn.slick.parent.util.FileUtils.readFile;
 
 /**
  * @author : Pedramrn@gmail.com

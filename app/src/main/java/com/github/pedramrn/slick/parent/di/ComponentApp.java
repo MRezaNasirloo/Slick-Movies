@@ -14,4 +14,5 @@ import dagger.Component;
 @Component(modules = {ModuleApp.class, ModuleNetwork.class, ModuleDatabase.class, ModuleScheduler.class})
 public interface ComponentApp {
     ComponentMain.Builder plus();
+
 }

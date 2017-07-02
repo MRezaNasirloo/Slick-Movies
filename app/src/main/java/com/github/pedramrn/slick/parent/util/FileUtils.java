@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent;
+package com.github.pedramrn.slick.parent.util;
 
 import android.support.annotation.NonNull;
 
@@ -15,7 +15,7 @@ import okio.Okio;
  *         Created on: 2017-06-23
  */
 
-public class TestUtils {
+public class FileUtils {
 
     /**
      * Reads InputStream and returns a String. It will close stream after usage.

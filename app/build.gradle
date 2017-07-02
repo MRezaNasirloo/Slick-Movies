@@ -6,7 +6,17 @@ apply plugin: 'com.frogermcs.androiddevmetrics'
 //apply plugin: 'me.tatarka.retrolambda'
 
 android {
-
+    signingConfigs {
+        config {
+            def keystorePropertiesFile = rootProject.file("local.properties");
+            def keystoreProperties = new Properties()
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -31,19 +41,37 @@ android {
                 arguments = ['autovaluegson.defaultCollectionsToEmpty': 'true']
             }
         }
-
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
-
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    sourceSets {
+        // Unit tests live in src/unitTest.
+        test.java.srcDir 'src/unitTests/java'
+
+        // Integration tests live in src/integrationTest.
+//        test.java.srcDir 'src/integrationTests/java'
+
+        // Unit tests for debug build type specific code live in src/debugUnitTest.
+        testDebug.java.srcDir 'src/debugUnitTests/java'
+
+        // Unit tests for release build type specific code live in src/releaseUnitTest.
+        testRelease.java.srcDir 'src/releaseUnitTests/java'
+
+        // Functional tests live in src/functionalTests.
+        androidTest.java.srcDir 'src/androidTest/java'
+    }
+    productFlavors {
     }
 }
 

@@ -32,24 +32,28 @@ abstract class ViewStateHome {
     public abstract List<ItemCard> trending();
 
     @Nullable
+    public abstract List<ItemCard> popular();
+
+    @Nullable
     public abstract Throwable videosError();
 
     @Nullable
-    public abstract Throwable trendingError();
+    public abstract Throwable error();
 
 
     public abstract Builder toBuilder();
 
     public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos, List<Movie> movies, List<ItemCard> trending,
-                                       Throwable videosError, Throwable trendingError) {
+                                       List<ItemCard> popular, Throwable videosError, Throwable error) {
         return builder()
                 .items(items)
                 .foo(foo)
                 .videos(videos)
                 .movies(movies)
                 .trending(trending)
+                .popular(popular)
                 .videosError(videosError)
-                .trendingError(trendingError)
+                .error(error)
                 .build();
     }
 
@@ -71,7 +75,9 @@ abstract class ViewStateHome {
 
         public abstract Builder videosError(Throwable videosError);
 
-        public abstract Builder trendingError(Throwable trendingError);
+        public abstract Builder popular(List<ItemCard> popular);
+
+        public abstract Builder error(Throwable error);
 
         public abstract ViewStateHome build();
     }

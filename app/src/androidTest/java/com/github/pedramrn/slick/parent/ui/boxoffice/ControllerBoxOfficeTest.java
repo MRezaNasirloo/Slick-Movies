@@ -21,10 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.InputStream;
+import java.util.Collections;
 
 import io.reactivex.Completable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Interceptor;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -36,7 +38,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.github.pedramrn.slick.parent.TestUtils.readFile;
+import static com.github.pedramrn.slick.parent.util.FileUtils.readFile;
 import static com.github.pedramrn.slick.parent.utils.recyclerview.RecyclerViewItemCountAssertion.withItemCount;
 import static com.github.pedramrn.slick.parent.utils.recyclerview.TestUtils.withRecyclerView;
 import static javax.net.ssl.HttpsURLConnection.HTTP_OK;
@@ -88,7 +90,7 @@ public class ControllerBoxOfficeTest {
             }
         }).subscribeOn(Schedulers.io()).subscribe();
 
-        TestApp.setOkHttpClient(new ModuleNetwork().okHttpClient());
+        TestApp.setOkHttpClient(new ModuleNetwork().okHttpClient(Collections.<Interceptor>emptyList()));
         okHttp = OkHttp3IdlingResource.create("OkHttp", TestApp.getOkHttpClient());
         Espresso.registerIdlingResources(okHttp);
     }

@@ -6,12 +6,13 @@ import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipated;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipatedImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
+import com.github.pedramrn.slick.parent.domain.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
-import com.github.pedramrn.slick.parent.ui.home.mappre.MapProgressive;
+import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
 import com.github.pedramrn.slick.parent.util.ListToObserable;
@@ -31,7 +32,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -44,6 +44,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     private final RouterAnticipated routerAnticipated;
     private final RouterTrendingImpl routerTrending;
     private final MovieDomainMovieMapper mapper;
+    private final RouterPopularImpl routerPopular;
     private final Scheduler io;
     private final Scheduler main;
     private BehaviorSubject<ViewStateHome> state = BehaviorSubject.create();
@@ -53,11 +54,12 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
 
     @Inject
     public PresenterHome(RouterMovieDetailsVideoImpl rmd, RouterAnticipatedImpl ra, RouterTrendingImpl rt, MovieDomainMovieMapper mapper,
-                         @Named("io") Scheduler io, @Named("main") Scheduler main) {
+                         RouterPopularImpl rp, @Named("io") Scheduler io, @Named("main") Scheduler main) {
         this.router = rmd;
         this.routerAnticipated = ra;
         this.routerTrending = rt;
         this.mapper = mapper;
+        this.routerPopular = rp;
         this.io = io;
         this.main = main;
     }
@@ -69,8 +71,6 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     }
 
     public void start() {
-        Observable<ViewStateHomePartial.ProgressivePopular> popular = Observable.just(new ViewStateHomePartial.ProgressivePopular());
-        Observable<ViewStateHomePartial.ProgressivePopular> subject = PublishSubject.create();
         Observable<ViewStateHomePartial> videos =
                 routerAnticipated.anticipated3().map(new Function<VideoDomain, ItemVideo>() {
                     @Override
@@ -104,15 +104,39 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
                         return new ViewStateHomePartial.Trending(movies);
                     }
-                }).startWith(new ViewStateHomePartial.TrendingProgressive())
+                })
+                .startWith(new ViewStateHomePartial.CardProgressiveTrending())
                 .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
-                        return new ViewStateHomePartial.TrendingError(throwable);
+                        return new ViewStateHomePartial.Error(throwable);
                     }
-                }).subscribeOn(io);
+                })
+                .subscribeOn(io);
 
-        home = Observable.merge(trending, videos, popular, subject)
+        Observable<ViewStateHomePartial> popular = routerPopular.popular(1, 20)
+                .map(mapper)
+                .map(new MapProgressive(3))// TODO: 2017-07-02 this 3 numbers should be related to the size of screen width
+                .cast(Movie.class)
+                .buffer(3)
+                .flatMap(new ListToObserable<Movie>())
+                .compose(new Scan<ItemCard>())
+                .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
+                        return new ViewStateHomePartial.Popular(movies);
+                    }
+                })
+                .startWith(new ViewStateHomePartial.CardProgressivePopular())
+                .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
+                        return new ViewStateHomePartial.Error(throwable);
+                    }
+                })
+                .subscribeOn(io);
+
+        home = Observable.merge(trending, videos, popular)
                 .observeOn(main)
                 .scan(ViewStateHome.builder().build(), new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
                     @Override

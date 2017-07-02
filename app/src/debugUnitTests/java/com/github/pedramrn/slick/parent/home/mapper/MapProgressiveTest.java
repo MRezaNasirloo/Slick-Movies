@@ -1,7 +1,8 @@
-package com.github.pedramrn.slick.parent.ui.home.mappre;
+package com.github.pedramrn.slick.parent.home.mapper;
 
+import com.github.pedramrn.slick.parent.test.AutoTest;
 import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
-import com.google.auto.value.AutoValue;
+import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,30 +69,5 @@ public class MapProgressiveTest {
                 .assertComplete();
     }
 
-
-    @AutoValue
-    public abstract static class AutoTest extends AutoBase {
-
-        public abstract Builder toBuilder();
-
-        public static AutoTest create(Integer uniqueId) {
-            return builder()
-                    .uniqueId(uniqueId)
-                    .build();
-        }
-
-        public static Builder builder() {
-            return new AutoValue_MapProgressiveTest_AutoTest.Builder();
-        }
-
-
-        @AutoValue.Builder
-        public static abstract class Builder extends BuilderBase {
-            public abstract Builder uniqueId(Integer id);
-
-            public abstract AutoTest build();
-
-        }
-    }
 
 }

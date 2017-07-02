@@ -12,18 +12,14 @@ import android.widget.Toast;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -45,9 +41,12 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private GroupAdapter adapterMain = new GroupAdapter();
     private GroupAdapter adapterAnticipated = new GroupAdapter();
     private GroupAdapter adapterTrending = new GroupAdapter();
+    private GroupAdapter adapterPopular = new GroupAdapter();
     private UpdatingGroup progressiveAnticipated = new UpdatingGroup();
     private UpdatingGroup progressiveTrending = new UpdatingGroup();
-    private ItemCardList itemCardList = new ItemCardList(adapterTrending);
+    private UpdatingGroup progressivePopular = new UpdatingGroup();
+    private ItemCardList itemTrendingList = new ItemCardList(adapterTrending);
+    private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
     private ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
     private Disposable disposable;
 
@@ -72,10 +71,19 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                 }
             }));
             adapterTrending.add(progressiveTrending);
-            sectionTrending.add(itemCardList);
-            adapterMain.add(sectionTrending);
+            sectionTrending.add(itemTrendingList);
 
-            adapterMain.add(new ItemOverview("Nunquam carpseris candidatus.Hercle, domus neuter!, palus!"));
+            Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
+                }
+            }));
+            adapterPopular.add(progressivePopular);
+            sectionPopular.add(itemPopularList);
+
+            adapterMain.add(sectionTrending);
+            adapterMain.add(sectionPopular);
         }
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -91,21 +99,14 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     @Override
     public void render(@NonNull ViewStateHome state) {
         ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
-        Log.d(TAG, "render() called on " + Thread.currentThread().getName());
-        List<Item> trending = renderer.trending();
         progressiveAnticipated.update(renderer.anticipated());
-        progressiveTrending.update(trending);
+        progressiveTrending.update(renderer.trending());
+        progressivePopular.update(renderer.popular());
 
-        /*// TODO: 2017-07-01 extract this logic
-        Item item = progressiveTrending.getItem(0);
-        if (item != null && trending.size() > 0 && item.getId() != trending.get(0).getId()) {
-            progressiveTrending.remove(item);
-            progressiveTrending.remove(progressiveTrending.getItem(1));
-            progressiveTrending.remove(progressiveTrending.getItem(2));
-        }*/
+
         // TODO: 2017-07-01 You're better than this...
         renderError(state.videosError());
-        renderError(state.trendingError());
+        renderError(state.error());
 
     }
 

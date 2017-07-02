@@ -4,24 +4,21 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
-import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
-import dagger.Module;
-import dagger.Provides;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -30,43 +27,38 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-22
  */
-@Singleton
-@Module(subcomponents = ComponentMain.class)
-public class ModuleNetwork {
+public class ModuleNetworkBase {
 
-    @Provides
-    @Singleton
-    public OkHttpClient okHttpClient() {
-        final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
+    public OkHttpClient baseOkHttpClient(List<Interceptor> interceptors) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .build();
+                .writeTimeout(10, TimeUnit.SECONDS);
+        for (Interceptor interceptor : interceptors) {
+            builder.addInterceptor(interceptor);
+        }
+        return builder.build();
     }
 
-    @Provides
-    public Retrofit.Builder retrofit(@Singleton OkHttpClient okHttpClient, Gson gson) {
+    public List<Interceptor> baseInterceptors() {
+        return Collections.emptyList();
+    }
+
+    public Retrofit.Builder baseRetrofit(Gson gson) {
         return new Retrofit.Builder()
-                //                .baseUrl("https://api.themoviedb.org/3/")
-                //                .baseUrl("http://www.omdbapi.com")
-                .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                //                .addConverterFactory()
                 ;
     }
 
-    @Provides
-    public ApiOmdb omdbClient(Retrofit.Builder builder) {
-        return builder.baseUrl("http://www.omdbapi.com").build()
+    public ApiOmdb baseOmdbClient(Retrofit.Builder builder, OkHttpClient client) {
+        return builder.client(client)
+                .baseUrl("http://www.omdbapi.com")
+                .build()
                 .create(ApiOmdb.class);
     }
 
-    @Provides
-    public ApiTmdb tmdbClient(@Named("tmdb") HttpUrl url, @Singleton OkHttpClient okHttpClient, Gson gson) {
+    public ApiTmdb baseApiTmdb(@Named("tmdb") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -77,16 +69,13 @@ public class ModuleNetwork {
                 return chain.proceed(request);
             }
         }).build();
-        return new Retrofit.Builder()
+        return builder
                 .client(httpClient)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(url).build()
                 .create(ApiTmdb.class);
     }
 
-    @Provides
-    public ApiTrakt boxOfficeWeekend(@Named("trakt") HttpUrl url, @Singleton OkHttpClient okHttpClient, Gson gson) {
+    public ApiTrakt baseApiTrakt(@Named("trakt") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson) {
         final OkHttpClient httpClient = okHttpClient.newBuilder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -99,36 +88,24 @@ public class ModuleNetwork {
                 return chain.proceed(request);
             }
         }).build();
-        return new Retrofit.Builder()
+        return builder
                 .client(httpClient)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(url).build()
+                .baseUrl(url)
+                .build()
                 .create(ApiTrakt.class);
     }
 
-    @Provides
-    @Singleton
-    public Gson gsonConverterFactory() {
+    public Gson baseGsonConverterFactory() {
         return new GsonBuilder()
                 .registerTypeAdapterFactory(TypeAdapterFactoryGson.create())
                 .create();
-        /*final Type type = new TypeToken<List<BoxOfficeItem>>() {
-        }.getType();
-        final Gson gson = new GsonBuilder().registerTypeAdapter(type, null).componentMainBuilder();
-        return GsonConverterFactory.componentMainBuilder(gson);*/
     }
 
-    @Provides
-    @Named("trakt")
-    public HttpUrl apiUrlTrakt() {
+    public HttpUrl baseApiUrlTrakt() {
         return HttpUrl.parse("https://api.trakt.tv");
     }
 
-
-    @Provides
-    @Named("tmdb")
-    public HttpUrl apiUrlTmdb() {
+    public HttpUrl baseApiUrlTmdb() {
         return HttpUrl.parse("https://api.themoviedb.org/3/");
     }
 

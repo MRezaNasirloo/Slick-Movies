@@ -3,10 +3,9 @@ package com.github.pedramrn.slick.parent;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.models.trakt.TraktPageMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
 import com.google.gson.Gson;
-
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
@@ -22,21 +21,26 @@ import retrofit2.mock.NetworkBehavior;
 
 public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
-    private List<TraktPageMetadata> trendingList;
+    private List<MovieTraktPageMetadata> trendingList;
+    private List<MovieTraktMetadata> popularList;
 
-    public ApiTraktMock(BehaviorDelegate<ApiTrakt> delegate, Gson gson, List<TraktPageMetadata> trendingList) {
+    public ApiTraktMock(BehaviorDelegate<ApiTrakt> delegate, Gson gson, List<MovieTraktPageMetadata> trendingList,
+                        List<MovieTraktMetadata> popularList) {
         super(delegate, gson);
         this.trendingList = trendingList;
+        this.popularList = popularList;
     }
 
-    public ApiTraktMock(NetworkBehavior behavior, Gson gson, List<TraktPageMetadata> trendingList) {
+    public ApiTraktMock(NetworkBehavior behavior, Gson gson, List<MovieTraktPageMetadata> trendingList, List<MovieTraktMetadata> popularList) {
         super(behavior, gson);
         this.trendingList = trendingList;
+        this.popularList = popularList;
     }
 
-    public ApiTraktMock(Gson gson, List<TraktPageMetadata> trendingList) {
+    public ApiTraktMock(Gson gson, List<MovieTraktPageMetadata> trendingList, List<MovieTraktMetadata> popularList) {
         super(gson);
         this.trendingList = trendingList;
+        this.popularList = popularList;
     }
 
     @Override
@@ -47,31 +51,41 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
     @Override
     public Observable<List<BoxOfficeItem>> get() {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 
     @Override
     public Observable<AnticipatedTrakt> anticipated() {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 
     @Override
-    public Observable<List<TraktPageMetadata>> anticipatedMetadata() {
-        throw new NotImplementedException(new Throwable());
+    public Observable<List<MovieTraktPageMetadata>> anticipatedMetadata() {
+        return Observable.never();
     }
 
     @Override
-    public Observable<List<TraktPageMetadata>> anticipatedMetadata(@Query("page") int page, @Query("limit") int size) {
-        throw new NotImplementedException(new Throwable());
+    public Observable<List<MovieTraktPageMetadata>> anticipatedMetadata(@Query("page") int page, @Query("limit") int size) {
+        return Observable.never();
     }
 
     @Override
-    public Observable<List<TraktPageMetadata>> trending(@Query("page") int page, @Query("limit") int size) {
-        List<TraktPageMetadata> response = Observable.fromIterable(trendingList)
+    public Observable<List<MovieTraktPageMetadata>> trending(@Query("page") int page, @Query("limit") int size) {
+        List<MovieTraktPageMetadata> response = Observable.fromIterable(trendingList)
                 .skip((page - 1) * size)
                 .take(size)
                 .toList()
                 .blockingGet();
         return delegate.returningResponse(response).trending(page, size);
+    }
+
+    @Override
+    public Observable<List<MovieTraktMetadata>> popular(@Query("page") int page, @Query("limit") int size) {
+        List<MovieTraktMetadata> response = Observable.fromIterable(popularList)
+                .skip((page - 1) * size)
+                .take(size)
+                .toList()
+                .blockingGet();
+        return delegate.returningResponse(response).popular(page, size);
     }
 }

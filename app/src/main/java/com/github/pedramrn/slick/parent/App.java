@@ -11,7 +11,6 @@ import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleApp;
 import com.github.pedramrn.slick.parent.di.ModuleDatabase;
 import com.github.pedramrn.slick.parent.di.ModuleNetwork;
-import com.github.pedramrn.slick.parent.di.ModuleNetworkMock;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
@@ -47,8 +46,8 @@ public class App extends Application {
         //        }
         final long before = System.currentTimeMillis();
         //        LeakCanary.install(this);
-        componentApp = prepareDi()
-                .build();
+        componentApp = prepareDi().build();
+
         if (BuildConfig.DEBUG) {
             AndroidDevMetrics.initWith(this);
         }

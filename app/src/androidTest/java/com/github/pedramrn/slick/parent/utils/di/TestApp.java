@@ -13,7 +13,10 @@ import com.jakewharton.espresso.OkHttp3IdlingResource;
 
 import org.mockito.Mockito;
 
+import java.util.List;
+
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +53,7 @@ public class TestApp extends App {
             }
 
             @Override
-            public OkHttpClient okHttpClient() {
+            public OkHttpClient okHttpClient(List<Interceptor> interceptors) {
                 return TestApp.okHttpClient;
             }
         });

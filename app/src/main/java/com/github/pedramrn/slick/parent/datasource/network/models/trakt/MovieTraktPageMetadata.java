@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  *         Created on: 2017-03-09
  */
 @AutoValue
-public abstract class TraktPageMetadata {
+public abstract class MovieTraktPageMetadata {
 
     // @SerializedName("list_count")
     // public abstract Integer listCount();
@@ -18,12 +18,12 @@ public abstract class TraktPageMetadata {
     @SerializedName("movie")
     public abstract MovieTraktMetadata movie();
 
-    public static TraktPageMetadata create(MovieTraktMetadata movie) {
-        return new AutoValue_TraktPageMetadata(movie);
+    public static MovieTraktPageMetadata create(MovieTraktMetadata movie) {
+        return new AutoValue_MovieTraktPageMetadata(movie);
     }
 
-    public static TypeAdapter<TraktPageMetadata> typeAdapter(Gson gson) {
-        return new AutoValue_TraktPageMetadata.GsonTypeAdapter(gson);
+    public static TypeAdapter<MovieTraktPageMetadata> typeAdapter(Gson gson) {
+        return new AutoValue_MovieTraktPageMetadata.GsonTypeAdapter(gson);
     }
 
 

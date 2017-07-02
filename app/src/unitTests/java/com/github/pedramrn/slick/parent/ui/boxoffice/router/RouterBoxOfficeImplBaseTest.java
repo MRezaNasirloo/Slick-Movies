@@ -2,23 +2,26 @@ package com.github.pedramrn.slick.parent.ui.boxoffice.router;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
-import com.github.pedramrn.slick.parent.di.ModuleNetwork;
+import com.github.pedramrn.slick.parent.di.ModuleNetworkBase;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
+import com.google.gson.Gson;
 
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 
 import java.io.InputStream;
+import java.util.Collections;
 
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-import static com.github.pedramrn.slick.parent.TestUtils.readFile;
+import static com.github.pedramrn.slick.parent.util.FileUtils.readFile;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
@@ -63,9 +66,10 @@ public class RouterBoxOfficeImplBaseTest {
         server.start();
         HttpUrl url = server.url("/");
 
-        ModuleNetwork mn = new ModuleNetwork();
-        ApiTrakt apiTrakt = mn.boxOfficeWeekend(url, mn.okHttpClient(), mn.gsonConverterFactory());
-        ApiTmdb apiTmdb = mn.tmdbClient(url, mn.okHttpClient(), mn.gsonConverterFactory());
+        ModuleNetworkBase mn = new ModuleNetworkBase();
+        Gson gson = mn.baseGsonConverterFactory();
+        ApiTrakt apiTrakt = mn.baseApiTrakt(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList()), mn.baseRetrofit(gson), gson);
+        ApiTmdb apiTmdb = mn.baseApiTmdb(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList()), mn.baseRetrofit(gson), gson);
 
         routerBoxOffice = new RouterBoxOfficeTmdbImpl(apiTrakt, apiTmdb, new MapperSimpleData(), Schedulers.trampoline());
     }

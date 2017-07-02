@@ -45,17 +45,26 @@ public class ViewStateHomeRenderer {
                 }).toList(items.size()).blockingGet();
     }
 
-    public List<Item> trending() {
+    public List<? extends Item> trending() {
         List<ItemCard> trending = viewStateHome.trending();
-        if (trending == null || trending.size() == 0) {
+        return map(trending);
+    }
+
+    public List<? extends Item> popular() {
+        List<ItemCard> popular = viewStateHome.popular();
+        return map(popular);
+    }
+
+    @UiThread
+    private List<? extends Item> map(List<ItemCard> items) {
+        if (items == null || items.size() == 0) {
             return Collections.emptyList();
         }
-        return Observable.fromIterable(trending).map(new Function<ItemCard, Item>() {
+        return Observable.fromIterable(items).map(new Function<ItemCard, Item>() {
             @Override
             public Item apply(@NonNull ItemCard itemCard) throws Exception {
                 return itemCard.render(-1);
             }
-        }).toList(trending.size()).blockingGet();
+        }).toList(items.size()).blockingGet();
     }
-
 }

@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home.mappre;
+package com.github.pedramrn.slick.parent.ui.home.mapper;
 
 import android.support.v4.util.SparseArrayCompat;
 

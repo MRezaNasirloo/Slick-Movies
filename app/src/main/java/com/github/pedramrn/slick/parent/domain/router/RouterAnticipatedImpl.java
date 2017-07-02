@@ -9,7 +9,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
-import com.github.pedramrn.slick.parent.datasource.network.models.trakt.TraktPageMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
@@ -69,12 +69,12 @@ public class RouterAnticipatedImpl implements RouterAnticipated {
 
     @Override
     public Observable<VideoDomain> anticipated3() {
-        return apiTrakt.anticipatedMetadata().flatMap(new Function<List<TraktPageMetadata>, Observable<MovieTraktMetadata>>() {
+        return apiTrakt.anticipatedMetadata().flatMap(new Function<List<MovieTraktPageMetadata>, Observable<MovieTraktMetadata>>() {
             @Override
-            public Observable<MovieTraktMetadata> apply(@NonNull List<TraktPageMetadata> at) throws Exception {
-                return Observable.fromIterable(at).map(new Function<TraktPageMetadata, MovieTraktMetadata>() {
+            public Observable<MovieTraktMetadata> apply(@NonNull List<MovieTraktPageMetadata> at) throws Exception {
+                return Observable.fromIterable(at).map(new Function<MovieTraktPageMetadata, MovieTraktMetadata>() {
                     @Override
-                    public MovieTraktMetadata apply(@NonNull TraktPageMetadata atm) throws Exception {
+                    public MovieTraktMetadata apply(@NonNull MovieTraktPageMetadata atm) throws Exception {
                         return atm.movie();
                     }
                 });

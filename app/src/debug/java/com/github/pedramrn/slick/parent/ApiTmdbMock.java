@@ -5,8 +5,6 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
 import com.google.gson.Gson;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -42,7 +40,7 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
     @Override
     public Observable<MovieTmdb> movieFull(@Path("movie_id") Integer id) {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 
     @Override
@@ -57,12 +55,12 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
     @Override
     public Observable<MovieTmdb> withVideos(@Path("movie_id") Integer id) {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 
     @Override
     public Observable<VideoTmdbResults> justVideos(@Path("movie_id") Integer id) {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 
     @Override
