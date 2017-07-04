@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
+import android.support.annotation.IntRange;
+
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.ui.home.TransformerTraktToMovieDomain;
@@ -26,11 +28,13 @@ public class RouterTrendingImpl implements RouterTrending {
 
     @Override
     public Observable<MovieDomain> trending() {
-        return apiTrakt.trending(1, 10).compose(transformer);
+        return trending(1, 10);
     }
 
     @Override
-    public Observable<MovieDomain> trending(int page, int size) {
+    public Observable<MovieDomain> trending(@IntRange(from = 1, to = Long.MAX_VALUE) int page, int size) {
+        if (page < 1) throw new IllegalArgumentException("Page should be a positive number");
+        if (size < 1) throw new IllegalArgumentException("Size should be a positive number");
         return apiTrakt.trending(page, size).compose(transformer);
     }
 

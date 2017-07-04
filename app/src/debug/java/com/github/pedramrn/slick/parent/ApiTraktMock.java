@@ -71,6 +71,8 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
     @Override
     public Observable<List<MovieTraktPageMetadata>> trending(@Query("page") int page, @Query("limit") int size) {
+        if (page < 1) throw new IllegalArgumentException("Page should be a positive number");
+        if (size < 1) throw new IllegalArgumentException("Size should be a positive number");
         List<MovieTraktPageMetadata> response = Observable.fromIterable(trendingList)
                 .skip((page - 1) * size)
                 .take(size)
@@ -81,6 +83,8 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
     @Override
     public Observable<List<MovieTraktMetadata>> popular(@Query("page") int page, @Query("limit") int size) {
+        if (page < 1) throw new IllegalArgumentException("Page should be a positive number");
+        if (size < 1) throw new IllegalArgumentException("Size should be a positive number");
         List<MovieTraktMetadata> response = Observable.fromIterable(popularList)
                 .skip((page - 1) * size)
                 .take(size)

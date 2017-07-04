@@ -21,18 +21,22 @@ public class MapProgressive implements Function<AutoBase, AutoBase> {
         models = new SparseArrayCompat<>(size);
     }
 
+    public MapProgressive() {
+        this.size = Short.MAX_VALUE;
+        models = new SparseArrayCompat<>(15);
+    }
+
     @Override
     public AutoBase apply(@NonNull AutoBase model) throws Exception {
         int size = models.size();
-        if (size < this.size) {
+        Integer id = models.get(model.uniqueId(), -1);
+        if (id != -1) {
+            return model.toBuilder().uniqueId(id).build();
+        } else if (size < this.size) {
             models.put(model.uniqueId(), size);
             return model.toBuilder().uniqueId(size).build();
         } else {
-            int id = this.models.get(model.uniqueId(), -1);
-            if (id != -1) {
-                return model.toBuilder().uniqueId(id).build();
-            }
+            return model;
         }
-        return model;
     }
 }

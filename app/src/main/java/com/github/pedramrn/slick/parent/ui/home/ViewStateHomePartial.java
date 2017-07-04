@@ -85,17 +85,31 @@ public interface ViewStateHomePartial {
         protected final List<ItemCard> progressive;
 
 
-        public CardProgressive() {
+        public CardProgressive(int count, String tag) {
             // TODO: 2017-07-01 optimize for other screen sizes
-            // TODO: 2017-07-02 these ids should be the same as the ones which get maps in presenter, very error prone.
+            progressive = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                progressive.add(new ItemCardProgressiveImpl(IdBank.nextId(tag)));
+            }
+        }
+
+        public CardProgressive(String tag) {
             progressive = new ArrayList<>(3);
-            progressive.add(new ItemCardProgressiveImpl(0));
-            progressive.add(new ItemCardProgressiveImpl(1));
-            progressive.add(new ItemCardProgressiveImpl(2));
+            for (int i = 0; i < 3; i++) {
+                progressive.add(new ItemCardProgressiveImpl(IdBank.nextId(tag)));
+            }
         }
     }
 
     class CardProgressiveTrending extends CardProgressive {
+
+        public CardProgressiveTrending(int count, String tag) {
+            super(count, tag);
+        }
+
+        public CardProgressiveTrending(String tag) {
+            super(tag);
+        }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
@@ -104,6 +118,14 @@ public interface ViewStateHomePartial {
     }
 
     class CardProgressivePopular extends CardProgressive {
+
+        public CardProgressivePopular(int count, String tag) {
+            super(count, tag);
+        }
+
+        public CardProgressivePopular(String tag) {
+            super(tag);
+        }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {

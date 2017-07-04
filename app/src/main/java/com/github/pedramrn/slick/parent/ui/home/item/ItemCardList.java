@@ -76,6 +76,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
+                        Log.d(TAG, "!isLoading() called " + !isLoading);
                         return !isLoading;
                     }
                 })
@@ -84,10 +85,12 @@ public class ItemCardList extends Item<RowCardListBinding> {
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         int totalItemCount = layoutManager.getItemCount();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                        return totalItemCount == (lastVisibleItem + 2);
+                        boolean b = totalItemCount < (lastVisibleItem + 2);
+                        Log.e(TAG, "should load " + b);
+                        return b;
                     }
                 })
-                .scan(page, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
+                .scan(page + 1, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
                     @Override
                     public Integer apply(@NonNull Integer page, @NonNull RecyclerViewScrollEvent event) throws Exception {
                         return ++page;
@@ -99,13 +102,22 @@ public class ItemCardList extends Item<RowCardListBinding> {
                     public void accept(@NonNull Integer page) throws Exception {
                         ItemCardList.this.page = page;
                         isLoading = true;
+                        Log.d(TAG, "accept() called with: page = [" + page + "]");
                     }
                 })
                 .subscribe(trigger);
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
             @Override
-            public void onChanged() {
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                isLoading = false;
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
                 isLoading = false;
             }
         });

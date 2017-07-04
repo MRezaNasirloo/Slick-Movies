@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home;
 
 import android.util.Log;
 
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipated;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipatedImpl;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
@@ -64,13 +66,13 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         this.main = main;
     }
 
-
-    public Observable<ViewStateHome> updateStream() {
-        if (home == null) start();
+    public Observable<ViewStateHome> updateStream(@NonNull Observable<Integer> triggerTrending, @NonNull Observable<Integer> triggerPopular,
+                                                  int pageSize) {
+        if (home == null) start(triggerTrending, triggerPopular, pageSize);
         return state;
     }
 
-    public void start() {
+    public void start(Observable<Integer> triggerTrending, Observable<Integer> triggerPopular, final int pageSize) {
         Observable<ViewStateHomePartial> videos =
                 routerAnticipated.anticipated3().map(new Function<VideoDomain, ItemVideo>() {
                     @Override
@@ -92,9 +94,15 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                             }
                         }).subscribeOn(io);
 
-        Observable<ViewStateHomePartial> trending = routerTrending.trending(1, 20)
+        Observable<ViewStateHomePartial> trending = triggerTrending
+                .concatMap(new Function<Integer, ObservableSource<MovieDomain>>() {
+                    @Override
+                    public ObservableSource<MovieDomain> apply(@NonNull Integer page) throws Exception {
+                        return routerTrending.trending(page, pageSize).subscribeOn(io);
+                    }
+                })
                 .map(mapper)
-                .map(new MapProgressive(3))// TODO: 2017-07-02 this 3 numbers should be related to the size of screen width
+                .map(new MapProgressive())
                 .cast(Movie.class)
                 .buffer(3)
                 .flatMap(new ListToObserable<Movie>())
@@ -105,7 +113,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                         return new ViewStateHomePartial.Trending(movies);
                     }
                 })
-                .startWith(new ViewStateHomePartial.CardProgressiveTrending())
+                .startWith(new ViewStateHomePartial.CardProgressiveTrending(pageSize, "TRENDING"))
                 .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
@@ -113,6 +121,14 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 })
                 .subscribeOn(io);
+
+       /* Observable<ViewStateHomePartial> trendingPage = triggerTrending.skip(1)
+                .map(new Function<Integer, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull Integer integer) throws Exception {
+                        return new ViewStateHomePartial.CardProgressiveTrending(pageSize, "TRENDING");
+                    }
+                });*/
 
         Observable<ViewStateHomePartial> popular = routerPopular.popular(1, 20)
                 .map(mapper)
@@ -127,7 +143,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                         return new ViewStateHomePartial.Popular(movies);
                     }
                 })
-                .startWith(new ViewStateHomePartial.CardProgressivePopular())
+                .startWith(new ViewStateHomePartial.CardProgressivePopular(5, "POPULAR"))
                 .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
@@ -177,5 +193,4 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
             disposable.dispose();
         }
     }
-
 }

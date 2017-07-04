@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
@@ -25,6 +26,7 @@ import com.xwray.groupie.UpdatingGroup;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -47,7 +49,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private UpdatingGroup progressiveTrending = new UpdatingGroup();
     private UpdatingGroup progressivePopular = new UpdatingGroup();
     private ItemCardList itemTrendingList = new ItemCardList(adapterTrending);
-    private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
+    // private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
     private ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
     private Disposable disposable;
 
@@ -80,19 +82,21 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                 }
             }));
             adapterPopular.add(progressivePopular);
-            sectionPopular.add(itemPopularList);
+            // sectionPopular.add(itemPopularList);
 
             adapterMain.add(sectionTrending);
-            adapterMain.add(sectionPopular);
+            // adapterMain.add(sectionPopular);
         }
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewHome.setAdapter(adapterMain);
         setToolbar(binding.toolbar);
 
-        itemTrendingList.getPageTrigger();
+        Observable<Integer> triggerTrending = itemTrendingList.getPageTrigger();
+        // itemPopularList.getPageTrigger();
 
-        presenter.updateStream().subscribe(this);
+        int pageSize = getResources().getInteger(R.integer.page_size);
+        presenter.updateStream(triggerTrending, triggerTrending, pageSize).subscribe(this);
 
         Log.e(TAG, "onCreateView() called");
         return binding.getRoot();
@@ -101,13 +105,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         itemTrendingList.onSaveViewState(view, outState);
-        itemPopularList.onSaveViewState(view, outState);
+        // itemPopularList.onSaveViewState(view, outState);
     }
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         itemTrendingList.onRestoreViewState(view, savedViewState);
-        itemPopularList.onRestoreViewState(view, savedViewState);
+        // itemPopularList.onRestoreViewState(view, savedViewState);
     }
 
     private static final String TAG = ControllerHome.class.getSimpleName();
@@ -118,7 +122,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
         progressiveAnticipated.update(renderer.anticipated());
         progressiveTrending.update(renderer.trending());
-        progressivePopular.update(renderer.popular());
+        // progressivePopular.update(renderer.popular());
 
 
         // TODO: 2017-07-01 You're better than this...

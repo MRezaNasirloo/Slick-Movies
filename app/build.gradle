@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 //apply plugin: 'blockcanaryex'
+apply plugin: 'com.jakewharton.hugo'
+
 
 android {
     signingConfigs {
@@ -204,7 +206,6 @@ dependencies {
     compile 'com.gjiazhe:scrollparallaximageview:1.0'
 //    compile 'com.fmsirvent:parallaxeverywhere:1.0.4'
     compile 'com.xwray:groupie:1.1.1'
-    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
 
 
 }
