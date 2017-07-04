@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.github.pedramrn.slick.parent.di.ComponentApp;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleApp;
@@ -15,8 +17,6 @@ import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
 import com.squareup.leakcanary.LeakCanary;
-
-//import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -34,6 +34,7 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
+        final long before = System.currentTimeMillis();
         app = ((App) getApplicationContext());
         super.onCreate();
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -41,19 +42,20 @@ public class App extends Application {
             // You should not init your app in this process.
             return;
         }
-        //        if (!BlockCanaryEx.isInSamplerProcess(this)) {
-        //            BlockCanaryEx.install(new Config(this));
-        //        }
-        final long before = System.currentTimeMillis();
-        //        LeakCanary.install(this);
+        /*if (!BlockCanaryEx.isInSamplerProcess(this)) {
+            BlockCanaryEx.install(new Config(this));
+            return;
+        }*/
+        BlockCanary.install(this, new BlockCanaryContext()).start();
+        // LeakCanary.install(this);
         componentApp = prepareDi().build();
 
         if (BuildConfig.DEBUG) {
             AndroidDevMetrics.initWith(this);
         }
-        Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
 
         StrictMode.enableDefaults();
+        Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
     }
 
     @NonNull

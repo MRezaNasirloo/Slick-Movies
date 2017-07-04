@@ -31,6 +31,7 @@ public class ItemCardMovie extends Item<RowCardBinding> {
     public void bind(RowCardBinding viewBinding, int position) {
         viewBinding.textViewTitle.setText(movie.title());
         viewBinding.textViewTitle.setBackground(null);
+        viewBinding.imageViewPoster.setBackground(null);
         viewBinding.imageViewPoster.load(movie.posterThumbnail());
     }
 

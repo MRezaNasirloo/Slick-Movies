@@ -141,6 +141,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .scan(ViewStateHome.builder().build(), new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
                     @Override
                     public ViewStateHome apply(@NonNull ViewStateHome viewStateHome, @NonNull ViewStateHomePartial vp) throws Exception {
+                        Log.e(TAG, Thread.currentThread().getName());
                         return vp.reduce(viewStateHome);
                     }
                 });

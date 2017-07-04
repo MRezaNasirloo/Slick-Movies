@@ -36,7 +36,7 @@ public class ImageViewGlide extends AppCompatImageView {
         Context context = getContext().getApplicationContext();
         Glide.with(context)
                 .load(url)
-                .placeholder(R.drawable.rectangle)
+                .placeholder(R.drawable.rectangle_no_corners)
                 .crossFade()
                 .into(this);
     }

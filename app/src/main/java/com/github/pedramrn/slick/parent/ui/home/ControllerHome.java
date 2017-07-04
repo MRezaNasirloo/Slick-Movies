@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,7 +60,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
 
-
         if (adapterMain.getAdapterPosition(itemAnticipatedList) == -1) {
             adapterMain.add(itemAnticipatedList);
             adapterAnticipated.add(progressiveAnticipated);
@@ -90,14 +90,31 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         binding.recyclerViewHome.setAdapter(adapterMain);
         setToolbar(binding.toolbar);
 
+        itemTrendingList.getPageTrigger();
+
         presenter.updateStream().subscribe(this);
 
+        Log.e(TAG, "onCreateView() called");
         return binding.getRoot();
     }
 
+    @Override
+    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        itemTrendingList.onSaveViewState(view, outState);
+        itemPopularList.onSaveViewState(view, outState);
+    }
+
+    @Override
+    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+        itemTrendingList.onRestoreViewState(view, savedViewState);
+        itemPopularList.onRestoreViewState(view, savedViewState);
+    }
+
     private static final String TAG = ControllerHome.class.getSimpleName();
+
     @Override
     public void render(@NonNull ViewStateHome state) {
+        Log.d(TAG, "render() called");
         ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
         progressiveAnticipated.update(renderer.anticipated());
         progressiveTrending.update(renderer.trending());
@@ -128,7 +145,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void onError(Throwable e) {
-e.printStackTrace();
+        e.printStackTrace();
     }
 
     @Override
@@ -138,6 +155,7 @@ e.printStackTrace();
 
     @Override
     protected void onDestroyView(@NonNull View view) {
+        Log.d(TAG, "onDestroyView() called");
         super.onDestroyView(view);
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();

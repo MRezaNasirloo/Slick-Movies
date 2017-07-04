@@ -84,7 +84,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         final Observable<Integer> trigger = scrollEvents(binding.recyclerView)
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
-                    public boolean test(@io.reactivex.annotations.NonNull RecyclerViewScrollEvent event) throws Exception {
+                    public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         return !viewModel.isLoading();
                     }
                 })
@@ -104,7 +104,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
                 })
                 .doOnNext(new Consumer<Integer>() {
                     @Override
-                    public void accept(@io.reactivex.annotations.NonNull Integer integer) throws Exception {
+                    public void accept(@NonNull Integer integer) throws Exception {
                         viewModel.setLoading();
                     }
                 })

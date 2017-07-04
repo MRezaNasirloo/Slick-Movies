@@ -31,6 +31,7 @@ public class ItemAnticipated extends Item<RowAnticipatedBinding> {
     @Override
     public void bind(RowAnticipatedBinding viewBinding, int position) {
         viewBinding.imageViewThumbnail.load(video.thumbnail());
+        viewBinding.imageViewThumbnail.setBackground(null);
         viewBinding.textViewTitleAnticipated.setBackground(null);
         viewBinding.textViewTitleAnticipated.setText(video.name());
     }
