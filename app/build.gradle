@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'com.antfortune.freeline'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 //apply plugin: 'blockcanaryex'
-
-//apply plugin: 'me.tatarka.retrolambda'
 
 android {
     signingConfigs {
@@ -58,15 +55,18 @@ android {
     sourceSets {
         // Unit tests live in src/unitTest.
         test.java.srcDir 'src/unitTests/java'
+        test.resources.srcDir 'src/unitTests/resources'
 
         // Integration tests live in src/integrationTest.
 //        test.java.srcDir 'src/integrationTests/java'
 
         // Unit tests for debug build type specific code live in src/debugUnitTest.
         testDebug.java.srcDir 'src/debugUnitTests/java'
+        testDebug.resources.srcDirs 'src/debugUnitTests/resources'
 
         // Unit tests for release build type specific code live in src/releaseUnitTest.
         testRelease.java.srcDir 'src/releaseUnitTests/java'
+        testRelease.resources.srcDir 'src/releaseUnitTests/resources'
 
         // Functional tests live in src/functionalTests.
         androidTest.java.srcDir 'src/androidTest/java'
