@@ -1,7 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
-import android.util.Log;
-
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowAnticipatedBinding;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
@@ -33,7 +31,7 @@ public class ItemAnticipated extends Item<RowAnticipatedBinding> {
     @Override
     public void bind(RowAnticipatedBinding viewBinding, int position) {
         viewBinding.imageViewThumbnail.load(video.thumbnail());
-        Log.d(TAG, "bind() called" + video.thumbnail());
+        viewBinding.textViewTitleAnticipated.setBackground(null);
         viewBinding.textViewTitleAnticipated.setText(video.name());
     }
 
