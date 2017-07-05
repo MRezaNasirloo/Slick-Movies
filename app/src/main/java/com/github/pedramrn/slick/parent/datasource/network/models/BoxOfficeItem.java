@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class BoxOfficeItem {
     @SerializedName("revenue")
-    public abstract Integer revenue();
+    public abstract Long revenue();
 
     @SerializedName("movie")
     public abstract MovieTraktMetadata movie();

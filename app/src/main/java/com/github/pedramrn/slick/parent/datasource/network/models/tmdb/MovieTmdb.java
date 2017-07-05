@@ -66,7 +66,7 @@ public abstract class MovieTmdb {
     public abstract String releaseDate();
 
     @SerializedName("revenue")
-    public abstract Integer revenue();
+    public abstract Long revenue();
 
     @SerializedName("runtime")
     public abstract Integer runtime();
@@ -108,7 +108,7 @@ public abstract class MovieTmdb {
                                    List<Genre> genres, String homepage, String originalLanguage, String originalTitle, String overview,
                                    Float popularity,
                                    String posterPath, List<ProductionCompany> productionCompanies, List<ProductionCountry> productionCountries,
-                                   String releaseDate, Integer revenue, Integer runtime, List<SpokenLanguage> spokenLanguages, String status,
+                                   String releaseDate, Long revenue, Integer runtime, List<SpokenLanguage> spokenLanguages, String status,
                                    String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Credit credits,
                                    ImageTmdb images, VideoTmdbResults videos) {
         return new AutoValue_MovieTmdb(id, imdbId, adult, backdropPath, belongsToCollection, budget, genres, homepage, originalLanguage,

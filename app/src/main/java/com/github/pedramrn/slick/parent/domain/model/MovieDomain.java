@@ -43,7 +43,7 @@ public abstract class MovieDomain {
 
     public abstract String releaseDate();
 
-    public abstract Integer revenue();
+    public abstract Long revenue();
 
     public abstract Integer runtime();
 
@@ -70,7 +70,7 @@ public abstract class MovieDomain {
     public static MovieDomain create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
                                      List<String> genres, String homepage, String originalLanguage, String originalTitle, String overview,
                                      Float popularity, String posterPath, List<String> productionCompanies, List<String> productionCountries,
-                                     String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages, String status,
+                                     String releaseDate, Long revenue, Integer runtime, List<String> spokenLanguages, String status,
                                      String tagline,
                                      String title, Boolean video, Float voteAverage, Integer voteCount, List<CastDomain> casts, ImageDomain images,
                                      List<VideoDomain> videos) {

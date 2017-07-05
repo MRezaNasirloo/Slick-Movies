@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 
 import android.support.annotation.Nullable;
 
+import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
@@ -20,6 +21,7 @@ public abstract class Movie extends AutoBase implements ItemCard {
 
     public abstract Integer id();
 
+    @IncludeHashEquals
     public abstract Integer uniqueId();
 
     public abstract String imdbId();
@@ -46,7 +48,7 @@ public abstract class Movie extends AutoBase implements ItemCard {
 
     public abstract String releaseDate();
 
-    public abstract Integer revenue();
+    public abstract Long revenue();
 
     public abstract Integer runtime();
 
@@ -83,14 +85,26 @@ public abstract class Movie extends AutoBase implements ItemCard {
 
     @Override
     public long itemId() {
-        return id().longValue();
+        return uniqueId().longValue();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o instanceof ItemCard) {
+            ItemCard that = (ItemCard) o;
+            return (this.itemId() == that.itemId());
+        }
+        return false;
     }
 
     public abstract Builder toBuilder();
 
     public static Movie create(Integer id, Integer uniqueId, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
                                String homepage, String overview, Float popularity, String posterPath, List<String> productionCompanies,
-                               List<String> productionCountries, String releaseDate, Integer revenue, Integer runtime, List<String> spokenLanguages,
+                               List<String> productionCountries, String releaseDate, Long revenue, Integer runtime, List<String> spokenLanguages,
                                String status, String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, List<Cast> casts,
                                Image images, List<Video> videos) {
         return builder()
@@ -157,7 +171,7 @@ public abstract class Movie extends AutoBase implements ItemCard {
 
         public abstract Builder releaseDate(String releaseDate);
 
-        public abstract Builder revenue(Integer revenue);
+        public abstract Builder revenue(Long revenue);
 
         public abstract Builder runtime(Integer runtime);
 
