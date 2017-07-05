@@ -17,6 +17,7 @@ import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.Item;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
@@ -57,7 +58,6 @@ public class ItemCardList extends Item<RowCardListBinding> {
     @Override
     public void bind(RowCardListBinding viewBinding, int position) {
         Log.d(TAG, "ItemCardList bind() called");
-        // TODO: 2017-06-22 add pager indicator
         Context context = viewBinding.getRoot().getContext();
         recyclerView = viewBinding.recyclerViewCard;
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
@@ -76,7 +76,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        Log.d(TAG, "!isLoading() called " + !isLoading);
+                        // Log.d(TAG, "!isLoading() called " + !isLoading);
                         return !isLoading;
                     }
                 })
@@ -85,9 +85,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         int totalItemCount = layoutManager.getItemCount();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                        boolean b = totalItemCount < (lastVisibleItem + 2);
-                        Log.e(TAG, "should load " + b);
-                        return b;
+                        return totalItemCount < (lastVisibleItem + 2);
                     }
                 })
                 .scan(page + 1, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
@@ -105,22 +103,8 @@ public class ItemCardList extends Item<RowCardListBinding> {
                         Log.d(TAG, "accept() called with: page = [" + page + "]");
                     }
                 })
+                .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(trigger);
-
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                super.onItemRangeChanged(positionStart, itemCount);
-                isLoading = false;
-            }
-
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                isLoading = false;
-            }
-        });
 
     }
 
@@ -140,5 +124,10 @@ public class ItemCardList extends Item<RowCardListBinding> {
         page = savedViewState.getInt(POPULAR_PAGE, page);
         isLoading = savedViewState.getBoolean(POPULAR_IS_LOADING, isLoading);
         scrollPos = savedViewState.getInt(POPULAR_SCROLL_POS);
+    }
+
+    public void setLoading(boolean loading) {
+        Log.d(TAG, "setLoading() called load again");
+        this.isLoading = loading;
     }
 }
