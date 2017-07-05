@@ -5,8 +5,8 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideoProgressiveImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -19,13 +19,13 @@ public interface ViewStateHomePartial {
 
     class VideosImpl implements ViewStateHomePartial {
 
-        private final List<ItemVideo> itemVideos;
+        private final Map<Integer, ItemVideo> itemVideos;
 
-        public VideosImpl(List<ItemVideo> itemVideos) {
+        public VideosImpl(Map<Integer, ItemVideo> itemVideos) {
             this.itemVideos = itemVideos;
         }
 
-        public List<ItemVideo> getItemVideos() {
+        public Map<Integer, ItemVideo> getItemVideos() {
             return itemVideos;
         }
 
@@ -50,13 +50,13 @@ public interface ViewStateHomePartial {
 
     class ProgressiveVideosImpl implements ViewStateHomePartial {
 
-        private final List<ItemVideo> progressive;
+        private Map<Integer, ItemVideo> progressive;
 
         public ProgressiveVideosImpl() {
-            progressive = new ArrayList<>(3);
-            progressive.add(new ItemVideoProgressiveImpl());
-            progressive.add(new ItemVideoProgressiveImpl());
-            progressive.add(new ItemVideoProgressiveImpl());
+            progressive = new LinkedHashMap<>(3);
+            progressive.put(0, new ItemVideoProgressiveImpl());
+            progressive.put(1, new ItemVideoProgressiveImpl());
+            progressive.put(2, new ItemVideoProgressiveImpl());
         }
 
         @Override
@@ -68,36 +68,54 @@ public interface ViewStateHomePartial {
 
     class Trending implements ViewStateHomePartial {
 
-        private final List<ItemCard> movies;
+        private final Map<Integer, ItemCard> movies;
+        private final boolean loading;
 
-        public Trending(List<ItemCard> movies) {
+        public Trending(Map<Integer, ItemCard> movies, boolean loading) {
             this.movies = movies;
+            this.loading = loading;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().trending(movies).build();
+            Map<Integer, ItemCard> trending = viewStateHome.trending();
+            if (trending != null) {
+                trending.putAll(movies);
+            } else {
+                trending = movies;
+            }
+            return viewStateHome.toBuilder().trending(trending).loadingTrending(loading).build();
         }
     }
 
     abstract class CardProgressive implements ViewStateHomePartial {
 
-        protected final List<ItemCard> progressive;
+        protected final Map<Integer, ItemCard> progressive;
 
 
         public CardProgressive(int count, String tag) {
-            // TODO: 2017-07-01 optimize for other screen sizes
-            progressive = new ArrayList<>(count);
+            progressive = new LinkedHashMap<>(count);
             for (int i = 0; i < count; i++) {
-                progressive.add(new ItemCardProgressiveImpl(IdBank.nextId(tag)));
+                int id = IdBank.nextId(tag);
+                progressive.put(id, ItemCardProgressiveImpl.create(id));
             }
         }
 
         public CardProgressive(String tag) {
-            progressive = new ArrayList<>(3);
+            progressive = new LinkedHashMap<>(3);
             for (int i = 0; i < 3; i++) {
-                progressive.add(new ItemCardProgressiveImpl(IdBank.nextId(tag)));
+                int id = IdBank.nextId(tag);
+                progressive.put(id, ItemCardProgressiveImpl.create(id));
             }
+        }
+
+        protected Map<Integer, ItemCard> reduce(Map<Integer, ItemCard> items) {
+            if (items != null) {
+                items.putAll(progressive);
+            } else {
+                items = progressive;
+            }
+            return items;
         }
     }
 
@@ -113,7 +131,7 @@ public interface ViewStateHomePartial {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().trending(progressive).build();
+            return viewStateHome.toBuilder().trending(reduce(viewStateHome.trending())).build();
         }
     }
 
@@ -129,7 +147,7 @@ public interface ViewStateHomePartial {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().popular(progressive).build();
+            return viewStateHome.toBuilder().trending(reduce(viewStateHome.popular())).build();
         }
     }
 
@@ -148,9 +166,9 @@ public interface ViewStateHomePartial {
     }
 
     class Popular implements ViewStateHomePartial {
-        private final List<ItemCard> movies;
+        private final Map<Integer, ItemCard> movies;
 
-        public Popular(List<ItemCard> movies) {
+        public Popular(Map<Integer, ItemCard> movies) {
             this.movies = movies;
         }
 

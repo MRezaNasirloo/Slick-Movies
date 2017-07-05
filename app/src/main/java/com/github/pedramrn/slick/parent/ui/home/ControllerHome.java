@@ -122,6 +122,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
         progressiveAnticipated.update(renderer.anticipated());
         progressiveTrending.update(renderer.trending());
+        itemTrendingList.setLoading(state.loadingTrending());
         // progressivePopular.update(renderer.popular());
 
 

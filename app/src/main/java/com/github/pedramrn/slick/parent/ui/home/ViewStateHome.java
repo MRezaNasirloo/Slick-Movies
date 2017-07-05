@@ -8,7 +8,7 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -17,22 +17,24 @@ import java.util.List;
 @AutoValue
 abstract class ViewStateHome {
     @Nullable
-    public abstract List<ItemVideo> items();
+    public abstract Map<Integer, ItemVideo> items();
 
     @Nullable
-    public abstract List<String> foo();
+    public abstract Map<Integer, String> foo();
 
     @Nullable
-    public abstract List<Video> videos();
+    public abstract Map<Integer, Video> videos();
 
     @Nullable
-    public abstract List<Movie> movies();
+    public abstract Map<Integer, Movie> movies();
 
     @Nullable
-    public abstract List<ItemCard> trending();
+    public abstract Map<Integer, ItemCard> trending();
+
+    public abstract boolean loadingTrending();
 
     @Nullable
-    public abstract List<ItemCard> popular();
+    public abstract Map<Integer, ItemCard> popular();
 
     @Nullable
     public abstract Throwable videosError();
@@ -43,14 +45,18 @@ abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos, List<Movie> movies, List<ItemCard> trending,
-                                       List<ItemCard> popular, Throwable videosError, Throwable error) {
+    public static ViewStateHome create(Map<Integer, ItemVideo> items, Map<Integer, String> foo, Map<Integer, Video> videos,
+                                       Map<Integer, Movie> movies,
+                                       Map<Integer, ItemCard> trending, boolean loadingTrending, Map<Integer, ItemCard> popular,
+                                       Throwable videosError,
+                                       Throwable error) {
         return builder()
                 .items(items)
                 .foo(foo)
                 .videos(videos)
                 .movies(movies)
                 .trending(trending)
+                .loadingTrending(loadingTrending)
                 .popular(popular)
                 .videosError(videosError)
                 .error(error)
@@ -63,21 +69,23 @@ abstract class ViewStateHome {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder items(List<ItemVideo> items);
+        public abstract Builder items(Map<Integer, ItemVideo> items);
 
-        public abstract Builder foo(List<String> foo);
+        public abstract Builder foo(Map<Integer, String> foo);
 
-        public abstract Builder videos(List<Video> videos);
+        public abstract Builder videos(Map<Integer, Video> videos);
 
-        public abstract Builder movies(List<Movie> movies);
+        public abstract Builder movies(Map<Integer, Movie> movies);
 
-        public abstract Builder trending(List<ItemCard> trending);
+        public abstract Builder trending(Map<Integer, ItemCard> trending);
 
         public abstract Builder videosError(Throwable videosError);
 
-        public abstract Builder popular(List<ItemCard> popular);
+        public abstract Builder popular(Map<Integer, ItemCard> popular);
 
         public abstract Builder error(Throwable error);
+
+        public abstract Builder loadingTrending(boolean loadingTrending);
 
         public abstract ViewStateHome build();
     }

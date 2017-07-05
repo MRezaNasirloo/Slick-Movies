@@ -15,8 +15,12 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import retrofit2.Response;
 
 import static com.github.pedramrn.slick.parent.util.FileUtils.readFile;
 
@@ -68,5 +72,12 @@ public class ApiTraktMockTest {
                     }
                 })
                 .assertComplete();
+    }
+
+    private static class ResponseToObservable implements Function<Response<List<MovieTraktPageMetadata>>, ObservableSource<MovieTraktPageMetadata>> {
+        @Override
+        public ObservableSource<MovieTraktPageMetadata> apply(@NonNull Response<List<MovieTraktPageMetadata>> listResponse) throws Exception {
+            return Observable.fromIterable(listResponse.body());
+        }
     }
 }

@@ -14,7 +14,7 @@ import io.reactivex.functions.Function;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-22
  */
-public class Scan<T> implements ObservableTransformer<T, List<T>> {
+public class ScanToList<T> implements ObservableTransformer<T, List<T>> {
     @Override
     public ObservableSource<List<T>> apply(Observable<T> upstream) {
         return upstream.map(new Function<T, List<T>>() {

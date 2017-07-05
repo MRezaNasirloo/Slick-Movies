@@ -14,10 +14,10 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
-import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeOmdbImpl;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.github.pedramrn.slick.parent.ui.popular.ControllerPopular;
+import com.github.pedramrn.slick.parent.ui.upcoming.ControllerUpComing;
 import com.github.slick.Presenter;
 
 import javax.inject.Inject;
@@ -63,8 +63,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                             router.setRoot(RouterTransaction.with(new ControllerHome()));
                             break;
                         case 1:
-                            router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
-                            // router.setRoot(RouterTransaction.with(new ControllerUpComing()));
+                            // router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
+                            router.setRoot(RouterTransaction.with(new ControllerUpComing()));
                             break;
                         case 2:
                             router.setRoot(RouterTransaction.with(new ControllerPopular()));
