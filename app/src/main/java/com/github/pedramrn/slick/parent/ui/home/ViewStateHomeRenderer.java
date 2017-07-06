@@ -10,7 +10,6 @@ import com.xwray.groupie.Item;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
@@ -31,10 +30,9 @@ public class ViewStateHomeRenderer {
 
     @UiThread
     public List<Item> anticipated() {
-        Map<Integer, ItemVideo> items = viewStateHome.items();
+        List<ItemVideo> items = viewStateHome.items();
         if (items == null || items.size() == 0) return Collections.emptyList();
-
-        return Observable.fromIterable(items.values())
+        return Observable.fromIterable(items)
                 .zipWith(Observable.range(0, items.size()), new BiFunction<ItemVideo, Integer, Indexed<ItemVideo>>() {
                     @Override
                     public Indexed<ItemVideo> apply(@NonNull ItemVideo cast, @NonNull Integer index) throws Exception {
@@ -46,24 +44,15 @@ public class ViewStateHomeRenderer {
                         return indexed.value().render(indexed.index());
                     }
                 }).toList(items.size()).blockingGet();
-
     }
 
     public List<? extends Item> trending() {
-        Map<Integer, ItemCard> map = viewStateHome.trending();
-        Collection<ItemCard> trending = null;
-        if (map != null) {
-            trending = map.values();
-        }
+        List<ItemCard> trending = viewStateHome.trending();
         return map(trending);
     }
 
     public List<? extends Item> popular() {
-        Map<Integer, ItemCard> map = viewStateHome.popular();
-        Collection<ItemCard> popular = null;
-        if (map != null) {
-            popular = map.values();
-        }
+        List<ItemCard> popular = viewStateHome.popular();
         return map(popular);
     }
 

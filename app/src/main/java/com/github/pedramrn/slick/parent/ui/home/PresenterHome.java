@@ -13,11 +13,11 @@ import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
-import com.github.pedramrn.slick.parent.util.ListToObserable;
-import com.github.pedramrn.slick.parent.util.ScanToMap;
+import com.github.pedramrn.slick.parent.util.ScanToList;
+import com.github.pedramrn.slick.parent.util.ScanToListNoMap;
 import com.github.slick.SlickPresenter;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -103,10 +103,10 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .map(mapper)
                 .map(new MapProgressive())
                 .cast(Movie.class)
-                .compose(new ScanToMap())
-                .map(new Function<Map<Integer, ItemCard>, ViewStateHomePartial>() {
+                .compose(new ScanToList<ItemCard>())
+                .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
                     @Override
-                    public ViewStateHomePartial apply(@NonNull Map<Integer, ItemCard> movies) throws Exception {
+                    public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
                         return new ViewStateHomePartial.Trending(movies, false);
                     }
                 })
@@ -130,13 +130,12 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         Observable<ViewStateHomePartial> popular = routerPopular.popular(1, 3)
                 .map(mapper)
                 .map(new MapProgressive(3))// TODO: 2017-07-02 this 3 numbers should be related to the size of screen width
-                .cast(Movie.class)
+                .cast(ItemCard.class)
                 .buffer(3)
-                .flatMap(new ListToObserable<Movie>())
-                .compose(new ScanToMap())
-                .map(new Function<Map<Integer, ItemCard>, ViewStateHomePartial>() {
+                .compose(new ScanToListNoMap<ItemCard>())
+                .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
                     @Override
-                    public ViewStateHomePartial apply(@NonNull Map<Integer, ItemCard> movies) throws Exception {
+                    public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
                         return new ViewStateHomePartial.Popular(movies);
                     }
                 })

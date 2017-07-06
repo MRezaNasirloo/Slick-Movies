@@ -8,7 +8,7 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -17,26 +17,26 @@ import java.util.Map;
 @AutoValue
 abstract class ViewStateHome {
     @Nullable
-    public abstract Map<Integer, ItemVideo> items();
+    public abstract List<ItemVideo> items();
 
     @Nullable
-    public abstract Map<Integer, String> foo();
+    public abstract List<String> foo();
 
     @Nullable
-    public abstract Map<Integer, Video> videos();
+    public abstract List<Video> videos();
 
     @Nullable
-    public abstract Map<Integer, Movie> movies();
+    public abstract List<Movie> movies();
 
     @Nullable
-    public abstract Map<Integer, ItemCard> trending();
+    public abstract List<ItemCard> trending();
 
     public abstract boolean loadingTrending();
 
     public abstract int itemLoadingCount();
 
     @Nullable
-    public abstract Map<Integer, ItemCard> popular();
+    public abstract List<ItemCard> popular();
 
     @Nullable
     public abstract Throwable videosError();
@@ -47,9 +47,9 @@ abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(Map<Integer, ItemVideo> items, Map<Integer, String> foo, Map<Integer, Video> videos,
-                                       Map<Integer, Movie> movies,
-                                       Map<Integer, ItemCard> trending, boolean loadingTrending, int itemLoadingCount, Map<Integer, ItemCard> popular,
+    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos,
+                                       List<Movie> movies,
+                                       List<ItemCard> trending, boolean loadingTrending, int itemLoadingCount, List<ItemCard> popular,
                                        Throwable videosError, Throwable error) {
         return builder()
                 .items(items)
@@ -71,19 +71,19 @@ abstract class ViewStateHome {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder items(Map<Integer, ItemVideo> items);
+        public abstract Builder items(List<ItemVideo> items);
 
-        public abstract Builder foo(Map<Integer, String> foo);
+        public abstract Builder foo(List<String> foo);
 
-        public abstract Builder videos(Map<Integer, Video> videos);
+        public abstract Builder videos(List<Video> videos);
 
-        public abstract Builder movies(Map<Integer, Movie> movies);
+        public abstract Builder movies(List<Movie> movies);
 
-        public abstract Builder trending(Map<Integer, ItemCard> trending);
+        public abstract Builder trending(List<ItemCard> trending);
 
         public abstract Builder videosError(Throwable videosError);
 
-        public abstract Builder popular(Map<Integer, ItemCard> popular);
+        public abstract Builder popular(List<ItemCard> popular);
 
         public abstract Builder error(Throwable error);
 
