@@ -46,7 +46,12 @@ public class App extends Application {
             BlockCanaryEx.install(new Config(this));
             return;
         }*/
-        BlockCanary.install(this, new BlockCanaryContext()).start();
+        BlockCanary.install(this, new BlockCanaryContext() {
+            @Override
+            public int provideBlockThreshold() {
+                return 100;
+            }
+        }).start();
         // LeakCanary.install(this);
         componentApp = prepareDi().build();
 

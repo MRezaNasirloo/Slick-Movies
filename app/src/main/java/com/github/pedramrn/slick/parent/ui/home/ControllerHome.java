@@ -21,7 +21,6 @@ import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Section;
-import com.xwray.groupie.UpdatingGroup;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -45,9 +44,9 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private GroupAdapter adapterAnticipated = new GroupAdapter();
     private GroupAdapter adapterTrending = new GroupAdapter();
     private GroupAdapter adapterPopular = new GroupAdapter();
-    private UpdatingGroup progressiveAnticipated = new UpdatingGroup();
-    private UpdatingGroup progressiveTrending = new UpdatingGroup();
-    private UpdatingGroup progressivePopular = new UpdatingGroup();
+    // private UpdatingGroup progressiveAnticipated = new UpdatingGroup();
+    // private UpdatingGroup progressiveTrending = new UpdatingGroup();
+    // private UpdatingGroup progressivePopular = new UpdatingGroup();
     private ItemCardList itemTrendingList = new ItemCardList(adapterTrending);
     private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
     private ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
@@ -64,7 +63,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
         if (adapterMain.getAdapterPosition(itemAnticipatedList) == -1) {
             adapterMain.add(itemAnticipatedList);
-            adapterAnticipated.add(progressiveAnticipated);
+            // adapterAnticipated.add(progressiveAnticipated);
 
             Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", new View.OnClickListener() {
                 @Override
@@ -72,7 +71,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                     Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
                 }
             }));
-            adapterTrending.add(progressiveTrending);
+            // adapterTrending.add(progressiveTrending);
             sectionTrending.add(itemTrendingList);
 
             Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", new View.OnClickListener() {
@@ -81,7 +80,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                     Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
                 }
             }));
-            adapterPopular.add(progressivePopular);
+            // adapterPopular.add(progressivePopular);
             sectionPopular.add(itemPopularList);
 
             adapterMain.add(sectionTrending);
@@ -119,9 +118,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
         ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
-        progressiveAnticipated.update(renderer.anticipated());
-        progressiveTrending.update(renderer.trending());
-        progressivePopular.update(renderer.popular());
+        adapterAnticipated.clear();
+        adapterTrending.clear();
+        adapterPopular.clear();
+
+        adapterAnticipated.addAll(renderer.anticipated());
+        adapterTrending.addAll(renderer.trending());
+        adapterPopular.addAll(renderer.popular());
         itemTrendingList.setLoading(state.loadingTrending());
         itemTrendingList.itemLoadedCount(state.itemLoadingCountTrending());
         itemPopularList.setLoading(state.loadingPopular());
