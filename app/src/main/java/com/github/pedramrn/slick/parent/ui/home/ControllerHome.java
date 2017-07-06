@@ -49,7 +49,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private UpdatingGroup progressiveTrending = new UpdatingGroup();
     private UpdatingGroup progressivePopular = new UpdatingGroup();
     private ItemCardList itemTrendingList = new ItemCardList(adapterTrending);
-    // private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
+    private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
     private ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
     private Disposable disposable;
 
@@ -82,10 +82,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                 }
             }));
             adapterPopular.add(progressivePopular);
-            // sectionPopular.add(itemPopularList);
+            sectionPopular.add(itemPopularList);
 
             adapterMain.add(sectionTrending);
-            // adapterMain.add(sectionPopular);
+            adapterMain.add(sectionPopular);
         }
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -93,25 +93,24 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         setToolbar(binding.toolbar);
 
         Observable<Integer> triggerTrending = itemTrendingList.getPageTrigger();
-        // itemPopularList.getPageTrigger();
+        Observable<Integer> triggerPopular = itemPopularList.getPageTrigger();
 
         int pageSize = getResources().getInteger(R.integer.page_size);
-        presenter.updateStream(triggerTrending, triggerTrending, pageSize).subscribe(this);
+        presenter.updateStream(triggerTrending, triggerPopular, pageSize).subscribe(this);
 
-        Log.e(TAG, "onCreateView() called");
         return binding.getRoot();
     }
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         itemTrendingList.onSaveViewState(view, outState);
-        // itemPopularList.onSaveViewState(view, outState);
+        itemPopularList.onSaveViewState(view, outState);
     }
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         itemTrendingList.onRestoreViewState(view, savedViewState);
-        // itemPopularList.onRestoreViewState(view, savedViewState);
+        itemPopularList.onRestoreViewState(view, savedViewState);
     }
 
     private static final String TAG = ControllerHome.class.getSimpleName();
@@ -122,9 +121,11 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
         progressiveAnticipated.update(renderer.anticipated());
         progressiveTrending.update(renderer.trending());
+        progressivePopular.update(renderer.popular());
         itemTrendingList.setLoading(state.loadingTrending());
-        itemTrendingList.itemLoadedCount(state.itemLoadingCount());
-        // progressivePopular.update(renderer.popular());
+        itemTrendingList.itemLoadedCount(state.itemLoadingCountTrending());
+        itemPopularList.setLoading(state.loadingPopular());
+        itemPopularList.itemLoadedCount(state.itemLoadingCountPopular());
 
 
         // TODO: 2017-07-01 You're better than this...
@@ -136,6 +137,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private void renderError(@Nullable Throwable throwable) {
         if (throwable != null) {
             throwable.printStackTrace();
+            Toast.makeText(ControllerHome.this.getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

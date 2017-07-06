@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.home;
 import android.util.Log;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipated;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipatedImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
@@ -10,11 +11,15 @@ import com.github.pedramrn.slick.parent.domain.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
+import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
+import com.github.pedramrn.slick.parent.util.ScanToList;
 import com.github.pedramrn.slick.parent.util.ScanToListNoMap;
 import com.github.slick.SlickPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +52,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     private BehaviorSubject<ViewStateHome> state = BehaviorSubject.create();
     private Observable<ViewStateHome> home;
     private Disposable disposable;
+    private String TRENDING = "TRENDING";
+    private String POPULAR = "POPULAR";
 
 
     @Inject
@@ -68,28 +75,32 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     }
 
     public void start(Observable<Integer> triggerTrending, Observable<Integer> triggerPopular, final int pageSize) {
-        IdBank.reset("TRENDING");
-        IdBank.reset("POPULAR");
-        /*Observable<ViewStateHomePartial> videos =
-                routerAnticipated.anticipated3().map(new Function<VideoDomain, ItemVideo>() {
+        IdBank.reset(TRENDING);
+        IdBank.reset(POPULAR);
+
+        Observable<ViewStateHomePartial> videos = routerAnticipated.anticipated3()
+                .map(new Function<VideoDomain, ItemVideo>() {
                     @Override
                     public ItemVideo apply(@NonNull VideoDomain vd) throws Exception {
                         return Video.create(vd.tmdb(), vd.type(), vd.key(), vd.name());
                     }
-                }).compose(new ScanToSet<ItemVideo>())
-                        .map(new Function<Set<ItemVideo>, ViewStateHomePartial>() {
-                            @Override
-                            public ViewStateHomePartial apply(@NonNull Set<ItemVideo> itemHomes) throws Exception {
-                                return new ViewStateHomePartial.VideosImpl(itemHomes);
-                            }
-                        })
-                        .startWith(new ViewStateHomePartial.ProgressiveVideosImpl())
-                        .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
-                            @Override
-                            public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
-                                return new ViewStateHomePartial.VideosErrorImpl(throwable);
-                            }
-                        }).subscribeOn(io);*/
+                })
+                .compose(new ScanToList<ItemVideo>())
+                .map(new Function<List<ItemVideo>, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull List<ItemVideo> itemHomes) throws Exception {
+                        return new ViewStateHomePartial.VideosImpl(itemHomes);
+                    }
+                })
+                .startWith(new ViewStateHomePartial.ProgressiveVideosImpl())
+                .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
+                        return new ViewStateHomePartial.VideosErrorImpl(throwable);
+                    }
+                })
+                .distinctUntilChanged()
+                .subscribeOn(io);
 
         Observable<ViewStateHomePartial> trending = triggerTrending
                 .concatMap(new Function<Integer, ObservableSource<MovieDomain>>() {
@@ -109,7 +120,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                         return new ViewStateHomePartial.Trending(movies, false);
                     }
                 })
-                .startWith(new ViewStateHomePartial.CardProgressiveTrending(pageSize, "TRENDING"))
+                .startWith(new ViewStateHomePartial.CardProgressiveTrending(pageSize, TRENDING))
                 .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
@@ -119,27 +130,34 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .distinctUntilChanged()
                 .subscribeOn(io);
 
-        Observable<ViewStateHomePartial> trendingPage = triggerTrending.skip(1)
+        Observable<ViewStateHomePartial> trendingProgressiveLoading = triggerTrending
+                .skip(1)
                 .map(new Function<Integer, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Integer integer) throws Exception {
-                        return new ViewStateHomePartial.CardProgressiveTrending(pageSize, "TRENDING");
+                        return new ViewStateHomePartial.CardProgressiveTrending(pageSize, TRENDING);
                     }
                 });
 
-        /*Observable<ViewStateHomePartial> popular = routerPopular.popular(1, 3)
+        Observable<ViewStateHomePartial> popular = triggerPopular
+                .concatMap(new Function<Integer, ObservableSource<MovieDomain>>() {
+                    @Override
+                    public ObservableSource<MovieDomain> apply(@NonNull Integer page) throws Exception {
+                        return routerPopular.popular(page, pageSize).subscribeOn(io);
+                    }
+                })
                 .map(mapper)
-                .map(new MapProgressive(3))// TODO: 2017-07-02 this 3 numbers should be related to the size of screen width
+                .map(new MapProgressive())
                 .cast(ItemCard.class)
-                .buffer(3)
+                .buffer(pageSize)
                 .compose(new ScanToListNoMap<ItemCard>())
                 .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
-                        return new ViewStateHomePartial.Popular(movies);
+                        return new ViewStateHomePartial.Popular(movies, false);
                     }
                 })
-                .startWith(new ViewStateHomePartial.CardProgressivePopular(5, "POPULAR"))
+                .startWith(new ViewStateHomePartial.CardProgressivePopular(pageSize, POPULAR))
                 .onErrorReturn(new Function<Throwable, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Throwable throwable) throws Exception {
@@ -147,18 +165,41 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 })
                 .distinctUntilChanged()
-                .subscribeOn(io);*/
+                .subscribeOn(io);
 
-        home = Observable.merge(trending, trendingPage, Observable.<ViewStateHomePartial>never())
+        Observable<ViewStateHomePartial> popularProgressiveLoading = triggerPopular
+                .skip(1)
+                .map(new Function<Integer, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull Integer integer) throws Exception {
+                        return new ViewStateHomePartial.CardProgressivePopular(pageSize, POPULAR);
+                    }
+                });
+
+        List<Observable<ViewStateHomePartial>> list = new ArrayList<>(5);
+        list.add(trending);
+        list.add(popular);
+        list.add(trendingProgressiveLoading);
+        list.add(popularProgressiveLoading);
+        list.add(videos);
+
+        ViewStateHome initialState = ViewStateHome.builder()
+                .loadingTrending(true)
+                .loadingPopular(true)
+                .itemLoadingCountPopular(0)
+                .itemLoadingCountTrending(0)
+                .build();
+
+        home = Observable.merge(list)
                 .observeOn(main)
-                .scan(ViewStateHome.builder().loadingTrending(true).itemLoadingCount(0).build(),
-                        new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
+                .scan(initialState, new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
                     @Override
                     public ViewStateHome apply(@NonNull ViewStateHome viewStateHome, @NonNull ViewStateHomePartial vp) throws Exception {
                         Log.e(TAG, Thread.currentThread().getName());
                         return vp.reduce(viewStateHome);
                     }
                 });
+
         home.subscribe(this);
     }
 

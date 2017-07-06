@@ -87,7 +87,7 @@ public interface ViewStateHomePartial {
             return viewStateHome.toBuilder()
                     .trending(new ArrayList<>(movies))
                     .loadingTrending(loading)
-                    .itemLoadingCount(movies.size())
+                    .itemLoadingCountTrending(movies.size())
                     .build();
         }
     }
@@ -171,14 +171,20 @@ public interface ViewStateHomePartial {
 
     class Popular implements ViewStateHomePartial {
         private final List<ItemCard> movies;
+        private final boolean isLoading;
 
-        public Popular(List<ItemCard> movies) {
+        public Popular(List<ItemCard> movies, boolean isLoading) {
             this.movies = movies;
+            this.isLoading = isLoading;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().popular(movies).build();
+            return viewStateHome.toBuilder()
+                    .popular(new ArrayList<>(movies))
+                    .loadingPopular(isLoading)
+                    .itemLoadingCountPopular(movies.size())
+                    .build();
         }
     }
 }

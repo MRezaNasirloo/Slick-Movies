@@ -33,7 +33,11 @@ abstract class ViewStateHome {
 
     public abstract boolean loadingTrending();
 
-    public abstract int itemLoadingCount();
+    public abstract int itemLoadingCountTrending();
+
+    public abstract boolean loadingPopular();
+
+    public abstract int itemLoadingCountPopular();
 
     @Nullable
     public abstract List<ItemCard> popular();
@@ -47,10 +51,9 @@ abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos,
-                                       List<Movie> movies,
-                                       List<ItemCard> trending, boolean loadingTrending, int itemLoadingCount, List<ItemCard> popular,
-                                       Throwable videosError, Throwable error) {
+    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos, List<Movie> movies, List<ItemCard> trending,
+                                       boolean loadingTrending, int itemLoadingCountTrending, boolean loadingPopular, int itemLoadingCountPopular,
+                                       List<ItemCard> popular, Throwable videosError, Throwable error) {
         return builder()
                 .items(items)
                 .foo(foo)
@@ -58,7 +61,9 @@ abstract class ViewStateHome {
                 .movies(movies)
                 .trending(trending)
                 .loadingTrending(loadingTrending)
-                .itemLoadingCount(itemLoadingCount)
+                .itemLoadingCountTrending(itemLoadingCountTrending)
+                .loadingPopular(loadingPopular)
+                .itemLoadingCountPopular(itemLoadingCountPopular)
                 .popular(popular)
                 .videosError(videosError)
                 .error(error)
@@ -89,7 +94,11 @@ abstract class ViewStateHome {
 
         public abstract Builder loadingTrending(boolean loadingTrending);
 
-        public abstract Builder itemLoadingCount(int itemLoadingCount);
+        public abstract Builder itemLoadingCountTrending(int itemLoadingCountTrending);
+
+        public abstract Builder loadingPopular(boolean loadingPopular);
+
+        public abstract Builder itemLoadingCountPopular(int itemLoadingCountPopular);
 
         public abstract ViewStateHome build();
     }
