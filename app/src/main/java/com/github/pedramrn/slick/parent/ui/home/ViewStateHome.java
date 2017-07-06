@@ -33,6 +33,8 @@ abstract class ViewStateHome {
 
     public abstract boolean loadingTrending();
 
+    public abstract int itemLoadingCount();
+
     @Nullable
     public abstract Map<Integer, ItemCard> popular();
 
@@ -47,9 +49,8 @@ abstract class ViewStateHome {
 
     public static ViewStateHome create(Map<Integer, ItemVideo> items, Map<Integer, String> foo, Map<Integer, Video> videos,
                                        Map<Integer, Movie> movies,
-                                       Map<Integer, ItemCard> trending, boolean loadingTrending, Map<Integer, ItemCard> popular,
-                                       Throwable videosError,
-                                       Throwable error) {
+                                       Map<Integer, ItemCard> trending, boolean loadingTrending, int itemLoadingCount, Map<Integer, ItemCard> popular,
+                                       Throwable videosError, Throwable error) {
         return builder()
                 .items(items)
                 .foo(foo)
@@ -57,6 +58,7 @@ abstract class ViewStateHome {
                 .movies(movies)
                 .trending(trending)
                 .loadingTrending(loadingTrending)
+                .itemLoadingCount(itemLoadingCount)
                 .popular(popular)
                 .videosError(videosError)
                 .error(error)
@@ -86,6 +88,8 @@ abstract class ViewStateHome {
         public abstract Builder error(Throwable error);
 
         public abstract Builder loadingTrending(boolean loadingTrending);
+
+        public abstract Builder itemLoadingCount(int itemLoadingCount);
 
         public abstract ViewStateHome build();
     }

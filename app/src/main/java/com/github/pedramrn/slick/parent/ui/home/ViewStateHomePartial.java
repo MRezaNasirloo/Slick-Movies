@@ -84,7 +84,11 @@ public interface ViewStateHomePartial {
             } else {
                 trending = movies;
             }
-            return viewStateHome.toBuilder().trending(trending).loadingTrending(loading).build();
+            return viewStateHome.toBuilder()
+                    .trending(trending)
+                    .loadingTrending(loading)
+                    .itemLoadingCount(movies.size())
+                    .build();
         }
     }
 

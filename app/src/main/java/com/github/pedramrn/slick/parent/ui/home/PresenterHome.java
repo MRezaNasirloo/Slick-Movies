@@ -152,7 +152,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
 
         home = Observable.merge(trending, trendingPage, Observable.<ViewStateHomePartial>never())
                 .observeOn(main)
-                .scan(ViewStateHome.builder().loadingTrending(true).build(), new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
+                .scan(ViewStateHome.builder().loadingTrending(true).itemLoadingCount(0).build(),
+                        new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
                     @Override
                     public ViewStateHome apply(@NonNull ViewStateHome viewStateHome, @NonNull ViewStateHomePartial vp) throws Exception {
                         Log.e(TAG, Thread.currentThread().getName());

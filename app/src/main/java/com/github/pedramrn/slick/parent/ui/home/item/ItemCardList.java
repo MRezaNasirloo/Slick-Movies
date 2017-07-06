@@ -17,7 +17,6 @@ import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.Item;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
@@ -45,6 +44,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     private PublishSubject<Integer> trigger = PublishSubject.create();
     private int scrollPos;
+    private int itemLoadedCount;
 
     public ItemCardList(RecyclerView.Adapter adapter) {
         this.adapter = adapter;
@@ -76,8 +76,13 @@ public class ItemCardList extends Item<RowCardListBinding> {
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        // Log.d(TAG, "!isLoading() called " + !isLoading);
                         return !isLoading;
+                    }
+                })
+                .filter(new Predicate<RecyclerViewScrollEvent>() {
+                    @Override
+                    public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
+                        return layoutManager.getItemCount() <= itemLoadedCount;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
@@ -103,7 +108,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
                         Log.d(TAG, "accept() called with: page = [" + page + "]");
                     }
                 })
-                .throttleFirst(1, TimeUnit.SECONDS)
+                // .throttleLast(1, TimeUnit.SECONDS)
                 .subscribe(trigger);
 
     }
@@ -129,5 +134,9 @@ public class ItemCardList extends Item<RowCardListBinding> {
     public void setLoading(boolean loading) {
         Log.d(TAG, "setLoading() called load again");
         this.isLoading = loading;
+    }
+
+    public void itemLoadedCount(int itemLoadedCount) {
+        this.itemLoadedCount = itemLoadedCount;
     }
 }

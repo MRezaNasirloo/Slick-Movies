@@ -32,7 +32,7 @@ public class TransformerTraktToMovieDomain implements ObservableTransformer<List
 
     @Override
     public ObservableSource<MovieDomain> apply(Observable<List<MovieTraktPageMetadata>> upstream) {
-        return upstream.flatMap(new Function<List<MovieTraktPageMetadata>, ObservableSource<MovieTmdb>>() {
+        return upstream.concatMap(new Function<List<MovieTraktPageMetadata>, ObservableSource<MovieTmdb>>() {
             @Override
             public ObservableSource<MovieTmdb> apply(@NonNull List<MovieTraktPageMetadata> tpm) throws Exception {
                 return Observable.fromIterable(tpm).concatMap(new Function<MovieTraktPageMetadata, Observable<MovieTmdb>>() {
