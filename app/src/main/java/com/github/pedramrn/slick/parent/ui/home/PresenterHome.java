@@ -9,11 +9,9 @@ import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
-import com.github.pedramrn.slick.parent.util.ScanToList;
 import com.github.pedramrn.slick.parent.util.ScanToListNoMap;
 import com.github.slick.SlickPresenter;
 
@@ -102,8 +100,9 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 })
                 .map(mapper)
                 .map(new MapProgressive())
-                .cast(Movie.class)
-                .compose(new ScanToList<ItemCard>())
+                .cast(ItemCard.class)
+                .buffer(pageSize)
+                .compose(new ScanToListNoMap<ItemCard>())
                 .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
@@ -117,6 +116,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                         return new ViewStateHomePartial.Error(throwable);
                     }
                 })
+                .distinctUntilChanged()
                 .subscribeOn(io);
 
         Observable<ViewStateHomePartial> trendingPage = triggerTrending.skip(1)
@@ -127,7 +127,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 });
 
-        Observable<ViewStateHomePartial> popular = routerPopular.popular(1, 3)
+        /*Observable<ViewStateHomePartial> popular = routerPopular.popular(1, 3)
                 .map(mapper)
                 .map(new MapProgressive(3))// TODO: 2017-07-02 this 3 numbers should be related to the size of screen width
                 .cast(ItemCard.class)
@@ -147,7 +147,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 })
                 .distinctUntilChanged()
-                .subscribeOn(io);
+                .subscribeOn(io);*/
 
         home = Observable.merge(trending, trendingPage, Observable.<ViewStateHomePartial>never())
                 .observeOn(main)
