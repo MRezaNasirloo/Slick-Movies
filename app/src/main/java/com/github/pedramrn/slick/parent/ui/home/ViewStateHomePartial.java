@@ -1,9 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideoProgressiveImpl;
+import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,17 +68,17 @@ public interface ViewStateHomePartial {
 
     class Trending implements ViewStateHomePartial {
 
-        private final List<ItemCard> movies;
+        private final List<Item> movies;
         private final boolean loading;
 
-        public Trending(List<ItemCard> movies, boolean loading) {
+        public Trending(List<Item> movies, boolean loading) {
             this.movies = movies;
             this.loading = loading;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            /*List<ItemCard> trending = viewStateHome.trending();
+            /*List<Item> trending = viewStateHome.trending();
             if (trending != null) {
                 trending.addAll(movies);
             } else {
@@ -94,14 +94,14 @@ public interface ViewStateHomePartial {
 
     abstract class CardProgressive implements ViewStateHomePartial {
 
-        protected final List<ItemCard> progressive;
+        protected final List<Item> progressive;
 
 
         public CardProgressive(int count, String tag) {
             progressive = new ArrayList<>(count);
             for (int i = 0; i < count; i++) {
                 int id = IdBank.nextId(tag);
-                progressive.add(ItemCardProgressiveImpl.create(id));
+                progressive.add(ItemCardProgressiveImpl.create(id).render(-1));
             }
         }
 
@@ -109,11 +109,11 @@ public interface ViewStateHomePartial {
             progressive = new ArrayList<>(3);
             for (int i = 0; i < 3; i++) {
                 int id = IdBank.nextId(tag);
-                progressive.add(ItemCardProgressiveImpl.create(id));
+                progressive.add(ItemCardProgressiveImpl.create(id).render(-1));
             }
         }
 
-        protected List<ItemCard> reduce(List<ItemCard> items) {
+        protected List<Item> reduce(List<Item> items) {
             if (items != null) {
                 items.addAll(progressive);
             } else {
@@ -170,10 +170,10 @@ public interface ViewStateHomePartial {
     }
 
     class Popular implements ViewStateHomePartial {
-        private final List<ItemCard> movies;
+        private final List<Item> movies;
         private final boolean isLoading;
 
-        public Popular(List<ItemCard> movies, boolean isLoading) {
+        public Popular(List<Item> movies, boolean isLoading) {
             this.movies = movies;
             this.isLoading = isLoading;
         }

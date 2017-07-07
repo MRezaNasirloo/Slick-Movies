@@ -76,13 +76,17 @@ public class ItemCardList extends Item<RowCardListBinding> {
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return !isLoading;
+                        boolean b = !isLoading;
+                        Log.e(TAG, "!isLoading: " + b);
+                        return b;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return layoutManager.getItemCount() <= itemLoadedCount;
+                        boolean b = layoutManager.getItemCount() <= itemLoadedCount;
+                        Log.e(TAG, "loaded enough: " + b);
+                        return b;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {

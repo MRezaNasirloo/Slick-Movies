@@ -3,10 +3,10 @@ package com.github.pedramrn.slick.parent.ui.home;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
+import com.xwray.groupie.Item;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ abstract class ViewStateHome {
     public abstract List<Movie> movies();
 
     @Nullable
-    public abstract List<ItemCard> trending();
+    public abstract List<Item> trending();
 
     public abstract boolean loadingTrending();
 
@@ -40,7 +40,7 @@ abstract class ViewStateHome {
     public abstract int itemLoadingCountPopular();
 
     @Nullable
-    public abstract List<ItemCard> popular();
+    public abstract List<Item> popular();
 
     @Nullable
     public abstract Throwable videosError();
@@ -51,9 +51,9 @@ abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos, List<Movie> movies, List<ItemCard> trending,
+    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos, List<Movie> movies, List<Item> trending,
                                        boolean loadingTrending, int itemLoadingCountTrending, boolean loadingPopular, int itemLoadingCountPopular,
-                                       List<ItemCard> popular, Throwable videosError, Throwable error) {
+                                       List<Item> popular, Throwable videosError, Throwable error) {
         return builder()
                 .items(items)
                 .foo(foo)
@@ -84,11 +84,11 @@ abstract class ViewStateHome {
 
         public abstract Builder movies(List<Movie> movies);
 
-        public abstract Builder trending(List<ItemCard> trending);
+        public abstract Builder trending(List<Item> trending);
 
         public abstract Builder videosError(Throwable videosError);
 
-        public abstract Builder popular(List<ItemCard> popular);
+        public abstract Builder popular(List<Item> popular);
 
         public abstract Builder error(Throwable error);
 

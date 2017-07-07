@@ -23,6 +23,7 @@ import io.reactivex.functions.Function;
 public class ViewStateHomeRenderer {
 
     private final ViewStateHome viewStateHome;
+    private List<? extends Item> popular;
 
     public ViewStateHomeRenderer(ViewStateHome viewStateHome) {
         this.viewStateHome = viewStateHome;
@@ -46,15 +47,16 @@ public class ViewStateHomeRenderer {
                 }).toList(items.size()).blockingGet();
     }
 
-    public List<? extends Item> trending() {
+    /*public List<? extends Item> trending() {
         List<ItemCard> trending = viewStateHome.trending();
         return map(trending);
-    }
+    }*/
 
-    public List<? extends Item> popular() {
+    /*public List<? extends Item> popular() {
         List<ItemCard> popular = viewStateHome.popular();
-        return map(popular);
-    }
+        this.popular = map(popular);
+        return this.popular;
+    }*/
 
     @UiThread
     private List<? extends Item> map(Collection<ItemCard> items) {
