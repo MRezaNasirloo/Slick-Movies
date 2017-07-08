@@ -75,8 +75,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                     Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
                 }
             }));
-            adapterTrending.add(progressiveTrending);
-            sectionTrending.add(itemTrendingList);
+            // adapterTrending.add(progressiveTrending);
+            // sectionTrending.add(itemTrendingList);
 
             Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", new View.OnClickListener() {
                 @Override
@@ -85,10 +85,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                 }
             }));
             adapterPopular.add(progressivePopular);
-            sectionPopular.add(itemPopularList);
+            // sectionPopular.add(itemPopularList);
 
-            adapterMain.add(sectionTrending);
-            adapterMain.add(sectionPopular);
+            // adapterMain.add(sectionTrending);
+            adapterMain.add(itemPopularList);
         }
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

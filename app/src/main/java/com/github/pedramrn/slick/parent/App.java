@@ -49,7 +49,7 @@ public class App extends Application {
         BlockCanary.install(this, new BlockCanaryContext() {
             @Override
             public int provideBlockThreshold() {
-                return 100;
+                return 50;
             }
         }).start();
         // LeakCanary.install(this);
