@@ -31,7 +31,7 @@ public interface ViewStateHomePartial {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().items(itemVideos).build();
+            return viewStateHome.toBuilder().anticipated(itemVideos).build();
         }
     }
 
@@ -61,7 +61,7 @@ public interface ViewStateHomePartial {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().items(progressive).build();
+            return viewStateHome.toBuilder().anticipated(progressive).build();
         }
     }
 
@@ -114,7 +114,7 @@ public interface ViewStateHomePartial {
         }
 
         protected List<Item> reduce(List<Item> items) {
-            if (items != null) {
+            if (items != null && items.size() > 0) {
                 items.addAll(progressive);
             } else {
                 items = progressive;

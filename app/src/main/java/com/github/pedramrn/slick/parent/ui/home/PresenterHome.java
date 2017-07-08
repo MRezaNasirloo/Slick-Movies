@@ -15,12 +15,13 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoImpl;
+import com.github.pedramrn.slick.parent.util.ScanList;
 import com.github.pedramrn.slick.parent.util.ScanToList;
-import com.github.pedramrn.slick.parent.util.ScanToListNoMap;
 import com.github.slick.SlickPresenter;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,6 +104,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .distinctUntilChanged()
                 .subscribeOn(io);
 
+        // TODO: 2017-07-08 extract a transformer
+        // FIXME: 2017-07-08 trending items order changes frequently and we end up with next page and duplicate items, which causes wrong list animations on every update
         Observable<ViewStateHomePartial> trending = triggerTrending
                 .concatMap(new Function<Integer, ObservableSource<MovieDomain>>() {
                     @Override
@@ -113,13 +116,18 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .map(mapper)
                 .map(new MapProgressive())
                 .cast(ItemCard.class)
-                .buffer(pageSize)
-                .compose(new ScanToListNoMap<ItemCard>())
-                .map(new Function<List<ItemCard>, ViewStateHomePartial>() {
+                .map(new Function<ItemCard, Item>() {
                     @Override
-                    public ViewStateHomePartial apply(@NonNull List<ItemCard> movies) throws Exception {
-                        return null;
-                        // return new ViewStateHomePartial.Trending(movies, false);
+                    public Item apply(@NonNull ItemCard itemCard) throws Exception {
+                        return itemCard.render(-1);
+                    }
+                })
+                .buffer(pageSize)
+                .compose(new ScanList<Item>())
+                .map(new Function<List<Item>, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull List<Item> movies) throws Exception {
+                        return new ViewStateHomePartial.Trending(movies, false);
                     }
                 })
                 .startWith(new ViewStateHomePartial.CardProgressiveTrending(pageSize, TRENDING))
@@ -132,6 +140,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .distinctUntilChanged()
                 .subscribeOn(io);
 
+        // TODO: 2017-07-08 extract a transformer
         Observable<ViewStateHomePartial> trendingProgressiveLoading = triggerTrending
                 .skip(1)
                 .map(new Function<Integer, ViewStateHomePartial>() {
@@ -158,7 +167,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 })
                 .buffer(pageSize)
-                .compose(new ScanToListNoMap<Item>())
+                .compose(new ScanList<Item>())
                 .map(new Function<List<Item>, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull List<Item> movies) throws Exception {
@@ -180,26 +189,28 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .map(new Function<Integer, ViewStateHomePartial>() {
                     @Override
                     public ViewStateHomePartial apply(@NonNull Integer integer) throws Exception {
-                        Log.d(TAG, "popularProgressiveLoading() called");
                         return new ViewStateHomePartial.CardProgressivePopular(pageSize, POPULAR);
                     }
                 });
 
         List<Observable<ViewStateHomePartial>> list = new ArrayList<>(5);
-        // list.add(trending);
+        list.add(trending);
         list.add(popular);
-        // list.add(trendingProgressiveLoading);
+        list.add(trendingProgressiveLoading);
         list.add(popularProgressiveLoading);
-        // list.add(videos);
+        list.add(videos);
 
         ViewStateHome initialState = ViewStateHome.builder()
+                .anticipated(Collections.<ItemVideo>emptyList())
+                .popular(Collections.<Item>emptyList())
+                .trending(Collections.<Item>emptyList())
                 .loadingTrending(true)
                 .loadingPopular(true)
                 .itemLoadingCountPopular(0)
                 .itemLoadingCountTrending(0)
                 .build();
 
-        home = Observable.merge(popular, popularProgressiveLoading)
+        home = Observable.merge(list)
                 .observeOn(main)
                 .scan(initialState, new BiFunction<ViewStateHome, ViewStateHomePartial, ViewStateHome>() {
                     @Override

@@ -31,7 +31,7 @@ public class ViewStateHomeRenderer {
 
     @UiThread
     public List<Item> anticipated() {
-        List<ItemVideo> items = viewStateHome.items();
+        List<ItemVideo> items = viewStateHome.anticipated();
         if (items == null || items.size() == 0) return Collections.emptyList();
         return Observable.fromIterable(items)
                 .zipWith(Observable.range(0, items.size()), new BiFunction<ItemVideo, Integer, Indexed<ItemVideo>>() {

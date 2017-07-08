@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A group which accepts a list of items and diffs them against its previous contents,
+ * A group which accepts a list of anticipated and diffs them against its previous contents,
  * generating the correct remove, add, move and change notifications to its parent observer,
  * to create an animated item-level update.
  * <p>
  * Item comparisons are made using:
- * - Item.getId() (are items the same?)
+ * - Item.getId() (are anticipated the same?)
  * - Item.equals() (are contents the same?)
  * If you don't customize getId() or equals(), the default implementations will return false,
  * meaning your Group will consider every update a complete change of everything.

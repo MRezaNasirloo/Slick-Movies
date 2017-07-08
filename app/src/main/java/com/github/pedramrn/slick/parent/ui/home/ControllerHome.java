@@ -20,11 +20,8 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -75,8 +72,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                     Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
                 }
             }));
-            // adapterTrending.add(progressiveTrending);
-            // sectionTrending.add(itemTrendingList);
+            adapterTrending.add(progressiveTrending);
+            sectionTrending.add(itemTrendingList);
 
             Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", new View.OnClickListener() {
                 @Override
@@ -85,10 +82,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                 }
             }));
             adapterPopular.add(progressivePopular);
-            // sectionPopular.add(itemPopularList);
+            sectionPopular.add(itemPopularList);
 
-            // adapterMain.add(sectionTrending);
-            adapterMain.add(itemPopularList);
+            adapterMain.add(sectionTrending);
+            adapterMain.add(sectionPopular);
         }
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -106,14 +103,14 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        // itemTrendingList.onSaveViewState(view, outState);
-        // itemPopularList.onSaveViewState(view, outState);
+        itemTrendingList.onSaveViewState(view, outState);
+        itemPopularList.onSaveViewState(view, outState);
     }
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        // itemTrendingList.onRestoreViewState(view, savedViewState);
-        // itemPopularList.onRestoreViewState(view, savedViewState);
+        itemTrendingList.onRestoreViewState(view, savedViewState);
+        itemPopularList.onRestoreViewState(view, savedViewState);
     }
 
     private static final String TAG = ControllerHome.class.getSimpleName();
@@ -121,15 +118,11 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     @Override
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
-        ViewStateHomeRenderer renderer = new ViewStateHomeRenderer(state);
-        // progressiveAnticipated.update(renderer.anticipated());
-        // progressiveTrending.update(renderer.trending());
-        List<Item> popular = state.popular();
-        if (popular != null) {
-            progressivePopular.update(popular);
-        }
-        // itemTrendingList.setLoading(state.loadingTrending());
-        // itemTrendingList.itemLoadedCount(state.itemLoadingCountTrending());
+        // progressiveAnticipated.update(state.anticipated());
+        progressiveTrending.update(state.trending());
+        progressivePopular.update(state.popular());
+        itemTrendingList.setLoading(state.loadingTrending());
+        itemTrendingList.itemLoadedCount(state.itemLoadingCountTrending());
         itemPopularList.setLoading(state.loadingPopular());
         itemPopularList.itemLoadedCount(state.itemLoadingCountPopular());
 
@@ -140,7 +133,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     }
 
-    private void renderError(@Nullable Throwable throwable) {
+    private void renderError
+            (@Nullable Throwable throwable) {
         if (throwable != null) {
             throwable.printStackTrace();
             Toast.makeText(ControllerHome.this.getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();

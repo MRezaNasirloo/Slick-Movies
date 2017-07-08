@@ -2,9 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home;
 
 import android.support.annotation.Nullable;
 
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
-import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
@@ -17,19 +15,11 @@ import java.util.List;
 @AutoValue
 abstract class ViewStateHome {
     @Nullable
-    public abstract List<ItemVideo> items();
+    public abstract List<ItemVideo> anticipated();
 
-    @Nullable
-    public abstract List<String> foo();
-
-    @Nullable
-    public abstract List<Video> videos();
-
-    @Nullable
-    public abstract List<Movie> movies();
-
-    @Nullable
     public abstract List<Item> trending();
+
+    public abstract List<Item> popular();
 
     public abstract boolean loadingTrending();
 
@@ -40,9 +30,6 @@ abstract class ViewStateHome {
     public abstract int itemLoadingCountPopular();
 
     @Nullable
-    public abstract List<Item> popular();
-
-    @Nullable
     public abstract Throwable videosError();
 
     @Nullable
@@ -51,20 +38,17 @@ abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(List<ItemVideo> items, List<String> foo, List<Video> videos, List<Movie> movies, List<Item> trending,
-                                       boolean loadingTrending, int itemLoadingCountTrending, boolean loadingPopular, int itemLoadingCountPopular,
-                                       List<Item> popular, Throwable videosError, Throwable error) {
+    public static ViewStateHome create(List<ItemVideo> anticipated, List<Item> trending, List<Item> popular, boolean loadingTrending,
+                                       int itemLoadingCountTrending, boolean loadingPopular, int itemLoadingCountPopular, Throwable videosError,
+                                       Throwable error) {
         return builder()
-                .items(items)
-                .foo(foo)
-                .videos(videos)
-                .movies(movies)
+                .anticipated(anticipated)
                 .trending(trending)
+                .popular(popular)
                 .loadingTrending(loadingTrending)
                 .itemLoadingCountTrending(itemLoadingCountTrending)
                 .loadingPopular(loadingPopular)
                 .itemLoadingCountPopular(itemLoadingCountPopular)
-                .popular(popular)
                 .videosError(videosError)
                 .error(error)
                 .build();
@@ -76,21 +60,12 @@ abstract class ViewStateHome {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder items(List<ItemVideo> items);
 
-        public abstract Builder foo(List<String> foo);
-
-        public abstract Builder videos(List<Video> videos);
-
-        public abstract Builder movies(List<Movie> movies);
+        public abstract Builder anticipated(List<ItemVideo> anticipated);
 
         public abstract Builder trending(List<Item> trending);
 
-        public abstract Builder videosError(Throwable videosError);
-
         public abstract Builder popular(List<Item> popular);
-
-        public abstract Builder error(Throwable error);
 
         public abstract Builder loadingTrending(boolean loadingTrending);
 
@@ -99,6 +74,10 @@ abstract class ViewStateHome {
         public abstract Builder loadingPopular(boolean loadingPopular);
 
         public abstract Builder itemLoadingCountPopular(int itemLoadingCountPopular);
+
+        public abstract Builder videosError(Throwable videosError);
+
+        public abstract Builder error(Throwable error);
 
         public abstract ViewStateHome build();
     }

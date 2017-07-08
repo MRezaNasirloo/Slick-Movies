@@ -32,12 +32,12 @@ import io.reactivex.subjects.PublishSubject;
 
 public class ItemCardList extends Item<RowCardListBinding> {
 
+    // FIXME: 2017-07-08 Replace this with tag
     private final String key = String.valueOf(UUID.randomUUID().toString().hashCode());
     private final String POPULAR_PAGE = "POPULAR_PAGE_" + key;
     private final String POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + key;
     private final String POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + key;
     private final RecyclerView.Adapter adapter;
-    private RecyclerView recyclerView;
     private boolean isLoading = false;
     private Integer page = 0;
     private LinearLayoutManager layoutManager;
@@ -59,10 +59,11 @@ public class ItemCardList extends Item<RowCardListBinding> {
     public void bind(RowCardListBinding viewBinding, int position) {
         Log.d(TAG, "ItemCardList bind() called");
         Context context = viewBinding.getRoot().getContext();
-        recyclerView = viewBinding.recyclerViewCard;
+        RecyclerView recyclerView = viewBinding.recyclerViewCard;
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
+        recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin)));
         SnapHelper snapHelper = new StartSnapHelper();
@@ -76,17 +77,13 @@ public class ItemCardList extends Item<RowCardListBinding> {
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        boolean b = !isLoading;
-                        Log.e(TAG, "!isLoading: " + b);
-                        return b;
+                        return !isLoading;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        boolean b = layoutManager.getItemCount() <= itemLoadedCount;
-                        Log.e(TAG, "loaded enough: " + b);
-                        return b;
+                        return layoutManager.getItemCount() <= itemLoadedCount;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {

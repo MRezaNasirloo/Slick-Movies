@@ -12,7 +12,7 @@ import io.reactivex.functions.BiFunction;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-22
  */
-public class ScanToListNoMap<T> implements ObservableTransformer<List<T>, List<T>> {
+public class ScanList<T> implements ObservableTransformer<List<T>, List<T>> {
     @Override
     public ObservableSource<List<T>> apply(Observable<List<T>> upstream) {
         return upstream.scan(new BiFunction<List<T>, List<T>, List<T>>() {

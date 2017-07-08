@@ -38,7 +38,7 @@ public class PresenterBoxOfficeTest extends RouterBoxOfficeImplBaseTest {
         subject.onNext(1);
         test.assertValueCount(10).assertNotComplete();
         subject.onNext(1);
-        //the Update stream does not complete in case of any future change to items.
+        //the Update stream does not complete in case of any future change to anticipated.
         test.assertValueCount(10).assertNotComplete();
     }
 }
