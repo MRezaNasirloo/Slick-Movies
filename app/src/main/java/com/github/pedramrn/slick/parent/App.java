@@ -5,9 +5,6 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.github.pedramrn.slick.parent.di.ComponentApp;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleApp;
@@ -16,7 +13,6 @@ import com.github.pedramrn.slick.parent.di.ModuleNetwork;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
-import com.squareup.leakcanary.LeakCanary;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -29,34 +25,27 @@ public class App extends Application {
     protected ComponentApp componentApp;
     private ComponentMain componentMain;
 
-    public static boolean loggedIn = false;
     private static final String TAG = App.class.getSimpleName();
 
     @Override
     public void onCreate() {
         final long before = System.currentTimeMillis();
-        app = ((App) getApplicationContext());
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        app = ((App) getApplicationContext());
+        componentApp = prepareDi().build();
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
-        }
+        }*/
         /*if (!BlockCanaryEx.isInSamplerProcess(this)) {
             BlockCanaryEx.install(new Config(this));
-            return;
         }*/
-        BlockCanary.install(this, new BlockCanaryContext() {
-            @Override
-            public int provideBlockThreshold() {
-                return 50;
-            }
-        }).start();
+
         // LeakCanary.install(this);
-        componentApp = prepareDi().build();
 
         if (BuildConfig.DEBUG) {
-            AndroidDevMetrics.initWith(this);
+            // AndroidDevMetrics.initWith(this);
         }
 
         StrictMode.enableDefaults();

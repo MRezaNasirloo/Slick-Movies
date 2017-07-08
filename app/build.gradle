@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.frogermcs.androiddevmetrics'
+//apply plugin: 'com.frogermcs.androiddevmetrics'
 //apply plugin: 'blockcanaryex'
-apply plugin: 'com.jakewharton.hugo'
+//apply plugin: 'com.jakewharton.hugo'
 
 
 android {
@@ -187,17 +187,17 @@ dependencies {
         transitive = false;
     }*/
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    /*debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'*/
 
-    /*debugCompile 'com.letv.sarrsdesktop:BlockCanaryExJRT:0.9.5.2'
-    releaseCompile 'com.letv.sarrsdesktop:BlockCanaryExJRTNoOp:0.9.5.2'
-    testCompile 'com.letv.sarrsdesktop:BlockCanaryExJRTNoOp:0.9.5.2'*/
+    /*debugCompile 'com.letv.sarrsdesktop:BlockCanaryExJRT:0.9.9.1'
+    releaseCompile 'com.letv.sarrsdesktop:BlockCanaryExJRTNoOp:0.9.9.1'
+    testCompile 'com.letv.sarrsdesktop:BlockCanaryExJRTNoOp:0.9.9.1'*/
 
-    debugCompile 'com.github.markzhai:blockcanary-android:1.5.0'
+    /*debugCompile 'com.github.markzhai:blockcanary-android:1.5.0'
     releaseCompile 'com.github.markzhai:blockcanary-no-op:1.5.0'
-    testCompile 'com.github.markzhai:blockcanary-no-op:1.5.0'
+    testCompile 'com.github.markzhai:blockcanary-no-op:1.5.0'*/
 
     //views
     compile 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.1-rc1'

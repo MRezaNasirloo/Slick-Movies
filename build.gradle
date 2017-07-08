@@ -11,8 +11,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.5'
-        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+//        classpath 'com.letv.sarrsdesktop:BlockCanaryExPlugin:0.9.9.2'
+//        classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.5'
+//        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
 //        classpath 'com.letv.sarrsdesktop:BlockCanaryExPlugin:0.9.5.2'
 //        classpath 'me.tatarka:gradle-retrolambda:3.6.0'
 //        classpath 'com.antfortune.freeline:gradle:0.8.7'
