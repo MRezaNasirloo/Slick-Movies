@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import com.android.databinding.library.baseAdapters.BR;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
-import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
+import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,18 +31,16 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-04-13
  */
 
-public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolder> implements Observer<List<MovieBoxOffice>> {
+public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolder> implements Observer<List<Movie>> {
 
     private static final String TAG = AdapterBoxOffice.class.getSimpleName();
     private final CompositeDisposable disposable;
-    private static ImageLoader imageLoader;
     private final Resources resources;
-    private List<MovieBoxOffice> movieBoxOfficeItems = Collections.emptyList();
-    private final PublishSubject<Pair<MovieBoxOffice, Integer>> command;
+    private List<Movie> movies = Collections.emptyList();
+    private final PublishSubject<Pair<Movie, String>> command;
 
-    public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice, ImageLoader imageLoader, Resources resources) {
+    public AdapterBoxOffice(CompositeDisposable disposable, ViewModelBoxOffice viewModelBoxOffice, Resources resources) {
         this.disposable = disposable;
-        this.imageLoader = imageLoader;
         this.resources = resources;
         viewModelBoxOffice.boxOfficeList().subscribe(this);
         command = PublishSubject.create();
@@ -59,35 +57,39 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final String transitionName = resources.getString(R.string.transition_poster, position);
 
-        holder.binding.setVariable(BR.vm, movieBoxOfficeItems.get(position));
-        holder.binding.setRank(movieBoxOfficeItems.get(position).rank(position));
+        holder.binding.setVariable(BR.vm, movies.get(position));
+        holder.binding.setRank(movies.get(position).rank(position));
         holder.binding.textViewTitle.setSelected(true);
-        //        holder.binding.textViewTitle.setText(movieBoxOfficeItems.movieFull(position).name());
-        imageLoader.with(holder.binding.imageView.getContext().getApplicationContext())
-                .load(movieBoxOfficeItems.get(position).posterMedium()).into(holder.binding.imageView);
+        // holder.binding.textViewTitle.setText(movies.movieFull(position).name());
+        holder.binding.imageView.loadForSE(movies.get(position).posterThumbnail(), new OnCompleteGlide() {
+            @Override
+            public void onCompleteGlide() {
+                //no-op
+            }
+        });
         holder.binding.imageView.setTransitionName(transitionName);
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int pos = holder.getAdapterPosition();
-                Pair<MovieBoxOffice, Integer> pair = new Pair<>(movieBoxOfficeItems.get(pos), pos);
+                Pair<Movie, String> pair = new Pair<>(movies.get(pos), transitionName);
                 command.onNext(pair);
             }
         });
     }
 
-    public PublishSubject<Pair<MovieBoxOffice, Integer>> streamCommand() {
+    public PublishSubject<Pair<Movie, String>> streamCommand() {
         return command;
     }
 
     @Override
     public long getItemId(int position) {
-        return movieBoxOfficeItems.get(position).hashCode();
+        return movies.get(position).hashCode();
     }
 
     @Override
     public int getItemCount() {
-        return movieBoxOfficeItems.size();
+        return movies.size();
     }
 
     @Override
@@ -96,11 +98,11 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     }
 
     @Override
-    public void onNext(final List<MovieBoxOffice> newMovies) {
+    public void onNext(final List<Movie> newMovies) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
-                return movieBoxOfficeItems.size();
+                return movies.size();
             }
 
             @Override
@@ -110,15 +112,15 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return Objects.equals(movieBoxOfficeItems.get(oldItemPosition).imdb(), newMovies.get(newItemPosition).imdb());
+                return Objects.equals(movies.get(oldItemPosition).id(), newMovies.get(newItemPosition).id());
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return movieBoxOfficeItems.get(oldItemPosition).hashCode() == newMovies.get(newItemPosition).hashCode();
+                return movies.get(oldItemPosition).hashCode() == newMovies.get(newItemPosition).hashCode();
             }
         });
-        this.movieBoxOfficeItems = newMovies;
+        this.movies = newMovies;
         diffResult.dispatchUpdatesTo(this);
 
     }
@@ -131,7 +133,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
     @Override
     public void onComplete() {
-        Log.d(TAG, "onComplete() called");
+        Log.d(TAG, "onCompleteGlide() called");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -146,8 +148,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
     @BindingAdapter("imageUrl")
     public static void bindImageUrl(ImageView imageView, String url) {
-        //        Glide.with(holder.textViewTitle.getContext().getApplicationContext()).load(movieBoxOfficeItems.movieFull(position).poster()).into(holder.imageView);
-        imageLoader.with(imageView.getContext().getApplicationContext()).load(url).into(imageView);
+        //        Glide.with(holder.textViewTitle.getContext().getApplicationContext()).load(movies.movieFull(position).poster()).into(holder.imageView);
     }
 
 

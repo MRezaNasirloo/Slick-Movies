@@ -19,11 +19,11 @@ import com.xwray.groupie.Item;
 import java.util.UUID;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -39,12 +39,12 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private final String POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + key;
     private final RecyclerView.Adapter adapter;
     private boolean isLoading = false;
-    private Integer page = 0;
+    private Integer page = 1;
     private LinearLayoutManager layoutManager;
 
-    private PublishSubject<Integer> trigger = PublishSubject.create();
     private int scrollPos;
     private int itemLoadedCount;
+    private Observer<Integer> observer;
 
     public ItemCardList(RecyclerView.Adapter adapter) {
         this.adapter = adapter;
@@ -56,10 +56,10 @@ public class ItemCardList extends Item<RowCardListBinding> {
     }
 
     @Override
-    public void bind(RowCardListBinding viewBinding, int position) {
+    public void bind(RowCardListBinding binding, int position) {
         Log.d(TAG, "ItemCardList bind() called");
-        Context context = viewBinding.getRoot().getContext();
-        RecyclerView recyclerView = viewBinding.recyclerViewCard;
+        Context context = binding.getRoot().getContext();
+        RecyclerView recyclerView = binding.recyclerViewCard;
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
@@ -70,20 +70,31 @@ public class ItemCardList extends Item<RowCardListBinding> {
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
         layoutManager.scrollToPosition(scrollPos);
+        registerLoadMoreTrigger(recyclerView).subscribe(observer);
 
 
         // TODO: 2017-07-04 the page number and the lading state should be saved during orientation change
-        RxRecyclerView.scrollEvents(recyclerView)
+
+
+    }
+
+    private static final String TAG = ItemCardList.class.getSimpleName();
+
+    protected Observable<Integer> registerLoadMoreTrigger(RecyclerView recyclerView) {
+        return RxRecyclerView.scrollEvents(recyclerView)
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
+                        Log.d(TAG, "isLoading() called with: event = [" + isLoading + "]");
                         return !isLoading;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return layoutManager.getItemCount() <= itemLoadedCount;
+                        boolean b = layoutManager.getItemCount() <= itemLoadedCount;
+                        Log.d(TAG, "itemLoadedCount() called with: event = [" + b + "]");
+                        return b;
                     }
                 })
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
@@ -91,15 +102,20 @@ public class ItemCardList extends Item<RowCardListBinding> {
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         int totalItemCount = layoutManager.getItemCount();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                        return totalItemCount < (lastVisibleItem + 2);
+                        boolean b = totalItemCount < (lastVisibleItem + 2);
+                        Log.d(TAG, "shouldWeLoad() called with: event = [" + b + "]");
+                        return b;
                     }
                 })
-                .scan(page + 1, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
+                .scan(page, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
                     @Override
                     public Integer apply(@NonNull Integer page, @NonNull RecyclerViewScrollEvent event) throws Exception {
+                        Log.d(TAG, "++page() called with: page = [" + page + "]");
                         return ++page;
                     }
                 })
+                //we don't need the first emit on every creation on rotation
+                .skip(1)
                 .doOnNext(new Consumer<Integer>() {
 
                     @Override
@@ -108,22 +124,18 @@ public class ItemCardList extends Item<RowCardListBinding> {
                         isLoading = true;
                         Log.d(TAG, "accept() called with: page = [" + page + "]");
                     }
-                })
+                });
                 // .throttleLast(1, TimeUnit.SECONDS)
-                .subscribe(trigger);
-
     }
 
-    private static final String TAG = ItemCardList.class.getSimpleName();
-
-    public Observable<Integer> getPageTrigger() {
-        return trigger;
+    public void subscribe(Observer<Integer> observer) {
+        this.observer = observer;
     }
 
     public void onSaveViewState(View view, Bundle outState) {
         outState.putInt(POPULAR_PAGE, page);
         outState.putBoolean(POPULAR_IS_LOADING, isLoading);
-        outState.putInt(POPULAR_SCROLL_POS, layoutManager.findFirstCompletelyVisibleItemPosition());
+        outState.putInt(POPULAR_SCROLL_POS, layoutManager != null ? layoutManager.findFirstCompletelyVisibleItemPosition() : 0);
     }
 
     public void onRestoreViewState(View view, Bundle savedViewState) {

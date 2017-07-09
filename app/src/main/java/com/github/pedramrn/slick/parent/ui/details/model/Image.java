@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
+import android.os.Parcelable;
+
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class Image {
+public abstract class Image implements Parcelable {
 
     public abstract List<Backdrop> backdrops();
 

@@ -187,9 +187,9 @@ dependencies {
         transitive = false;
     }*/
 
-    /*debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'*/
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
     /*debugCompile 'com.letv.sarrsdesktop:BlockCanaryExJRT:0.9.9.1'
     releaseCompile 'com.letv.sarrsdesktop:BlockCanaryExJRTNoOp:0.9.9.1'
@@ -206,6 +206,5 @@ dependencies {
     compile 'com.gjiazhe:scrollparallaximageview:1.0'
 //    compile 'com.fmsirvent:parallaxeverywhere:1.0.4'
     compile 'com.xwray:groupie:1.1.1'
-
 
 }

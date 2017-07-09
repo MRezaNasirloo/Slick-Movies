@@ -15,7 +15,7 @@ public abstract class ItemCardProgressiveImpl implements ItemCard {
     protected abstract int id();
 
     @Override
-    public Item render(int id) {
+    public Item render(String tag) {
         return new ItemCardMovieProgressive(id());
     }
 

@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,6 +14,8 @@ import com.github.pedramrn.slick.parent.di.ModuleNetwork;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -26,6 +29,7 @@ public class App extends Application {
     private ComponentMain componentMain;
 
     private static final String TAG = App.class.getSimpleName();
+    private RefWatcher refWatcher;
 
     @Override
     public void onCreate() {
@@ -33,23 +37,31 @@ public class App extends Application {
         super.onCreate();
         app = ((App) getApplicationContext());
         componentApp = prepareDi().build();
-        /*if (LeakCanary.isInAnalyzerProcess(this)) {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
-        }*/
+        }
         /*if (!BlockCanaryEx.isInSamplerProcess(this)) {
             BlockCanaryEx.install(new Config(this));
         }*/
 
-        // LeakCanary.install(this);
+        // refWatcher = LeakCanary.install(this);
 
+        refWatcher = RefWatcher.DISABLED;
         if (BuildConfig.DEBUG) {
             // AndroidDevMetrics.initWith(this);
+            StrictMode.enableDefaults();
         }
-
-        StrictMode.enableDefaults();
         Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
+    }
+
+    public static RefWatcher refWatcher(Context context) {
+        if (context == null) {
+            Log.wtf(TAG, "refWatcher called with null context");
+            return RefWatcher.DISABLED;
+        }
+        return ((App) context.getApplicationContext()).refWatcher;
     }
 
     @NonNull

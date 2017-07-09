@@ -5,18 +5,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bluelinelabs.conductor.ControllerChangeHandler;
+import com.bluelinelabs.conductor.ControllerChangeType;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropList;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
@@ -28,7 +30,6 @@ import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
-import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
@@ -60,8 +61,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Inject
     BottomNavigationHandlerImpl bottomNavigationHandler;
 
-    private int pos;
-    private MovieBoxOffice movieBoxOffice;
+    private String transitionName;
+    private Movie movie;
     private CompositeDisposable disposable;
     private UpdatingGroup progressiveCast;
     private UpdatingGroup progressiveBackdrop;
@@ -70,18 +71,19 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private GroupAdapter adapterBackdrop;
     private List<ItemBackdropProgressive> progressiveBackdropList = new ArrayList<>(5);
     private List<ItemCastProgressive> progressiveCastList = new ArrayList<>(5);
+    private ControllerChangeHandler changeHandler;
 
-    public ControllerDetails(MovieBoxOffice movieBoxOffice, int position) {
+    public ControllerDetails(@NonNull Movie movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
-                .putParcelable("ITEM", movieBoxOffice)
-                .putInt("POS", position)
+                .putParcelable("ITEM", movie)
+                .putString("TRANSITION_NAME", transitionName)
                 .build());
     }
 
     public ControllerDetails(@Nullable Bundle args) {
         super(args);
-        pos = getArgs().getInt("POS");
-        movieBoxOffice = getArgs().getParcelable("ITEM");
+        transitionName = getArgs().getString("TRANSITION_NAME");
+        movie = getArgs().getParcelable("ITEM");
     }
 
     private static final String TAG = ControllerDetails.class.getSimpleName();
@@ -97,10 +99,10 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         }
         disposable = new CompositeDisposable();
         Context context = getApplicationContext();
-        Picasso.with(context).load(movieBoxOffice.posterMedium()).noFade().into(binding.imageViewHeader);
+        binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
 
-        // binding.toolbar.setTitle(movieBoxOffice.name());
-        binding.collapsingToolbar.setTitle(movieBoxOffice.name());
+        // binding.toolbar.setTitle(movie.name());
+        binding.collapsingToolbar.setTitle(movie.title());
 
 
         adapterMain = new GroupAdapter();
@@ -109,7 +111,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
         ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
-        adapterMain.add(new ItemHeader(movieBoxOffice, pos));//Summery from omdb
+        adapterMain.add(new ItemHeader(movie, transitionName));//Summery from omdb
+        Log.d(TAG, "onCreateView() called");
         adapterMain.add(itemCastList);//Casts from tmdb
         adapterMain.add(itemBackdropList);//Backdrops from tmdb
 
@@ -136,7 +139,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         disposable.add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
         presenter.updateStream().subscribe(this);
-        presenter.getMovieDetails(movieBoxOffice.tmdb());
+        presenter.getMovieDetails(movie.id());
 
         adapterCasts.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -194,5 +197,11 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onChangeStarted(@NonNull ControllerChangeHandler changeHandler, @NonNull ControllerChangeType changeType) {
+        this.changeHandler = changeHandler;
+        Log.d(TAG, "onChangeStarted() called");
     }
 }

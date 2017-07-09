@@ -1,11 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
-import com.squareup.picasso.Picasso;
+import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.xwray.groupie.Item;
 
 import io.reactivex.Observable;
@@ -19,12 +20,12 @@ import io.reactivex.functions.BiFunction;
 
 public class ItemHeader extends Item<RowHeaderBinding> {
 
-    private final MovieBoxOffice movieBoxOffice;
-    private final int pos;
+    private final Movie movie;
+    private final String transitionName;
 
-    public ItemHeader(MovieBoxOffice movieBoxOffice, int pos) {
-        this.movieBoxOffice = movieBoxOffice;
-        this.pos = pos;
+    public ItemHeader(Movie movie, String transitionName) {
+        this.movie = movie;
+        this.transitionName = transitionName;
     }
 
     @Override
@@ -32,15 +33,16 @@ public class ItemHeader extends Item<RowHeaderBinding> {
         return R.layout.row_header;
     }
 
+    private static final String TAG = ItemHeader.class.getSimpleName();
     @Override
     public void bind(RowHeaderBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
-        String transitionName = context.getResources().getString(R.string.transition_poster, pos);
+        Log.d(TAG, "bind() called with: transitionName = [" + transitionName + "]");
         viewBinding.imageViewIcon.setTransitionName(transitionName);
 
-        viewBinding.textViewTitle.setText(movieBoxOffice.name());
+        viewBinding.textViewTitle.setText(movie.title());
         // TODO: 2017-06-18 use recycler view for this
-        viewBinding.textViewGenre.setText(Observable.fromIterable(movieBoxOffice.genre())
+        viewBinding.textViewGenre.setText(Observable.fromIterable(movie.genres())
                 .take(4)
                 .reduce(new BiFunction<String, String, String>() {
                     @Override
@@ -48,14 +50,10 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                         return s + " | " + s2;
                     }
                 }).blockingGet());
-        viewBinding.textViewRelease.setText(movieBoxOffice.released());
-        viewBinding.textViewScore.setText(movieBoxOffice.scoreImdb());
-        viewBinding.textViewRuntime.setText(movieBoxOffice.runtimePretty());
-        viewBinding.textViewRated.setText(movieBoxOffice.certification());
-        Picasso.with(context)
-                .load(movieBoxOffice.posterMedium())
-                .noFade()
-                .into(viewBinding.imageViewIcon);
-
+        viewBinding.textViewRelease.setText(movie.releaseDate());
+        viewBinding.textViewScore.setText(String.valueOf(movie.voteAverage()));
+        viewBinding.textViewRuntime.setText(movie.runtimePretty());
+        viewBinding.textViewRated.setText(null);
+        viewBinding.imageViewIcon.delayLoadForSE(movie.posterThumbnail());
     }
 }

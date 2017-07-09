@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImplBaseTest;
+import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class PresenterBoxOfficeTest extends RouterBoxOfficeImplBaseTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        presenter = new PresenterBoxOffice(routerBoxOffice, Schedulers.trampoline(), Schedulers.trampoline());
+        presenter = new PresenterBoxOffice(routerBoxOffice, new MovieDomainMovieMapper(), Schedulers.trampoline(), Schedulers.trampoline());
     }
 
     @Test

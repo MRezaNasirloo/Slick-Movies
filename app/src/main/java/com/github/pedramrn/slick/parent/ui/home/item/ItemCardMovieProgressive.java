@@ -15,11 +15,11 @@ import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 public class ItemCardMovieProgressive extends ItemCardMovie {
 
     public ItemCardMovieProgressive(long id, Movie movie) {
-        super(id, movie);
+        super(id, movie, null);
     }
 
     public ItemCardMovieProgressive(long id) {
-        super(id, null);
+        super(id, null, null);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 
 import com.bluelinelabs.conductor.Controller;
+import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 
 /**
@@ -42,4 +43,9 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
         return this;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.refWatcher(getActivity()).watch(this);
+    }
 }

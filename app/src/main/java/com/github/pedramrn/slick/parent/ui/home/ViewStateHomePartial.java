@@ -101,7 +101,7 @@ public interface ViewStateHomePartial {
             progressive = new ArrayList<>(count);
             for (int i = 0; i < count; i++) {
                 int id = IdBank.nextId(tag);
-                progressive.add(ItemCardProgressiveImpl.create(id).render(-1));
+                progressive.add(ItemCardProgressiveImpl.create(id).render(null));
             }
         }
 
@@ -109,7 +109,7 @@ public interface ViewStateHomePartial {
             progressive = new ArrayList<>(3);
             for (int i = 0; i < 3; i++) {
                 int id = IdBank.nextId(tag);
-                progressive.add(ItemCardProgressiveImpl.create(id).render(-1));
+                progressive.add(ItemCardProgressiveImpl.create(id).render(null));
             }
         }
 

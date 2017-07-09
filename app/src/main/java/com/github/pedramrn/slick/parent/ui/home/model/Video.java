@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.model;
 
+import android.os.Parcelable;
+
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipated;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.google.auto.value.AutoValue;
@@ -11,7 +13,7 @@ import com.xwray.groupie.Item;
  */
 
 @AutoValue
-public abstract class Video implements ItemVideo {
+public abstract class Video implements Parcelable, ItemVideo {
 
     public abstract Integer tmdb();
 

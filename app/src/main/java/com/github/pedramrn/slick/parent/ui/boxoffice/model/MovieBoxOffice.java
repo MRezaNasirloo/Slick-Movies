@@ -6,7 +6,6 @@ import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -15,9 +14,6 @@ import java.util.Locale;
 @AutoValue
 public abstract class MovieBoxOffice implements Parcelable {
 
-    public String rank(int position) {
-        return String.format(Locale.getDefault(), "#%s", position + 1);
-    }
 
     public abstract String name();
 

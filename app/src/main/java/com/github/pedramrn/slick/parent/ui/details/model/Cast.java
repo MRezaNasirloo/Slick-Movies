@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -9,7 +10,7 @@ import com.google.auto.value.AutoValue;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class Cast {
+public abstract class Cast implements Parcelable {
 
     public abstract Integer id();
 

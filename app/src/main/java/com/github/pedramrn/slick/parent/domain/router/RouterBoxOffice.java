@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
-import com.github.pedramrn.slick.parent.domain.model.MovieItem;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 
 import io.reactivex.Observable;
 
@@ -10,5 +10,5 @@ import io.reactivex.Observable;
  */
 
 public interface RouterBoxOffice {
-    Observable<MovieItem> boxOffice(Observable<Integer> trigger, int buffer);
+    Observable<MovieDomain> boxOffice(Observable<Integer> trigger, int buffer);
 }

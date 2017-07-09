@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
-import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
-import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
+import com.github.pedramrn.slick.parent.ui.changehandler.SharedElementDelayingChangeHandler;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 
@@ -48,10 +47,6 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Presenter
     PresenterBoxOffice presenter;
 
-    @Inject
-    ImageLoader imageLoader;
-
-
     private CompositeDisposable disposable;
 
     @NonNull
@@ -67,15 +62,15 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, false);
         binding.recyclerView.setLayoutManager(layoutManager);
         final ViewModelBoxOffice viewModel = new ViewModelBoxOffice(disposable, presenter, this);
-        AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel, imageLoader, getResources());
+        AdapterBoxOffice adapter = new AdapterBoxOffice(disposable, viewModel, getResources());
         binding.recyclerView.setAdapter(adapter);
 
-        adapter.streamCommand().subscribe(new Consumer<Pair<MovieBoxOffice, Integer>>() {
+        adapter.streamCommand().subscribe(new Consumer<Pair<Movie, String>>() {
             @Override
-            public void accept(@io.reactivex.annotations.NonNull Pair<MovieBoxOffice, Integer> pair) throws Exception {
+            public void accept(@io.reactivex.annotations.NonNull Pair<Movie, String> pair) throws Exception {
                 RouterTransaction transaction = RouterTransaction.with(new ControllerDetails(pair.first, pair.second))
-                        .pushChangeHandler(new ArcFadeMoveChangeHandler())
-                        .popChangeHandler(new ArcFadeMoveChangeHandler());
+                        .pushChangeHandler(new SharedElementDelayingChangeHandler(pair.second))
+                        .popChangeHandler(new SharedElementDelayingChangeHandler(pair.second));
 
                 getRouter().pushController(transaction);
             }

@@ -10,16 +10,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
+import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
+import com.github.pedramrn.slick.parent.ui.changehandler.ScaleFadeChangeHandler;
+import com.github.pedramrn.slick.parent.ui.changehandler.SharedElementDelayingChangeHandler;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -29,6 +38,9 @@ import javax.inject.Provider;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -41,17 +53,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     Provider<PresenterHome> provider;
     @Presenter
     PresenterHome presenter;
-    private GroupAdapter adapterMain = new GroupAdapter();
-    private GroupAdapter adapterAnticipated = new GroupAdapter();
-    private GroupAdapter adapterTrending = new GroupAdapter();
-    private GroupAdapter adapterPopular = new GroupAdapter();
-    private UpdatingGroup progressiveAnticipated = new UpdatingGroup();
-    private UpdatingGroup progressiveTrending = new UpdatingGroup();
-    private UpdatingGroup progressivePopular = new UpdatingGroup();
-    private ItemCardList itemTrendingList = new ItemCardList(adapterTrending);
-    private ItemCardList itemPopularList = new ItemCardList(adapterPopular);
-    private ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
+    private UpdatingGroup progressiveTrending;
+    private UpdatingGroup progressivePopular;
+    private ItemCardList itemTrendingList;
+    private ItemCardList itemPopularList;
+    private ItemAnticipatedList itemAnticipatedList;
     private Disposable disposable;
+    private MyOnItemClickListener onItemClickListener = new MyOnItemClickListener();
 
 
     @NonNull
@@ -61,42 +69,58 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
+        GroupAdapter adapterMain = new GroupAdapter();
+        GroupAdapter adapterAnticipated = new GroupAdapter();
+        GroupAdapter adapterTrending = new GroupAdapter();
+        GroupAdapter adapterPopular = new GroupAdapter();
+        UpdatingGroup progressiveAnticipated = new UpdatingGroup();
+        progressiveTrending = new UpdatingGroup();
+        progressivePopular = new UpdatingGroup();
+        itemTrendingList = new ItemCardList(adapterTrending);
+        itemPopularList = new ItemCardList(adapterPopular);
+        itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
 
-        if (adapterMain.getAdapterPosition(itemAnticipatedList) == -1) {
-            adapterMain.add(itemAnticipatedList);
-            adapterAnticipated.add(progressiveAnticipated);
+        adapterMain.add(itemAnticipatedList);
+        adapterAnticipated.add(progressiveAnticipated);
 
-            Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
-                }
-            }));
-            adapterTrending.add(progressiveTrending);
-            sectionTrending.add(itemTrendingList);
+        PublishSubject onClickListener = PublishSubject.create();
+        Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", onClickListener));
 
-            Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(ControllerHome.this.getActivity(), "Under Construction", Toast.LENGTH_SHORT).show();
-                }
-            }));
-            adapterPopular.add(progressivePopular);
-            sectionPopular.add(itemPopularList);
+        adapterTrending.add(progressiveTrending);
+        sectionTrending.add(itemTrendingList);
 
-            adapterMain.add(sectionTrending);
-            adapterMain.add(sectionPopular);
-        }
+        Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", onClickListener));
+
+        adapterPopular.add(progressivePopular);
+        sectionPopular.add(itemPopularList);
+
+        adapterMain.add(sectionTrending);
+        adapterMain.add(sectionPopular);
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewHome.setAdapter(adapterMain);
         setToolbar(binding.toolbar);
 
-        Observable<Integer> triggerTrending = itemTrendingList.getPageTrigger();
-        Observable<Integer> triggerPopular = itemPopularList.getPageTrigger();
+        adapterPopular.setOnItemClickListener(onItemClickListener);
+        adapterTrending.setOnItemClickListener(onItemClickListener);
+
+        itemTrendingList.subscribe(presenter.onLoadMoreObserverTrending());
+        itemPopularList.subscribe(presenter.onLoadMoreObserverPoplar());
 
         int pageSize = getResources().getInteger(R.integer.page_size);
-        presenter.updateStream(triggerTrending, triggerPopular, pageSize).subscribe(this);
+
+        @SuppressWarnings("unchecked") Observable observable = onClickListener.doOnNext(new Consumer() {
+            @Override
+            public void accept(@NonNull Object view) throws Exception {
+                Toast.makeText(getApplicationContext(), "Under Construction", Toast.LENGTH_SHORT).show();
+            }
+        }).map(new Function() {
+            @Override
+            public Object apply(@io.reactivex.annotations.NonNull Object o) throws Exception {
+                return o;
+            }
+        });
+        presenter.updateStream(pageSize, observable).subscribe(this);
 
         return binding.getRoot();
     }
@@ -137,12 +161,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
             (@Nullable Throwable throwable) {
         if (throwable != null) {
             throwable.printStackTrace();
-            Toast.makeText(ControllerHome.this.getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(ControllerHome.this.getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onSubscribe(Disposable d) {
+        dispose(disposable);
         this.disposable = d;
     }
 
@@ -158,15 +183,32 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void onComplete() {
-        Log.wtf(TAG, "onComplete() called x_X");
+        Log.wtf(TAG, "onCompleteGlide() called x_X");
     }
 
     @Override
     protected void onDestroyView(@NonNull View view) {
         Log.d(TAG, "onDestroyView() called");
         super.onDestroyView(view);
+        dispose(disposable);
+    }
+
+    private void dispose(Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
+        }
+    }
+
+    private class MyOnItemClickListener implements OnItemClickListener {
+        @Override
+        public void onItemClick(Item item, View view) {
+            ItemCardMovie itemCardMovie = (ItemCardMovie) item;
+            if (itemCardMovie.getMovie() == null) return;
+            Log.d(TAG, "onItemClick() called with: transitionName = [" + itemCardMovie.getTransitionName() + "]");
+            getRouter().pushController(RouterTransaction.with(new ControllerDetails(itemCardMovie.getMovie(), itemCardMovie.getTransitionName()))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())
+            );
         }
     }
 }

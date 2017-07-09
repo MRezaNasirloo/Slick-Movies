@@ -66,7 +66,7 @@ public class ViewStateHomeRenderer {
         return Observable.fromIterable(items).map(new Function<ItemCard, Item>() {
             @Override
             public Item apply(@NonNull ItemCard itemCard) throws Exception {
-                return itemCard.render(-1);
+                return itemCard.render(null);
             }
         }).toList(items.size()).blockingGet();
     }

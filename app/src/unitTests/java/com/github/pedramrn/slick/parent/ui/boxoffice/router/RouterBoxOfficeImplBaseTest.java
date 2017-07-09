@@ -3,6 +3,8 @@ package com.github.pedramrn.slick.parent.ui.boxoffice.router;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.di.ModuleNetworkBase;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperCast;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
 import com.google.gson.Gson;
 
@@ -71,7 +73,8 @@ public class RouterBoxOfficeImplBaseTest {
         ApiTrakt apiTrakt = mn.baseApiTrakt(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList()), mn.baseRetrofit(gson), gson);
         ApiTmdb apiTmdb = mn.baseApiTmdb(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList()), mn.baseRetrofit(gson), gson);
 
-        routerBoxOffice = new RouterBoxOfficeTmdbImpl(apiTrakt, apiTmdb, new MapperSimpleData(), Schedulers.trampoline());
+        routerBoxOffice =
+                new RouterBoxOfficeTmdbImpl(apiTrakt, apiTmdb, new MapperMovie(new MapperCast(), new MapperSimpleData()), Schedulers.trampoline());
     }
 
     private static final String TAG = RouterBoxOfficeImplBaseTest.class.getSimpleName();

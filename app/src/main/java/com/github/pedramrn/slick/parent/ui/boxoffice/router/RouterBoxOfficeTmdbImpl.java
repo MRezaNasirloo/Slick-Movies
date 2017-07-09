@@ -4,7 +4,9 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 
@@ -29,12 +31,12 @@ public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
 
     private final ApiTrakt apiTrakt;
     private final ApiTmdb apiTmdb;
-    private final MapperSimpleData mapper;
+    private final MapperMovie mapper;
     private final Scheduler io;
     private static final String TAG = RouterBoxOfficeTmdbImpl.class.getSimpleName();
 
     @Inject
-    public RouterBoxOfficeTmdbImpl(ApiTrakt apiTrakt, ApiTmdb apiTmdb, MapperSimpleData mapper, @Named("io") Scheduler io) {
+    public RouterBoxOfficeTmdbImpl(ApiTrakt apiTrakt, ApiTmdb apiTmdb, MapperMovie mapper, @Named("io") Scheduler io) {
         this.apiTrakt = apiTrakt;
         this.apiTmdb = apiTmdb;
         this.mapper = mapper;
@@ -42,7 +44,7 @@ public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
     }
 
     @Override
-    public Observable<MovieItem> boxOffice(Observable<Integer> trigger, int buffer) {
+    public Observable<MovieDomain> boxOffice(Observable<Integer> trigger, int buffer) {
         return apiTrakt.get()
                 .flatMap(new Function<List<BoxOfficeItem>, ObservableSource<BoxOfficeItem>>() {
                     @Override
@@ -57,36 +59,16 @@ public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
                         return boxOfficeItem;
                     }
                 })
-                .concatMap(new Function<List<BoxOfficeItem>, ObservableSource<MovieItem>>() {
+                .concatMap(new Function<List<BoxOfficeItem>, ObservableSource<MovieDomain>>() {
                     @Override
-                    public ObservableSource<MovieItem> apply(@NonNull final List<BoxOfficeItem> boxOfficeItem) throws Exception {
+                    public ObservableSource<MovieDomain> apply(@NonNull final List<BoxOfficeItem> boxOfficeItem) throws Exception {
                         return Observable.fromIterable(boxOfficeItem)
-                                .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieItem>>() {
+                                .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieDomain>>() {
                                     @Override
-                                    public ObservableSource<MovieItem> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
+                                    public ObservableSource<MovieDomain> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
                                         return apiTmdb.movie(boxOfficeItem.movie().ids().tmdb())
                                                 .subscribeOn(io)
-                                                .map(new Function<MovieTmdb, MovieItem>() {
-                                                    @Override
-                                                    public MovieItem apply(@NonNull MovieTmdb movieTmdb) throws Exception {
-                                                        return MovieItem.create(movieTmdb.title(), boxOfficeItem.revenue().toString(),
-                                                                movieTmdb.posterPath(),
-                                                                "", "", "", "",
-                                                                movieTmdb.runtime().toString(),
-                                                                Observable.fromIterable(movieTmdb.genres())
-                                                                        .map(mapper)
-                                                                        .toList()
-                                                                        .blockingGet(),
-                                                                "", "", "",
-                                                                movieTmdb.overview(),
-                                                                Observable.fromIterable(movieTmdb.productionCompanies())
-                                                                        .map(mapper)
-                                                                        .toList()
-                                                                        .blockingGet(),
-                                                                movieTmdb.releaseDate(), movieTmdb.imdbId(),
-                                                                boxOfficeItem.movie().ids().trakt(), boxOfficeItem.movie().ids().tmdb());
-                                                    }
-                                                });
+                                                .map(mapper);
                                     }
                                 });
 

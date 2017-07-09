@@ -8,7 +8,7 @@ import com.xwray.groupie.Item;
  */
 
 public interface ItemCard {
-    Item render(int id);
+    Item render(String tag);
 
     long itemId();
 }

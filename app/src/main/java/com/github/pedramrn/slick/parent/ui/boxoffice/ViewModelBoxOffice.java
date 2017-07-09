@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -22,7 +22,7 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
     private final CompositeDisposable disposable;
     private final PresenterBoxOffice presenter;
     private final ViewBoxOffice view;
-    private BehaviorSubject<List<MovieBoxOffice>> movieItems = BehaviorSubject.create();
+    private BehaviorSubject<List<Movie>> movieItems = BehaviorSubject.create();
     private boolean isLoading = false;
 
 
@@ -64,14 +64,14 @@ public class ViewModelBoxOffice implements Observer<ViewStateBoxOffice> {
 
     @Override
     public void onComplete() {
-        //        view.onComplete();
+        //        view.onCompleteGlide();
     }
 
     public void pagination(Observable<Integer> trigger, int page) {
         presenter.getBoxOffice(trigger, page);
     }
 
-    public Observable<List<MovieBoxOffice>> boxOfficeList() {
+    public Observable<List<Movie>> boxOfficeList() {
         return movieItems;
     }
 

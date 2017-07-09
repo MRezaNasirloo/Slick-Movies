@@ -3,11 +3,15 @@
 
 package com.github.pedramrn.slick.parent.ui.home.item;
 
-import android.view.View;
+import android.util.Log;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.ViewHolder;
+
+import io.reactivex.Observer;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -18,9 +22,9 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
 
     private final String title;
     private final String buttonText;
-    private final View.OnClickListener onClickListener;
+    private final Observer onClickListener;
 
-    public ItemCardHeader(long id, String title, String buttonText, View.OnClickListener onClickListener) {
+    public ItemCardHeader(long id, String title, String buttonText, Observer onClickListener) {
         super(id);
         this.title = title;
         this.buttonText = buttonText;
@@ -36,6 +40,16 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
     public void bind(RowCardHeaderBinding viewBinding, int position) {
         viewBinding.textViewTitle.setText(title);
         viewBinding.button.setText(buttonText);
-        viewBinding.button.setOnClickListener(onClickListener);
+        RxView.clicks(viewBinding.button).subscribe(onClickListener);
+
     }
+
+    @Override
+    public void unbind(ViewHolder<RowCardHeaderBinding> holder) {
+        Log.d(TAG, "unbind() called");
+        holder.binding.button.setOnClickListener(null);
+        super.unbind(holder);
+    }
+
+    private static final String TAG = ItemCardHeader.class.getSimpleName();
 }

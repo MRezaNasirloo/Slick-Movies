@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
-import com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
 
 @AutoValue
 public abstract class ViewStateBoxOffice {
-    public abstract List<MovieBoxOffice> movieItems();
+    public abstract List<Movie> movieItems();
 
-    public static ViewStateBoxOffice create(List<MovieBoxOffice> movieBoxOfficeItems) {
+    public static ViewStateBoxOffice create(List<Movie> movieBoxOfficeItems) {
         return new AutoValue_ViewStateBoxOffice(movieBoxOfficeItems);
     }
 }

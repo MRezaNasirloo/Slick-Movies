@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.github.pedramrn.slick.parent.ui.boxoffice.model.MovieBoxOffice"
+            type="com.github.pedramrn.slick.parent.ui.details.model.Movie"
             />
 
         <variable
@@ -22,7 +22,7 @@
         android:layout_height="200dp"
         >
 
-        <com.gjiazhe.scrollparallaximageview.ScrollParallaxImageView
+        <com.github.pedramrn.slick.parent.ui.custom.ImageViewGlide
             android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -61,7 +61,7 @@
             android:layout_marginTop="8dp"
             android:gravity="bottom|center"
             android:padding="4dp"
-            android:text="@{vm.name()}"
+            android:text="@{vm.title()}"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="@+id/footer"
             app:layout_constraintHorizontal_bias="0.0"

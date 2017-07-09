@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
@@ -10,6 +11,7 @@ import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -17,7 +19,7 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class Movie extends AutoBase implements ItemCard {
+public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
 
     public abstract Integer id();
 
@@ -79,13 +81,21 @@ public abstract class Movie extends AutoBase implements ItemCard {
     }
 
     @Override
-    public Item render(int id) {
-        return new ItemCardMovie(uniqueId(), this);
+    public Item render(String tag) {
+        return new ItemCardMovie(uniqueId(), this, tag);
     }
 
     @Override
     public long itemId() {
         return uniqueId().longValue();
+    }
+
+    public String rank(int position) {
+        return String.format(Locale.getDefault(), "#%s", position + 1);
+    }
+
+    public String runtimePretty() {
+        return runtime() + "min";
     }
 
     @Override

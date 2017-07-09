@@ -52,6 +52,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     private final Scheduler io;
     private final Scheduler main;
     private BehaviorSubject<ViewStateHome> state = BehaviorSubject.create();
+    private BehaviorSubject<Integer> triggerSubjectTrending = BehaviorSubject.create();
+    private BehaviorSubject<Integer> triggerSubjectPopular = BehaviorSubject.create();
     private Observable<ViewStateHome> home;
     private Disposable disposable;
     private String TRENDING = "TRENDING";
@@ -59,8 +61,13 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
 
 
     @Inject
-    public PresenterHome(RouterMovieDetailsVideoImpl rmd, RouterAnticipatedImpl ra, RouterTrendingImpl rt, MovieDomainMovieMapper mapper,
-                         RouterPopularImpl rp, @Named("io") Scheduler io, @Named("main") Scheduler main) {
+    public PresenterHome(RouterMovieDetailsVideoImpl rmd,
+                         RouterAnticipatedImpl ra,
+                         RouterTrendingImpl rt,
+                         RouterPopularImpl rp,
+                         MovieDomainMovieMapper mapper,
+                         @Named("io") Scheduler io,
+                         @Named("main") Scheduler main) {
         this.router = rmd;
         this.routerAnticipated = ra;
         this.routerTrending = rt;
@@ -70,13 +77,12 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         this.main = main;
     }
 
-    public Observable<ViewStateHome> updateStream(@NonNull Observable<Integer> triggerTrending, @NonNull Observable<Integer> triggerPopular,
-                                                  int pageSize) {
-        if (home == null) start(triggerTrending, triggerPopular, pageSize);
+    public Observable<ViewStateHome> updateStream(int pageSize, Observable<Object> clickListener) {
+        if (home == null) start(triggerSubjectTrending.startWith(1), triggerSubjectPopular.startWith(1), clickListener, pageSize);
         return state;
     }
 
-    public void start(Observable<Integer> triggerTrending, Observable<Integer> triggerPopular, final int pageSize) {
+    public void start(Observable<Integer> triggerTrending, Observable<Integer> triggerPopular, Observable<Object> clickListener, final int pageSize) {
         IdBank.reset(TRENDING);
         IdBank.reset(POPULAR);
 
@@ -119,7 +125,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .map(new Function<ItemCard, Item>() {
                     @Override
                     public Item apply(@NonNull ItemCard itemCard) throws Exception {
-                        return itemCard.render(-1);
+                        return itemCard.render(TRENDING);
                     }
                 })
                 .buffer(pageSize)
@@ -163,7 +169,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .map(new Function<ItemCard, Item>() {
                     @Override
                     public Item apply(@NonNull ItemCard itemCard) throws Exception {
-                        return itemCard.render(-1);
+                        return itemCard.render(POPULAR);
                     }
                 })
                 .buffer(pageSize)
@@ -193,12 +199,25 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 });
 
+        Observable<ViewStateHomePartial> click = clickListener.map(new Function<Object, ViewStateHomePartial>() {
+            @Override
+            public ViewStateHomePartial apply(@NonNull Object o) throws Exception {
+                return new ViewStateHomePartial() {
+                    @Override
+                    public ViewStateHome reduce(ViewStateHome viewStateHome) {
+                        return viewStateHome;
+                    }
+                };
+            }
+        });
+
         List<Observable<ViewStateHomePartial>> list = new ArrayList<>(5);
         list.add(trending);
         list.add(popular);
         list.add(trendingProgressiveLoading);
         list.add(popularProgressiveLoading);
         list.add(videos);
+        list.add(click);
 
         ViewStateHome initialState = ViewStateHome.builder()
                 .anticipated(Collections.<ItemVideo>emptyList())
@@ -225,6 +244,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
 
     @Override
     public void onSubscribe(Disposable d) {
+        dispose(disposable);
         this.disposable = d;
     }
 
@@ -240,7 +260,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
 
     @Override
     public void onComplete() {
-        Log.wtf(TAG, "onComplete: Called O_O");
+        Log.wtf(TAG, "onCompleteGlide: Called O_O");
     }
 
     private static final String TAG = PresenterHome.class.getSimpleName();
@@ -248,8 +268,20 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     @Override
     public void onDestroy() {
         super.onDestroy();
+        dispose(disposable);
+    }
+
+    private void dispose(Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
+    }
+
+    public Observer<Integer> onLoadMoreObserverPoplar() {
+        return triggerSubjectPopular;
+    }
+
+    public Observer<Integer> onLoadMoreObserverTrending() {
+        return triggerSubjectTrending;
     }
 }
