@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
+import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
 import com.github.pedramrn.slick.parent.ui.changehandler.SharedElementDelayingChangeHandler;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
@@ -70,7 +71,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
             public void accept(@io.reactivex.annotations.NonNull Pair<Movie, String> pair) throws Exception {
                 RouterTransaction transaction = RouterTransaction.with(new ControllerDetails(pair.first, pair.second))
                         .pushChangeHandler(new SharedElementDelayingChangeHandler(pair.second))
-                        .popChangeHandler(new SharedElementDelayingChangeHandler(pair.second));
+                        .popChangeHandler(new ArcFadeMoveChangeHandler());
 
                 getRouter().pushController(transaction);
             }

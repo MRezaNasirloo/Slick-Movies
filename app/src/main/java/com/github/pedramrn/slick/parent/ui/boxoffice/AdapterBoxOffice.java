@@ -61,12 +61,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         holder.binding.setRank(movies.get(position).rank(position));
         holder.binding.textViewTitle.setSelected(true);
         // holder.binding.textViewTitle.setText(movies.movieFull(position).name());
-        holder.binding.imageView.loadForSE(movies.get(position).posterThumbnail(), new OnCompleteGlide() {
-            @Override
-            public void onCompleteGlide() {
-                //no-op
-            }
-        });
+        holder.binding.imageView.load(movies.get(position).posterThumbnail());
         holder.binding.imageView.setTransitionName(transitionName);
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override

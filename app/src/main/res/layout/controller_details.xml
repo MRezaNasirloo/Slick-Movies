@@ -29,7 +29,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 >
 
-                <com.github.pedramrn.slick.parent.ui.custom.ImageViewGlide
+                <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
                     android:id="@+id/imageView_header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

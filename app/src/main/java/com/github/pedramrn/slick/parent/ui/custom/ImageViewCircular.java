@@ -5,26 +5,26 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-import com.bumptech.glide.Glide;
 import com.github.pedramrn.slick.parent.R;
+import com.squareup.picasso.Picasso;
 
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-16
  */
 
-public class ImageViewGlideCircular extends AppCompatImageView {
-    public ImageViewGlideCircular(Context context) {
+public class ImageViewCircular extends AppCompatImageView {
+    public ImageViewCircular(Context context) {
         super(context);
     }
 
-    public ImageViewGlideCircular(Context context, @Nullable AttributeSet attrs) {
+    public ImageViewCircular(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ImageViewGlideCircular(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ImageViewCircular(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -34,11 +34,10 @@ public class ImageViewGlideCircular extends AppCompatImageView {
             return;
         }
         Context context = getContext().getApplicationContext();
-        Glide.with(context)
+        Picasso.with(context)
                 .load(url)
-                .crossFade()
                 .placeholder(R.drawable.circle)
-                .bitmapTransform(new CropCircleTransformation(context))
+                .transform(new CropCircleTransformation())
                 .into(this);
     }
 }

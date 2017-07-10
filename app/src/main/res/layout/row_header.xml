@@ -34,7 +34,7 @@
             tools:text="Nunquam anhelare terror."
             />
 
-        <com.github.pedramrn.slick.parent.ui.custom.ImageViewGlide
+        <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
             android:id="@+id/imageView_icon"
             android:layout_width="120dp"
             android:layout_height="180dp"

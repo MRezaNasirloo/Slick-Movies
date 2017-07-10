@@ -10,7 +10,7 @@
         >
 
 
-        <com.github.pedramrn.slick.parent.ui.custom.ImageViewGlide
+        <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
             android:id="@+id/imageView_thumbnail"
             android:layout_width="0dp"
             android:layout_height="0dp"

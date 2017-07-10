@@ -35,10 +35,9 @@ public class ItemHeader extends Item<RowHeaderBinding> {
 
     private static final String TAG = ItemHeader.class.getSimpleName();
     @Override
-    public void bind(RowHeaderBinding viewBinding, int position) {
+    public void bind(final RowHeaderBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
         Log.d(TAG, "bind() called with: transitionName = [" + transitionName + "]");
-        viewBinding.imageViewIcon.setTransitionName(transitionName);
 
         viewBinding.textViewTitle.setText(movie.title());
         // TODO: 2017-06-18 use recycler view for this
@@ -54,6 +53,12 @@ public class ItemHeader extends Item<RowHeaderBinding> {
         viewBinding.textViewScore.setText(String.valueOf(movie.voteAverage()));
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
         viewBinding.textViewRated.setText(null);
-        viewBinding.imageViewIcon.delayLoadForSE(movie.posterThumbnail());
+        viewBinding.imageViewIcon.loadForSE(movie.posterThumbnail(), new OnCompleteGlide() {
+            @Override
+            public void onCompleteGlide() {
+            Log.d(TAG, "onCompleteGlide() called with: transitionName = [" + transitionName + "]");
+                viewBinding.imageViewIcon.setTransitionName(transitionName);
+            }
+        });
     }
 }

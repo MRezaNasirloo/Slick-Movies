@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <com.github.pedramrn.slick.parent.ui.custom.ImageViewGlide
+    <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
         android:id="@+id/imageView_backdrop"
         android:layout_width="200dp"
         android:layout_height="110dp"

@@ -9,7 +9,6 @@ import android.view.View;
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bumptech.glide.Glide;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
@@ -40,13 +39,11 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
 
     @Override
     public void onTrimMemory(int level) {
-        Glide.with(this).onTrimMemory(level);
         super.onTrimMemory(level);
     }
 
     @Override
     public void onLowMemory() {
-        Glide.with(this).onLowMemory();
         super.onLowMemory();
     }
 
