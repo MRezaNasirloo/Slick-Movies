@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
-import com.github.pedramrn.slick.parent.ui.changehandler.SharedElementDelayingChangeHandler;
+import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandlerOld;
+import com.github.pedramrn.slick.parent.ui.changehandler.CityGridSharedElementTransitionChangeHandler;
+import com.github.pedramrn.slick.parent.ui.changehandler.MyTransition;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -57,6 +60,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         ControllerBoxOffice_Slick.bind(this);
         final ControllerBoxOfficeBinding binding = inflate(inflater, container, false);
 
+        binding.toolbar.setTitle("Box Office");
         setToolbar(binding.toolbar);
         disposable = new CompositeDisposable();
 
@@ -70,8 +74,8 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
             @Override
             public void accept(@io.reactivex.annotations.NonNull Pair<Movie, String> pair) throws Exception {
                 RouterTransaction transaction = RouterTransaction.with(new ControllerDetails(pair.first, pair.second))
-                        .pushChangeHandler(new SharedElementDelayingChangeHandler(pair.second))
-                        .popChangeHandler(new ArcFadeMoveChangeHandler());
+                        .pushChangeHandler(new HorizontalChangeHandler(true))
+                        .popChangeHandler(new HorizontalChangeHandler(true));
 
                 getRouter().pushController(transaction);
             }

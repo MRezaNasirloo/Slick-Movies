@@ -71,7 +71,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private GroupAdapter adapterBackdrop;
     private List<ItemBackdropProgressive> progressiveBackdropList = new ArrayList<>(5);
     private List<ItemCastProgressive> progressiveCastList = new ArrayList<>(5);
-    private ControllerChangeHandler changeHandler;
 
     public ControllerDetails(@NonNull Movie movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -163,12 +162,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     public void render(ViewStateDetails state) {
         final Movie movie = state.movieDetails();
         adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
-        adapterMain.add(new ItemOverview(movie.overview()));
         progressiveCast.update(state.itemCasts());
         progressiveBackdrop.update(state.itemBackdrops());
     }
@@ -197,11 +190,5 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    protected void onChangeStarted(@NonNull ControllerChangeHandler changeHandler, @NonNull ControllerChangeType changeType) {
-        this.changeHandler = changeHandler;
-        Log.d(TAG, "onChangeStarted() called");
     }
 }

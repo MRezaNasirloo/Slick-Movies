@@ -121,8 +121,8 @@ dependencies {
     annotationProcessor 'com.github.slick:slick-compiler:0.9'
 
     //conductor
-    compile 'com.bluelinelabs:conductor:2.1.4-SNAPSHOT'
-    compile 'com.bluelinelabs:conductor-support:2.1.4-SNAPSHOT'
+    compile 'com.bluelinelabs:conductor:2.1.5-SNAPSHOT'
+    compile 'com.bluelinelabs:conductor-support:2.1.5-SNAPSHOT'
 
     //image loading
     compile 'com.squareup.picasso:picasso:2.5.2'
