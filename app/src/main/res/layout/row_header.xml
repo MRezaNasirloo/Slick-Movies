@@ -23,14 +23,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-            android:paddingTop="48dp"
             android:paddingEnd="48dp"
+            android:paddingTop="48dp"
             android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title"
             app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlSymmetry"
             tools:text="Nunquam anhelare terror."
             />
 
@@ -40,7 +40,6 @@
             android:layout_height="180dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="0dp"
             android:background="@color/color_gray_1"
             android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -52,13 +51,14 @@
             android:id="@+id/textView_genre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/textView_release"
             app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
             app:layout_constraintTop_toBottomOf="@+id/textView_title"
             app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintVertical_chainStyle="spread_inside"
             tools:text="Genre"
             />
 
@@ -66,9 +66,8 @@
             android:id="@+id/textView_release"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView_score"
+            app:layout_constraintBottom_toTopOf="@+id/textView_score_trakt"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
@@ -78,38 +77,34 @@
             />
 
         <TextView
-            android:id="@+id/textView_score"
+            android:id="@+id/textView_score_trakt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:gravity="center"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/imageView_icon"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
-            app:layout_constraintRight_toLeftOf="@+id/textView_logo_imdb"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_score_trakt"
+            app:layout_constraintRight_toLeftOf="@+id/imageView_score_tmdb"
             app:layout_constraintTop_toBottomOf="@+id/textView_release"
             tools:text="7.5/10"
             />
 
-        <TextView
-            android:id="@+id/textView_logo_imdb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageView_score_trakt"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/oval"
-            android:gravity="center"
-            android:text=" IMDB "
-            android:textColor="#000"
-            android:visibility="invisible"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView_score"
-            app:layout_constraintLeft_toRightOf="@+id/textView_score"
-            app:layout_constraintRight_toLeftOf="@+id/textView_rated"
-            tools:ignore="HardcodedText"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_trakt_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_score_trakt"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_icon"
+            app:layout_constraintRight_toLeftOf="@+id/textView_score_trakt"
+            app:layout_constraintTop_toTopOf="@+id/textView_score_trakt"
+            app:layout_constraintVertical_bias="0.428"
             />
 
         <TextView
@@ -127,19 +122,45 @@
             />
 
         <TextView
-            android:id="@+id/textView_rated"
+            android:id="@+id/textView_score_tmdb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_score_trakt"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_score_tmdb"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="6.5/10"
+            />
+
+        <TextView
+            android:id="@+id/textView_certification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/oval"
             android:backgroundTint="#2ca0ff"
             android:textColor="#ffffff"
-            android:visibility="invisible"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView_logo_imdb"
-            app:layout_constraintLeft_toRightOf="@+id/textView_logo_imdb"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_runtime"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toRightOf="@+id/textView_runtime"
             app:layout_constraintRight_toRightOf="parent"
             tools:text=" PG-13 "
+            />
+
+        <ImageView
+            android:id="@+id/imageView_score_tmdb"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_score_tmdb"
+            app:layout_constraintLeft_toRightOf="@+id/textView_score_trakt"
+            app:layout_constraintRight_toLeftOf="@+id/textView_score_tmdb"
+            app:layout_constraintTop_toTopOf="@+id/textView_score_tmdb"
+            app:layout_constraintVertical_bias="0.428"
+            app:srcCompat="@drawable/ic_tmdb_logo_stacked_black"
             />
 
     </android.support.constraint.ConstraintLayout>
