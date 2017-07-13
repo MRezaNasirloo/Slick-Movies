@@ -123,6 +123,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public NetworkBehavior networkBehavior() {
+        if (MOCK_MODE) return null;
         NetworkBehavior networkBehavior = NetworkBehavior.create();
         networkBehavior.setDelay(2, TimeUnit.SECONDS);
         networkBehavior.setVariancePercent(40);
@@ -136,12 +137,14 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public AssetManager asset(Context context) {
+        if (MOCK_MODE) return null;
         return context.getAssets();
     }
 
     @Provides
     @Singleton
     public List<MovieTraktMetadata> popular(AssetManager asset, Gson gson) {
+        if (MOCK_MODE) return null;
         InputStream stream;
         String json = "[]";
         try {
@@ -158,6 +161,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public List<MovieTraktPageMetadata> trending(AssetManager asset, Gson gson) {
+        if (MOCK_MODE) return null;
         InputStream stream;
         String json = "[]";
         try {
@@ -174,6 +178,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public List<MovieTmdb> tmdbList(AssetManager asset, Gson gson) {
+        if (MOCK_MODE) return null;
         InputStream stream;
         String json = "[]";
         try {

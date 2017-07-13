@@ -93,10 +93,16 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                         return Video.create(vd.tmdb(), vd.type(), vd.key(), vd.name());
                     }
                 })
-                .compose(new ScanToList<ItemVideo>())
-                .map(new Function<List<ItemVideo>, ViewStateHomePartial>() {
+                .map(new Function<ItemVideo, Item>() {
                     @Override
-                    public ViewStateHomePartial apply(@NonNull List<ItemVideo> itemHomes) throws Exception {
+                    public Item apply(@NonNull ItemVideo itemVideo) throws Exception {
+                        return itemVideo.render(-1);
+                    }
+                })
+                .compose(new ScanToList<Item>())
+                .map(new Function<List<Item>, ViewStateHomePartial>() {
+                    @Override
+                    public ViewStateHomePartial apply(@NonNull List<Item> itemHomes) throws Exception {
                         return new ViewStateHomePartial.VideosImpl(itemHomes);
                     }
                 })
@@ -220,13 +226,15 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         list.add(click);
 
         ViewStateHome initialState = ViewStateHome.builder()
-                .anticipated(Collections.<ItemVideo>emptyList())
+                .anticipated(Collections.<Item>emptyList())
                 .popular(Collections.<Item>emptyList())
                 .trending(Collections.<Item>emptyList())
                 .loadingTrending(true)
                 .loadingPopular(true)
                 .itemLoadingCountPopular(0)
                 .itemLoadingCountTrending(0)
+                .pagePopular(0)
+                .pageTrending(0)
                 .build();
 
         home = Observable.merge(list)

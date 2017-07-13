@@ -57,6 +57,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private ItemAnticipatedList itemAnticipatedList;
     private Disposable disposable;
     private MyOnItemClickListener onItemClickListener = new MyOnItemClickListener();
+    private UpdatingGroup progressiveAnticipated;
+    private ViewStateHome state;
 
 
     @NonNull
@@ -70,17 +72,17 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         GroupAdapter adapterAnticipated = new GroupAdapter();
         GroupAdapter adapterTrending = new GroupAdapter();
         GroupAdapter adapterPopular = new GroupAdapter();
-        UpdatingGroup progressiveAnticipated = new UpdatingGroup();
+        progressiveAnticipated = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemTrendingList = new ItemCardList(adapterTrending);
-        itemPopularList = new ItemCardList(adapterPopular);
+        itemTrendingList = new ItemCardList(adapterTrending, "trending");
+        itemPopularList = new ItemCardList(adapterPopular, "popular");
         itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
 
         adapterMain.add(itemAnticipatedList);
         adapterAnticipated.add(progressiveAnticipated);
 
-        PublishSubject onClickListener = PublishSubject.create();
+        PublishSubject<Object> onClickListener = PublishSubject.create();
         Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", onClickListener));
 
         adapterTrending.add(progressiveTrending);
@@ -106,15 +108,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 
-        @SuppressWarnings("unchecked") Observable observable = onClickListener.doOnNext(new Consumer() {
+        Observable<Object> observable = onClickListener.doOnNext(new Consumer<Object>() {
             @Override
-            public void accept(@NonNull Object view) throws Exception {
+            public void accept(@NonNull Object o) throws Exception {
                 Toast.makeText(getApplicationContext(), "Under Construction", Toast.LENGTH_SHORT).show();
-            }
-        }).map(new Function() {
-            @Override
-            public Object apply(@io.reactivex.annotations.NonNull Object o) throws Exception {
-                return o;
             }
         });
         presenter.updateStream(pageSize, observable).subscribe(this);
@@ -138,14 +135,17 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void render(@NonNull ViewStateHome state) {
+        this.state = state;
         Log.d(TAG, "render() called");
-        // progressiveAnticipated.update(state.anticipated());
+        progressiveAnticipated.update(state.anticipated());
         progressiveTrending.update(state.trending());
         progressivePopular.update(state.popular());
-        itemTrendingList.setLoading(state.loadingTrending());
+        itemTrendingList.loading(state.loadingTrending());
         itemTrendingList.itemLoadedCount(state.itemLoadingCountTrending());
-        itemPopularList.setLoading(state.loadingPopular());
+        itemTrendingList.page(state.pageTrending());
+        itemPopularList.loading(state.loadingPopular());
         itemPopularList.itemLoadedCount(state.itemLoadingCountPopular());
+        itemPopularList.page(state.pagePopular());
 
 
         // TODO: 2017-07-01 You're better than this...

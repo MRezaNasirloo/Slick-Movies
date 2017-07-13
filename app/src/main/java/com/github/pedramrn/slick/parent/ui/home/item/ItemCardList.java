@@ -16,13 +16,11 @@ import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.Item;
 
-import java.util.UUID;
-
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 /**
@@ -32,11 +30,9 @@ import io.reactivex.functions.Predicate;
 
 public class ItemCardList extends Item<RowCardListBinding> {
 
-    // FIXME: 2017-07-08 Replace this with tag
-    private final String key = String.valueOf(UUID.randomUUID().toString().hashCode());
-    private final String POPULAR_PAGE = "POPULAR_PAGE_" + key;
-    private final String POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + key;
-    private final String POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + key;
+    private final String POPULAR_PAGE;
+    private final String POPULAR_IS_LOADING;
+    private final String POPULAR_SCROLL_POS;
     private final RecyclerView.Adapter adapter;
     private boolean isLoading = false;
     private Integer page = 1;
@@ -46,8 +42,11 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private int itemLoadedCount;
     private Observer<Integer> observer;
 
-    public ItemCardList(RecyclerView.Adapter adapter) {
+    public ItemCardList(RecyclerView.Adapter adapter, String tag) {
         this.adapter = adapter;
+        POPULAR_PAGE = "POPULAR_PAGE_" + tag;
+        POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
+        POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + tag;
     }
 
     @Override
@@ -107,25 +106,21 @@ public class ItemCardList extends Item<RowCardListBinding> {
                         return b;
                     }
                 })
-                .scan(page, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
+                .map(new Function<RecyclerViewScrollEvent, Integer>() {
                     @Override
-                    public Integer apply(@NonNull Integer page, @NonNull RecyclerViewScrollEvent event) throws Exception {
-                        Log.d(TAG, "++page() called with: page = [" + page + "]");
-                        return ++page;
+                    public Integer apply(@NonNull RecyclerViewScrollEvent event) throws Exception {
+                        return page + 1;
                     }
                 })
-                //we don't need the first emit on every creation on rotation
-                .skip(1)
                 .doOnNext(new Consumer<Integer>() {
 
                     @Override
                     public void accept(@NonNull Integer page) throws Exception {
-                        ItemCardList.this.page = page;
                         isLoading = true;
                         Log.d(TAG, "accept() called with: page = [" + page + "]");
                     }
                 });
-                // .throttleLast(1, TimeUnit.SECONDS)
+        // .throttleLast(1, TimeUnit.SECONDS)
     }
 
     public void subscribe(Observer<Integer> observer) {
@@ -144,12 +139,16 @@ public class ItemCardList extends Item<RowCardListBinding> {
         scrollPos = savedViewState.getInt(POPULAR_SCROLL_POS);
     }
 
-    public void setLoading(boolean loading) {
-        Log.d(TAG, "setLoading() called load again");
+    public void loading(boolean loading) {
+        Log.d(TAG, "loading() called load again");
         this.isLoading = loading;
     }
 
     public void itemLoadedCount(int itemLoadedCount) {
         this.itemLoadedCount = itemLoadedCount;
+    }
+
+    public void page(int page) {
+        this.page = page;
     }
 }

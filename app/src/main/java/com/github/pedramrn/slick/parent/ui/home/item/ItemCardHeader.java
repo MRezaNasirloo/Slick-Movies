@@ -22,9 +22,9 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
 
     private final String title;
     private final String buttonText;
-    private final Observer onClickListener;
+    private final Observer<Object> onClickListener;
 
-    public ItemCardHeader(long id, String title, String buttonText, Observer onClickListener) {
+    public ItemCardHeader(long id, String title, String buttonText, Observer<Object> onClickListener) {
         super(id);
         this.title = title;
         this.buttonText = buttonText;

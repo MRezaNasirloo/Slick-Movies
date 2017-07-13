@@ -12,10 +12,6 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
-import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandler;
-import com.github.pedramrn.slick.parent.ui.changehandler.ArcFadeMoveChangeHandlerOld;
-import com.github.pedramrn.slick.parent.ui.changehandler.CityGridSharedElementTransitionChangeHandler;
-import com.github.pedramrn.slick.parent.ui.changehandler.MyTransition;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -96,6 +92,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
                         return totalItemCount == (lastVisibleItem + 1);
                     }
                 })
+
                 .scan(0, new BiFunction<Integer, RecyclerViewScrollEvent, Integer>() {
                     @Override
                     public Integer apply(@NonNull Integer integer, @NonNull RecyclerViewScrollEvent event) throws Exception {

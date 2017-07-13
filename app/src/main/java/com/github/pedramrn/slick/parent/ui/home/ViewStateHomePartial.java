@@ -19,13 +19,13 @@ public interface ViewStateHomePartial {
 
     class VideosImpl implements ViewStateHomePartial {
 
-        private final List<ItemVideo> itemVideos;
+        private final List<Item> itemVideos;
 
-        public VideosImpl(List<ItemVideo> itemVideos) {
+        public VideosImpl(List<Item> itemVideos) {
             this.itemVideos = itemVideos;
         }
 
-        public List<ItemVideo> getItemVideos() {
+        public List<Item> getItems() {
             return itemVideos;
         }
 
@@ -50,13 +50,13 @@ public interface ViewStateHomePartial {
 
     class ProgressiveVideosImpl implements ViewStateHomePartial {
 
-        private List<ItemVideo> progressive;
+        private List<Item> progressive;
 
         public ProgressiveVideosImpl() {
             progressive = new ArrayList<>(3);
-            progressive.add(0, new ItemVideoProgressiveImpl());
-            progressive.add(1, new ItemVideoProgressiveImpl());
-            progressive.add(2, new ItemVideoProgressiveImpl());
+            progressive.add(0, new ItemVideoProgressiveImpl().render(0));
+            progressive.add(1, new ItemVideoProgressiveImpl().render(1));
+            progressive.add(2, new ItemVideoProgressiveImpl().render(2));
         }
 
         @Override
@@ -88,6 +88,7 @@ public interface ViewStateHomePartial {
                     .trending(new ArrayList<>(movies))
                     .loadingTrending(loading)
                     .itemLoadingCountTrending(movies.size())
+                    .pageTrending(viewStateHome.pageTrending() + 1)
                     .build();
         }
     }
@@ -184,6 +185,7 @@ public interface ViewStateHomePartial {
                     .popular(new ArrayList<>(movies))
                     .loadingPopular(isLoading)
                     .itemLoadingCountPopular(movies.size())
+                    .pagePopular(viewStateHome.pagePopular() + 1)
                     .build();
         }
     }

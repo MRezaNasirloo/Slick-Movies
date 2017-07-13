@@ -29,7 +29,7 @@ public class ViewStateHomeRenderer {
         this.viewStateHome = viewStateHome;
     }
 
-    @UiThread
+    /*@UiThread
     public List<Item> anticipated() {
         List<ItemVideo> items = viewStateHome.anticipated();
         if (items == null || items.size() == 0) return Collections.emptyList();
@@ -45,7 +45,7 @@ public class ViewStateHomeRenderer {
                         return indexed.value().render(indexed.index());
                     }
                 }).toList(items.size()).blockingGet();
-    }
+    }*/
 
     /*public List<? extends Item> trending() {
         List<ItemCard> trending = viewStateHome.trending();
