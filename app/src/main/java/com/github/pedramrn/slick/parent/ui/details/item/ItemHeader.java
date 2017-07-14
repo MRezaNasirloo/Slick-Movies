@@ -1,6 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 
 import com.github.pedramrn.slick.parent.R;
@@ -24,6 +27,7 @@ public class ItemHeader extends Item<RowHeaderBinding> {
 
     private final Movie movie;
     private final String transitionName;
+    private RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
 
     public ItemHeader(Movie movie, String transitionName) {
         super(0);
@@ -54,7 +58,9 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                     }
                 }).blockingGet());
         viewBinding.textViewRelease.setText(movie.releaseDate());
-        viewBinding.textViewScoreTmdb.setText(String.valueOf(movie.voteAverageTmdb()));
+        String voteAveTmdb = String.valueOf(movie.voteAverageTmdb());
+        SpannableStringBuilder voteAveSpannedTmdb = new SpannableStringBuilder(voteAveTmdb).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
         viewBinding.textViewCertification.setText(null);
         viewBinding.imageViewIcon.loadForSE(movie.posterThumbnail(), new OnCompleteGlide() {
@@ -66,10 +72,13 @@ public class ItemHeader extends Item<RowHeaderBinding> {
 
         if (movie.voteAverageTrakt() != null) {
             viewBinding.textViewScoreTrakt.setBackground(null);
-            viewBinding.textViewScoreTrakt.setText(String.format(Locale.ENGLISH, "%.1f", movie.voteAverageTrakt()));
+            String voteAve = String.format(Locale.ENGLISH, "%.1f", movie.voteAverageTrakt());
+            SpannableStringBuilder voteAveSpanned = new SpannableStringBuilder(voteAve).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            viewBinding.textViewScoreTrakt.setText(voteAveSpanned);
             viewBinding.textViewCertification.setText(movie.certification());
         } else {
-            viewBinding.textViewScoreTrakt.setText("  ");
+            viewBinding.textViewCertification.setText("...");
+            viewBinding.textViewScoreTrakt.setText("     ");
             viewBinding.textViewScoreTrakt.setBackgroundResource(R.drawable.line);
 
         }
