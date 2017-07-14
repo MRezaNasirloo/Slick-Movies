@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
@@ -18,6 +19,8 @@ import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.github.pedramrn.slick.parent.ui.popular.ControllerPopular;
 import com.github.slick.Presenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -42,24 +45,26 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     CompositeDisposable disposable = new CompositeDisposable();
     private ControllerMainBinding binding;
     private final RouterPagerAdapter routerPagerAdapter;
+    private final int pageCount = 3;
 
     public ControllerMain() {
         routerPagerAdapter = new RouterPagerAdapter(this) {
 
             @Override
             public int getCount() {
-                return 3;
+                return pageCount;
             }
 
             @Override
             public void configureRouter(@NonNull Router router, int position) {
+                Log.d(TAG, "configureRouter() called with: router = [" + router + "], position = [" + position + "]");
                 if (!router.hasRootController()) {
                     switch (position) {
                         case 0:
-                            router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
+                            router.setRoot(RouterTransaction.with(new ControllerHome()));
                             break;
                         case 1:
-                            router.setRoot(RouterTransaction.with(new ControllerHome()));
+                            router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
                             // router.setRoot(RouterTransaction.with(new ControllerUpComing()));
                             break;
                         case 2:
@@ -69,6 +74,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                 }
             }
         };
+        routerPagerAdapter.setMaxPagesToStateSave(3);
     }
 
     @NonNull
@@ -79,6 +85,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
         binding = ControllerMainBinding.inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
+        binding.viewPager.setOffscreenPageLimit(2);
         /*AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(getActivity(), R.menu.navigation);
         navigationAdapter.setupWithBottomNavigation(binding.bottomNavigation, new int[]{Color.CYAN,Color.GRAY,Color.DKGRAY});
         binding.bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
@@ -114,8 +121,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
 
     @Override
     public void onMenuItemSelect(@IdRes int itemId, int position, boolean fromUser) {
-        Log.e(TAG, "onMenuItemSelect() called with: itemId = [" + itemId + "], position = [" + position + "], fromUser = [" + fromUser + "]");
         if (fromUser) {
+            resetStack(position);
             binding.viewPager.setCurrentItem(position, false);
             switch (itemId) {
                 case R.id.navigation_box_office:
@@ -129,9 +136,20 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
 
     }
 
+    private void resetStack(int position) {
+        Router router = routerPagerAdapter.getRouter(position);
+        if (router != null) {
+            List<RouterTransaction> backstack = router.getBackstack();
+            if (backstack.size() > 1) {
+                backstack = backstack.subList(0, 1);
+                router.setBackstack(backstack, new SimpleSwapChangeHandler());
+            }
+        }
+    }
+
     @Override
     public void onMenuItemReselect(@IdRes int itemId, int position, boolean fromUser) {
-        Log.e(TAG, "onMenuItemReselect() called with: itemId = [" + itemId + "], position = [" + position + "], fromUser = [" + fromUser + "]");
+        resetStack(position);
     }
 
     @Override
