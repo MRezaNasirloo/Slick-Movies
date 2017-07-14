@@ -25,12 +25,16 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
+import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
@@ -44,6 +48,7 @@ import javax.inject.Provider;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -61,10 +66,11 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     BottomNavigationHandlerImpl bottomNavigationHandler;
 
     private String transitionName;
-    private Movie movie;
+    private MovieCard movie;
     private CompositeDisposable disposable;
     private UpdatingGroup progressiveCast;
     private UpdatingGroup progressiveBackdrop;
+    private UpdatingGroup progressiveSimilar;
     private GroupAdapter adapterMain;
     private GroupAdapter adapterCasts;
     private GroupAdapter adapterBackdrop;
@@ -72,7 +78,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private List<ItemCastProgressive> progressiveCastList = new ArrayList<>(5);
     private UpdatingGroup updatingHeader;
 
-    public ControllerDetails(@NonNull Movie movie, String transitionName) {
+    public ControllerDetails(@NonNull MovieCard movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movie)
                 .putString("TRANSITION_NAME", transitionName)
@@ -100,7 +106,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         Context context = getApplicationContext();
         binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
 
-        // binding.toolbar.setTitle(movie.name());
         binding.collapsingToolbar.setTitle(movie.title());
 
 
@@ -108,6 +113,13 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterCasts = new GroupAdapter();
         adapterBackdrop = new GroupAdapter();
         updatingHeader = new UpdatingGroup();
+        progressiveSimilar = new UpdatingGroup();
+
+        GroupAdapter adapterSimilar = new GroupAdapter();
+        ItemCardList itemCardListSimilar = new ItemCardList(adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
+        Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
+        sectionSimilar.add(itemCardListSimilar);
+        adapterSimilar.add(progressiveSimilar);
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
         ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
@@ -116,6 +128,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterMain.add(updatingHeader);
         adapterMain.add(itemCastList);//Casts from tmdb
         adapterMain.add(itemBackdropList);//Backdrops from tmdb
+        adapterMain.add(sectionSimilar);
 
         if (progressiveCast == null) {
             progressiveBackdropList = new ArrayList<>(5);
@@ -162,19 +175,25 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
     @Override
     public void render(ViewStateDetails state) {
-        final Movie movie = state.movieDetails();
-        if (movie.voteAverageTrakt() != null) {
-            updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
+        final Movie movie = state.movie();
+        if (movie != null) {
+            if (movie.voteAverageTrakt() != null) {
+                updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
+            }
+            // FIXME: 2017-07-14 I'm adding myself every time :)
+            adapterMain.add(new ItemOverview(movie.overview()));
         }
-        adapterMain.add(new ItemOverview(movie.overview()));
         progressiveCast.update(state.itemCasts());
         progressiveBackdrop.update(state.itemBackdrops());
+        progressiveSimilar.update(state.similar());
 
+        renderError(state.errorSimilar());
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-        disposable.add(d);
+        // dispose(disposable);
+        // disposable = new CompositeDisposable(d);
     }
 
     @Override
@@ -195,6 +214,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
     @Override
     protected void onDestroy() {
+        dispose(disposable);
         super.onDestroy();
     }
 }

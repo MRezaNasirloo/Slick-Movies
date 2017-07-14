@@ -19,18 +19,11 @@ import java.util.Locale;
  */
 
 @AutoValue
-public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
-
-    public abstract Integer id();
-
-    @IncludeHashEquals
-    public abstract Integer uniqueId();
+public abstract class Movie extends AutoBase implements Parcelable, ItemCard, MovieCard {
 
     public abstract String imdbId();
 
     public abstract Boolean adult();
-
-    public abstract String backdropPath();
 
     public abstract Integer budget();
 
@@ -38,17 +31,11 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
 
     public abstract String homepage();
 
-    public abstract String overview();
-
     public abstract Float popularity();
-
-    protected abstract String posterPath();
 
     public abstract List<String> productionCompanies();
 
     public abstract List<String> productionCountries();
-
-    public abstract String releaseDate();
 
     public abstract Long revenue();
 
@@ -60,22 +47,7 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
 
     public abstract String tagline();
 
-    public abstract String title();
-
     public abstract Boolean video();
-
-    public abstract Float voteAverageTmdb();
-
-    public abstract Integer voteCountTmdb();
-
-    @Nullable
-    public abstract Float voteAverageTrakt();
-
-    @Nullable
-    public abstract Integer voteCountTrakt();
-
-    @Nullable
-    public abstract String certification();
 
     public abstract List<Cast> casts();
 
@@ -83,7 +55,10 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
 
     public abstract List<Video> videos();
 
+    public abstract Builder toBuilder();
+
     @Nullable
+    @Override
     public String posterThumbnail() {
         if (backdropPath() == null) return null;
         return "http://image.tmdb.org/t/p/w300" + posterPath();
@@ -103,23 +78,12 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
         return String.format(Locale.getDefault(), "#%s", position + 1);
     }
 
-    public String runtimePretty() {
-        return runtime() + "min";
-    }
-
+    @Nullable
     @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (o instanceof ItemCard) {
-            ItemCard that = (ItemCard) o;
-            return (this.itemId() == that.itemId());
-        }
-        return false;
+    public String runtimePretty() {
+        return runtime() + " min";
     }
 
-    public abstract Builder toBuilder();
 
     public static Movie create(Integer id, Integer uniqueId, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
                                String homepage, String overview, Float popularity, String posterPath, List<String> productionCompanies,

@@ -1,11 +1,13 @@
 package com.github.pedramrn.slick.parent.datasource.network;
 
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -19,6 +21,10 @@ public interface ApiTmdb {
 
     @GET("movie/{movie_id}?append_to_response=")
     Observable<MovieTmdb> movie(@Path("movie_id") Integer id);
+
+    @GET("movie/{movie_id}/similar")
+    Observable<MoviePageTmdb> similar(@Path("movie_id") Integer id, @Query("page") int page);
+
 
     @GET("movie/{movie_id}/videos?append_to_response=")
     Observable<MovieTmdb> withVideos(@Path("movie_id") Integer id);

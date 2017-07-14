@@ -1,8 +1,10 @@
 package com.github.pedramrn.slick.parent;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.NetworkBehavior;
 
@@ -51,6 +54,11 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
                 return movieTmdb.id().equals(id);
             }
         }).first(popularList.get(0)).toObservable();
+    }
+
+    @Override
+    public Observable<MoviePageTmdb> similar(@Path("movie_id") Integer id, @Query("page") int page) {
+        throw new NotImplementedException(new Throwable());
     }
 
     @Override

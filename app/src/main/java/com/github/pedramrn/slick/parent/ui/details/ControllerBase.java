@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
+import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -47,5 +51,18 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
     protected void onDestroy() {
         super.onDestroy();
         App.refWatcher(getActivity()).watch(this);
+    }
+
+    protected void dispose(Disposable disposable) {
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
+    }
+
+    protected void renderError(@Nullable Throwable throwable) {
+        if (throwable != null) {
+            throwable.printStackTrace();
+            Toast.makeText(ControllerBase.this.getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

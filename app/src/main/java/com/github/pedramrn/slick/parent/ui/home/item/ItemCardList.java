@@ -40,13 +40,14 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     private int scrollPos;
     private int itemLoadedCount;
-    private Observer<Integer> observer;
+    private final Observer<Integer> observer;
 
-    public ItemCardList(RecyclerView.Adapter adapter, String tag) {
+    public ItemCardList(RecyclerView.Adapter adapter, String tag, Observer<Integer> observer) {
         this.adapter = adapter;
         POPULAR_PAGE = "POPULAR_PAGE_" + tag;
         POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
         POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + tag;
+        this.observer = observer;
     }
 
     @Override
@@ -121,10 +122,6 @@ public class ItemCardList extends Item<RowCardListBinding> {
                     }
                 });
         // .throttleLast(1, TimeUnit.SECONDS)
-    }
-
-    public void subscribe(Observer<Integer> observer) {
-        this.observer = observer;
     }
 
     public void onSaveViewState(View view, Bundle outState) {

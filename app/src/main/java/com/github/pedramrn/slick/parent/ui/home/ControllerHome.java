@@ -75,8 +75,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressiveAnticipated = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemTrendingList = new ItemCardList(adapterTrending, "trending");
-        itemPopularList = new ItemCardList(adapterPopular, "popular");
+        itemTrendingList = new ItemCardList(adapterTrending, "trending", presenter.onLoadMoreObserverTrending());
+        itemPopularList = new ItemCardList(adapterPopular, "popular", presenter.onLoadMoreObserverPoplar());
         itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
 
         adapterMain.add(itemAnticipatedList);
@@ -102,9 +102,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
         adapterPopular.setOnItemClickListener(onItemClickListener);
         adapterTrending.setOnItemClickListener(onItemClickListener);
-
-        itemTrendingList.subscribe(presenter.onLoadMoreObserverTrending());
-        itemPopularList.subscribe(presenter.onLoadMoreObserverPoplar());
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 
@@ -154,14 +151,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     }
 
-    private void renderError
-            (@Nullable Throwable throwable) {
-        if (throwable != null) {
-            throwable.printStackTrace();
-            Toast.makeText(ControllerHome.this.getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onSubscribe(Disposable d) {
         dispose(disposable);
@@ -188,12 +177,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         Log.d(TAG, "onDestroyView() called");
         super.onDestroyView(view);
         dispose(disposable);
-    }
-
-    private void dispose(Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
     }
 
     private class MyOnItemClickListener implements OnItemClickListener {

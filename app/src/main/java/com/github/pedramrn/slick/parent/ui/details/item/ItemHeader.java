@@ -10,6 +10,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieCard;
 import com.xwray.groupie.Item;
 
 import java.util.Locale;
@@ -25,11 +26,11 @@ import io.reactivex.functions.BiFunction;
 
 public class ItemHeader extends Item<RowHeaderBinding> {
 
-    private final Movie movie;
+    private final MovieCard movie;
     private final String transitionName;
     private RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
 
-    public ItemHeader(Movie movie, String transitionName) {
+    public ItemHeader(MovieCard movie, String transitionName) {
         super(0);
         this.movie = movie;
         this.transitionName = transitionName;
