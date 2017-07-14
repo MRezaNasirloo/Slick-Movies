@@ -65,9 +65,34 @@ public class MovieDomainMovieMapper implements Function<MovieDomain, Movie> {
         //image
         Image image = Image.create(backdrops, md.images().posters());
 
-        return Movie.create(md.id(), md.id(), md.imdbId(), md.adult(), md.backdropPath(), md.budget(), md.genres(), md.homepage(),
-                md.overview(), md.popularity(), md.posterPath(), md.productionCompanies(), md.productionCountries(),
-                md.releaseDate(), md.revenue(), md.runtime(), md.spokenLanguages(), md.status(), md.tagline(), md.title(),
-                md.video(), md.voteAverage(), md.voteCount(), casts, image, videos);
+        return Movie.create(md.id(),
+                md.id(),
+                md.imdbId(),
+                md.adult(),
+                md.backdropPath(),
+                md.budget(),
+                md.genres(),
+                md.homepage(),
+                md.overview(),
+                md.popularity(),
+                md.posterPath(),
+                md.productionCompanies(),
+                md.productionCountries(),
+                md.releaseDate(),
+                md.revenue(),
+                md.runtime(),
+                md.spokenLanguages(),
+                md.status(),
+                md.tagline(),
+                md.title(),
+                md.video(),
+                md.voteAverageTmdb(),
+                md.voteCountTmdb(),
+                md.voteAverageTrakt(),
+                md.voteCountTrakt(),
+                md.certification(),
+                casts,
+                image,
+                videos);
     }
 }

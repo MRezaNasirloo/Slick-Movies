@@ -9,6 +9,8 @@ import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.xwray.groupie.Item;
 
+import java.util.Locale;
+
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
@@ -24,6 +26,7 @@ public class ItemHeader extends Item<RowHeaderBinding> {
     private final String transitionName;
 
     public ItemHeader(Movie movie, String transitionName) {
+        super(0);
         this.movie = movie;
         this.transitionName = transitionName;
     }
@@ -34,6 +37,7 @@ public class ItemHeader extends Item<RowHeaderBinding> {
     }
 
     private static final String TAG = ItemHeader.class.getSimpleName();
+
     @Override
     public void bind(final RowHeaderBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
@@ -50,15 +54,26 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                     }
                 }).blockingGet());
         viewBinding.textViewRelease.setText(movie.releaseDate());
-        viewBinding.textViewScore.setText(String.valueOf(movie.voteAverage()));
+        viewBinding.textViewScoreTmdb.setText(String.valueOf(movie.voteAverageTmdb()));
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
-        viewBinding.textViewRated.setText(null);
+        viewBinding.textViewCertification.setText(null);
         viewBinding.imageViewIcon.loadForSE(movie.posterThumbnail(), new OnCompleteGlide() {
             @Override
             public void onCompleteGlide() {
-            Log.d(TAG, "onCompleteGlide() called with: transitionName = [" + transitionName + "]");
                 viewBinding.imageViewIcon.setTransitionName(transitionName);
             }
         });
+
+        if (movie.voteAverageTrakt() != null) {
+            viewBinding.textViewScoreTrakt.setBackground(null);
+            viewBinding.textViewScoreTrakt.setText(String.format(Locale.ENGLISH, "%.1f", movie.voteAverageTrakt()));
+            viewBinding.textViewCertification.setText(movie.certification());
+        } else {
+            viewBinding.textViewScoreTrakt.setText("  ");
+            viewBinding.textViewScoreTrakt.setBackgroundResource(R.drawable.line);
+
+        }
+
+
     }
 }

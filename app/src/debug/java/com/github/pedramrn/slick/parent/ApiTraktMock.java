@@ -3,13 +3,16 @@ package com.github.pedramrn.slick.parent;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.google.gson.Gson;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.NetworkBehavior;
@@ -91,5 +94,15 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
                 .toList()
                 .blockingGet();
         return delegate.returningResponse(response).popular(page, size);
+    }
+
+    @Override
+    public Observable<Object> rating(@Path("id") int id) {
+        throw new NotImplementedException(new Throwable());
+    }
+
+    @Override
+    public Observable<MovieTraktFull> movie(@Path("id") String imdb) {
+        throw new NotImplementedException(new Throwable());
     }
 }

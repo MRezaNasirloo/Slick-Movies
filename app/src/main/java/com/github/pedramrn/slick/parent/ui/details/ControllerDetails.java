@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bluelinelabs.conductor.ControllerChangeHandler;
-import com.bluelinelabs.conductor.ControllerChangeType;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
@@ -36,6 +34,7 @@ import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,6 +70,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private GroupAdapter adapterBackdrop;
     private List<ItemBackdropProgressive> progressiveBackdropList = new ArrayList<>(5);
     private List<ItemCastProgressive> progressiveCastList = new ArrayList<>(5);
+    private UpdatingGroup updatingHeader;
 
     public ControllerDetails(@NonNull Movie movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -107,11 +107,13 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterMain = new GroupAdapter();
         adapterCasts = new GroupAdapter();
         adapterBackdrop = new GroupAdapter();
+        updatingHeader = new UpdatingGroup();
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
         ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
-        adapterMain.add(new ItemHeader(movie, transitionName));//Summery from omdb
+        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));//Summery from tmdb
         Log.d(TAG, "onCreateView() called");
+        adapterMain.add(updatingHeader);
         adapterMain.add(itemCastList);//Casts from tmdb
         adapterMain.add(itemBackdropList);//Backdrops from tmdb
 
@@ -131,9 +133,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveBackdrop.update(progressiveBackdropList);
 
         binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        binding.recyclerViewDetails.addItemDecoration(
-                new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
+        binding.recyclerViewDetails.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
         binding.recyclerViewDetails.setAdapter(adapterMain);
+        binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
 
         disposable.add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
@@ -161,9 +163,13 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     public void render(ViewStateDetails state) {
         final Movie movie = state.movieDetails();
+        if (movie.voteAverageTrakt() != null) {
+            updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
+        }
         adapterMain.add(new ItemOverview(movie.overview()));
         progressiveCast.update(state.itemCasts());
         progressiveBackdrop.update(state.itemBackdrops());
+
     }
 
     @Override

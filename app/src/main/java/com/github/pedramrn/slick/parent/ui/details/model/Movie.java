@@ -64,9 +64,18 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
 
     public abstract Boolean video();
 
-    public abstract Float voteAverage();
+    public abstract Float voteAverageTmdb();
 
-    public abstract Integer voteCount();
+    public abstract Integer voteCountTmdb();
+
+    @Nullable
+    public abstract Float voteAverageTrakt();
+
+    @Nullable
+    public abstract Integer voteCountTrakt();
+
+    @Nullable
+    public abstract String certification();
 
     public abstract List<Cast> casts();
 
@@ -115,8 +124,9 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
     public static Movie create(Integer id, Integer uniqueId, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
                                String homepage, String overview, Float popularity, String posterPath, List<String> productionCompanies,
                                List<String> productionCountries, String releaseDate, Long revenue, Integer runtime, List<String> spokenLanguages,
-                               String status, String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, List<Cast> casts,
-                               Image images, List<Video> videos) {
+                               String status, String tagline, String title, Boolean video, Float voteAverageTmdb, Integer voteCountTmdb,
+                               Float voteAverageTrakt, Integer voteCountTrakt, String certification, List<Cast> casts, Image images,
+                               List<Video> videos) {
         return builder()
                 .id(id)
                 .uniqueId(uniqueId)
@@ -139,8 +149,11 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
                 .tagline(tagline)
                 .title(title)
                 .video(video)
-                .voteAverage(voteAverage)
-                .voteCount(voteCount)
+                .voteAverageTmdb(voteAverageTmdb)
+                .voteCountTmdb(voteCountTmdb)
+                .voteAverageTrakt(voteAverageTrakt)
+                .voteCountTrakt(voteCountTrakt)
+                .certification(certification)
                 .casts(casts)
                 .images(images)
                 .videos(videos)
@@ -195,15 +208,21 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemCard {
 
         public abstract Builder video(Boolean video);
 
-        public abstract Builder voteAverage(Float voteAverage);
-
-        public abstract Builder voteCount(Integer voteCount);
-
         public abstract Builder casts(List<Cast> casts);
 
         public abstract Builder images(Image images);
 
         public abstract Builder videos(List<Video> videos);
+
+        public abstract Builder voteAverageTmdb(Float voteAverageTmdb);
+
+        public abstract Builder voteCountTmdb(Integer voteCountTmdb);
+
+        public abstract Builder voteAverageTrakt(Float voteAverageTrakt);
+
+        public abstract Builder voteCountTrakt(Integer voteCountTrakt);
+
+        public abstract Builder certification(String certification);
 
         public abstract Movie build();
     }

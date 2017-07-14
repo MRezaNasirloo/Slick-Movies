@@ -127,6 +127,8 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
         }
 
 
+
+
         return MovieDomain.create(mt.id(),
                 mt.imdbId(),
                 mt.adult(),
@@ -152,6 +154,9 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                 mt.video(),
                 mt.voteAverage(),
                 mt.voteCount(),
+                null,
+                null,
+                null,
                 castDomains,
                 ImageDomain.create(backdrops, posters),
                 videosDomains);
