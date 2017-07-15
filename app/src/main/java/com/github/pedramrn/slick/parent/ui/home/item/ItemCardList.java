@@ -2,6 +2,8 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -14,12 +16,13 @@ import com.github.pedramrn.slick.parent.ui.custom.StartSnapHelper;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationSideMargin;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
+import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.ViewHolder;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -38,24 +41,29 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private final SnapHelper snapHelper = new StartSnapHelper();
     private final LinearLayoutManager layoutManager;
     private final ItemDecorationSideMargin margin;
-    private final RecyclerView.Adapter adapter;
+    private final GroupAdapter adapter;
     private final Observer<Integer> observer;
+    private final OnItemClickListener onItemClickListener;
 
     private boolean isLoading = false;
     private Integer page = 1;
     private int scrollPos;
     private int itemLoadedCount;
 
-    public ItemCardList(Context context, RecyclerView.Adapter adapter, String tag, Observer<Integer> observer) {
+    public ItemCardList(@NonNull Context context,
+                        @NonNull GroupAdapter adapter,
+                        @NonNull String tag,
+                        @NonNull Observer<Integer> observer,
+                        @Nullable OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
         context = context.getApplicationContext();
+        margin = new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
+        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         this.adapter = adapter;
+        this.observer = observer;
         POPULAR_PAGE = "POPULAR_PAGE_" + tag;
         POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
         POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + tag;
-        this.observer = observer;
-        margin = new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
-        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-
     }
 
     @Override
@@ -76,6 +84,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
         snapHelper.attachToRecyclerView(recyclerView);
         layoutManager.scrollToPosition(scrollPos);
         registerLoadMoreTrigger(recyclerView).subscribe(observer);
+        adapter.setOnItemClickListener(onItemClickListener);
     }
 
     @Override
@@ -83,6 +92,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
         RecyclerView recyclerView = holder.binding.recyclerViewCard;
         recyclerView.removeItemDecoration(margin);
         recyclerView.setOnFlingListener(null);
+        adapter.setOnItemClickListener(null);
         super.unbind(holder);
     }
 

@@ -9,22 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
-import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -53,9 +48,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private ItemCardList itemTrendingList;
     private ItemCardList itemPopularList;
     private Disposable disposable;
-    private MyOnItemClickListener onItemClickListener = new MyOnItemClickListener();
+    private OnItemClickListenerDetails onItemClickListener = new OnItemClickListenerDetails(new RouterProvider() {
+        @Override
+        public Router get() {
+            return getRouter();
+        }
+    });
     private UpdatingGroup progressiveAnticipated;
-    private ViewStateHome state;
 
 
     @NonNull
@@ -72,8 +71,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressiveAnticipated = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemTrendingList = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending());
-        itemPopularList = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar());
+        itemTrendingList = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), onItemClickListener);
+        itemPopularList = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), onItemClickListener);
 
         ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
 
@@ -97,9 +96,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewHome.setAdapter(adapterMain);
         setToolbar(binding.toolbar);
-
-        adapterPopular.setOnItemClickListener(onItemClickListener);
-        adapterTrending.setOnItemClickListener(onItemClickListener);
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 
@@ -130,7 +126,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void render(@NonNull ViewStateHome state) {
-        this.state = state;
         Log.d(TAG, "render() called");
         progressiveAnticipated.update(state.anticipated());
         progressiveTrending.update(state.trending());
@@ -177,17 +172,4 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         dispose(disposable);
     }
 
-    private class
-    MyOnItemClickListener implements OnItemClickListener {
-        @Override
-        public void onItemClick(Item item, View view) {
-            ItemCardMovie itemCardMovie = (ItemCardMovie) item;
-            if (itemCardMovie.getMovie() == null) return;
-            Log.d(TAG, "onItemClick() called with: transitionName = [" + itemCardMovie.getTransitionName() + "]");
-            getRouter().pushController(RouterTransaction.with(new ControllerDetails(itemCardMovie.getMovie(), itemCardMovie.getTransitionName()))
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler())
-            );
-        }
-    }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
@@ -22,6 +23,8 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerDetails;
+import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
@@ -72,6 +75,14 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private ItemListHorizontal itemBackdropList;
     private Section sectionOverview;
 
+    private final OnItemClickListenerDetails onItemClickListener = new OnItemClickListenerDetails(
+            new RouterProvider() {
+                @Override
+                public Router get() {
+                    return getRouter();
+                }
+            });
+
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movie)
@@ -108,7 +119,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
 
-        itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
+        itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create(), onItemClickListener);
         Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
@@ -149,6 +160,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
                         String.format(Locale.ENGLISH, "You clicked %s", ((ItemCast) item).getCast().name()), Toast.LENGTH_SHORT).show();
             }
         });
+
 
         return binding.getRoot();
     }
