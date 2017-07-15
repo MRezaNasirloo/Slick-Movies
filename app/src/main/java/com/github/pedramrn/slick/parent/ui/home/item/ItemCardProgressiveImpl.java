@@ -9,10 +9,10 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-22
  */
 @AutoValue
-public abstract class ItemCardProgressiveImpl implements ItemCard {
+public abstract class ItemCardProgressiveImpl implements ItemView {
 
     @IncludeHashEquals
-    protected abstract int id();
+    protected abstract long id();
 
     @Override
     public Item render(String tag) {
@@ -24,7 +24,7 @@ public abstract class ItemCardProgressiveImpl implements ItemCard {
         return id();
     }
 
-    public static ItemCardProgressiveImpl create(int id) {
+    public static ItemCardProgressiveImpl create(long id) {
         return new AutoValue_ItemCardProgressiveImpl(id);
     }
 

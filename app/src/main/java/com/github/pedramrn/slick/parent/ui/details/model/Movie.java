@@ -3,8 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
@@ -19,7 +18,7 @@ import java.util.Locale;
  */
 
 @AutoValue
-public abstract class Movie extends AutoBase implements Parcelable, ItemCard, MovieCard {
+public abstract class Movie extends AutoBase implements Parcelable, ItemView, MovieBasic {
 
     public abstract String imdbId();
 

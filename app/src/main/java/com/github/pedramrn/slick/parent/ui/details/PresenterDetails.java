@@ -5,9 +5,13 @@ import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterSimilar;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
+import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
+import com.github.pedramrn.slick.parent.ui.details.model.Cast;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.util.ScanToList;
 import com.github.slick.SlickPresenter;
@@ -67,22 +71,94 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
         return state;
     }
 
-    void getMovieDetails(Integer tmdbId) {
+    void getMovieDetails(MovieBasic movieBasic) {
         if (details == null) {
-            /*details = routerMovieDetails.get(tmdbId)
+
+            Observable<Movie> movieFull = routerMovieDetails.get(movieBasic.id())
                     //Maps the domains Models to View Models which have android dependency
                     .map(mapper)
                     .subscribeOn(io)
-                    .observeOn(main);
-            details.subscribe(new Consumer<Movie>() {
-                @Override
-                public void accept(@NonNull Movie movie) throws Exception {
+                    .share();
 
-                }
-            });*/
+            Observable<PartialViewState<ViewStateDetails>> movie = movieFull
+                    .map(new Function<Movie, PartialViewState<ViewStateDetails>>() {
+                        @Override
+                        public PartialViewState<ViewStateDetails> apply(@NonNull Movie movie) throws Exception {
+                            return new PartialViewStateDetails.MovieFull(movie);
+                        }
+                    })
+                    .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
+                        @Override
+                        public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
+                            return new PartialViewStateDetails.ErrorMovieFull(throwable);
+                        }
+                    });
 
-            Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(tmdbId, 1)
-                    .flatMap(new Function<List<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
+            Observable<PartialViewState<ViewStateDetails>> backdrops = movieFull
+                    .take(1)
+                    .concatMap(new Function<Movie, ObservableSource<Backdrop>>() {
+                        @Override
+                        public ObservableSource<Backdrop> apply(@NonNull Movie movie) throws Exception {
+                            return Observable.fromIterable(movie.images().backdrops());
+                        }
+                    })
+                    .map(new MapProgressive())
+                    .cast(ItemView.class)
+                    .map(new Function<ItemView, Item>() {
+                        @Override
+                        public Item apply(@NonNull ItemView itemView) throws Exception {
+                            return itemView.render("BACKDROPS");
+                        }
+                    })
+                    .compose(new ScanToList<Item>())
+                    .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
+                        @Override
+                        public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
+                            return new PartialViewStateDetails.MovieBackdrops(items);
+                        }
+                    })
+                    .startWith(new PartialViewStateDetails.MovieBackdropsProgressive(5, "BACKDROPS"))
+                    .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
+                        @Override
+                        public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
+                            return new PartialViewStateDetails.ErrorMovieBackdrop(throwable);
+                        }
+                    });
+
+            Observable<PartialViewState<ViewStateDetails>> casts = movieFull
+                    .take(1)
+                    .concatMap(new Function<Movie, ObservableSource<Cast>>() {
+                        @Override
+                        public ObservableSource<Cast> apply(@NonNull Movie movie) throws Exception {
+                            return Observable.fromIterable(movie.casts());
+                        }
+                    })
+                    .map(new MapProgressive())
+                    .cast(ItemView.class)
+                    .map(new Function<ItemView, Item>() {
+                        @Override
+                        public Item apply(@NonNull ItemView itemView) throws Exception {
+                            return itemView.render("CASTS");
+                        }
+                    })
+                    .compose(new ScanToList<Item>())
+                    .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
+                        @Override
+                        public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
+                            return new PartialViewStateDetails.MovieCast(items);
+                        }
+                    })
+                    .startWith(new PartialViewStateDetails.MovieCastsProgressive(5, "CASTS"))
+                    .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
+                        @Override
+                        public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
+                            return new PartialViewStateDetails.ErrorMovieCast(throwable);
+                        }
+                    });
+
+
+            Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(movieBasic.id(), 1)
+                    .concatMap(new Function<List<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
                         @Override
                         public ObservableSource<MovieSmallDomain> apply(@NonNull List<MovieSmallDomain> movieSmallDomains) throws Exception {
                             return Observable.fromIterable(movieSmallDomains);
@@ -90,10 +166,10 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     })
                     .map(mapperSmall)
                     .map(new MapProgressive())
-                    .cast(ItemCard.class)
-                    .map(new Function<ItemCard, Item>() {
+                    .cast(ItemView.class)
+                    .map(new Function<ItemView, Item>() {
                         @Override
-                        public Item apply(@NonNull ItemCard itemCard) throws Exception {
+                        public Item apply(@NonNull ItemView itemCard) throws Exception {
                             return itemCard.render("SIMILAR");
                         }
                     })
@@ -104,7 +180,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                             return new PartialViewStateDetails.Similar(movies);
                         }
                     })
-                    .startWith(new PartialViewStateDetails.CardProgressiveSimilar(10, "SIMILAR"))
+                    .startWith(new PartialViewStateDetails.ItemProgressiveSimilar(10, "SIMILAR"))
                     .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
@@ -114,12 +190,16 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     .subscribeOn(io);
 
             List<Observable<PartialViewState<ViewStateDetails>>> partials = new ArrayList<>(5);
-            partials.add(Observable.<PartialViewState<ViewStateDetails>>never());
+            partials.add(movie);
+            partials.add(casts);
+            partials.add(backdrops);
             partials.add(similar);
 
             ViewStateDetails initial = ViewStateDetails.builder()
+                    .casts(Collections.<Item>emptyList())
+                    .backdrops(Collections.<Item>emptyList())
                     .similar(Collections.<Item>emptyList())
-                    .movie(null)
+                    .movieBasic(movieBasic)
                     .build();
 
             details = Observable.merge(partials)
@@ -149,7 +229,6 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
 
     @Override
     public void onError(Throwable e) {
-        // state.onNext(new ViewStateDetailsError(e));
         // TODO: 2017-06-15 show error with view state
         e.printStackTrace();
     }
@@ -162,7 +241,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // if (disposable != null) disposable.dispose();
+        if (disposable != null) disposable.dispose();
     }
 
 }

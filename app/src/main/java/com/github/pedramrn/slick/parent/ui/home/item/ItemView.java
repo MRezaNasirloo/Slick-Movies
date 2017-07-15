@@ -7,7 +7,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-21
  */
 
-public interface ItemCard {
+public interface ItemView {
     Item render(String tag);
 
     long itemId();

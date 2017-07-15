@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
@@ -15,14 +17,18 @@ public abstract class MovieSmallDomain {
 
     public abstract String title();
 
+    @Nullable
     public abstract String overview();
 
     public abstract String originalTitle();
 
+    @Nullable
     public abstract String posterPath();
 
+    @Nullable
     public abstract String backdropPath();
 
+    @Nullable
     public abstract String releaseDate();
 
     public abstract String originalLanguage();

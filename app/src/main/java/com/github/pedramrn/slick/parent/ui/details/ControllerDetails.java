@@ -24,8 +24,7 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemCastList;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
-import com.github.pedramrn.slick.parent.ui.details.model.MovieCard;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
@@ -65,20 +64,16 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Inject
     BottomNavigationHandlerImpl bottomNavigationHandler;
 
+    private MovieBasic movie;
     private String transitionName;
-    private MovieCard movie;
-    private CompositeDisposable disposable;
     private UpdatingGroup progressiveCast;
     private UpdatingGroup progressiveBackdrop;
     private UpdatingGroup progressiveSimilar;
-    private GroupAdapter adapterMain;
-    private GroupAdapter adapterCasts;
-    private GroupAdapter adapterBackdrop;
-    private List<ItemBackdropProgressive> progressiveBackdropList = new ArrayList<>(5);
-    private List<ItemCastProgressive> progressiveCastList = new ArrayList<>(5);
     private UpdatingGroup updatingHeader;
+    private ControllerDetailsBinding binding;
+    private CompositeDisposable disposable;
 
-    public ControllerDetails(@NonNull MovieCard movie, String transitionName) {
+    public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movie)
                 .putString("TRANSITION_NAME", transitionName)
@@ -98,52 +93,41 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
         Slick.bind(this);
-        ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
+        binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(true);
         }
         disposable = new CompositeDisposable();
         Context context = getApplicationContext();
-        binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
 
-        binding.collapsingToolbar.setTitle(movie.title());
-
-
-        adapterMain = new GroupAdapter();
-        adapterCasts = new GroupAdapter();
-        adapterBackdrop = new GroupAdapter();
-        updatingHeader = new UpdatingGroup();
-        progressiveSimilar = new UpdatingGroup();
-
+        GroupAdapter adapterMain = new GroupAdapter();
+        GroupAdapter adapterCasts = new GroupAdapter();
+        GroupAdapter adapterBackdrops = new GroupAdapter();
         GroupAdapter adapterSimilar = new GroupAdapter();
+        updatingHeader = new UpdatingGroup();
+        progressiveCast = new UpdatingGroup();
+        progressiveSimilar = new UpdatingGroup();
+        progressiveBackdrop = new UpdatingGroup();
+
         ItemCardList itemCardListSimilar = new ItemCardList(adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
         Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
         ItemCastList itemCastList = new ItemCastList(adapterCasts);
-        ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrop);
-        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));//Summery from tmdb
-        Log.d(TAG, "onCreateView() called");
-        adapterMain.add(updatingHeader);
-        adapterMain.add(itemCastList);//Casts from tmdb
-        adapterMain.add(itemBackdropList);//Backdrops from tmdb
-        adapterMain.add(sectionSimilar);
-
-        if (progressiveCast == null) {
-            progressiveBackdropList = new ArrayList<>(5);
-            progressiveBackdropList = new ArrayList<>(5);
-            this.progressiveCast = new UpdatingGroup();
-            this.progressiveBackdrop = new UpdatingGroup();
-            for (int i = 0; i < 5; i++) {
-                progressiveCastList.add(new ItemCastProgressive(i));
-                progressiveBackdropList.add(new ItemBackdropProgressive(i));
-            }
-        }
+        Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", null, PublishSubject.create()));
+        sectionCasts.add(itemCastList);
         adapterCasts.add(progressiveCast);
-        adapterBackdrop.add(progressiveBackdrop);
-        progressiveCast.update(progressiveCastList);
-        progressiveBackdrop.update(progressiveBackdropList);
+
+        ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrops);
+        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", null, PublishSubject.create()));
+        sectionBackdrops.add(itemBackdropList);
+        adapterBackdrops.add(progressiveBackdrop);
+
+        adapterMain.add(updatingHeader);
+        adapterMain.add(sectionCasts);
+        adapterMain.add(sectionBackdrops);
+        adapterMain.add(sectionSimilar);
 
         binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewDetails.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
@@ -153,7 +137,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         disposable.add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
         presenter.updateStream().subscribe(this);
-        presenter.getMovieDetails(movie.id());
+        presenter.getMovieDetails(movie);
 
         adapterCasts.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -170,30 +154,37 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
-        if (disposable != null) disposable.dispose();
+        dispose(disposable);
     }
 
     @Override
     public void render(ViewStateDetails state) {
-        final Movie movie = state.movie();
-        if (movie != null) {
-            if (movie.voteAverageTrakt() != null) {
-                updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
-            }
-            // FIXME: 2017-07-14 I'm adding myself every time :)
-            adapterMain.add(new ItemOverview(movie.overview()));
+        final MovieBasic movie = state.movieBasic();
+        if (movie.voteAverageTrakt() != null) {
+            updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
         }
-        progressiveCast.update(state.itemCasts());
-        progressiveBackdrop.update(state.itemBackdrops());
+        /*// FIXME: 2017-07-14 I'm adding myself every time :)
+        adapterMain.add(new ItemOverview(movie.overview()));*/
+
+        binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
+        binding.collapsingToolbar.setTitle(movie.title());
+        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));//Summery from tmdb
+
+
+        progressiveCast.update(state.casts());
+        progressiveBackdrop.update(state.backdrops());
         progressiveSimilar.update(state.similar());
 
         renderError(state.errorSimilar());
+        renderError(state.errorMovie());
+        renderError(state.errorMovieBackdrop());
+        renderError(state.errorMovieCast());
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-        // dispose(disposable);
-        // disposable = new CompositeDisposable(d);
+        dispose(disposable);
+        disposable = new CompositeDisposable(d);
     }
 
     @Override

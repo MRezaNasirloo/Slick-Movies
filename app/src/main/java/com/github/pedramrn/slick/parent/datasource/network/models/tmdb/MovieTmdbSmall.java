@@ -42,6 +42,7 @@ public abstract class MovieTmdbSmall {
     @SerializedName("overview")
     public abstract String overview();
 
+    @Nullable
     @SerializedName("release_date")
     public abstract String releaseDate();
 

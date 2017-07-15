@@ -3,14 +3,15 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-14
  */
-
-public interface MovieCard extends Parcelable {
+public interface MovieBasic extends Parcelable {
     Integer id();
 
     String title();
@@ -27,6 +28,7 @@ public interface MovieCard extends Parcelable {
     @Nullable
     String backdropPath();
 
+    @Nullable
     String releaseDate();
 
     List<String> genres();

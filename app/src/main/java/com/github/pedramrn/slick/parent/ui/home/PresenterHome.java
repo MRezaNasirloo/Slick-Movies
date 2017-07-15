@@ -10,7 +10,7 @@ import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
@@ -127,10 +127,10 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 })
                 .map(mapper)
                 .map(new MapProgressive())
-                .cast(ItemCard.class)
-                .map(new Function<ItemCard, Item>() {
+                .cast(ItemView.class)
+                .map(new Function<ItemView, Item>() {
                     @Override
-                    public Item apply(@NonNull ItemCard itemCard) throws Exception {
+                    public Item apply(@NonNull ItemView itemCard) throws Exception {
                         return itemCard.render(TRENDING);
                     }
                 })
@@ -171,10 +171,10 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 })
                 .map(mapper)
                 .map(new MapProgressive())
-                .cast(ItemCard.class)
-                .map(new Function<ItemCard, Item>() {
+                .cast(ItemView.class)
+                .map(new Function<ItemView, Item>() {
                     @Override
-                    public Item apply(@NonNull ItemCard itemCard) throws Exception {
+                    public Item apply(@NonNull ItemView itemCard) throws Exception {
                         return itemCard.render(POPULAR);
                     }
                 })

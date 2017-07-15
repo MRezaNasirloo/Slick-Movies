@@ -5,8 +5,7 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
-import com.github.pedramrn.slick.parent.ui.details.model.MovieCard;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.xwray.groupie.Item;
 
 /**
@@ -16,10 +15,10 @@ import com.xwray.groupie.Item;
 
 public class ItemCardMovie extends Item<RowCardBinding> {
 
-    private final MovieCard movie;
+    private final MovieBasic movie;
     private final String transitionName;
 
-    public ItemCardMovie(long id, MovieCard movie, String tag) {
+    public ItemCardMovie(long id, MovieBasic movie, String tag) {
         super(id);
         this.movie = movie;
         this.transitionName = tag + "_" + id;
@@ -43,7 +42,7 @@ public class ItemCardMovie extends Item<RowCardBinding> {
         return transitionName;
     }
 
-    public MovieCard getMovie() {
+    public MovieBasic getMovie() {
         return movie;
     }
 }

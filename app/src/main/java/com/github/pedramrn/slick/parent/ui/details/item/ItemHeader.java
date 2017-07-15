@@ -9,8 +9,7 @@ import android.util.Log;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
-import com.github.pedramrn.slick.parent.ui.details.model.MovieCard;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.xwray.groupie.Item;
 
 import java.util.Locale;
@@ -26,11 +25,11 @@ import io.reactivex.functions.BiFunction;
 
 public class ItemHeader extends Item<RowHeaderBinding> {
 
-    private final MovieCard movie;
+    private final MovieBasic movie;
     private final String transitionName;
     private RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
 
-    public ItemHeader(MovieCard movie, String transitionName) {
+    public ItemHeader(MovieBasic movie, String transitionName) {
         super(0);
         this.movie = movie;
         this.transitionName = transitionName;

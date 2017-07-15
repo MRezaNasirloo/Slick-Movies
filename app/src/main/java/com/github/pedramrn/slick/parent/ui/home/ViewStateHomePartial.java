@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideoProgressiveImpl;
 import com.xwray.groupie.Item;
 

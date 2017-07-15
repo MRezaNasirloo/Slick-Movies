@@ -36,7 +36,7 @@ public class MovieDomainMovieMapper implements Function<MovieDomain, Movie> {
         List<Cast> casts = Observable.fromIterable(castDomains).map(new Function<CastDomain, Cast>() {
             @Override
             public Cast apply(@NonNull CastDomain cd) throws Exception {
-                return Cast.create(cd.id(), cd.castId(), cd.creditId(), cd.name(),
+                return Cast.create(cd.id(), cd.id(), cd.castId(), cd.creditId(), cd.name(),
                         cd.profilePath(), cd.character(), cd.gender(), cd.order());
             }
         }).toList(size == 0 ? 1 : size).blockingGet();
@@ -47,7 +47,7 @@ public class MovieDomainMovieMapper implements Function<MovieDomain, Movie> {
         final List<Backdrop> backdrops = Observable.fromIterable(backdropsDomain).map(new Function<String, Backdrop>() {
             @Override
             public Backdrop apply(@NonNull String s) throws Exception {
-                return Backdrop.create(s);
+                return Backdrop.create(-1,-1,s);
             }
         }).toList(size == 0 ? 1 : size).blockingGet();
 

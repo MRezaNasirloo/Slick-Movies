@@ -3,7 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class MovieSmall extends AutoBase implements Parcelable, ItemCard, MovieCard {
+public abstract class MovieSmall extends AutoBase implements Parcelable, ItemView, MovieBasic {
 
     public abstract String originalTitle();
 

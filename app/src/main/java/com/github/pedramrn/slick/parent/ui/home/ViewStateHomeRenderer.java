@@ -2,9 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home;
 
 import android.support.annotation.UiThread;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCard;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
-import com.github.pedramrn.slick.parent.util.Indexed;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.xwray.groupie.Item;
 
 import java.util.Collection;
@@ -13,7 +11,6 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
 /**
@@ -36,8 +33,8 @@ public class ViewStateHomeRenderer {
         return Observable.fromIterable(items)
                 .zipWith(Observable.range(0, items.size()), new BiFunction<ItemVideo, Integer, Indexed<ItemVideo>>() {
                     @Override
-                    public Indexed<ItemVideo> apply(@NonNull ItemVideo cast, @NonNull Integer index) throws Exception {
-                        return new Indexed<>(cast, index);
+                    public Indexed<ItemVideo> apply(@NonNull ItemVideo casts, @NonNull Integer index) throws Exception {
+                        return new Indexed<>(casts, index);
                     }
                 }).map(new Function<Indexed<ItemVideo>, Item>() {
                     @Override
@@ -48,25 +45,25 @@ public class ViewStateHomeRenderer {
     }*/
 
     /*public List<? extends Item> trending() {
-        List<ItemCard> trending = viewStateHome.trending();
+        List<ItemView> trending = viewStateHome.trending();
         return map(trending);
     }*/
 
     /*public List<? extends Item> popular() {
-        List<ItemCard> popular = viewStateHome.popular();
+        List<ItemView> popular = viewStateHome.popular();
         this.popular = map(popular);
         return this.popular;
     }*/
 
     @UiThread
-    private List<? extends Item> map(Collection<ItemCard> items) {
+    private List<? extends Item> map(Collection<ItemView> items) {
         if (items == null || items.size() == 0) {
             return Collections.emptyList();
         }
-        return Observable.fromIterable(items).map(new Function<ItemCard, Item>() {
+        return Observable.fromIterable(items).map(new Function<ItemView, Item>() {
             @Override
-            public Item apply(@NonNull ItemCard itemCard) throws Exception {
-                return itemCard.render(null);
+            public Item apply(@NonNull ItemView itemView) throws Exception {
+                return itemView.render(null);
             }
         }).toList(items.size()).blockingGet();
     }
