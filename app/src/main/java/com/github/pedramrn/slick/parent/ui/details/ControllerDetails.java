@@ -20,6 +20,7 @@ import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
@@ -69,6 +70,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private ItemListHorizontal itemCastList;
     private ItemCardList itemCardListSimilar;
     private ItemListHorizontal itemBackdropList;
+    private Section sectionOverview;
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -121,8 +123,11 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);
 
+        sectionOverview = new Section(new ItemCardHeader(0, "Overview", null, PublishSubject.create()));
+
         adapterMain.add(updatingHeader);
         adapterMain.add(sectionCasts);
+        adapterMain.add(sectionOverview);
         adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionSimilar);
 
@@ -153,8 +158,10 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         Log.d(TAG, "render() called with: state = [" + state + "]");
         final MovieBasic movie = state.movieBasic();
         updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
-        /*// FIXME: 2017-07-14 I'm adding myself every time :)
-        adapterMain.add(new ItemOverview(movie.overview()));*/
+
+        if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
+            sectionOverview.add(new ItemOverview(movie.overview()));
+        }
 
         binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
         binding.collapsingToolbar.setTitle(movie.title());

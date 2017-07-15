@@ -4,6 +4,7 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.util.Log;
+import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
@@ -41,6 +42,9 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
         viewBinding.textViewTitle.setText(title);
         viewBinding.button.setText(buttonText);
         RxView.clicks(viewBinding.button).subscribe(onClickListener);
+        if (buttonText == null) {
+            viewBinding.button.setVisibility(View.INVISIBLE);
+        }
 
     }
 
