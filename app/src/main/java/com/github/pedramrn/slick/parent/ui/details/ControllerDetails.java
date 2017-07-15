@@ -155,17 +155,18 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
     @Override
     public void render(ViewStateDetails state) {
-        Log.d(TAG, "render() called with: state = [" + state + "]");
+        long before = System.currentTimeMillis();
+
         final MovieBasic movie = state.movieBasic();
+
+        binding.collapsingToolbar.setTitle(movie.title());
+        binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
+
         updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));
         }
-
-        binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
-        binding.collapsingToolbar.setTitle(movie.title());
-
 
         progressiveCast.update(state.casts());
         progressiveBackdrop.update(state.backdrops());
@@ -175,6 +176,14 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         renderError(state.errorMovie());
         renderError(state.errorMovieBackdrop());
         renderError(state.errorMovieCast());
+
+        long delay = System.currentTimeMillis() - before;
+        int sizeCast = state.casts().size();
+        int sizeBackdrops = state.backdrops().size();
+        int sizeSimilar = state.similar().size();
+
+        Log.e(TAG, String.format(Locale.ENGLISH, "casts: %d, backdrops: %d, similar: %d", sizeCast, sizeBackdrops, sizeSimilar));
+        Log.e(TAG, String.format(Locale.ENGLISH, "Updating the list cost you %sms", delay));
     }
 
     @Override
