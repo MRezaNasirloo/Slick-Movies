@@ -159,6 +159,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
     @Override
     public void render(ViewStateDetails state) {
+        Log.d(TAG, "render() called with: state = [" + state + "]");
         final MovieBasic movie = state.movieBasic();
         if (movie.voteAverageTrakt() != null) {
             updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));

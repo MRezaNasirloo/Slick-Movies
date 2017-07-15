@@ -277,6 +277,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     public void onDestroy() {
         super.onDestroy();
         dispose(disposable);
+        IdBank.dispose(TRENDING);
+        IdBank.dispose(POPULAR);
     }
 
     private void dispose(Disposable disposable) {

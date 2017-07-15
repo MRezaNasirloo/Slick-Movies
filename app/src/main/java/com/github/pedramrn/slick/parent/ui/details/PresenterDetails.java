@@ -11,8 +11,10 @@ import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
+import com.github.pedramrn.slick.parent.ui.home.IdBank;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
+import com.github.pedramrn.slick.parent.util.ScanList;
 import com.github.pedramrn.slick.parent.util.ScanToList;
 import com.github.slick.SlickPresenter;
 import com.xwray.groupie.Item;
@@ -20,6 +22,7 @@ import com.xwray.groupie.Item;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,6 +53,9 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
     private BehaviorSubject<ViewStateDetails> state = BehaviorSubject.create();
     private Observable<ViewStateDetails> details;
     private Disposable disposable;
+    private final String CASTS = "CASTS";
+    private final String SIMILAR = "SIMILAR";
+    private final String BACKDROPS = "BACKDROPS";
 
     @Inject
     public PresenterDetails(RouterMovieDetailsImpl rmd,
@@ -73,6 +79,9 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
 
     void getMovieDetails(MovieBasic movieBasic) {
         if (details == null) {
+            IdBank.reset(SIMILAR);
+            IdBank.reset(CASTS);
+            IdBank.reset(BACKDROPS);
 
             Observable<Movie> movieFull = routerMovieDetails.get(movieBasic.id())
                     //Maps the domains Models to View Models which have android dependency
@@ -107,17 +116,17 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     .map(new Function<ItemView, Item>() {
                         @Override
                         public Item apply(@NonNull ItemView itemView) throws Exception {
-                            return itemView.render("BACKDROPS");
+                            return itemView.render(BACKDROPS);
                         }
                     })
-                    .compose(new ScanToList<Item>())
+                    .buffer(200)
                     .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
                             return new PartialViewStateDetails.MovieBackdrops(items);
                         }
                     })
-                    .startWith(new PartialViewStateDetails.MovieBackdropsProgressive(5, "BACKDROPS"))
+                    .startWith(new PartialViewStateDetails.MovieBackdropsProgressive(5, BACKDROPS))
                     .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
@@ -138,17 +147,17 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     .map(new Function<ItemView, Item>() {
                         @Override
                         public Item apply(@NonNull ItemView itemView) throws Exception {
-                            return itemView.render("CASTS");
+                            return itemView.render(CASTS);
                         }
                     })
-                    .compose(new ScanToList<Item>())
+                    .buffer(200)
                     .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
                             return new PartialViewStateDetails.MovieCast(items);
                         }
                     })
-                    .startWith(new PartialViewStateDetails.MovieCastsProgressive(5, "CASTS"))
+                    .startWith(new PartialViewStateDetails.MovieCastsProgressive(5, CASTS))
                     .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
@@ -170,17 +179,17 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     .map(new Function<ItemView, Item>() {
                         @Override
                         public Item apply(@NonNull ItemView itemCard) throws Exception {
-                            return itemCard.render("SIMILAR");
+                            return itemCard.render(SIMILAR);
                         }
                     })
-                    .compose(new ScanToList<Item>())
+                    .buffer(20)
                     .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> movies) throws Exception {
                             return new PartialViewStateDetails.Similar(movies);
                         }
                     })
-                    .startWith(new PartialViewStateDetails.ItemProgressiveSimilar(10, "SIMILAR"))
+                    .startWith(new PartialViewStateDetails.ItemProgressiveSimilar(5, SIMILAR))
                     .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
@@ -210,7 +219,8 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                                 throws Exception {
                             return partial.reduce(viewStateDetails);
                         }
-                    });
+                    })
+            ;
         }
         details.subscribe(this);
 
@@ -242,6 +252,9 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
     public void onDestroy() {
         super.onDestroy();
         if (disposable != null) disposable.dispose();
+        IdBank.dispose(SIMILAR);
+        IdBank.dispose(CASTS);
+        IdBank.dispose(BACKDROPS);
     }
 
 }
