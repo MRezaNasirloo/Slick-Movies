@@ -111,6 +111,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         Context context = getApplicationContext();
 
         GroupAdapter adapterMain = new GroupAdapter();
+        GroupAdapter adapterHeader = new GroupAdapter();
         GroupAdapter adapterCasts = new GroupAdapter();
         GroupAdapter adapterBackdrops = new GroupAdapter();
         GroupAdapter adapterSimilar = new GroupAdapter();
@@ -118,6 +119,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveCast = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
+
+        ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER");
+        adapterHeader.add(updatingHeader);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create(), onItemClickListener);
         Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
@@ -136,7 +140,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         sectionOverview = new Section(new ItemCardHeader(0, "Overview", null, PublishSubject.create()));
 
-        adapterMain.add(updatingHeader);
+        adapterMain.add(itemHeader);
         adapterMain.add(sectionCasts);
         adapterMain.add(sectionOverview);
         adapterMain.add(sectionBackdrops);
