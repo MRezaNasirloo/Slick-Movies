@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +23,10 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     private final String SCROLL_POS;
     private int scrollPos;
 
-    public ItemListHorizontal(RecyclerView.Adapter adapter, String tag) {
+    public ItemListHorizontal(Context context, RecyclerView.Adapter adapter, String tag) {
         this.adapter = adapter;
         SCROLL_POS = "SCROLL_POS_" + tag;
+        layoutManager = new LinearLayoutManager(context.getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
     }
 
     @Override
@@ -35,7 +37,6 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     @Override
     public void bind(RowCastListBinding viewBinding, int position) {
         RecyclerView recyclerView = viewBinding.recyclerViewCasts;
-        layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.setNestedScrollingEnabled(false);

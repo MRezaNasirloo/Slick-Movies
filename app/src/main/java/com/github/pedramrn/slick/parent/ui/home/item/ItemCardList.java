@@ -15,6 +15,7 @@ import com.github.pedramrn.slick.parent.ui.details.ItemDecorationSideMargin;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.ViewHolder;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -33,21 +34,28 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private final String POPULAR_PAGE;
     private final String POPULAR_IS_LOADING;
     private final String POPULAR_SCROLL_POS;
-    private final RecyclerView.Adapter adapter;
-    private boolean isLoading = false;
-    private Integer page = 1;
-    private LinearLayoutManager layoutManager;
 
-    private int scrollPos;
-    private int itemLoadedCount;
+    private final SnapHelper snapHelper = new StartSnapHelper();
+    private final LinearLayoutManager layoutManager;
+    private final ItemDecorationSideMargin margin;
+    private final RecyclerView.Adapter adapter;
     private final Observer<Integer> observer;
 
-    public ItemCardList(RecyclerView.Adapter adapter, String tag, Observer<Integer> observer) {
+    private boolean isLoading = false;
+    private Integer page = 1;
+    private int scrollPos;
+    private int itemLoadedCount;
+
+    public ItemCardList(Context context, RecyclerView.Adapter adapter, String tag, Observer<Integer> observer) {
+        context = context.getApplicationContext();
         this.adapter = adapter;
         POPULAR_PAGE = "POPULAR_PAGE_" + tag;
         POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
         POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + tag;
         this.observer = observer;
+        margin = new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
+        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+
     }
 
     @Override
@@ -58,20 +66,24 @@ public class ItemCardList extends Item<RowCardListBinding> {
     @Override
     public void bind(RowCardListBinding binding, int position) {
         Log.d(TAG, "ItemCardList bind() called");
-        Context context = binding.getRoot().getContext();
         RecyclerView recyclerView = binding.recyclerViewCard;
-        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.addItemDecoration(new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin)));
-        SnapHelper snapHelper = new StartSnapHelper();
-        recyclerView.setOnFlingListener(null);
-        snapHelper.attachToRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(margin);
         recyclerView.setAdapter(adapter);
+        snapHelper.attachToRecyclerView(recyclerView);
         layoutManager.scrollToPosition(scrollPos);
         registerLoadMoreTrigger(recyclerView).subscribe(observer);
+    }
+
+    @Override
+    public void unbind(ViewHolder<RowCardListBinding> holder) {
+        RecyclerView recyclerView = holder.binding.recyclerViewCard;
+        recyclerView.removeItemDecoration(margin);
+        recyclerView.setOnFlingListener(null);
+        super.unbind(holder);
     }
 
     private static final String TAG = ItemCardList.class.getSimpleName();

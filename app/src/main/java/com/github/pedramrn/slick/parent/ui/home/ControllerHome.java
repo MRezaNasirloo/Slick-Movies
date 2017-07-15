@@ -72,8 +72,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressiveAnticipated = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemTrendingList = new ItemCardList(adapterTrending, "trending", presenter.onLoadMoreObserverTrending());
-        itemPopularList = new ItemCardList(adapterPopular, "popular", presenter.onLoadMoreObserverPoplar());
+        itemTrendingList = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending());
+        itemPopularList = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar());
 
         ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
 

@@ -108,17 +108,17 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
 
-        itemCardListSimilar = new ItemCardList(adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
+        itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
         Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
-        itemCastList = new ItemListHorizontal(adapterCasts, "CASTS");
+        itemCastList = new ItemListHorizontal(context, adapterCasts, "CASTS");
         Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", PublishSubject.create()));
         sectionCasts.add(itemCastList);
         adapterCasts.add(progressiveCast);
 
-        itemBackdropList = new ItemListHorizontal(adapterBackdrops, "BACKDROPS");
+        itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS");
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);
@@ -226,6 +226,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected void onDestroyView(@NonNull View view) {
         dispose(disposable);
+        binding.unbind();
         super.onDestroyView(view);
     }
 
