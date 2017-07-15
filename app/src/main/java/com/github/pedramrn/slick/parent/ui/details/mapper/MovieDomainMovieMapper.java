@@ -47,7 +47,7 @@ public class MovieDomainMovieMapper implements Function<MovieDomain, Movie> {
         final List<Backdrop> backdrops = Observable.fromIterable(backdropsDomain).map(new Function<String, Backdrop>() {
             @Override
             public Backdrop apply(@NonNull String s) throws Exception {
-                return Backdrop.create(-1,-1,s);
+                return Backdrop.create(-1, s.hashCode(), s);
             }
         }).toList(size == 0 ? 1 : size).blockingGet();
 

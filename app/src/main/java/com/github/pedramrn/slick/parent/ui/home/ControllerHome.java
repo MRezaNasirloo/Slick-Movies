@@ -2,7 +2,6 @@ package com.github.pedramrn.slick.parent.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +35,6 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -54,7 +52,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private UpdatingGroup progressivePopular;
     private ItemCardList itemTrendingList;
     private ItemCardList itemPopularList;
-    private ItemAnticipatedList itemAnticipatedList;
     private Disposable disposable;
     private MyOnItemClickListener onItemClickListener = new MyOnItemClickListener();
     private UpdatingGroup progressiveAnticipated;
@@ -77,7 +74,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressivePopular = new UpdatingGroup();
         itemTrendingList = new ItemCardList(adapterTrending, "trending", presenter.onLoadMoreObserverTrending());
         itemPopularList = new ItemCardList(adapterPopular, "popular", presenter.onLoadMoreObserverPoplar());
-        itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
+
+        ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
 
         adapterMain.add(itemAnticipatedList);
         adapterAnticipated.add(progressiveAnticipated);
@@ -179,7 +177,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         dispose(disposable);
     }
 
-    private class MyOnItemClickListener implements OnItemClickListener {
+    private class
+    MyOnItemClickListener implements OnItemClickListener {
         @Override
         public void onItemClick(Item item, View view) {
             ItemCardMovie itemCardMovie = (ItemCardMovie) item;

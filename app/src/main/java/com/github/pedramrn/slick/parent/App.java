@@ -46,7 +46,7 @@ public class App extends Application {
             BlockCanaryEx.install(new Config(this));
         }*/
 
-        // refWatcher = LeakCanary.install(this);
+        refWatcher = LeakCanary.install(this);
 
         refWatcher = RefWatcher.DISABLED;
         if (BuildConfig.DEBUG) {

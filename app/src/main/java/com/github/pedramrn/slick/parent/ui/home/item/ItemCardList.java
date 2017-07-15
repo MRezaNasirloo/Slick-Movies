@@ -67,18 +67,11 @@ public class ItemCardList extends Item<RowCardListBinding> {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin)));
         SnapHelper snapHelper = new StartSnapHelper();
-        // FIXME: 2017-07-15
-        /*java.lang.IllegalStateException: An instance of OnFlingListener already set.
-                      at android.support.v7.widget.SnapHelper.setupCallbacks(SnapHelper.java:114)*/
+        recyclerView.setOnFlingListener(null);
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
         layoutManager.scrollToPosition(scrollPos);
         registerLoadMoreTrigger(recyclerView).subscribe(observer);
-
-
-        // TODO: 2017-07-04 the page number and the lading state should be saved during orientation change
-
-
     }
 
     private static final String TAG = ItemCardList.class.getSimpleName();

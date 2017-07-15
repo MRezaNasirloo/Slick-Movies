@@ -17,13 +17,9 @@ import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropList;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemCastList;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
@@ -36,9 +32,7 @@ import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -72,6 +66,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private UpdatingGroup updatingHeader;
     private ControllerDetailsBinding binding;
     private CompositeDisposable disposable;
+    private ItemListHorizontal itemCastList;
+    private ItemCardList itemCardListSimilar;
+    private ItemListHorizontal itemBackdropList;
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -109,18 +106,18 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
 
-        ItemCardList itemCardListSimilar = new ItemCardList(adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
+        itemCardListSimilar = new ItemCardList(adapterSimilar, "SIMILAR", PublishSubject.<Integer>create());
         Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
-        ItemCastList itemCastList = new ItemCastList(adapterCasts);
-        Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", null, PublishSubject.create()));
+        itemCastList = new ItemListHorizontal(adapterCasts, "CASTS");
+        Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", PublishSubject.create()));
         sectionCasts.add(itemCastList);
         adapterCasts.add(progressiveCast);
 
-        ItemBackdropList itemBackdropList = new ItemBackdropList(adapterBackdrops);
-        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", null, PublishSubject.create()));
+        itemBackdropList = new ItemListHorizontal(adapterBackdrops, "BACKDROPS");
+        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);
 
@@ -133,6 +130,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         binding.recyclerViewDetails.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
         binding.recyclerViewDetails.setAdapter(adapterMain);
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
+        binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);
 
         disposable.add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
@@ -152,24 +150,15 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
-        dispose(disposable);
-    }
-
-    @Override
     public void render(ViewStateDetails state) {
         Log.d(TAG, "render() called with: state = [" + state + "]");
         final MovieBasic movie = state.movieBasic();
-        if (movie.voteAverageTrakt() != null) {
-            updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
-        }
+        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
         /*// FIXME: 2017-07-14 I'm adding myself every time :)
         adapterMain.add(new ItemOverview(movie.overview()));*/
 
         binding.imageViewHeader.loadNoFade(movie.posterThumbnail());
         binding.collapsingToolbar.setTitle(movie.title());
-        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));//Summery from tmdb
 
 
         progressiveCast.update(state.casts());
@@ -184,8 +173,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
     @Override
     public void onSubscribe(Disposable d) {
-        dispose(disposable);
-        disposable = new CompositeDisposable(d);
+        disposable.add(d);
     }
 
     @Override
@@ -201,7 +189,29 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
     @Override
     public void onComplete() {
+        Log.d(TAG, "onComplete() called");
+    }
 
+
+    @Override
+    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        itemBackdropList.onSaveViewState(view, outState);
+        itemCastList.onSaveViewState(view, outState);
+        itemCardListSimilar.onSaveViewState(view, outState);
+    }
+
+
+    @Override
+    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+        itemBackdropList.onRestoreViewState(view, savedViewState);
+        itemCastList.onRestoreViewState(view, savedViewState);
+        itemCardListSimilar.onRestoreViewState(view, savedViewState);
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        dispose(disposable);
+        super.onDestroyView(view);
     }
 
     @Override

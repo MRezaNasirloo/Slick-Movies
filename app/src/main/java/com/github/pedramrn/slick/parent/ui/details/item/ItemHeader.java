@@ -1,14 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
-import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.xwray.groupie.Item;
 
@@ -44,9 +41,6 @@ public class ItemHeader extends Item<RowHeaderBinding> {
 
     @Override
     public void bind(final RowHeaderBinding viewBinding, int position) {
-        Context context = viewBinding.getRoot().getContext();
-        Log.d(TAG, "bind() called with: transitionName = [" + transitionName + "]");
-
         viewBinding.textViewTitle.setText(movie.title());
         // TODO: 2017-06-18 use recycler view for this
         viewBinding.textViewGenre.setText(Observable.fromIterable(movie.genres())
@@ -57,18 +51,14 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                         return s + " | " + s2;
                     }
                 }).blockingGet());
+        // FIXME: 2017-07-15 release date maybe null
         viewBinding.textViewRelease.setText(movie.releaseDate());
         String voteAveTmdb = String.valueOf(movie.voteAverageTmdb());
-        SpannableStringBuilder voteAveSpannedTmdb = new SpannableStringBuilder(voteAveTmdb).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableStringBuilder voteAveSpannedTmdb =
+                new SpannableStringBuilder(voteAveTmdb).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
-        viewBinding.textViewCertification.setText(null);
-        viewBinding.imageViewIcon.loadForSE(movie.posterThumbnail(), new OnCompleteGlide() {
-            @Override
-            public void onCompleteGlide() {
-                viewBinding.imageViewIcon.setTransitionName(transitionName);
-            }
-        });
+        viewBinding.imageViewIcon.loadNoFade(movie.posterThumbnail());
 
         if (movie.voteAverageTrakt() != null) {
             viewBinding.textViewScoreTrakt.setBackground(null);

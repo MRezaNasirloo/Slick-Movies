@@ -14,15 +14,12 @@ import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
 import com.github.pedramrn.slick.parent.ui.home.IdBank;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
-import com.github.pedramrn.slick.parent.util.ScanList;
-import com.github.pedramrn.slick.parent.util.ScanToList;
 import com.github.slick.SlickPresenter;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -220,9 +217,10 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                             return partial.reduce(viewStateDetails);
                         }
                     })
+            // .throttleLast(50, TimeUnit.MILLISECONDS)
             ;
+            details.subscribe(this);
         }
-        details.subscribe(this);
 
     }
 
