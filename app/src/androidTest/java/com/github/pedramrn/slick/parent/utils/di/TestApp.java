@@ -15,6 +15,8 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
+import javax.inject.Named;
+
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -54,7 +56,8 @@ public class TestApp extends App {
             }
 
             @Override
-            public OkHttpClient okHttpClient(List<Interceptor> interceptors, Cache cache) {
+            public OkHttpClient okHttpClient(@Named("interceptors") List<Interceptor> interceptors,
+                                             @Named("interceptors_network") List<Interceptor> interceptorsNetwork, Cache cache) {
                 return TestApp.okHttpClient;
             }
         });
