@@ -8,8 +8,6 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-15
@@ -22,7 +20,7 @@ public class RouterSimilarImplTest {
     public void setUp() throws Exception {
         ModuleNetwork moduleNetwork = new ModuleNetwork();
         Gson gson = moduleNetwork.baseGsonConverterFactory();
-        apiTmdb = moduleNetwork.apiTmdb(moduleNetwork.apiUrlTmdb(), moduleNetwork.baseOkHttpClient(moduleNetwork.interceptors()),
+        apiTmdb = moduleNetwork.apiTmdb(moduleNetwork.apiUrlTmdb(), moduleNetwork.baseOkHttpClient(moduleNetwork.interceptors(), , ),
                 moduleNetwork.baseRetrofit(gson), gson, null, null);
         routerSimilar = new RouterSimilarImpl(apiTmdb, new MapperMovieSmall());
     }

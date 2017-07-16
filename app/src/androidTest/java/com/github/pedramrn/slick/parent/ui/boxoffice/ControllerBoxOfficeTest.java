@@ -90,7 +90,7 @@ public class ControllerBoxOfficeTest {
             }
         }).subscribeOn(Schedulers.io()).subscribe();
 
-        TestApp.setOkHttpClient(new ModuleNetwork().okHttpClient(Collections.<Interceptor>emptyList()));
+        TestApp.setOkHttpClient(new ModuleNetwork().okHttpClient(Collections.<Interceptor>emptyList(), ));
         okHttp = OkHttp3IdlingResource.create("OkHttp", TestApp.getOkHttpClient());
         Espresso.registerIdlingResources(okHttp);
     }

@@ -18,7 +18,8 @@ public class ApiTraktTest {
     public void setUp() throws Exception {
         ModuleNetwork moduleNetwork = new ModuleNetwork();
         Gson gson = moduleNetwork.baseGsonConverterFactory();
-        apiTmdb = moduleNetwork.apiTmdb(moduleNetwork.apiUrlTmdb(), moduleNetwork.baseOkHttpClient(moduleNetwork.interceptors()),
+        apiTmdb = moduleNetwork.apiTmdb(moduleNetwork.apiUrlTmdb(), moduleNetwork.baseOkHttpClient(moduleNetwork.interceptors(), ,
+                moduleNetwork.cache(null)),
                 moduleNetwork.baseRetrofit(gson), gson, null, null);
     }
 

@@ -70,8 +70,8 @@ public class RouterBoxOfficeImplBaseTest {
 
         ModuleNetworkBase mn = new ModuleNetworkBase();
         Gson gson = mn.baseGsonConverterFactory();
-        ApiTrakt apiTrakt = mn.baseApiTrakt(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList()), mn.baseRetrofit(gson), gson);
-        ApiTmdb apiTmdb = mn.baseApiTmdb(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList()), mn.baseRetrofit(gson), gson);
+        ApiTrakt apiTrakt = mn.baseApiTrakt(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList(), , ), mn.baseRetrofit(gson), gson);
+        ApiTmdb apiTmdb = mn.baseApiTmdb(url, mn.baseOkHttpClient(Collections.<Interceptor>emptyList(), , ), mn.baseRetrofit(gson), gson);
 
         routerBoxOffice =
                 new RouterBoxOfficeTmdbImpl(apiTrakt, apiTmdb, new MapperMovie(new MapperCast(), new MapperSimpleData()), Schedulers.trampoline());
