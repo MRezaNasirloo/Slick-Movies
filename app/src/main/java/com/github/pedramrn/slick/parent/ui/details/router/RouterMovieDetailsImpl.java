@@ -44,10 +44,11 @@ public class RouterMovieDetailsImpl implements RouterMovieDetails {
                                 return apiTrakt.movie(movieDomain.imdbId()).map(new Function<MovieTraktFull, MovieDomain>() {
                                     @Override
                                     public MovieDomain apply(@NonNull MovieTraktFull movieTraktFull) throws Exception {
+                                        String certification = movieTraktFull.certification();
                                         return movieDomain.toBuilder()
                                                 .voteAverageTrakt(movieTraktFull.rating())
                                                 .voteCountTrakt(movieTraktFull.votes())
-                                                .certification(movieTraktFull.certification())
+                                                .certification(certification == null ? "n/a" : certification)
                                                 .build()
                                                 ;
                                     }
