@@ -29,7 +29,7 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion 25
         versionCode 1
-        versionName "0.1-alpha"
+        versionName "0.1-e950ca6"
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true;
         dataBinding.enabled = true

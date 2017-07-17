@@ -5,11 +5,11 @@ import android.content.Context;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
+import com.github.pedramrn.slick.parent.datasource.network.InterceptorAuthToken;
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +21,6 @@ import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -33,31 +31,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ModuleNetworkBase {
 
-    private Interceptor interceptor = new Interceptor() {
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            if (request.url().url().toString().contains("api.trakt.tv")) {
-                request = request.newBuilder()
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("trakt-api-version", "2")
-                        .addHeader("trakt-api-key", "487a4a71669a58de841161c6130aa87ede2d7df01dd80573cfb53c87c20c3dde")
-                        .build();
-            } else {
-                request = request.newBuilder()
-                        .url(request.url().url().toString() + "&api_key=413d5af6c55f8b73b74d947fa6542ba1")
-                        .build();
-            }
-            return chain.proceed(request);
-        }
-    };
-
     public OkHttpClient baseOkHttpClient(List<Interceptor> interceptors, List<Interceptor> interceptorsNetwork, Cache cache) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .cache(cache)
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS);
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS);
         for (Interceptor interceptor : interceptors) {
             builder.addInterceptor(interceptor);
         }
@@ -71,8 +50,9 @@ public class ModuleNetworkBase {
         return new Cache(context.getCacheDir(), 30 * 1024 * 1024);//30MB
     }
 
-    public List<Interceptor> baseInterceptors() {
-        return new ArrayList<>(Collections.singletonList(interceptor));
+    public List<Interceptor> baseInterceptors(Context context) {
+        Interceptor interceptorAuthToken = new InterceptorAuthToken();
+        return new ArrayList<>(Collections.singletonList(interceptorAuthToken));
     }
 
     public Retrofit.Builder baseRetrofit(Gson gson) {
