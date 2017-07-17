@@ -1,10 +1,11 @@
-package com.github.pedramrn.slick.parent.domain.router;
+package com.github.pedramrn.slick.parent.ui.home.router;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
 import com.github.pedramrn.slick.parent.util.ListToObserable;
 
 import java.util.List;
