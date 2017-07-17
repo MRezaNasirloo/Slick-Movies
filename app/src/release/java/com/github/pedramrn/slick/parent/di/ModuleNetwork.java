@@ -56,10 +56,8 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     @Named("interceptors_network")
-    public List<Interceptor> networkInterceptors(final Context context) {
-        final List<Interceptor> list = new ArrayList<>(1);
-        list.add(new InterceptorHeaderCache(context));
-        return list;
+    public List<Interceptor> networkInterceptors(Context context) {
+        return baseNetworkInterceptors(context);
     }
 
     @Provides

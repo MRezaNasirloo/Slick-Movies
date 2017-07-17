@@ -8,7 +8,6 @@ import com.github.pedramrn.slick.parent.ApiTraktMock;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.InterceptorHeaderCache;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
@@ -76,7 +75,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
 
     @Override
     public List<Interceptor> baseInterceptors(Context context) {
-        List<Interceptor> list = super.baseInterceptors(context);
+        List<Interceptor> list = new ArrayList<>(super.baseInterceptors(context));
         final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         list.add(interceptor);
@@ -86,10 +85,8 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     @Named("interceptors_network")
-    public List<Interceptor> networkInterceptors(final Context context) {
-        final List<Interceptor> list = new ArrayList<>(1);
-        list.add(new InterceptorHeaderCache(context));
-        return list;
+    public List<Interceptor> networkInterceptors(Context context) {
+        return baseNetworkInterceptors(context);
     }
 
     @Provides

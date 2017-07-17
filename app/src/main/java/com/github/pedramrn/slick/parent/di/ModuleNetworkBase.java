@@ -5,12 +5,12 @@ import android.content.Context;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.InterceptorAuthToken;
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
+import com.github.pedramrn.slick.parent.datasource.network.interceptor.InterceptorAuthToken;
+import com.github.pedramrn.slick.parent.datasource.network.interceptor.InterceptorHeaderCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,9 +50,20 @@ public class ModuleNetworkBase {
         return new Cache(context.getCacheDir(), 30 * 1024 * 1024);//30MB
     }
 
+    /**
+     * @param context app context
+     * @return a singleton list, create a new list if you want a fully working list
+     */
     public List<Interceptor> baseInterceptors(Context context) {
-        Interceptor interceptorAuthToken = new InterceptorAuthToken();
-        return new ArrayList<>(Collections.singletonList(interceptorAuthToken));
+        return Collections.singletonList((Interceptor) new InterceptorAuthToken());
+    }
+
+    /**
+     * @param context app context
+     * @return a singleton list, create a new list if you want a fully working list
+     */
+    public List<Interceptor> baseNetworkInterceptors(Context context) {
+        return Collections.singletonList((Interceptor) new InterceptorHeaderCache(context));
     }
 
     public Retrofit.Builder baseRetrofit(Gson gson) {

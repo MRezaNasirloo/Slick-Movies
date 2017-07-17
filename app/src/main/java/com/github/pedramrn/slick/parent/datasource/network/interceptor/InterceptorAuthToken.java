@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.datasource.network;
+package com.github.pedramrn.slick.parent.datasource.network.interceptor;
 
 import java.io.IOException;
 

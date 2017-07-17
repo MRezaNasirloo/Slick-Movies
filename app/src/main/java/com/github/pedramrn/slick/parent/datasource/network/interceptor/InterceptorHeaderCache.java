@@ -1,6 +1,7 @@
-package com.github.pedramrn.slick.parent.datasource.network;
+package com.github.pedramrn.slick.parent.datasource.network.interceptor;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 
 import java.io.IOException;
 
@@ -14,17 +15,18 @@ import static com.github.pedramrn.slick.parent.util.Utils.isNetworkAvailable;
  *         Created on: 2017-07-17
  */
 public class InterceptorHeaderCache implements Interceptor {
-    private final Context context;
+    private final ConnectivityManager cm;
 
 
     public InterceptorHeaderCache(Context context) {
-        this.context = context.getApplicationContext();
+        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Response originalResponse = chain.proceed(chain.request());
-        if (isNetworkAvailable(context)) {
+        if (isNetworkAvailable(cm)) {
             int maxAge = 60 * 60; // read from cache for 1 minute
             return originalResponse.newBuilder()
                     .header("Cache-Control", "public, max-age=" + maxAge)
