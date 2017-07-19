@@ -29,7 +29,7 @@ public abstract class Video implements Parcelable, ItemVideo {
 
     @Override
     public Item render(int id) {
-        return new ItemBanner(id, thumbnail(), name());
+        return new ItemBanner(id, null);
     }
 
     public static Video create(Integer tmdb, String type, String key, String name) {

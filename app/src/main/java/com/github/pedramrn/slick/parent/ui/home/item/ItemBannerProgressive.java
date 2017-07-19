@@ -17,7 +17,7 @@ import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 public class ItemBannerProgressive extends ItemBanner {
 
     public ItemBannerProgressive(long id, String tag) {
-        super(id, null, null);
+        super(id, null);
     }
 
     @Override

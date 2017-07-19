@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.xwray.groupie.Item;
 
 /**
@@ -11,13 +12,11 @@ import com.xwray.groupie.Item;
 
 public class ItemBanner extends Item<RowBannerBinding> {
 
-    private final String thumbnail;
-    private final String title;
+    private final MovieBasic movie;
 
-    public ItemBanner(long id, String thumbnail, String title) {
+    public ItemBanner(long id, MovieBasic movie) {
         super(id);
-        this.thumbnail = thumbnail;
-        this.title = title;
+        this.movie = movie;
     }
 
     @Override
@@ -27,9 +26,13 @@ public class ItemBanner extends Item<RowBannerBinding> {
 
     @Override
     public void bind(RowBannerBinding viewBinding, int position) {
-        viewBinding.imageViewThumbnail.load(thumbnail);
+        viewBinding.imageViewThumbnail.load(movie.thumbnailBackdrop());
         viewBinding.imageViewThumbnail.setBackground(null);
         viewBinding.textViewTitleAnticipated.setBackground(null);
-        viewBinding.textViewTitleAnticipated.setText(title);
+        viewBinding.textViewTitleAnticipated.setText(movie.title());
+    }
+
+    public MovieBasic getMovie() {
+        return movie;
     }
 }

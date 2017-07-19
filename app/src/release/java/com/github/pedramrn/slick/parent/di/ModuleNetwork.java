@@ -5,11 +5,9 @@ import android.content.Context;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.InterceptorHeaderCache;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Named;
@@ -21,7 +19,6 @@ import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**

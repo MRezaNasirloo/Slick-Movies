@@ -15,11 +15,14 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -54,7 +57,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
             return getRouter();
         }
     });
-    private UpdatingGroup progressiveAnticipated;
+    private UpdatingGroup progressiveUpcomig;
 
 
     @NonNull
@@ -65,19 +68,19 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
         GroupAdapter adapterMain = new GroupAdapter();
-        GroupAdapter adapterAnticipated = new GroupAdapter();
+        GroupAdapter adapterUpcoming = new GroupAdapter();
         GroupAdapter adapterTrending = new GroupAdapter();
         GroupAdapter adapterPopular = new GroupAdapter();
-        progressiveAnticipated = new UpdatingGroup();
+        progressiveUpcomig = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
         itemTrendingList = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), onItemClickListener);
         itemPopularList = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), onItemClickListener);
 
-        ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterAnticipated);
+        ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterUpcoming);
 
         adapterMain.add(itemAnticipatedList);
-        adapterAnticipated.add(progressiveAnticipated);
+        adapterUpcoming.add(progressiveUpcomig);
 
         PublishSubject<Object> onClickListener = PublishSubject.create();
         Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", onClickListener));
@@ -105,6 +108,15 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
                 Toast.makeText(getApplicationContext(), "Under Construction", Toast.LENGTH_SHORT).show();
             }
         });
+
+        adapterUpcoming.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                if (item instanceof ItemBanner) {
+                }
+            }
+        });
+
         presenter.updateStream(pageSize, observable).subscribe(this);
 
         return binding.getRoot();
@@ -127,7 +139,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     @Override
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
-        progressiveAnticipated.update(state.upcoming());
+        progressiveUpcomig.update(state.upcoming());
         progressiveTrending.update(state.trending());
         progressivePopular.update(state.popular());
         itemTrendingList.loading(state.loadingTrending());
@@ -163,14 +175,24 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void onComplete() {
-        Log.wtf(TAG, "onCompleteGlide() called x_X");
+        Log.wtf(TAG, "onComplete() called x_X");
     }
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        Log.d(TAG, "onDestroyView() called");
-        super.onDestroyView(view);
         dispose(disposable);
+        super.onDestroyView(view);
     }
+
+    /*public void watchYoutubeVideo(String id){
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
+    }*/
 
 }

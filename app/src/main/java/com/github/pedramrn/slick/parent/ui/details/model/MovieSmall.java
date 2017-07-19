@@ -60,7 +60,7 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
     @Override
     public Item render(String tag) {
         if ("BANNER".equals(tag)) {
-            return new ItemBanner(itemId(), thumbnailBackdrop(), title());
+            return new ItemBanner(itemId(), this);
         } else {
             return new ItemCardMovie(uniqueId(), this, tag);
 
