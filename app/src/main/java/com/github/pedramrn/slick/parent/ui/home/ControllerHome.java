@@ -127,7 +127,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     @Override
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
-        progressiveAnticipated.update(state.anticipated());
+        progressiveAnticipated.update(state.upcoming());
         progressiveTrending.update(state.trending());
         progressivePopular.update(state.popular());
         itemTrendingList.loading(state.loadingTrending());
@@ -139,7 +139,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
 
         // TODO: 2017-07-01 You're better than this...
-        renderError(state.videosError());
+        renderError(state.errorVideos());
+        renderError(state.errorUpcoming());
         renderError(state.error());
 
     }

@@ -7,24 +7,24 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.widget.TextView;
 
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.databinding.RowAnticipatedBinding;
+import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-20
  */
 
-public class ItemAnticipatedProgressive extends ItemAnticipated {
+public class ItemBannerProgressive extends ItemBanner {
 
-    public ItemAnticipatedProgressive(long id) {
-        super(id);
+    public ItemBannerProgressive(long id, String tag) {
+        super(id, null, null);
     }
 
     @Override
-    public void bind(RowAnticipatedBinding viewBinding, int position) {
+    public void bind(RowBannerBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
-        viewBinding.textViewTitleAnticipated.setBackgroundResource(R.drawable.line);
         viewBinding.textViewTitleAnticipated.setText("                         ");
+        viewBinding.textViewTitleAnticipated.setBackgroundResource(R.drawable.line);
         setBackgroundTint(context, viewBinding.textViewTitleAnticipated, R.color.color_gray_1);
     }
 

@@ -1,7 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemVideoProgressiveImpl;
+import com.github.pedramrn.slick.parent.ui.item.ItemProgressive;
+import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -12,11 +15,39 @@ import java.util.List;
  *         Created on: 2017-06-22
  */
 
-public interface ViewStateHomePartial {
+public final class PartialViewStateHome {
 
-    ViewStateHome reduce(ViewStateHome viewStateHome);
+    private PartialViewStateHome() {
+        //no instance
+    }
 
-    class VideosImpl implements ViewStateHomePartial {
+    static class Upcoming implements PartialViewState<ViewStateHome> {
+        private final List<Item> movies;
+
+        public Upcoming(List<Item> movies) {
+
+            this.movies = movies;
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome state) {
+            return state.toBuilder().upcoming(movies).build();
+        }
+    }
+
+    static class UpcomingError extends Error {
+
+        public UpcomingError(Throwable throwable) {
+            super(throwable);
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome state) {
+            return state.toBuilder().errorUpcoming(throwable).build();
+        }
+    }
+
+    /*static class VideosImpl implements PartialViewState<ViewStateHome> {
 
         private final List<Item> itemVideos;
 
@@ -34,7 +65,7 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class VideosErrorImpl implements ViewStateHomePartial {
+    static class VideosErrorImpl implements PartialViewState<ViewStateHome> {
         private final Throwable e;
 
         public VideosErrorImpl(Throwable e) {
@@ -43,29 +74,36 @@ public interface ViewStateHomePartial {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().videosError(e).build();
+            return viewStateHome.toBuilder().errorVideos(e).build();
         }
-    }
+    }*/
 
-    class ProgressiveVideosImpl implements ViewStateHomePartial {
+    static class ProgressiveBannerImpl extends ItemProgressive implements PartialViewState<ViewStateHome> {
 
-        private List<Item> progressive;
 
-        public ProgressiveVideosImpl() {
-            progressive = new ArrayList<>(3);
-            progressive.add(0, new ItemVideoProgressiveImpl().render(0));
-            progressive.add(1, new ItemVideoProgressiveImpl().render(1));
-            progressive.add(2, new ItemVideoProgressiveImpl().render(2));
+        public ProgressiveBannerImpl(int count, String tag) {
+            super(count, tag, new ItemRendererBanner());
+        }
+
+        public ProgressiveBannerImpl(String tag) {
+            super(tag, new ItemRendererBanner());
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().anticipated(progressive).build();
+            return viewStateHome.toBuilder().upcoming(progressive).build();
+        }
+
+        static class ItemRendererBanner implements ItemRenderer {
+            @Override
+            public Item render(long id, String tag) {
+                return new ItemBannerProgressive(id, tag);
+            }
         }
     }
 
 
-    class Trending implements ViewStateHomePartial {
+    static class Trending implements PartialViewState<ViewStateHome> {
 
         private final List<Item> movies;
         private final boolean loading;
@@ -92,45 +130,22 @@ public interface ViewStateHomePartial {
         }
     }
 
-    abstract class CardProgressive implements ViewStateHomePartial {
+    static class ItemRendererProgressiveCard implements ItemRenderer {
 
-        protected final List<Item> progressive;
-
-
-        public CardProgressive(int count, String tag) {
-            progressive = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
-                int id = IdBank.nextId(tag);
-                progressive.add(ItemCardProgressiveImpl.create(id).render(null));
-            }
-        }
-
-        public CardProgressive(String tag) {
-            progressive = new ArrayList<>(3);
-            for (int i = 0; i < 3; i++) {
-                int id = IdBank.nextId(tag);
-                progressive.add(ItemCardProgressiveImpl.create(id).render(null));
-            }
-        }
-
-        protected List<Item> reduce(List<Item> items) {
-            if (items != null && items.size() > 0) {
-                items.addAll(progressive);
-            } else {
-                items = progressive;
-            }
-            return items;
+        @Override
+        public Item render(long id, String tag) {
+            return ItemCardProgressiveImpl.create(id).render(tag);
         }
     }
 
-    class CardProgressiveTrending extends CardProgressive {
+    static class CardProgressiveTrending extends ItemProgressive implements PartialViewState<ViewStateHome> {
 
         public CardProgressiveTrending(int count, String tag) {
-            super(count, tag);
+            super(count, tag, new ItemRendererProgressiveCard());
         }
 
         public CardProgressiveTrending(String tag) {
-            super(tag);
+            super(tag, new ItemRendererProgressiveCard());
         }
 
         @Override
@@ -139,14 +154,14 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class CardProgressivePopular extends CardProgressive {
+    static class CardProgressivePopular extends ItemProgressive implements PartialViewState<ViewStateHome> {
 
         public CardProgressivePopular(int count, String tag) {
-            super(count, tag);
+            super(count, tag, new ItemRendererProgressiveCard());
         }
 
         public CardProgressivePopular(String tag) {
-            super(tag);
+            super(tag, new ItemRendererProgressiveCard());
         }
 
         @Override
@@ -155,9 +170,9 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class Error implements ViewStateHomePartial {
+    static class Error implements PartialViewState<ViewStateHome> {
 
-        private final Throwable throwable;
+        protected final Throwable throwable;
 
         public Error(Throwable throwable) {
             this.throwable = throwable;
@@ -169,7 +184,7 @@ public interface ViewStateHomePartial {
         }
     }
 
-    class Popular implements ViewStateHomePartial {
+    static class Popular implements PartialViewState<ViewStateHome> {
         private final List<Item> movies;
         private final boolean isLoading;
 

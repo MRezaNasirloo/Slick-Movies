@@ -1,7 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImplBaseTest;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
+import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class ViewModelBoxOfficeTest extends RouterBoxOfficeImplBaseTest {
     @Test
     public void test() throws Exception {
         Scheduler scheduler = Schedulers.trampoline();
-        PresenterBoxOffice presenter = new PresenterBoxOffice(routerBoxOffice, new MovieDomainMovieMapper(), scheduler, scheduler);
+        PresenterBoxOffice presenter = new PresenterBoxOffice(routerBoxOffice, new MapperMovieDomainMovie(), scheduler, scheduler);
         ViewModelBoxOffice viewModel = new ViewModelBoxOffice(new CompositeDisposable(), presenter, view);
 
         TestObserver<List<Movie>> test = viewModel.boxOfficeList().test();

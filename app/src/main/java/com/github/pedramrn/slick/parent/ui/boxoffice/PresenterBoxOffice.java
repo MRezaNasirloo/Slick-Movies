@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeTmdbImpl;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
+import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.slick.SlickPresenter;
 
@@ -30,7 +30,7 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
     private static final String TAG = PresenterBoxOffice.class.getSimpleName();
 
     private final RouterBoxOffice routerBoxOffice;
-    private final MovieDomainMovieMapper mapper;
+    private final MapperMovieDomainMovie mapper;
     private final Scheduler main;
     private final Scheduler io;
     private BehaviorSubject<ViewStateBoxOffice> state = BehaviorSubject.create();
@@ -41,7 +41,7 @@ public class PresenterBoxOffice extends SlickPresenter<ViewBoxOffice> implements
 
 
     @Inject
-    public PresenterBoxOffice(RouterBoxOfficeTmdbImpl routerBoxOffice, MovieDomainMovieMapper mapper,
+    public PresenterBoxOffice(RouterBoxOfficeTmdbImpl routerBoxOffice, MapperMovieDomainMovie mapper,
                               @Named("main") Scheduler main, @Named("io") Scheduler io) {
         this.routerBoxOffice = routerBoxOffice;
         this.mapper = mapper;

@@ -19,6 +19,8 @@ abstract class ViewStateHome {
 
     public abstract List<Item> popular();
 
+    public abstract List<Item> upcoming();
+
     public abstract boolean loadingTrending();
 
     public abstract int itemLoadingCountTrending();
@@ -32,7 +34,10 @@ abstract class ViewStateHome {
     public abstract int pagePopular();
 
     @Nullable
-    public abstract Throwable videosError();
+    public abstract Throwable errorVideos();
+
+    @Nullable
+    public abstract Throwable errorUpcoming();
 
     @Nullable
     public abstract Throwable error();
@@ -40,20 +45,22 @@ abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(List<Item> anticipated, List<Item> trending, List<Item> popular, boolean loadingTrending,
+    public static ViewStateHome create(List<Item> anticipated, List<Item> trending, List<Item> popular, List<Item> upcoming, boolean loadingTrending,
                                        int itemLoadingCountTrending, int pageTrending, boolean loadingPopular, int itemLoadingCountPopular,
-                                       int pagePopular, Throwable videosError, Throwable error) {
+                                       int pagePopular, Throwable errorVideos, Throwable errorUpcoming, Throwable error) {
         return builder()
                 .anticipated(anticipated)
                 .trending(trending)
                 .popular(popular)
+                .upcoming(upcoming)
                 .loadingTrending(loadingTrending)
                 .itemLoadingCountTrending(itemLoadingCountTrending)
                 .pageTrending(pageTrending)
                 .loadingPopular(loadingPopular)
                 .itemLoadingCountPopular(itemLoadingCountPopular)
                 .pagePopular(pagePopular)
-                .videosError(videosError)
+                .errorVideos(errorVideos)
+                .errorUpcoming(errorUpcoming)
                 .error(error)
                 .build();
     }
@@ -79,13 +86,17 @@ abstract class ViewStateHome {
 
         public abstract Builder itemLoadingCountPopular(int itemLoadingCountPopular);
 
-        public abstract Builder videosError(Throwable videosError);
-
         public abstract Builder error(Throwable error);
 
         public abstract Builder pageTrending(int pageTrending);
 
         public abstract Builder pagePopular(int pagePopular);
+
+        public abstract Builder upcoming(List<Item> upcoming);
+
+        public abstract Builder errorVideos(Throwable errorVideos);
+
+        public abstract Builder errorUpcoming(Throwable errorUpcoming);
 
         public abstract ViewStateHome build();
     }

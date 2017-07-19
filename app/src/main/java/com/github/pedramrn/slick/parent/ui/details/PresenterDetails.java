@@ -3,8 +3,8 @@ package com.github.pedramrn.slick.parent.ui.details;
 import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterSimilar;
+import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MovieDomainMovieMapper;
 import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -43,7 +43,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
     private static final String TAG = PresenterDetails.class.getSimpleName();
     private final RouterMovieDetails routerMovieDetails;
     private final RouterSimilar routerSimilar;
-    private final MovieDomainMovieMapper mapper;
+    private final MapperMovieDomainMovie mapper;
     private final MapperMovieSmallDomainMovieSmall mapperSmall;
     private final Scheduler io;
     private final Scheduler main;
@@ -57,7 +57,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
     @Inject
     public PresenterDetails(RouterMovieDetailsImpl rmd,
                             RouterSimilarImpl rs,
-                            MovieDomainMovieMapper mapper,
+                            MapperMovieDomainMovie mapper,
                             MapperMovieSmallDomainMovieSmall mapperSmall,
                             @Named("io") Scheduler io,
                             @Named("main") Scheduler main

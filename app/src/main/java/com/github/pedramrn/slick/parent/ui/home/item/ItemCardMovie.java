@@ -35,7 +35,7 @@ public class ItemCardMovie extends Item<RowCardBinding> {
         viewBinding.textViewTitle.setBackground(null);
         viewBinding.imageViewPoster.setBackground(null);
         viewBinding.imageViewPoster.setTransitionName(transitionName);
-        viewBinding.imageViewPoster.load(movie.posterThumbnail());
+        viewBinding.imageViewPoster.load(movie.thumbnailPoster());
     }
 
     public String getTransitionName() {

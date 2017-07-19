@@ -21,10 +21,10 @@ import io.reactivex.functions.Function;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-01
  */
-public class MovieDomainMovieMapper implements Function<MovieDomain, Movie> {
+public class MapperMovieDomainMovie implements Function<MovieDomain, Movie> {
 
     @Inject
-    public MovieDomainMovieMapper() {
+    public MapperMovieDomainMovie() {
     }
 
     @Override

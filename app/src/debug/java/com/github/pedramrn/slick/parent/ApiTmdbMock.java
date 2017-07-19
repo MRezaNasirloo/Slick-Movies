@@ -4,7 +4,6 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -58,7 +57,17 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
     @Override
     public Observable<MoviePageTmdb> similar(@Path("movie_id") Integer id, @Query("page") int page) {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
+    }
+
+    @Override
+    public Observable<MoviePageTmdb> upcoming(@Query("page") int page) {
+        return Observable.never();
+    }
+
+    @Override
+    public Observable<MoviePageTmdb> nowPlaying(@Query("page") int page) {
+        return Observable.never();
     }
 
     @Override

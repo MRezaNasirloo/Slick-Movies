@@ -3,8 +3,6 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 /**
@@ -23,7 +21,7 @@ public interface MovieBasic extends Parcelable {
     String posterPath();
 
     @Nullable
-    String posterThumbnail();
+    String thumbnailPoster();
 
     @Nullable
     String backdropPath();
@@ -45,6 +43,9 @@ public interface MovieBasic extends Parcelable {
 
     @Nullable
     String certification();
+
+    @Nullable
+    String thumbnailBackdrop();
 
     String runtimePretty();
 }

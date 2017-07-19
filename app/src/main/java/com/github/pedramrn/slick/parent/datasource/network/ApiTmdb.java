@@ -25,6 +25,11 @@ public interface ApiTmdb {
     @GET("movie/{movie_id}/similar")
     Observable<MoviePageTmdb> similar(@Path("movie_id") Integer id, @Query("page") int page);
 
+    @GET("movie/upcoming")
+    Observable<MoviePageTmdb> upcoming(@Query("page") int page);
+
+    @GET("movie/now_playing")
+    Observable<MoviePageTmdb> nowPlaying(@Query("page") int page);
 
     @GET("movie/{movie_id}/videos?append_to_response=")
     Observable<MovieTmdb> withVideos(@Path("movie_id") Integer id);

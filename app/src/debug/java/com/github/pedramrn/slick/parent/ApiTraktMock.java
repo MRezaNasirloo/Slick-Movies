@@ -6,7 +6,6 @@ import com.github.pedramrn.slick.parent.datasource.network.models.trakt.Anticipa
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -98,11 +97,11 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
     @Override
     public Observable<Object> rating(@Path("id") int id) {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 
     @Override
     public Observable<MovieTraktFull> movie(@Path("id") String imdb) {
-        throw new NotImplementedException(new Throwable());
+        return Observable.never();
     }
 }

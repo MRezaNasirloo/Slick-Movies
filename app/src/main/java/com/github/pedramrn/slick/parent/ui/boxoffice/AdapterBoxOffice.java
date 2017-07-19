@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import com.android.databinding.library.baseAdapters.BR;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
-import com.github.pedramrn.slick.parent.ui.custom.OnCompleteGlide;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 
 import java.util.Collections;
@@ -61,7 +60,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
         holder.binding.setRank(movies.get(position).rank(position));
         holder.binding.textViewTitle.setSelected(true);
         // holder.binding.textViewTitle.setText(movies.movieFull(position).name());
-        holder.binding.imageView.load(movies.get(position).posterThumbnail());
+        holder.binding.imageView.load(movies.get(position).thumbnailPoster());
         holder.binding.imageView.setTransitionName(transitionName);
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override

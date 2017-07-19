@@ -3,8 +3,8 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.model.Video;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
@@ -58,9 +58,16 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
 
     @Nullable
     @Override
-    public String posterThumbnail() {
+    public String thumbnailPoster() {
         if (backdropPath() == null) return null;
         return "http://image.tmdb.org/t/p/w300" + posterPath();
+    }
+
+    @Nullable
+    @Override
+    public String thumbnailBackdrop() {
+        if (backdropPath() == null) return null;
+        return "http://image.tmdb.org/t/p/w300" + backdropPath();
     }
 
     @Override

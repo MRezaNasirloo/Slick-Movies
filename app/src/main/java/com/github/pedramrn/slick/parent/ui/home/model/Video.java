@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home.model;
 
 import android.os.Parcelable;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipated;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemVideo;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
@@ -29,7 +29,7 @@ public abstract class Video implements Parcelable, ItemVideo {
 
     @Override
     public Item render(int id) {
-        return new ItemAnticipated(id, this);
+        return new ItemBanner(id, thumbnail(), name());
     }
 
     public static Video create(Integer tmdb, String type, String key, String name) {
