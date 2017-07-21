@@ -24,7 +24,7 @@ public class ItemCardMovieProgressive extends ItemCardMovie {
 
     @Override
     public void bind(RowCardBinding viewBinding, int position) {
-        if (getMovie() != null) {
+        if (movie() != null) {
             super.bind(viewBinding, position);
             return;
         }

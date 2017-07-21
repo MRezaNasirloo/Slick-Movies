@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.item;
 
-import com.github.pedramrn.slick.parent.ui.home.IdBank;
+import com.github.pedramrn.slick.parent.util.IdBank;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;

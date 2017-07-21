@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home;
+package com.github.pedramrn.slick.parent.ui.home.state;
 
 import android.support.annotation.Nullable;
 
@@ -12,7 +12,7 @@ import java.util.List;
  *         Created on: 2017-06-21
  */
 @AutoValue
-abstract class ViewStateHome {
+public abstract class ViewStateHome {
     public abstract List<Item> anticipated();
 
     public abstract List<Item> trending();

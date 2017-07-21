@@ -9,6 +9,7 @@ import android.support.v7.widget.SnapHelper;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowAnticipatedListBinding;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -18,9 +19,13 @@ import com.xwray.groupie.Item;
 public class ItemAnticipatedList extends Item<RowAnticipatedListBinding> {
 
     private final RecyclerView.Adapter adapter;
+    private final SnapHelper snapHelper = new PagerSnapHelper();
+    private final LinearLayoutManager layoutManager;
 
-    public ItemAnticipatedList(RecyclerView.Adapter adapter) {
+
+    public ItemAnticipatedList(Context context, RecyclerView.Adapter adapter) {
         this.adapter = adapter;
+        this.layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
     }
 
     @Override
@@ -31,13 +36,17 @@ public class ItemAnticipatedList extends Item<RowAnticipatedListBinding> {
     @Override
     public void bind(RowAnticipatedListBinding viewBinding, int position) {
         // TODO: 2017-06-22 add pager indicator
-        Context context = viewBinding.getRoot().getContext();
         RecyclerView recyclerView = viewBinding.recyclerViewAnticipated;
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.setNestedScrollingEnabled(false);
-        SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void unbind(ViewHolder<RowAnticipatedListBinding> holder) {
+        holder.binding.recyclerViewAnticipated.setOnFlingListener(null);
+        super.unbind(holder);
     }
 }

@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home;
+package com.github.pedramrn.slick.parent.ui.home.state;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
@@ -21,7 +21,7 @@ public final class PartialViewStateHome {
         //no instance
     }
 
-    static class Upcoming implements PartialViewState<ViewStateHome> {
+    public static class Upcoming implements PartialViewState<ViewStateHome> {
         private final List<Item> movies;
 
         public Upcoming(List<Item> movies) {
@@ -35,7 +35,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class UpcomingError extends Error {
+    public static class UpcomingError extends Error {
 
         public UpcomingError(Throwable throwable) {
             super(throwable);
@@ -47,7 +47,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    /*static class VideosImpl implements PartialViewState<ViewStateHome> {
+    /*public static class VideosImpl implements PartialViewState<ViewStateHome> {
 
         private final List<Item> itemVideos;
 
@@ -65,7 +65,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class VideosErrorImpl implements PartialViewState<ViewStateHome> {
+    public static class VideosErrorImpl implements PartialViewState<ViewStateHome> {
         private final Throwable e;
 
         public VideosErrorImpl(Throwable e) {
@@ -78,7 +78,7 @@ public final class PartialViewStateHome {
         }
     }*/
 
-    static class ProgressiveBannerImpl extends ItemProgressive implements PartialViewState<ViewStateHome> {
+    public static class ProgressiveBannerImpl extends ItemProgressive implements PartialViewState<ViewStateHome> {
 
 
         public ProgressiveBannerImpl(int count, String tag) {
@@ -94,7 +94,7 @@ public final class PartialViewStateHome {
             return viewStateHome.toBuilder().upcoming(progressive).build();
         }
 
-        static class ItemRendererBanner implements ItemRenderer {
+        public static class ItemRendererBanner implements ItemRenderer {
             @Override
             public Item render(long id, String tag) {
                 return new ItemBannerProgressive(id, tag);
@@ -103,7 +103,7 @@ public final class PartialViewStateHome {
     }
 
 
-    static class Trending implements PartialViewState<ViewStateHome> {
+    public static class Trending implements PartialViewState<ViewStateHome> {
 
         private final List<Item> movies;
         private final boolean loading;
@@ -130,7 +130,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class ItemRendererProgressiveCard implements ItemRenderer {
+    public static class ItemRendererProgressiveCard implements ItemRenderer {
 
         @Override
         public Item render(long id, String tag) {
@@ -138,7 +138,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class CardProgressiveTrending extends ItemProgressive implements PartialViewState<ViewStateHome> {
+    public static class CardProgressiveTrending extends ItemProgressive implements PartialViewState<ViewStateHome> {
 
         public CardProgressiveTrending(int count, String tag) {
             super(count, tag, new ItemRendererProgressiveCard());
@@ -154,7 +154,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class CardProgressivePopular extends ItemProgressive implements PartialViewState<ViewStateHome> {
+    public static class CardProgressivePopular extends ItemProgressive implements PartialViewState<ViewStateHome> {
 
         public CardProgressivePopular(int count, String tag) {
             super(count, tag, new ItemRendererProgressiveCard());
@@ -170,7 +170,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class Error implements PartialViewState<ViewStateHome> {
+    public static class Error implements PartialViewState<ViewStateHome> {
 
         protected final Throwable throwable;
 
@@ -184,7 +184,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    static class Popular implements PartialViewState<ViewStateHome> {
+    public static class Popular implements PartialViewState<ViewStateHome> {
         private final List<Item> movies;
         private final boolean isLoading;
 

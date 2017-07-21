@@ -3,6 +3,8 @@
 
 package com.github.pedramrn.slick.parent.ui.home.item;
 
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
@@ -13,7 +15,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardMovie extends Item<RowCardBinding> {
+public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie {
 
     private final MovieBasic movie;
     private final String transitionName;
@@ -38,11 +40,15 @@ public class ItemCardMovie extends Item<RowCardBinding> {
         viewBinding.imageViewPoster.load(movie.thumbnailPoster());
     }
 
-    public String getTransitionName() {
+    @Override
+    @Nullable
+    public String transitionName() {
         return transitionName;
     }
 
-    public MovieBasic getMovie() {
+    @Override
+    @Nullable
+    public MovieBasic movie() {
         return movie;
     }
 }

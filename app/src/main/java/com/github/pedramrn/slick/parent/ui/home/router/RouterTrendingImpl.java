@@ -5,7 +5,7 @@ import android.support.annotation.IntRange;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrending;
-import com.github.pedramrn.slick.parent.ui.home.TransformerTraktToMovieDomain;
+import com.github.pedramrn.slick.parent.ui.home.mapper.TransformerTraktToMovieDomain;
 
 import javax.inject.Inject;
 

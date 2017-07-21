@@ -120,7 +120,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
 
-        ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER");
+        ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER", onItemClickListener);
         adapterHeader.add(updatingHeader);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create(), onItemClickListener);
@@ -128,12 +128,12 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
-        itemCastList = new ItemListHorizontal(context, adapterCasts, "CASTS");
+        itemCastList = new ItemListHorizontal(context, adapterCasts, "CASTS", onItemClickListener);
         Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", PublishSubject.create()));
         sectionCasts.add(itemCastList);
         adapterCasts.add(progressiveCast);
 
-        itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS");
+        itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);

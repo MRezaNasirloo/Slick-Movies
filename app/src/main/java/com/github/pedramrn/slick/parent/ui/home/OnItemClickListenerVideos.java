@@ -14,11 +14,11 @@ import com.xwray.groupie.OnItemClickListener;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-16
  */
-public class OnItemClickListenerDetails implements OnItemClickListener {
+public class OnItemClickListenerVideos implements OnItemClickListener {
 
     private final RouterProvider router;
 
-    public OnItemClickListenerDetails(RouterProvider router) {
+    public OnItemClickListenerVideos(RouterProvider router) {
         this.router = router;
     }
 

@@ -12,12 +12,7 @@ import com.github.slick.Presenter;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.requery.Persistable;
-import io.requery.reactivex.ReactiveEntityStore;
-
-import static com.github.pedramrn.slick.parent.App.componentMain;
 import static com.github.pedramrn.slick.parent.databinding.ControllerUpComingBinding.inflate;
-import static com.github.pedramrn.slick.parent.ui.upcoming.ControllerUpComing_Slick.bind;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -32,15 +27,15 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
     @Presenter
     PresenterUpComing presenter;
 
-    ViewModelUpComing viewModelUpComing;
+    // ViewModelUpComing viewModelUpComing;
     // @Inject
     // ReactiveEntityStore<Persistable> entityStore;
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        componentMain().inject(this);
-        bind(this);
+        // componentMain().inject(this);
+        ControllerUpComing_Slick.bind(this);
 
         /*if (viewModelUpComing == null) {
             viewModelUpComing = new ViewModelUpComing(presenter);
@@ -50,11 +45,5 @@ public class ControllerUpComing extends Controller implements ViewUpComing {
         final ControllerUpComingBinding binding = inflate(inflater, container, false);
 
         return binding.getRoot();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //        viewModelUpComing.onDestroy();
     }
 }

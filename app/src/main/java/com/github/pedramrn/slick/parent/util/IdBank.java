@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home;
+package com.github.pedramrn.slick.parent.util;
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;

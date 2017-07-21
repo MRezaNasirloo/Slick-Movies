@@ -7,32 +7,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemAnticipatedList;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
+import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -42,14 +38,16 @@ import io.reactivex.subjects.PublishSubject;
 
 public class ControllerHome extends ControllerBase implements ViewHome, Observer<ViewStateHome> {
 
+    private static final String TAG = ControllerHome.class.getSimpleName();
+
     @Inject
     Provider<PresenterHome> provider;
     @Presenter
     PresenterHome presenter;
     private UpdatingGroup progressiveTrending;
     private UpdatingGroup progressivePopular;
-    private ItemCardList itemTrendingList;
-    private ItemCardList itemPopularList;
+    private ItemCardList itemListTrending;
+    private ItemCardList itemListPopular;
     private Disposable disposable;
     private OnItemClickListenerDetails onItemClickListener = new OnItemClickListenerDetails(new RouterProvider() {
         @Override
@@ -57,7 +55,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
             return getRouter();
         }
     });
-    private UpdatingGroup progressiveUpcomig;
+    private UpdatingGroup progressiveUpcoming;
+    private ItemListHorizontal itemListUpcoming;
 
 
     @NonNull
@@ -71,28 +70,30 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         GroupAdapter adapterUpcoming = new GroupAdapter();
         GroupAdapter adapterTrending = new GroupAdapter();
         GroupAdapter adapterPopular = new GroupAdapter();
-        progressiveUpcomig = new UpdatingGroup();
+        progressiveUpcoming = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemTrendingList = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), onItemClickListener);
-        itemPopularList = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), onItemClickListener);
+        itemListTrending = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), onItemClickListener);
+        itemListPopular = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), onItemClickListener);
 
-        ItemAnticipatedList itemAnticipatedList = new ItemAnticipatedList(adapterUpcoming);
+        itemListUpcoming = new ItemListHorizontalPager(getActivity(), adapterUpcoming, "UPCOMING", onItemClickListener);
 
-        adapterMain.add(itemAnticipatedList);
-        adapterUpcoming.add(progressiveUpcomig);
+        adapterUpcoming.add(progressiveUpcoming);
+        Section sectionUpcoming = new Section(new ItemCardHeader(1, "UPCOMING", "See All", null));
+        sectionUpcoming.add(itemListUpcoming);
 
-        PublishSubject<Object> onClickListener = PublishSubject.create();
-        Section sectionTrending = new Section(new ItemCardHeader(1, "Trending", "See All", onClickListener));
+        final PublishSubject<Object> onClickListener = PublishSubject.create();
+        Section sectionTrending = new Section(new ItemCardHeader(1, "TRENDING", "See All", onClickListener));
 
         adapterTrending.add(progressiveTrending);
-        sectionTrending.add(itemTrendingList);
+        sectionTrending.add(itemListTrending);
 
         Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", onClickListener));
 
         adapterPopular.add(progressivePopular);
-        sectionPopular.add(itemPopularList);
+        sectionPopular.add(itemListPopular);
 
+        adapterMain.add(sectionUpcoming);
         adapterMain.add(sectionTrending);
         adapterMain.add(sectionPopular);
 
@@ -102,52 +103,38 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 
-        Observable<Object> observable = onClickListener.doOnNext(new Consumer<Object>() {
-            @Override
-            public void accept(@NonNull Object o) throws Exception {
-                Toast.makeText(getApplicationContext(), "Under Construction", Toast.LENGTH_SHORT).show();
-            }
-        });
 
-        adapterUpcoming.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                if (item instanceof ItemBanner) {
-                }
-            }
-        });
-
-        presenter.updateStream(pageSize, observable).subscribe(this);
+        presenter.updateStream(pageSize).subscribe(this);
 
         return binding.getRoot();
     }
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        itemTrendingList.onSaveViewState(view, outState);
-        itemPopularList.onSaveViewState(view, outState);
+        itemListTrending.onSaveViewState(view, outState);
+        itemListPopular.onSaveViewState(view, outState);
+        itemListUpcoming.onSaveViewState(view, outState);
     }
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        itemTrendingList.onRestoreViewState(view, savedViewState);
-        itemPopularList.onRestoreViewState(view, savedViewState);
+        itemListTrending.onRestoreViewState(view, savedViewState);
+        itemListPopular.onRestoreViewState(view, savedViewState);
+        itemListUpcoming.onRestoreViewState(view, savedViewState);
     }
-
-    private static final String TAG = ControllerHome.class.getSimpleName();
 
     @Override
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
-        progressiveUpcomig.update(state.upcoming());
+        progressiveUpcoming.update(state.upcoming());
         progressiveTrending.update(state.trending());
         progressivePopular.update(state.popular());
-        itemTrendingList.loading(state.loadingTrending());
-        itemTrendingList.itemLoadedCount(state.itemLoadingCountTrending());
-        itemTrendingList.page(state.pageTrending());
-        itemPopularList.loading(state.loadingPopular());
-        itemPopularList.itemLoadedCount(state.itemLoadingCountPopular());
-        itemPopularList.page(state.pagePopular());
+        itemListTrending.loading(state.loadingTrending());
+        itemListTrending.itemLoadedCount(state.itemLoadingCountTrending());
+        itemListTrending.page(state.pageTrending());
+        itemListPopular.loading(state.loadingPopular());
+        itemListPopular.itemLoadedCount(state.itemLoadingCountPopular());
+        itemListPopular.page(state.pagePopular());
 
 
         // TODO: 2017-07-01 You're better than this...

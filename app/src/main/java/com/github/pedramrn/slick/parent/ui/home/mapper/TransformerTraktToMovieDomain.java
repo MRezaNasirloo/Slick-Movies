@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home;
+package com.github.pedramrn.slick.parent.ui.home.mapper;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;

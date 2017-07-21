@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home;
+package com.github.pedramrn.slick.parent.ui.home.state;
 
 import android.support.annotation.UiThread;
 

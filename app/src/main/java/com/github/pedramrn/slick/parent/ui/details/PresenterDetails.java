@@ -11,9 +11,9 @@ import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
-import com.github.pedramrn.slick.parent.ui.home.IdBank;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
+import com.github.pedramrn.slick.parent.util.IdBank;
 import com.github.slick.SlickPresenter;
 import com.xwray.groupie.Item;
 

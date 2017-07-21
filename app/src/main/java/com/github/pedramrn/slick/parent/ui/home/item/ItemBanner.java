@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
@@ -10,7 +12,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-20
  */
 
-public class ItemBanner extends Item<RowBannerBinding> {
+public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie {
 
     private final MovieBasic movie;
 
@@ -32,7 +34,15 @@ public class ItemBanner extends Item<RowBannerBinding> {
         viewBinding.textViewTitleAnticipated.setText(movie.title());
     }
 
-    public MovieBasic getMovie() {
+    @Nullable
+    @Override
+    public MovieBasic movie() {
         return movie;
+    }
+
+    @Nullable
+    @Override
+    public String transitionName() {
+        return null;
     }
 }

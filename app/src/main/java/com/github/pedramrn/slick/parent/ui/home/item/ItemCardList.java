@@ -145,7 +145,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
     public void onSaveViewState(View view, Bundle outState) {
         outState.putInt(POPULAR_PAGE, page);
         outState.putBoolean(POPULAR_IS_LOADING, isLoading);
-        outState.putInt(POPULAR_SCROLL_POS, layoutManager != null ? layoutManager.findFirstCompletelyVisibleItemPosition() : 0);
+        outState.putInt(POPULAR_SCROLL_POS, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
     }
 
     public void onRestoreViewState(View view, Bundle savedViewState) {

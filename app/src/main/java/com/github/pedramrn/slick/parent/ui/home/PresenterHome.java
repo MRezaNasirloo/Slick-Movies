@@ -18,6 +18,9 @@ import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieDetailsVideoIm
 import com.github.pedramrn.slick.parent.ui.home.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterUpcomingImpl;
+import com.github.pedramrn.slick.parent.ui.home.state.PartialViewStateHome;
+import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
+import com.github.pedramrn.slick.parent.util.IdBank;
 import com.github.pedramrn.slick.parent.util.ScanList;
 import com.github.slick.SlickPresenter;
 import com.xwray.groupie.Item;
@@ -86,12 +89,14 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         this.main = main;
     }
 
-    public Observable<ViewStateHome> updateStream(int pageSize, Observable<Object> clickListener) {
-        if (home == null) start(triggerSubjectTrending.startWith(1), triggerSubjectPopular.startWith(1), clickListener, pageSize);
+    public Observable<ViewStateHome> updateStream(int pageSize) {
+        if (home == null) start(triggerSubjectTrending.startWith(1), triggerSubjectPopular.startWith(1), pageSize);
         return state;
     }
 
-    public void start(Observable<Integer> triggerTrending, Observable<Integer> triggerPopular, Observable<Object> clickListener, final int pageSize) {
+    public void start(Observable<Integer> triggerTrending,
+                      Observable<Integer> triggerPopular,
+                      final int pageSize) {
         IdBank.reset(BANNER);
         IdBank.reset(TRENDING);
         IdBank.reset(POPULAR);
@@ -218,7 +223,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 });
 
-        Observable<PartialViewState<ViewStateHome>> click = clickListener.map(new Function<Object, PartialViewState<ViewStateHome>>() {
+        /*Observable<PartialViewState<ViewStateHome>> click = command.map(new Function<Object, PartialViewState<ViewStateHome>>() {
             @Override
             public PartialViewState<ViewStateHome> apply(@NonNull Object o) throws Exception {
                 return new PartialViewState<ViewStateHome>() {
@@ -228,7 +233,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                     }
                 };
             }
-        });
+        });*/
 
         List<Observable<PartialViewState<ViewStateHome>>> list = new ArrayList<>(5);
         list.add(upcoming);
@@ -236,7 +241,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         list.add(popular);
         list.add(trendingProgressiveLoading);
         list.add(popularProgressiveLoading);
-        list.add(click);
+        // list.add(click);
 
         ViewStateHome initialState = ViewStateHome.builder()
                 .upcoming(Collections.<Item>emptyList())
