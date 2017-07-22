@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 

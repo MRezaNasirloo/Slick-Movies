@@ -4,8 +4,8 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
-import com.github.pedramrn.slick.parent.ui.item.ItemProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
+import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -22,13 +22,13 @@ public class PartialViewStateDetails {
         //no instance
     }
 
-    static class ItemProgressiveSimilar extends ItemProgressive implements PartialViewState<ViewStateDetails> {
+    static class PartialProgressiveSimilar extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
-        public ItemProgressiveSimilar(int count, String tag) {
+        public PartialProgressiveSimilar(int count, String tag) {
             super(count, tag, new ItemRendererProgressiveCard());
         }
 
-        public ItemProgressiveSimilar(String tag) {
+        public PartialProgressiveSimilar(String tag) {
             super(tag, new ItemRendererProgressiveCard());
         }
 
@@ -147,7 +147,7 @@ public class PartialViewStateDetails {
         }
     }
 
-    static class MovieBackdropsProgressive extends ItemProgressive implements PartialViewState<ViewStateDetails> {
+    static class MovieBackdropsProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
         public MovieBackdropsProgressive(int count, String tag) {
             super(count, tag, new ItemRendererBackdrops());
@@ -170,7 +170,7 @@ public class PartialViewStateDetails {
         }
     }
 
-    static class MovieCastsProgressive extends ItemProgressive implements PartialViewState<ViewStateDetails> {
+    static class MovieCastsProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
         public MovieCastsProgressive(int count, String tag) {
             super(count, tag, new ItemRendererCasts());

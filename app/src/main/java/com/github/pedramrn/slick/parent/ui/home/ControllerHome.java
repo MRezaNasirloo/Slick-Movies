@@ -8,16 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
+import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
@@ -44,19 +48,35 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     Provider<PresenterHome> provider;
     @Presenter
     PresenterHome presenter;
+
     private UpdatingGroup progressiveTrending;
     private UpdatingGroup progressivePopular;
     private ItemCardList itemListTrending;
     private ItemCardList itemListPopular;
+    private UpdatingGroup progressiveUpcoming;
+    private ItemListHorizontal itemListUpcoming;
     private Disposable disposable;
-    private OnItemClickListenerDetails onItemClickListener = new OnItemClickListenerDetails(new RouterProvider() {
+
+    private final RouterProvider routerProvider = new RouterProvider() {
         @Override
         public Router get() {
             return getRouter();
         }
+    };
+    private OnItemClickListenerAction actionDetails = new OnItemClickListenerAction(routerProvider, new ControllerProvider() {
+        @Override
+        public Controller get(MovieBasic movie, String transitionName) {
+            return new ControllerDetails(movie, transitionName);
+        }
     });
-    private UpdatingGroup progressiveUpcoming;
-    private ItemListHorizontal itemListUpcoming;
+    private OnItemClickListenerAction actionVideos = new OnItemClickListenerAction(routerProvider, new ControllerProvider() {
+        @Override
+        public Controller get(MovieBasic movie, String transitionName) {
+            return new ControllerVideos(movie, transitionName);
+        }
+    });
+
+    private LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
 
 
     @NonNull
@@ -73,10 +93,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressiveUpcoming = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemListTrending = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), onItemClickListener);
-        itemListPopular = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), onItemClickListener);
+        itemListTrending = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), actionDetails);
+        itemListPopular = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), actionDetails);
 
-        itemListUpcoming = new ItemListHorizontalPager(getActivity(), adapterUpcoming, "UPCOMING", onItemClickListener);
+        itemListUpcoming = new ItemListHorizontalPager(getActivity(), adapterUpcoming, "UPCOMING", actionVideos);
 
         adapterUpcoming.add(progressiveUpcoming);
         Section sectionUpcoming = new Section(new ItemCardHeader(1, "UPCOMING", "See All", null));

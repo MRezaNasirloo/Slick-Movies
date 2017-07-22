@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
 import com.github.pedramrn.slick.parent.autovalue.IncludeHashEquals;
+import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 

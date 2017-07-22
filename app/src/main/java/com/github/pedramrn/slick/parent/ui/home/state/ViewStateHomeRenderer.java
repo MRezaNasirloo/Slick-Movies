@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home.state;
 
 import android.support.annotation.UiThread;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.xwray.groupie.Item;
 
 import java.util.Collection;

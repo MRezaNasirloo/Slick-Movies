@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemMovie;
 import com.xwray.groupie.Item;
@@ -14,12 +13,14 @@ import com.xwray.groupie.OnItemClickListener;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-16
  */
-public class OnItemClickListenerDetails implements OnItemClickListener {
+public class OnItemClickListenerAction implements OnItemClickListener {
 
     private final RouterProvider router;
+    private final ControllerProvider provider;
 
-    public OnItemClickListenerDetails(RouterProvider router) {
+    public OnItemClickListenerAction(RouterProvider router, ControllerProvider provider) {
         this.router = router;
+        this.provider = provider;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class OnItemClickListenerDetails implements OnItemClickListener {
         ItemMovie itemCardMovie = (ItemMovie) item;
         MovieBasic movie = itemCardMovie.movie();
         if (movie == null) return;
-        router.get().pushController(RouterTransaction.with(new ControllerDetails(movie, itemCardMovie.transitionName()))
+        router.get().pushController(RouterTransaction.with(provider.get(movie, itemCardMovie.transitionName()))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler())
         );

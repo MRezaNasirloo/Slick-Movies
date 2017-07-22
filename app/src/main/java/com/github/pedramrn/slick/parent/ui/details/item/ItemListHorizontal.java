@@ -8,9 +8,9 @@ import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
-import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerDetails;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -25,7 +25,7 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     private final String SCROLL_POS;
     private int scrollPos;
 
-    public ItemListHorizontal(Context context, GroupAdapter adapter, String tag, OnItemClickListenerDetails onItemClickListener) {
+    public ItemListHorizontal(Context context, GroupAdapter adapter, String tag, OnItemClickListener onItemClickListener) {
         this.adapter = adapter;
         SCROLL_POS = "SCROLL_POS_" + tag;
         layoutManager = new LinearLayoutManager(context.getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);

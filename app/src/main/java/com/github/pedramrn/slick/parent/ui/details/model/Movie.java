@@ -4,8 +4,8 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
-import com.github.pedramrn.slick.parent.ui.home.model.Video;
+import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 

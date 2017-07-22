@@ -3,8 +3,8 @@ package com.github.pedramrn.slick.parent.ui.home.state;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
-import com.github.pedramrn.slick.parent.ui.item.ItemProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
+import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public final class PartialViewStateHome {
         }
     }*/
 
-    public static class ProgressiveBannerImpl extends ItemProgressive implements PartialViewState<ViewStateHome> {
+    public static class ProgressiveBannerImpl extends PartialProgressive implements PartialViewState<ViewStateHome> {
 
 
         public ProgressiveBannerImpl(int count, String tag) {
@@ -91,7 +91,7 @@ public final class PartialViewStateHome {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().upcoming(progressive).build();
+            return viewStateHome.toBuilder().upcoming(reduce(progressive)).build();
         }
 
         public static class ItemRendererBanner implements ItemRenderer {
@@ -138,7 +138,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    public static class CardProgressiveTrending extends ItemProgressive implements PartialViewState<ViewStateHome> {
+    public static class CardProgressiveTrending extends PartialProgressive implements PartialViewState<ViewStateHome> {
 
         public CardProgressiveTrending(int count, String tag) {
             super(count, tag, new ItemRendererProgressiveCard());
@@ -154,7 +154,7 @@ public final class PartialViewStateHome {
         }
     }
 
-    public static class CardProgressivePopular extends ItemProgressive implements PartialViewState<ViewStateHome> {
+    public static class CardProgressivePopular extends PartialProgressive implements PartialViewState<ViewStateHome> {
 
         public CardProgressivePopular(int count, String tag) {
             super(count, tag, new ItemRendererProgressiveCard());

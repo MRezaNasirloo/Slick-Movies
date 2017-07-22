@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
@@ -23,7 +24,8 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
-import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerDetails;
+import com.github.pedramrn.slick.parent.ui.home.ControllerProvider;
+import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerAction;
 import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
@@ -75,13 +77,18 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private ItemListHorizontal itemBackdropList;
     private Section sectionOverview;
 
-    private final OnItemClickListenerDetails onItemClickListener = new OnItemClickListenerDetails(
+    private final OnItemClickListenerAction onItemClickListener = new OnItemClickListenerAction(
             new RouterProvider() {
                 @Override
                 public Router get() {
                     return getRouter();
                 }
-            });
+            }, new ControllerProvider() {
+        @Override
+        public Controller get(MovieBasic movie, String transitionName) {
+            return null;
+        }
+    });
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -147,7 +154,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterMain.add(sectionSimilar);
 
         binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        binding.recyclerViewDetails.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
+        binding.recyclerViewDetails.addItemDecoration(
+                new ItemDecorationMarginSide(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
         binding.recyclerViewDetails.setAdapter(adapterMain);
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
         binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);

@@ -5,8 +5,8 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.SnapHelper;
 
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
-import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerDetails;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.ViewHolder;
 
 /**
@@ -17,7 +17,7 @@ import com.xwray.groupie.ViewHolder;
 public class ItemListHorizontalPager extends ItemListHorizontal {
     private final SnapHelper snapHelper = new PagerSnapHelper();
 
-    public ItemListHorizontalPager(Context context, GroupAdapter adapter, String tag, OnItemClickListenerDetails onItemClickListener) {
+    public ItemListHorizontalPager(Context context, GroupAdapter adapter, String tag, OnItemClickListener onItemClickListener) {
         super(context, adapter, tag, onItemClickListener);
     }
 

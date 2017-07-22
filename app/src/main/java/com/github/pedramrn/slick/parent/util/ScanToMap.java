@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.util;
 
 import android.annotation.SuppressLint;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.item.ItemView;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -13,7 +13,7 @@ import android.view.View;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardListBinding;
 import com.github.pedramrn.slick.parent.ui.custom.StartSnapHelper;
-import com.github.pedramrn.slick.parent.ui.details.ItemDecorationSideMargin;
+import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.GroupAdapter;
@@ -40,7 +40,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     private final SnapHelper snapHelper = new StartSnapHelper();
     private final LinearLayoutManager layoutManager;
-    private final ItemDecorationSideMargin margin;
+    private final ItemDecorationMargin margin;
     private final GroupAdapter adapter;
     private final Observer<Integer> observer;
     private final OnItemClickListener onItemClickListener;
@@ -57,7 +57,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
                         @Nullable OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
         context = context.getApplicationContext();
-        margin = new ItemDecorationSideMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
+        margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         this.adapter = adapter;
         this.observer = observer;

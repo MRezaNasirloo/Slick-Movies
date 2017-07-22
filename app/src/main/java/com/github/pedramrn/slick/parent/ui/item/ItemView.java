@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home.item;
+package com.github.pedramrn.slick.parent.ui.item;
 
 import com.xwray.groupie.Item;
 

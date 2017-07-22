@@ -10,12 +10,11 @@ import java.util.List;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-19
  */
-public abstract class ItemProgressive {
+public abstract class PartialProgressive {
 
     protected final List<Item> progressive;
 
-
-    public ItemProgressive(int count, String tag, ItemRenderer itemRenderer) {
+    public PartialProgressive(int count, String tag, ItemRenderer itemRenderer) {
         progressive = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             int id = IdBank.nextId(tag);
@@ -23,7 +22,7 @@ public abstract class ItemProgressive {
         }
     }
 
-    public ItemProgressive(String tag, ItemRenderer itemRenderer) {
+    public PartialProgressive(String tag, ItemRenderer itemRenderer) {
         progressive = new ArrayList<>(3);
         for (int i = 0; i < 3; i++) {
             int id = IdBank.nextId(tag);

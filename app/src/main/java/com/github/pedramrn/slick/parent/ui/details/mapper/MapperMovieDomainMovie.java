@@ -7,7 +7,7 @@ import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Image;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
-import com.github.pedramrn.slick.parent.ui.home.model.Video;
+import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class MapperMovieDomainMovie implements Function<MovieDomain, Movie> {
         final List<Video> videos = Observable.fromIterable(videosDomain).map(new Function<VideoDomain, Video>() {
             @Override
             public Video apply(@NonNull VideoDomain vd) throws Exception {
-                return Video.create(vd.tmdb(), vd.type(), vd.key(), vd.name());
+                return Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name());
             }
         }).toList(size == 0 ? 1 : size).blockingGet();
 
