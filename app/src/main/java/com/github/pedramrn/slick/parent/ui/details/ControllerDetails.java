@@ -4,22 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
@@ -33,8 +31,6 @@ import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -72,7 +68,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private UpdatingGroup updatingHeader;
     private ControllerDetailsBinding binding;
     private CompositeDisposable disposable;
-    private ItemListHorizontal itemCastList;
     private ItemCardList itemCardListSimilar;
     private ItemListHorizontal itemBackdropList;
     private Section sectionOverview;
@@ -86,7 +81,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
             }, new ControllerProvider() {
         @Override
         public Controller get(MovieBasic movie, String transitionName) {
-            return null;
+            return new ControllerDetails(movie, transitionName);
         }
     });
 
@@ -119,13 +114,14 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         GroupAdapter adapterMain = new GroupAdapter();
         GroupAdapter adapterHeader = new GroupAdapter();
-        GroupAdapter adapterCasts = new GroupAdapter();
         GroupAdapter adapterBackdrops = new GroupAdapter();
         GroupAdapter adapterSimilar = new GroupAdapter();
         updatingHeader = new UpdatingGroup();
         progressiveCast = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
+
+        adapterMain.setSpanCount(6);
 
         ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER", onItemClickListener);
         adapterHeader.add(updatingHeader);
@@ -135,10 +131,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
-        itemCastList = new ItemListHorizontal(context, adapterCasts, "CASTS", onItemClickListener);
         Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", PublishSubject.create()));
-        sectionCasts.add(itemCastList);
-        adapterCasts.add(progressiveCast);
+        sectionCasts.add(progressiveCast);
 
         itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));
@@ -153,9 +147,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionSimilar);
 
-        binding.recyclerViewDetails.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        binding.recyclerViewDetails.addItemDecoration(
-                new ItemDecorationMarginSide(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
+        GridLayoutManager layoutManager = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
+        layoutManager.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
+        binding.recyclerViewDetails.setLayoutManager(layoutManager);
         binding.recyclerViewDetails.setAdapter(adapterMain);
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
         binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);
@@ -164,15 +158,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         presenter.updateStream().subscribe(this);
         presenter.getMovieDetails(movie);
-
-        adapterCasts.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                Toast.makeText(ControllerDetails.this.getApplicationContext(),
-                        String.format(Locale.ENGLISH, "You clicked %s", ((ItemCast) item).getCast().name()), Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         return binding.getRoot();
     }
@@ -235,7 +220,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         itemBackdropList.onSaveViewState(view, outState);
-        itemCastList.onSaveViewState(view, outState);
         itemCardListSimilar.onSaveViewState(view, outState);
     }
 
@@ -243,7 +227,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         itemBackdropList.onRestoreViewState(view, savedViewState);
-        itemCastList.onRestoreViewState(view, savedViewState);
         itemCardListSimilar.onRestoreViewState(view, savedViewState);
     }
 

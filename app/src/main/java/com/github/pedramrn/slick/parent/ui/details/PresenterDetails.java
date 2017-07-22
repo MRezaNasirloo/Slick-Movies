@@ -136,7 +136,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                     .concatMap(new Function<Movie, ObservableSource<Cast>>() {
                         @Override
                         public ObservableSource<Cast> apply(@NonNull Movie movie) throws Exception {
-                            return Observable.fromIterable(movie.casts());
+                            return Observable.fromIterable(movie.casts()).take(6);
                         }
                     })
                     .map(new MapProgressive())
@@ -147,7 +147,7 @@ public class PresenterDetails extends SlickPresenter<ViewDetails> implements Obs
                             return itemView.render(CASTS);
                         }
                     })
-                    .buffer(200)
+                    .buffer(20)
                     .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
                         @Override
                         public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {

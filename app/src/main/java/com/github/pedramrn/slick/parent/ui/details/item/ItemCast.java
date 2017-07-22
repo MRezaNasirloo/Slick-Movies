@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import com.github.pedramrn.slick.parent.databinding.RowCastBinding;
+import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 
 /**
@@ -18,7 +18,7 @@ public class ItemCast extends ItemCastProgressive {
     }
 
     @Override
-    public void bind(RowCastBinding viewBinding, int position) {
+    public void bind(RowCastHorizontalBinding viewBinding, int position) {
         viewBinding.imageViewProfile.load(cast.profileIcon());
         viewBinding.textViewName.setText(cast.name());
         viewBinding.textViewCharacter.setText(cast.character());

@@ -7,7 +7,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.widget.TextView;
 
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.databinding.RowCastBinding;
+import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
@@ -16,7 +16,7 @@ import com.xwray.groupie.ViewHolder;
  *         Created on: 2017-06-16
  */
 
-public class ItemCastProgressive extends Item<RowCastBinding> {
+public class ItemCastProgressive extends Item<RowCastHorizontalBinding> {
 
     public ItemCastProgressive(long id) {
         super(id);
@@ -24,11 +24,11 @@ public class ItemCastProgressive extends Item<RowCastBinding> {
 
     @Override
     public int getLayout() {
-        return R.layout.row_cast;
+        return R.layout.row_cast_horizontal;
     }
 
     @Override
-    public void bind(RowCastBinding viewBinding, int position) {
+    public void bind(RowCastHorizontalBinding viewBinding, int position) {
         Context context = viewBinding.imageViewProfile.getContext();
         viewBinding.imageViewProfile.setImageResource(R.drawable.circle);
         viewBinding.textViewName.setBackgroundResource(R.drawable.line);
@@ -44,9 +44,14 @@ public class ItemCastProgressive extends Item<RowCastBinding> {
     }
 
     @Override
-    public void unbind(ViewHolder<RowCastBinding> holder) {
+    public void unbind(ViewHolder<RowCastHorizontalBinding> holder) {
         holder.binding.textViewCharacter.setBackground(null);
         holder.binding.textViewName.setBackground(null);
         super.unbind(holder);
+    }
+
+    @Override
+    public int getSpanSize(int spanCount, int position) {
+        return 3;
     }
 }
