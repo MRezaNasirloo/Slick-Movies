@@ -32,4 +32,8 @@ public class ItemVideo extends Item<RowVideoBinding> {
         viewBinding.textViewName.setText(video.name());
         viewBinding.textViewChannelDateViews.setText(String.format("Type: %s", video.type()));
     }
+
+    public Video video() {
+        return video;
+    }
 }

@@ -10,7 +10,7 @@ import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 import com.github.pedramrn.slick.parent.ui.videos.state.PartialViewStateVideos;
 import com.github.pedramrn.slick.parent.ui.videos.state.ViewStateVideos;
 import com.github.pedramrn.slick.parent.util.IdBank;
-import com.github.pedramrn.slick.parent.util.ScanToList;
+import com.github.pedramrn.slick.parent.util.ScanList;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -73,7 +73,8 @@ class PresenterVideos extends PresenterBase<ViewVideos, ViewStateVideos> {
                             return itemView.render(VIDEOS);
                         }
                     })
-                    .compose(new ScanToList<Item>())
+                    .buffer(20)
+                    .compose(new ScanList<Item>())
                     .map(new Function<List<Item>, PartialViewState<ViewStateVideos>>() {
                         @Override
                         public PartialViewState<ViewStateVideos> apply(@NonNull List<Item> items) throws Exception {

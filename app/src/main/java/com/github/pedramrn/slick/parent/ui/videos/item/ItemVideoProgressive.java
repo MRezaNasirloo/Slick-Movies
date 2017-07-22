@@ -17,7 +17,7 @@ public class ItemVideoProgressive extends ItemVideo {
     public void bind(RowVideoBinding viewBinding, int position) {
         viewBinding.textViewName.setText("      ");
         viewBinding.textViewName.setBackgroundResource(R.drawable.line);
-        viewBinding.textViewChannelDateViews.setText("      ");
+        viewBinding.textViewChannelDateViews.setText("                   ");
         viewBinding.textViewChannelDateViews.setBackgroundResource(R.drawable.line);
         viewBinding.imageViewThumbnail.setImageResource(R.drawable.rectangle_no_corners);
     }

@@ -9,6 +9,7 @@ import com.xwray.groupie.Item;
 import java.util.List;
 
 /**
+
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-22
  */
@@ -43,7 +44,7 @@ public final class PartialViewStateVideos {
 
         @Override
         public ViewStateVideos reduce(ViewStateVideos state) {
-            return state.toBuilder().videos(reduce(progressive)).build();
+            return state.toBuilder().videos(progressive).build();
         }
 
         private static class ProgressiveVideosRenderer implements ItemRenderer {
