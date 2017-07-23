@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.trakt;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -33,6 +35,7 @@ public abstract class CommentTrakt {
     @SerializedName("likes")
     public abstract Integer likes();
 
+    @Nullable
     @SerializedName("user_rating")
     public abstract Integer userRating();
 

@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.datasource.network;
 
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.CommentTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
@@ -9,6 +10,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTra
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -43,5 +45,12 @@ public interface ApiTrakt {
 
     @GET("/movies/{id}?extended=full")
     Observable<MovieTraktFull> movie(@Path("id") String imdb);
+
+    @GET("/movies/{id}/comments")
+    Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb);
+
+    @GET("/movies/{id}/comments?extended=full")
+    Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb);
+
 
 }

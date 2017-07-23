@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.CommentTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
@@ -11,6 +12,7 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.Response;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.mock.BehaviorDelegate;
@@ -102,6 +104,16 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
     @Override
     public Observable<MovieTraktFull> movie(@Path("id") String imdb) {
+        return Observable.never();
+    }
+
+    @Override
+    public Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb) {
+        return Observable.never();
+    }
+
+    @Override
+    public Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb) {
         return Observable.never();
     }
 }
