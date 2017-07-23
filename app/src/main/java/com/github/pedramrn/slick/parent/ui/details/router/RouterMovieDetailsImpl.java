@@ -35,7 +35,7 @@ public class RouterMovieDetailsImpl implements RouterMovieDetails {
 
     @Override
     public Observable<MovieDomain> get(final Integer tmdbId) {
-        return apiTmdb.movieFull(tmdbId).map(mapperMovie).flatMap(new Function<MovieDomain, ObservableSource<MovieDomain>>() {
+        return apiTmdb.movieFull(tmdbId).map(mapperMovie).concatMap(new Function<MovieDomain, ObservableSource<MovieDomain>>() {
             @Override
             public ObservableSource<MovieDomain> apply(@NonNull MovieDomain movieDomain) throws Exception {
                 return Observable.just(movieDomain).scan(movieDomain, new BiFunction<MovieDomain, MovieDomain, MovieDomain>() {

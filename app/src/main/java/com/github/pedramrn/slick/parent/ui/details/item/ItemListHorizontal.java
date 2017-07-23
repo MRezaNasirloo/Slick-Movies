@@ -11,7 +11,6 @@ import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
-import com.xwray.groupie.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -29,7 +28,6 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     public ItemListHorizontal(Context context, GroupAdapter adapter, String tag, OnItemClickListener onItemClickListener) {
         this.adapter = adapter;
         SCROLL_POS = "SCROLL_POS_" + tag;
-        layoutManager = new LinearLayoutManager(context.getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         adapter.setOnItemClickListener(onItemClickListener);
     }
 
@@ -41,21 +39,13 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     @Override
     public void bind(RowCastListBinding viewBinding, int position) {
         RecyclerView recyclerView = viewBinding.recyclerViewCasts;
+        layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setLayoutManager(null);
-        recyclerView.setOnFlingListener(null);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         layoutManager.scrollToPosition(scrollPos);
-    }
-
-    @Override
-    public void unbind(ViewHolder<RowCastListBinding> holder) {
-        holder.binding.recyclerViewCasts.setLayoutManager(null);
-        holder.binding.recyclerViewCasts.setOnFlingListener(null);
-        super.unbind(holder);
     }
 
     public void onSaveViewState(View view, Bundle outState) {
