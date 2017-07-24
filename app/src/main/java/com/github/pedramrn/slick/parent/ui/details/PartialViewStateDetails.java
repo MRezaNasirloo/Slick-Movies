@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.details;
 
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
@@ -22,13 +23,13 @@ public class PartialViewStateDetails {
         //no instance
     }
 
-    static class PartialProgressiveSimilar extends PartialProgressive implements PartialViewState<ViewStateDetails> {
+    static class SimilarProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
-        public PartialProgressiveSimilar(int count, String tag) {
+        public SimilarProgressive(int count, String tag) {
             super(count, tag, new ItemRendererProgressiveCard());
         }
 
-        public PartialProgressiveSimilar(String tag) {
+        public SimilarProgressive(String tag) {
             super(tag, new ItemRendererProgressiveCard());
         }
 
@@ -190,6 +191,56 @@ public class PartialViewStateDetails {
             public Item render(long id, String tag) {
                 return new ItemCastProgressive(id);
             }
+        }
+    }
+
+    static class Comments implements PartialViewState<ViewStateDetails> {
+        private final List<Item> comments;
+
+        public Comments(List<Item> comments) {
+            this.comments = comments;
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state.toBuilder().comments(comments).build();
+        }
+    }
+
+
+    static class CommentsProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
+
+        public CommentsProgressive(int count, String tag) {
+            super(count, tag, new ItemRendererComments());
+        }
+
+        public CommentsProgressive(String tag) {
+            super(tag, new ItemRendererComments());
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state.toBuilder().comments(progressive).build();
+        }
+
+        static class ItemRendererComments implements ItemRenderer {
+
+            @Override
+            public Item render(long id, String tag) {
+                return new ItemCommentProgressive(id, tag);
+            }
+        }
+    }
+
+    static class ErrorComments extends Error {
+
+        ErrorComments(Throwable throwable) {
+            super(throwable);
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state.toBuilder().errorComments(throwable).build();
         }
     }
 

@@ -2,10 +2,10 @@ package com.github.pedramrn.slick.parent.ui.details.router;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.CommentTrakt;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperCommentTraktCommentDomain;
 import com.github.pedramrn.slick.parent.domain.model.CommentDomain;
 import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterComments;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MapperCommentTraktCommentDomain;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import retrofit2.Response;
  *         Created on: 2017-07-23
  */
 
-class RouterCommentsImpl implements RouterComments {
+public class RouterCommentsImpl implements RouterComments {
 
     private final ApiTrakt apiTrakt;
 

@@ -46,10 +46,10 @@ public interface ApiTrakt {
     @GET("/movies/{id}?extended=full")
     Observable<MovieTraktFull> movie(@Path("id") String imdb);
 
-    @GET("/movies/{id}/comments")
+    @GET("/movies/{id}/comments/likes")
     Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb);
 
-    @GET("/movies/{id}/comments?extended=full")
+    @GET("/movies/{id}/comments/likes?extended=full")
     Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb);
 
 

@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.domain.model;
+package com.github.pedramrn.slick.parent.ui.details.model;
 
 import android.support.annotation.Nullable;
 
@@ -10,7 +10,7 @@ import com.google.auto.value.AutoValue;
  */
 
 @AutoValue
-public abstract class UserDomain {
+public abstract class User {
     public abstract String username();
 
     @Nullable
@@ -19,7 +19,7 @@ public abstract class UserDomain {
     public abstract String id();
 
     public static Builder builder() {
-        return new AutoValue_UserDomain.Builder();
+        return new AutoValue_User.Builder();
     }
 
     @AutoValue.Builder
@@ -30,7 +30,7 @@ public abstract class UserDomain {
 
         public abstract Builder id(String id);
 
-        public abstract UserDomain build();
+        public abstract User build();
     }
 
     // public abstract String avatar();

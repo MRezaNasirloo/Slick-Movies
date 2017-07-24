@@ -31,10 +31,12 @@ import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -64,6 +66,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private String transitionName;
     private UpdatingGroup progressiveCast;
     private UpdatingGroup progressiveBackdrop;
+    private UpdatingGroup progressiveComments;
     private UpdatingGroup progressiveSimilar;
     private UpdatingGroup updatingHeader;
     private ControllerDetailsBinding binding;
@@ -120,6 +123,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         progressiveCast = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
+        progressiveComments = new UpdatingGroup();
 
         adapterMain.setSpanCount(6);
 
@@ -134,6 +138,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", PublishSubject.create()));
         sectionCasts.add(progressiveCast);
 
+        Section sectionComments = new Section(new ItemCardHeader(0, "Comments", "See All", PublishSubject.create()));
+        sectionComments.add(progressiveComments);
+
         itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));
         sectionBackdrops.add(itemBackdropList);
@@ -145,6 +152,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterMain.add(sectionCasts);
         adapterMain.add(sectionOverview);
         adapterMain.add(sectionBackdrops);
+        adapterMain.add(sectionComments);
         adapterMain.add(sectionSimilar);
 
         GridLayoutManager layoutManager = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
@@ -179,9 +187,14 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         progressiveCast.update(state.casts());
         progressiveBackdrop.update(state.backdrops());
+        List<Item> comments = state.comments();
+        progressiveComments.update(comments);
         progressiveSimilar.update(state.similar());
 
+        Log.e(TAG, comments.toString());
+
         renderError(state.errorSimilar());
+        renderError(state.errorComments());
         renderError(state.errorMovie());
         renderError(state.errorMovieBackdrop());
         renderError(state.errorMovieCast());
