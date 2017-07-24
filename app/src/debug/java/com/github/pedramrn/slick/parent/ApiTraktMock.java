@@ -108,12 +108,12 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
     }
 
     @Override
-    public Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb) {
+    public Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb, int page, int size) {
         return Observable.never();
     }
 
     @Override
-    public Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb) {
+    public Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb, @Query("page") int page, @Query("limit") int size) {
         return Observable.never();
     }
 }

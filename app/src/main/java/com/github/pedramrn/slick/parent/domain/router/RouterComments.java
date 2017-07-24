@@ -11,5 +11,5 @@ import io.reactivex.Observable;
  */
 
 public interface RouterComments {
-    Observable<PagedDomain<CommentDomain>> comments(String imdb);
+    Observable<PagedDomain<CommentDomain>> comments(String imdb, int page, int size);
 }

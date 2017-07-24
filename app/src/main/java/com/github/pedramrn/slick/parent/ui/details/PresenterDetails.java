@@ -168,7 +168,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                     .flatMap(new Function<Movie, ObservableSource<PagedDomain<CommentDomain>>>() {
                         @Override
                         public ObservableSource<PagedDomain<CommentDomain>> apply(@NonNull Movie movie) throws Exception {
-                            return routerComments.comments(movie.imdbId());
+                            return routerComments.comments(movie.imdbId(), 1, 2);
                         }
                     })
                     .concatMap(new Function<PagedDomain<CommentDomain>, ObservableSource<CommentDomain>>() {

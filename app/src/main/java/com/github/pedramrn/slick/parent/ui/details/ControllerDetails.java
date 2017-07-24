@@ -18,6 +18,7 @@ import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
@@ -140,6 +141,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         Section sectionComments = new Section(new ItemCardHeader(0, "Comments", "See All", PublishSubject.create()));
         sectionComments.add(progressiveComments);
+        sectionComments.setPlaceholder(new ItemCastProgressive(-1));
+        sectionComments.setHideWhenEmpty(true);
 
         itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));

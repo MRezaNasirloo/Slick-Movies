@@ -47,10 +47,10 @@ public interface ApiTrakt {
     Observable<MovieTraktFull> movie(@Path("id") String imdb);
 
     @GET("/movies/{id}/comments/likes")
-    Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb);
+    Observable<Response<List<CommentTrakt>>> comments(@Path("id") String imdb, @Query("page") int page, @Query("limit") int size);
 
     @GET("/movies/{id}/comments/likes?extended=full")
-    Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb);
+    Observable<Response<List<CommentTrakt>>> commentsFull(@Path("id") String imdb, @Query("page") int page, @Query("limit") int size);
 
 
 }

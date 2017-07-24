@@ -78,7 +78,7 @@ public class RouterCommentsImplTest {
                 .setHeader("x-pagination-page-count", 4)
                 .setHeader("x-pagination-page", 1)
         );
-        routerComments.comments("tt2250912").flatMap(new Function<PagedDomain<CommentDomain>, ObservableSource<Integer>>() {
+        routerComments.comments("tt2250912", 1, 2).flatMap(new Function<PagedDomain<CommentDomain>, ObservableSource<Integer>>() {
             @Override
             public ObservableSource<Integer> apply(@NonNull PagedDomain<CommentDomain> com) throws Exception {
                 return Observable.fromArray(com.count(), com.page(), com.pages());

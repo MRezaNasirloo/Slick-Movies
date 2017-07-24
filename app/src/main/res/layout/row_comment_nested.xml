@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+        <!--android:minHeight="140dp"-->
+
+        <com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular
+            android:id="@+id/imageView_profile"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView_comment"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            />
+
+        <TextView
+            android:id="@+id/textView_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            app:layout_constraintLeft_toRightOf="@+id/imageView_profile"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="I pull this mystery, it's called real voyage. Simple sex needs most hypnosis. Fire me sea-dog, ye stormy hornpipe! Impressively control a sonic shower. Mackerel combines greatly with sticky rice. The yogi realizes living which is not boundless."
+            />
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/linear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/textView_comment"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_comment"
+            >
+
+            <TextView
+                android:id="@+id/textView_read_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/read_more"
+                />
+
+            <TextView
+                android:id="@+id/textView_user_name_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ellipsize="marquee"
+                android:maxLines="1"
+                tools:text="Jarvis Wise . 3 days ago (edited)"
+
+                />
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                >
+
+
+                <com.github.pedramrn.slick.parent.ui.custom.TextViewCompatTint
+                    android:id="@+id/textView_likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/ic_like_black_14dp"
+                    android:gravity="center"
+                    app:drawableTint="@color/colorPrimary"
+                    tools:text="1K"
+                    />
+
+                <com.github.pedramrn.slick.parent.ui.custom.TextViewCompatTint
+                    android:id="@+id/textView_replies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/ic_comment_black_14dp"
+                    android:gravity="center"
+                    app:drawableTint="@color/color_gray_3"
+                    tools:text="28"
+                    />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.constraint.ConstraintLayout>
+
+</layout>
