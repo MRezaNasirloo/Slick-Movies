@@ -1,9 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import android.view.View;
-
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.databinding.RowCommentNestedBinding;
+import com.github.pedramrn.slick.parent.databinding.RowCommentBinding;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -17,10 +15,10 @@ public class ItemCommentProgressive extends ItemComment {
     }
 
     @Override
-    public void bind(RowCommentNestedBinding viewBinding, int position) {
+    public void bind(RowCommentBinding viewBinding, int position) {
         viewBinding.textViewComment.setText("         \n       ");
         viewBinding.textViewUserNameDate.setText("                ");
-        viewBinding.textViewReadMore.setVisibility(View.INVISIBLE);
+        // viewBinding.textViewReadMore.setVisibility(View.INVISIBLE);
         viewBinding.textViewComment.setBackgroundResource(R.drawable.line);
         viewBinding.textViewUserNameDate.setBackgroundResource(R.drawable.line);
     }
