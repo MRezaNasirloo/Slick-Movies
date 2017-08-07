@@ -44,14 +44,14 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     CompositeDisposable disposable = new CompositeDisposable();
     private ControllerMainBinding binding;
     private final RouterPagerAdapter routerPagerAdapter;
-    private final int pageCount = 3;
+    private final int PAGE_COUNT = 3;
 
     public ControllerMain() {
         routerPagerAdapter = new RouterPagerAdapter(this) {
 
             @Override
             public int getCount() {
-                return pageCount;
+                return PAGE_COUNT;
             }
 
             @Override

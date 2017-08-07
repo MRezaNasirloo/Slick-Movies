@@ -41,17 +41,18 @@ public class RouterMovieDetailsImpl implements RouterMovieDetails {
                 return Observable.just(movieDomain).scan(movieDomain, new BiFunction<MovieDomain, MovieDomain, MovieDomain>() {
                             @Override
                             public MovieDomain apply(@NonNull final MovieDomain movieDomain, @NonNull MovieDomain movieDomain2) throws Exception {
-                                return apiTrakt.movie(movieDomain.imdbId()).map(new Function<MovieTraktFull, MovieDomain>() {
+                                return apiTrakt.movie(movieDomain.imdbId()).concatMap(new Function<MovieTraktFull, Observable<MovieDomain>>() {
                                     @Override
-                                    public MovieDomain apply(@NonNull MovieTraktFull movieTraktFull) throws Exception {
+                                    public Observable<MovieDomain> apply(@NonNull MovieTraktFull movieTraktFull) throws Exception {
                                         String certification = movieTraktFull.certification();
-                                        return movieDomain.toBuilder()
+                                        return Observable.just(movieDomain.toBuilder()
                                                 .voteAverageTrakt(movieTraktFull.rating())
                                                 .voteCountTrakt(movieTraktFull.votes())
                                                 .certification(certification == null ? "n/a" : certification)
-                                                .build()
+                                                .build())
                                                 ;
-                                    }
+                                    }// FIXME: 2017-07-29 don't interrupt me or I crash your app
+                                    // Attempt to fix by changing to concatMap from map
                                 }).blockingFirst();
                             }
                         }

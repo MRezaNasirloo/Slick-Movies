@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
-import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 
 import io.reactivex.disposables.Disposable;
 
@@ -33,7 +32,7 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
         if (activity != null && activity instanceof ToolbarHost) {
             return ((ToolbarHost) activity).setToolbar(toolbar);
         }
-        //emulate no-op impl
+        //emulates no-op impl
         return this;
     }
 
@@ -43,7 +42,7 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
         Activity activity = getActivity();
         if (activity != null && activity instanceof ToolbarHost) {
             return ((ToolbarHost) activity).setupButton(enable);
-        }//emulate no-op impl
+        }//emulates no-op impl
         return this;
     }
 
