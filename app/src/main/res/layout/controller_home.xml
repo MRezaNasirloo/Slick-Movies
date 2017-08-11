@@ -8,25 +8,36 @@
         android:id="@+id/context"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#EEEEEE"
         >
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             >
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                />
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                >
 
+                <com.lapism.searchview.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="com.lapism.searchview.SearchBehavior"
+                    app:search_clear_on_close="true"
+                    app:search_clear_on_open="true"
+                    app:search_hide_on_keyboard_close="true"
+                    app:search_hint="Movie name..."
+                    app:search_version="toolbar"
+                    app:search_version_margins="menu_item"
+                    />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView

@@ -119,7 +119,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
         binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewHome.setAdapter(adapterMain);
-        setToolbar(binding.toolbar);
+        // setToolbar(binding.toolbar);
+        // binding.searchView.setOnQueryTextListener();
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 

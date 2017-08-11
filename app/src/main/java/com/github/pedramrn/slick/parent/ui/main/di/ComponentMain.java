@@ -5,6 +5,7 @@ import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
+import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 
 import dagger.Subcomponent;
@@ -27,6 +28,8 @@ public interface ComponentMain {
     void inject(ControllerHome controllerHome);
 
     void inject(ControllerVideos controllerVideos);
+
+    void inject(SearchViewImpl searchView);
 
     @Subcomponent.Builder
     interface Builder {
