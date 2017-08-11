@@ -1,7 +1,5 @@
 package com.github.pedramrn.slick.parent.ui;
 
-import android.util.Log;
-
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.slick.SlickPresenter;
 
@@ -71,7 +69,7 @@ public class PresenterBase<V, S> extends SlickPresenter<V> implements Observer<S
 
     @Override
     public void onComplete() {
-        Log.d(TAG, "onComplete() called");
+        System.out.println(TAG + " onComplete() called");
     }
 
     protected Observable<S> reduce(S initialState, Observable<PartialViewState<S>> partialViewState) {
@@ -90,7 +88,7 @@ public class PresenterBase<V, S> extends SlickPresenter<V> implements Observer<S
         return Observable.merge(Arrays.asList(partials));
     }
 
-    public boolean hasSubscribed() {
+    protected boolean hasSubscribed() {
         return hasSubscribed;
     }
 }

@@ -60,7 +60,14 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     @Override
     public String thumbnailPoster() {
         if (backdropPath() == null) return null;
-        return "http://image.tmdb.org/t/p/w300" + posterPath();
+        return "http://image.tmdb.org/t/p/w342" + posterPath();
+    }
+
+    @Nullable
+    @Override
+    public String thumbnailTinyPoster() {
+        if (backdropPath() == null) return null;
+        return "http://image.tmdb.org/t/p/w92" + posterPath();
     }
 
     @Nullable

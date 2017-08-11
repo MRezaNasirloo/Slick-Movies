@@ -125,7 +125,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         int pageSize = getResources().getInteger(R.integer.page_size);
 
 
-        presenter.updateStream(pageSize).subscribe(this);
+        presenter.updateStream().subscribe(this);
+        presenter.start(pageSize);
 
         return binding.getRoot();
     }

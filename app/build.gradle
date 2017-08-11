@@ -207,4 +207,5 @@ dependencies {
     compile 'com.xwray:groupie:1.1.1'
 
     compile 'com.lapism:searchview:4.0'
+//    compile 'com.github.arimorty:floatingsearchview:2.1.1'
 }

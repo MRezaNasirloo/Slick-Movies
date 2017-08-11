@@ -23,7 +23,7 @@ import io.reactivex.functions.Function;
  *         Created on: 2017-08-11
  */
 
-class RouterSearchImpl implements RouterSearch {
+public class RouterSearchImpl implements RouterSearch {
 
     private final ApiTmdb apiTmdb;
     private final MapperMovieSmall movieSmall;

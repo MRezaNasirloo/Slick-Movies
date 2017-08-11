@@ -1,13 +1,15 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
-import android.util.Log;
-
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
 import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipated;
 import com.github.pedramrn.slick.parent.domain.router.RouterAnticipatedImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
+import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
+import com.github.pedramrn.slick.parent.domain.router.RouterTrending;
+import com.github.pedramrn.slick.parent.domain.router.RouterUpcoming;
+import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
@@ -22,10 +24,8 @@ import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.util.IdBank;
 import com.github.pedramrn.slick.parent.util.ScanList;
-import com.github.slick.SlickPresenter;
 import com.xwray.groupie.Item;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,8 +37,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -47,22 +45,17 @@ import io.reactivex.subjects.BehaviorSubject;
  *         Created on: 2017-06-20
  */
 
-public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<ViewStateHome> {
+public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
     private final RouterMovieDetails router;
     private final RouterAnticipated routerAnticipated;
-    private final RouterTrendingImpl routerTrending;
-    private final RouterUpcomingImpl routerUpcoming;
+    private final RouterTrending routerTrending;
+    private final RouterUpcoming routerUpcoming;
+    private final RouterPopular routerPopular;
     private final MapperMovieDomainMovie mapper;
-    private final RouterPopularImpl routerPopular;
     private final MapperMovieSmallDomainMovieSmall mapperMovieSmall;
-    private final Scheduler io;
-    private final Scheduler main;
-    private BehaviorSubject<ViewStateHome> state = BehaviorSubject.create();
     private BehaviorSubject<Integer> triggerSubjectTrending = BehaviorSubject.create();
     private BehaviorSubject<Integer> triggerSubjectPopular = BehaviorSubject.create();
-    private Observable<ViewStateHome> home;
-    private Disposable disposable;
     private String TRENDING = "TRENDING";
     private String POPULAR = "POPULAR";
     private String BANNER = "BANNER";
@@ -78,6 +71,7 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                          MapperMovieSmallDomainMovieSmall mapperMovieSmall,
                          @Named("io") Scheduler io,
                          @Named("main") Scheduler main) {
+        super(main, io);
         this.router = routerMovieDetailsVideo;
         this.routerAnticipated = routerAnticipated;
         this.routerTrending = routerTrending;
@@ -85,18 +79,15 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
         this.mapper = mapper;
         this.routerPopular = routerPopular;
         this.mapperMovieSmall = mapperMovieSmall;
-        this.io = io;
-        this.main = main;
     }
 
-    public Observable<ViewStateHome> updateStream(int pageSize) {
-        if (home == null) start(triggerSubjectTrending.startWith(1), triggerSubjectPopular.startWith(1), pageSize);
-        return state;
+    public void start(int pageSize) {
+        if (!hasSubscribed()) start(triggerSubjectTrending.startWith(1), triggerSubjectPopular.startWith(1), pageSize);
     }
 
-    public void start(Observable<Integer> triggerTrending,
-                      Observable<Integer> triggerPopular,
-                      final int pageSize) {
+    private void start(Observable<Integer> triggerTrending,
+                       Observable<Integer> triggerPopular,
+                       final int pageSize) {
         IdBank.reset(BANNER);
         IdBank.reset(TRENDING);
         IdBank.reset(POPULAR);
@@ -232,16 +223,10 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                         return viewStateHome;
                     }
                 };
+
             }
         });*/
 
-        List<Observable<PartialViewState<ViewStateHome>>> list = new ArrayList<>(5);
-        list.add(upcoming);
-        list.add(trending);
-        list.add(popular);
-        list.add(trendingProgressiveLoading);
-        list.add(popularProgressiveLoading);
-        // list.add(click);
 
         ViewStateHome initialState = ViewStateHome.builder()
                 .upcoming(Collections.<Item>emptyList())
@@ -256,38 +241,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
                 .pageTrending(0)
                 .build();
 
-        home = Observable.merge(list)
-                .observeOn(main)
-                .scan(initialState, new BiFunction<ViewStateHome, PartialViewState<ViewStateHome>, ViewStateHome>() {
-                    @Override
-                    public ViewStateHome apply(@NonNull ViewStateHome viewStateHome, @NonNull PartialViewState<ViewStateHome> vp) throws Exception {
-                        Log.e(TAG, Thread.currentThread().getName());
-                        return vp.reduce(viewStateHome);
-                    }
-                });
-
-        home.subscribe(this);
-    }
-
-    @Override
-    public void onSubscribe(Disposable d) {
-        dispose(disposable);
-        this.disposable = d;
-    }
-
-    @Override
-    public void onNext(ViewStateHome viewStateHome) {
-        state.onNext(viewStateHome);
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.wtf(TAG, "onCompleteGlide: Called O_O");
+        reduce(initialState, merge(upcoming, trending, popular, trendingProgressiveLoading, popularProgressiveLoading))
+                .subscribe(this);
     }
 
     private static final String TAG = PresenterHome.class.getSimpleName();
@@ -295,15 +250,8 @@ public class PresenterHome extends SlickPresenter<ViewHome> implements Observer<
     @Override
     public void onDestroy() {
         super.onDestroy();
-        dispose(disposable);
         IdBank.dispose(TRENDING);
         IdBank.dispose(POPULAR);
-    }
-
-    private void dispose(Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
     }
 
     public Observer<Integer> onLoadMoreObserverPoplar() {

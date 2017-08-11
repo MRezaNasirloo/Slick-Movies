@@ -24,6 +24,9 @@ public interface MovieBasic extends Parcelable {
     String thumbnailPoster();
 
     @Nullable
+    String thumbnailTinyPoster();
+
+    @Nullable
     String backdropPath();
 
     @Nullable

@@ -104,6 +104,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
 
             Observable<PartialViewState<ViewStateDetails>> backdrops = movieFull
                     .take(1)
+
                     .concatMap(new Function<Movie, ObservableSource<Backdrop>>() {
                         @Override
                         public ObservableSource<Backdrop> apply(@NonNull Movie movie) throws Exception {
