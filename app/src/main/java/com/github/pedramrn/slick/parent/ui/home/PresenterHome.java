@@ -254,6 +254,11 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
         IdBank.dispose(POPULAR);
     }
 
+    @Override
+    public void start() {
+
+    }
+
     public Observer<Integer> onLoadMoreObserverPoplar() {
         return triggerSubjectPopular;
     }

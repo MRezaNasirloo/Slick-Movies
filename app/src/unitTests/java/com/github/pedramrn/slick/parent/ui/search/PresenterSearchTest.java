@@ -20,9 +20,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -71,8 +79,6 @@ public class PresenterSearchTest {
                 gson);
         routerSearch = new RouterSearchImpl(apiTmdb, new MapperMovieSmall());
         presenterSearch = new PresenterSearch(routerSearch, new MapperMovieSmallDomainMovieSmall(), Schedulers.trampoline(), Schedulers.trampoline());
-
-
     }
 
     @Test
@@ -88,11 +94,53 @@ public class PresenterSearchTest {
 
         TestObserver<ViewStateSearch> test = presenterSearch.updateStream().test();
         PublishSubject<String> queryNewText = PublishSubject.<String>create();
-        presenterSearch.query(queryNewText, openClose);
         queryNewText.onNext("star");
         test.awaitCount(2).assertNoErrors().assertValueCount(2);
         queryNewText.onNext("star wars");
         test.assertNoErrors().assertNotComplete().assertValueCount(3);
+    }
+
+    @Test
+    public void testOnErrorReturn() {
+        final Observable<String> stringObservable = Observable.defer(new Callable<ObservableSource<String>>() {
+            @Override
+            public ObservableSource<String> call() throws Exception {
+                throw new RuntimeException("Too Bad");
+            }
+        });
+        Observable<String> observable = Observable.intervalRange(0, 5, 0, 500, TimeUnit.MILLISECONDS)
+                .flatMap(new Function<Long, ObservableSource<String>>() {
+                    @Override
+                    public ObservableSource<String> apply(@NonNull Long aLong) throws Exception {
+                        return stringObservable.onErrorReturn(new Function<Throwable, String>() {
+                            @Override
+                            public String apply(@NonNull Throwable throwable) throws Exception {
+                                return "That Passed early";
+                            }
+                        });
+                    }
+                })
+                .onErrorReturn(new Function<Throwable, String>() {
+                    @Override
+                    public String apply(@NonNull Throwable throwable) throws Exception {
+                        return "That Passed";
+                    }
+                })
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        System.out.println("OnComplete first stream.");
+                    }
+                });
+
+        observable.mergeWith(Observable.<String>never())
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        System.out.println("accept() called with: s = [" + s + "]");
+                    }
+                })
+                .test().awaitDone(5, TimeUnit.SECONDS);
     }
 
 }

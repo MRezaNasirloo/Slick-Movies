@@ -259,4 +259,9 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
         IdBank.dispose(COMMENTS);
     }
 
+    @Override
+    public void start() {
+
+    }
+
 }

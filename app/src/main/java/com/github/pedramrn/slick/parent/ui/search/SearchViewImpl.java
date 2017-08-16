@@ -21,6 +21,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
@@ -39,19 +40,38 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
 
     PublishSubject<String> queryNewText = PublishSubject.create();
     PublishSubject<Boolean> openClose = PublishSubject.create();
+
     private GroupAdapter adapter = new GroupAdapter();
     private Disposable disposable;
+    private Observable<String> queryNewText1;
 
     public SearchViewImpl(Context context) {
         super(context);
-        adapter.setHasStableIds(true);
-        setAdapter(adapter);
+        init();
     }
 
     public SearchViewImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    private void init() {
+        queryNewText1 = queryNewText.filter(new Predicate<String>() {
+            @Override
+            public boolean test(@NonNull String s) throws Exception {
+                return s.length() > 2;
+            }
+        }).debounce(500, TimeUnit.MILLISECONDS)
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        Log.d(TAG, "accept() called with: s = [" + s + "]");
+                    }
+                });
         adapter.setHasStableIds(true);
         setAdapter(adapter);
+        setOnQueryTextListener(this);
+        setOnOpenCloseListener(this);
     }
 
     @Override
@@ -60,15 +80,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         App.componentMain().inject(this);
         SearchViewImpl_Slick.bind(this);
         SearchViewImpl_Slick.onAttach(this);
-        setOnQueryTextListener(this);
-        setOnOpenCloseListener(this);
-        Observable<String> queryNewText = this.queryNewText.filter(new Predicate<String>() {
-            @Override
-            public boolean test(@NonNull String s) throws Exception {
-                return s.length() > 2;
-            }
-        }).debounce(500, TimeUnit.MILLISECONDS);
-        presenter.query(queryNewText, openClose);
         presenter.updateStream().subscribe(this);
     }
 
@@ -81,16 +92,15 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.d(TAG, "onQueryTextSubmit() called with: query = [" + query + "]");
+        Log.d(TAG, "onQueryTextSubmit() called with: start = [" + query + "]");
         // TODO: 2017-08-11 launch the search result controller
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        Log.d(TAG, "onQueryTextChange() called");
         this.queryNewText.onNext(newText);
-        Log.d(TAG, "onQueryTextChange() called with: newText = [" + newText + "]");
-        // TODO: 2017-08-11 show suggestions
         return false;
     }
 
@@ -133,6 +143,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
 
     @Override
     public boolean onClose() {
+        Log.d(TAG, "onClose() called");
         openClose.onNext(false);
         return true;
     }
@@ -140,5 +151,15 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     @Override
     public boolean onOpen() {
         return false;
+    }
+
+    @Override
+    public Observable<String> queryNexText() {
+        return queryNewText1;
+    }
+
+    @Override
+    public Observable<Boolean> searchOpenClose() {
+        return openClose;
     }
 }

@@ -105,4 +105,9 @@ class PresenterVideos extends PresenterBase<ViewVideos, ViewStateVideos> {
         IdBank.dispose(VIDEOS);
         super.onDestroy();
     }
+
+    @Override
+    public void start() {
+
+    }
 }
