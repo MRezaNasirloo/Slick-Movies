@@ -15,44 +15,58 @@ public abstract class MovieDomain {
 
     public abstract Integer id();
 
+    @Nullable
     public abstract String imdbId();
 
     public abstract Boolean adult();
 
+    @Nullable
     public abstract String backdropPath();
 
-    public abstract Object belongsToCollection();
+    // public abstract Object belongsToCollection();
 
+    @Nullable
     public abstract Integer budget();
 
     public abstract List<String> genres();
 
+    @Nullable
     public abstract String homepage();
 
+    @Nullable
     public abstract String originalLanguage();
 
+    @Nullable
     public abstract String originalTitle();
 
+    @Nullable
     public abstract String overview();
 
+    @Nullable
     public abstract Float popularity();
 
+    @Nullable
     public abstract String posterPath();
 
     public abstract List<String> productionCompanies();
 
     public abstract List<String> productionCountries();
 
+    @Nullable
     public abstract String releaseDate();
 
+    @Nullable
     public abstract Long revenue();
 
+    @Nullable
     public abstract Integer runtime();
 
     public abstract List<String> spokenLanguages();
 
+    @Nullable
     public abstract String status();
 
+    @Nullable
     public abstract String tagline();
 
     public abstract String title();
@@ -80,19 +94,19 @@ public abstract class MovieDomain {
 
     public abstract Builder toBuilder();
 
-    public static MovieDomain create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
-                                     List<String> genres, String homepage, String originalLanguage, String originalTitle, String overview,
-                                     Float popularity, String posterPath, List<String> productionCompanies, List<String> productionCountries,
-                                     String releaseDate, Long revenue, Integer runtime, List<String> spokenLanguages, String status, String tagline,
-                                     String title, Boolean video, Float voteAverageTmdb, Integer voteCountTmdb, Float voteAverageTrakt,
-                                     Integer voteCountTrakt, String certification, List<CastDomain> casts, ImageDomain images,
-                                     List<VideoDomain> videos) {
+    public static MovieDomain create(Integer id, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
+                                     String homepage,
+                                     String originalLanguage, String originalTitle, String overview, Float popularity, String posterPath,
+                                     List<String> productionCompanies, List<String> productionCountries, String releaseDate, Long revenue,
+                                     Integer runtime, List<String> spokenLanguages, String status, String tagline, String title, Boolean video,
+                                     Float voteAverageTmdb, Integer voteCountTmdb, Float voteAverageTrakt, Integer voteCountTrakt,
+                                     String certification,
+                                     List<CastDomain> casts, ImageDomain images, List<VideoDomain> videos) {
         return builder()
                 .id(id)
                 .imdbId(imdbId)
                 .adult(adult)
                 .backdropPath(backdropPath)
-                .belongsToCollection(belongsToCollection)
                 .budget(budget)
                 .genres(genres)
                 .homepage(homepage)
@@ -136,8 +150,6 @@ public abstract class MovieDomain {
         public abstract Builder adult(Boolean adult);
 
         public abstract Builder backdropPath(String backdropPath);
-
-        public abstract Builder belongsToCollection(Object belongsToCollection);
 
         public abstract Builder budget(Integer budget);
 

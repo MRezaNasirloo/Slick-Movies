@@ -20,39 +20,48 @@ public abstract class MovieTmdb {
     @SerializedName("id")
     public abstract Integer id();
 
+    @Nullable
     @SerializedName("imdb_id")
     public abstract String imdbId();
 
     @SerializedName("adult")
     public abstract Boolean adult();
 
+    @Nullable
     @SerializedName("backdrop_path")
     public abstract String backdropPath();
 
+    @Nullable
     @SerializedName("belongs_to_collection")
     public abstract Object belongsToCollection();
 
+    @Nullable
     @SerializedName("budget")
     public abstract Integer budget();
 
     @SerializedName("genres")
     public abstract List<Genre> genres();
 
+    @Nullable
     @SerializedName("homepage")
     public abstract String homepage();
 
+    @Nullable
     @SerializedName("original_language")
     public abstract String originalLanguage();
 
+    @Nullable
     @SerializedName("original_title")
     public abstract String originalTitle();
 
+    @Nullable
     @SerializedName("overview")
     public abstract String overview();
 
     @SerializedName("popularity")
     public abstract Float popularity();
 
+    @Nullable
     @SerializedName("poster_path")
     public abstract String posterPath();
 
@@ -62,6 +71,7 @@ public abstract class MovieTmdb {
     @SerializedName("production_countries")
     public abstract List<ProductionCountry> productionCountries();
 
+    @Nullable
     @SerializedName("release_date")
     public abstract String releaseDate();
 

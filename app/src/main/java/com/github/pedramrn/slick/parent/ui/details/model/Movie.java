@@ -20,30 +20,39 @@ import java.util.Locale;
 @AutoValue
 public abstract class Movie extends AutoBase implements Parcelable, ItemView, MovieBasic {
 
+    @Nullable
     public abstract String imdbId();
 
     public abstract Boolean adult();
 
+    @Nullable
     public abstract Integer budget();
 
     public abstract List<String> genres();
 
+    @Nullable
     public abstract String homepage();
 
+    @Nullable
     public abstract Float popularity();
 
     public abstract List<String> productionCompanies();
 
     public abstract List<String> productionCountries();
 
+
+    @Nullable
     public abstract Long revenue();
 
+    @Nullable
     public abstract Integer runtime();
 
     public abstract List<String> spokenLanguages();
 
+    @Nullable
     public abstract String status();
 
+    @Nullable
     public abstract String tagline();
 
     public abstract Boolean video();

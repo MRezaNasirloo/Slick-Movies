@@ -133,7 +133,6 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                 mt.imdbId(),
                 mt.adult(),
                 mt.backdropPath(),
-                mt.belongsToCollection(),
                 mt.budget(),
                 genres,
                 mt.homepage(),
