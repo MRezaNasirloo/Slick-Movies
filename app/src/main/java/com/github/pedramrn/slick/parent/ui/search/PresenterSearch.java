@@ -43,9 +43,7 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
         this.mapperSmall = mapperSmall;
     }
 
-    private static final String TAG = PresenterSearch.class.getSimpleName();
-
-    public void query(Observable<String> queryNewText) {
+    public void query(Observable<String> queryNewText, Observable<Boolean> openClose) {
         if (!hasSubscribed()) {
             Observable<PartialViewState<ViewStateSearch>> searchMovies = queryNewText
                     .flatMap(new Function<String, ObservableSource<PagedDomain<MovieSmallDomain>>>() {
@@ -82,6 +80,13 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
                     })
                     .subscribeOn(io);
 
+            Observable<PartialViewState<ViewStateSearch>> searchOpenClose = openClose.map(new Function<Boolean, PartialViewState<ViewStateSearch>>() {
+                @Override
+                public PartialViewState<ViewStateSearch> apply(@NonNull Boolean isOpen) throws Exception {
+                    return new PartialViewStateSearch.SearchOpenClose(isOpen);
+                }
+            });
+
 
             ViewStateSearch initial = ViewStateSearch.builder()
                     .movies(Collections.<Item>emptyList())
@@ -89,7 +94,7 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
                     .errorMovies(null)
                     .build();
 
-            reduce(initial, merge(searchMovies, Observable.<PartialViewState<ViewStateSearch>>never())).subscribe(this);
+            reduce(initial, merge(searchMovies, searchOpenClose)).subscribe(this);
 
         }
     }

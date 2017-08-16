@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.search.state;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.xwray.groupie.Item;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,4 +58,20 @@ public class PartialViewStateSearch {
             return state.toBuilder().loadingMovies(isLoading).build();
         }
     }
+
+    public static class SearchOpenClose implements PartialViewState<ViewStateSearch> {
+
+        private final boolean isOpen;
+
+        public SearchOpenClose(boolean isOpen) {
+            this.isOpen = isOpen;
+        }
+
+        @Override
+        public ViewStateSearch reduce(ViewStateSearch state) {
+            if (!isOpen) return state.toBuilder().movies(Collections.<Item>emptyList()).build();
+            return state;
+        }
+    }
+
 }

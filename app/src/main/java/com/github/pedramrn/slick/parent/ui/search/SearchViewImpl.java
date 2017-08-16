@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -28,7 +29,8 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-08-11
  */
 
-public class SearchViewImpl extends SearchView implements ViewSearch, Observer<ViewStateSearch>, SearchView.OnQueryTextListener {
+public class SearchViewImpl extends SearchView implements ViewSearch, Observer<ViewStateSearch>, SearchView.OnQueryTextListener,
+        SearchView.OnOpenCloseListener {
 
     @Inject
     Provider<PresenterSearch> provider;
@@ -36,6 +38,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     PresenterSearch presenter;
 
     PublishSubject<String> queryNewText = PublishSubject.create();
+    PublishSubject<Boolean> openClose = PublishSubject.create();
     private GroupAdapter adapter;
     private Disposable disposable;
 
@@ -52,22 +55,26 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         super.onAttachedToWindow();
         App.componentMain().inject(this);
         SearchViewImpl_Slick.bind(this);
+        SearchViewImpl_Slick.onAttach(this);
         setOnQueryTextListener(this);
+        setOnOpenCloseListener(this);
         adapter = new GroupAdapter();
         adapter.setHasStableIds(true);
         setAdapter(adapter);
-        presenter.query(queryNewText.filter(new Predicate<String>() {
+        Observable<String> queryNewText = this.queryNewText.filter(new Predicate<String>() {
             @Override
             public boolean test(@NonNull String s) throws Exception {
                 return s.length() > 2;
             }
-        }).debounce(500, TimeUnit.MILLISECONDS));
+        }).debounce(500, TimeUnit.MILLISECONDS);
+        presenter.query(queryNewText, openClose);
         presenter.updateStream().subscribe(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        SearchViewImpl_Slick.onDetach(this);
         dispose(disposable);
     }
 
@@ -93,14 +100,8 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
 
     @Override
     public void onNext(ViewStateSearch state) {
-        Log.d(TAG, "onNext() called with: state = [" + state + "]");
         adapter.clear();
         adapter.addAll(state.movies());
-        if (state.loadingMovies()) {
-            showProgress();
-        } else {
-            hideProgress();
-        }
         renderError(state.errorMovies());
     }
 
@@ -127,5 +128,16 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
             throwable.printStackTrace();
             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onClose() {
+        openClose.onNext(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOpen() {
+        return false;
     }
 }

@@ -21,6 +21,7 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
+import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
@@ -77,6 +78,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     });
 
     private LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+    private SearchViewImpl searchView;
 
 
     @NonNull
@@ -121,6 +123,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         binding.recyclerViewHome.setAdapter(adapterMain);
         // setToolbar(binding.toolbar);
         // binding.searchView.setOnQueryTextListener();
+        searchView = binding.searchView;
+        Log.e(TAG, searchView.toString());
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 
@@ -191,5 +195,15 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     protected void onDestroyView(@NonNull View view) {
         dispose(disposable);
         super.onDestroyView(view);
+    }
+
+    @Override
+    public boolean handleBack() {
+        if (searchView.isSearchOpen()) {
+            searchView.close(true);
+            return true;
+        }
+
+        return super.handleBack();
     }
 }

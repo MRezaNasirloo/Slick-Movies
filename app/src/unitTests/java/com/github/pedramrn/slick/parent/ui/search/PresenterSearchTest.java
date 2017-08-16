@@ -88,7 +88,7 @@ public class PresenterSearchTest {
 
         TestObserver<ViewStateSearch> test = presenterSearch.updateStream().test();
         PublishSubject<String> queryNewText = PublishSubject.<String>create();
-        presenterSearch.query(queryNewText);
+        presenterSearch.query(queryNewText, openClose);
         queryNewText.onNext("star");
         test.awaitCount(2).assertNoErrors().assertValueCount(2);
         queryNewText.onNext("star wars");
