@@ -124,7 +124,7 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         // setToolbar(binding.toolbar);
         // binding.searchView.setOnQueryTextListener();
         searchView = binding.searchView;
-        Log.e(TAG, searchView.toString());
+        ((GroupAdapter) searchView.getAdapter()).setOnItemClickListener(actionDetails);
 
         int pageSize = getResources().getInteger(R.integer.page_size);
 

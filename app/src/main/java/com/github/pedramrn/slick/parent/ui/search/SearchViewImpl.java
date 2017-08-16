@@ -39,15 +39,19 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
 
     PublishSubject<String> queryNewText = PublishSubject.create();
     PublishSubject<Boolean> openClose = PublishSubject.create();
-    private GroupAdapter adapter;
+    private GroupAdapter adapter = new GroupAdapter();
     private Disposable disposable;
 
     public SearchViewImpl(Context context) {
         super(context);
+        adapter.setHasStableIds(true);
+        setAdapter(adapter);
     }
 
     public SearchViewImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
+        adapter.setHasStableIds(true);
+        setAdapter(adapter);
     }
 
     @Override
@@ -58,9 +62,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         SearchViewImpl_Slick.onAttach(this);
         setOnQueryTextListener(this);
         setOnOpenCloseListener(this);
-        adapter = new GroupAdapter();
-        adapter.setHasStableIds(true);
-        setAdapter(adapter);
         Observable<String> queryNewText = this.queryNewText.filter(new Predicate<String>() {
             @Override
             public boolean test(@NonNull String s) throws Exception {
