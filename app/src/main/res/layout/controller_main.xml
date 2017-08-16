@@ -13,6 +13,7 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="?attr/actionBarSize"
             />
 
         <it.sephiroth.android.library.bottomnavigation.BottomNavigation
@@ -21,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:bbn_entries="@menu/navigation"
+            app:bbn_scrollEnabled="true"
             app:layout_behavior="@string/bbn_phone_view_behavior"
             />
     </android.support.design.widget.CoordinatorLayout>
