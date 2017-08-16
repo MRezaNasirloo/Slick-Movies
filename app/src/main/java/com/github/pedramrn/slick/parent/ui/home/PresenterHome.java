@@ -255,7 +255,7 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
     }
 
     @Override
-    public void start() {
+    public void start(ViewHome view) {
 
     }
 

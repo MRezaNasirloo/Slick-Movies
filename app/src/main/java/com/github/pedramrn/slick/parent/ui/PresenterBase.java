@@ -45,7 +45,7 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
     @Override
     public void onViewUp(V view) {
         super.onViewUp(view);
-        if (!hasSubscribed()) start();
+        if (!hasSubscribed()) start(view);
         subscribeIntents(view);
     }
 
@@ -66,8 +66,9 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
 
     /**
      * Only called once during the presenter's lifecycle
+     * @param view
      */
-    public abstract void start();
+    protected abstract void start(V view);
 
     public Observable<S> updateStream() {
         return state;

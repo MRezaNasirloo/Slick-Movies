@@ -107,7 +107,7 @@ class PresenterVideos extends PresenterBase<ViewVideos, ViewStateVideos> {
     }
 
     @Override
-    public void start() {
+    public void start(ViewVideos view) {
 
     }
 }

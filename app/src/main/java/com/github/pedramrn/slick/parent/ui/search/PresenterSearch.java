@@ -51,7 +51,7 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
     private static final String TAG = PresenterSearch.class.getSimpleName();
 
     @Override
-    public void start() {
+    public void start(ViewSearch view) {
         Observable<PartialViewState<ViewStateSearch>> searchMovies = intent(new IntentProvider<String, ViewSearch>() {
             @Override
             public Observable<String> provide(ViewSearch view) {

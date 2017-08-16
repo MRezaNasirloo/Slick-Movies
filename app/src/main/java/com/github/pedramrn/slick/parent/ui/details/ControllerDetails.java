@@ -168,7 +168,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         disposable.add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
         presenter.updateStream().subscribe(this);
-        presenter.getMovieDetails(movie);
 
         return binding.getRoot();
     }
@@ -209,6 +208,11 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         Log.e(TAG, String.format(Locale.ENGLISH, "casts: %d, backdrops: %d, similar: %d", sizeCast, sizeBackdrops, sizeSimilar));
         Log.e(TAG, String.format(Locale.ENGLISH, "Updating the list cost you %sms", delay));
+    }
+
+    @Override
+    public MovieBasic getMovie() {
+        return movie;
     }
 
     @Override
