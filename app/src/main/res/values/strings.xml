@@ -10,4 +10,6 @@
     <string name="transition_poster">transition_poster_%1$d</string>
     <string name="transition_title">transition_title_%1$d</string>
     <string name="read_more">Read more</string>
+    <string name="bio">Bio</string>
+    <string name="bio_empty">We don\'t know much about this person.</string>
 </resources>

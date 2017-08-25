@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.datasource.network;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonPageTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
 
 import io.reactivex.Observable;
@@ -43,4 +44,8 @@ public interface ApiTmdb {
 
     @GET("search/person")
     Observable<PersonPageTmdb> searchPerson(@Query("query") String query, @Query("page") int page);
+
+    @GET("person/{id}?append_to_response=")
+    Observable<PersonTmdb> personDetails(@Path("id") int id);
+
 }

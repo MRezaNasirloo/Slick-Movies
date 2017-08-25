@@ -10,18 +10,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
+import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.ControllerProvider;
 import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerAction;
@@ -29,10 +33,13 @@ import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
+import com.github.pedramrn.slick.parent.ui.people.ControllerPeople;
+import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -46,6 +53,7 @@ import javax.inject.Provider;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -114,7 +122,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(true);
         }
         disposable = new CompositeDisposable();
-        Context context = getApplicationContext();
+        final Context context = getApplicationContext();
 
         GroupAdapter adapterMain = new GroupAdapter();
         GroupAdapter adapterHeader = new GroupAdapter();
@@ -132,24 +140,47 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterHeader.add(updatingHeader);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create(), onItemClickListener);
-        Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", PublishSubject.create()));
+        Consumer<Object> onClickListener = new Consumer<Object>() {
+            @Override
+            public void accept(@NonNull Object o) throws Exception {
+                Toast.makeText(context, "Under Construction", Toast.LENGTH_SHORT).show();
+            }
+        };
+        Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", onClickListener));
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
-        Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", PublishSubject.create()));
+        Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", new Consumer<Object>() {
+            @Override
+            public void accept(@NonNull Object o) throws Exception {
+                // getRouter().pushController(RouterTransaction.with(new ControllerDetails(null)));
+            }
+        }));
         sectionCasts.add(progressiveCast);
+        adapterMain.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                if (item instanceof ItemCast) {
+                    ItemCast itemCast = (ItemCast) item;
+                    Cast cast = itemCast.getCast();
+                    getRouter().pushController(
+                            RouterTransaction.with(
+                                    new ControllerPeople(Person.create(cast.id(), cast.name(), cast.profilePicId()), itemCast.transitionName())));
+                }
+            }
+        });
 
-        Section sectionComments = new Section(new ItemCardHeader(0, "Comments", "See All", PublishSubject.create()));
+        Section sectionComments = new Section(new ItemCardHeader(0, "Comments", "See All", onClickListener));
         sectionComments.add(progressiveComments);
         sectionComments.setPlaceholder(new ItemCastProgressive(-1));
         sectionComments.setHideWhenEmpty(true);
 
         itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
-        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", PublishSubject.create()));
+        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", onClickListener));
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);
 
-        sectionOverview = new Section(new ItemCardHeader(0, "Overview", null, PublishSubject.create()));
+        sectionOverview = new Section(new ItemCardHeader(0, "Overview", null, onClickListener));
 
         adapterMain.add(itemHeader);
         adapterMain.add(sectionCasts);

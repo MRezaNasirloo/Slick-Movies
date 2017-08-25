@@ -27,4 +27,8 @@ public class ItemCast extends ItemCastProgressive {
     public Cast getCast() {
         return cast;
     }
+
+    public String transitionName() {
+        return String.valueOf(cast.uniqueId() + getPosition(this));
+    }
 }

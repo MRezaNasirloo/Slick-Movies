@@ -9,7 +9,7 @@ import com.google.auto.value.AutoValue;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class PersonDomain {
+public abstract class PersonSearchDomain {
 
     public abstract Integer id();
 
@@ -23,7 +23,7 @@ public abstract class PersonDomain {
     public abstract Boolean adult();
 
     public static Builder builder() {
-        return new AutoValue_PersonDomain.Builder();
+        return new AutoValue_PersonSearchDomain.Builder();
     }
 
     @AutoValue.Builder
@@ -38,7 +38,7 @@ public abstract class PersonDomain {
 
         public abstract Builder adult(Boolean adult);
 
-        public abstract PersonDomain build();
+        public abstract PersonSearchDomain build();
     }
     // public abstract List<KnownFor> knownFor();
 

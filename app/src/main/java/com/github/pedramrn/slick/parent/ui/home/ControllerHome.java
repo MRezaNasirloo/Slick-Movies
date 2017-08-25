@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
@@ -34,7 +35,7 @@ import javax.inject.Provider;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -104,7 +105,12 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         Section sectionUpcoming = new Section(new ItemCardHeader(1, "UPCOMING", "See All", null));
         sectionUpcoming.add(itemListUpcoming);
 
-        final PublishSubject<Object> onClickListener = PublishSubject.create();
+        Consumer<Object> onClickListener = new Consumer<Object>() {
+            @Override
+            public void accept(@NonNull Object o) throws Exception {
+                Toast.makeText(getApplicationContext(), "Under Construction...", Toast.LENGTH_SHORT).show();
+            }
+        };
         Section sectionTrending = new Section(new ItemCardHeader(1, "TRENDING", "See All", onClickListener));
 
         adapterTrending.add(progressiveTrending);

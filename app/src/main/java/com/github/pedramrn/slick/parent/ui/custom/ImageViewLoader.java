@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.subjects.CompletableSubject;
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
@@ -46,7 +47,18 @@ public class ImageViewLoader extends AppCompatImageView {
         Picasso.with(context)
                 .load(url)
                 .placeholder(R.drawable.rectangle_no_corners)
-                .noFade()
+                .into(this);
+    }
+
+    public void loadBlur(String url) {
+        if (url == null) {
+            return;
+        }
+        Context context = getContext().getApplicationContext();
+        Picasso.with(context)
+                .load(url)
+                .placeholder(R.drawable.rectangle_no_corners)
+                .transform(new BlurTransformation(getContext()))
                 .into(this);
     }
 

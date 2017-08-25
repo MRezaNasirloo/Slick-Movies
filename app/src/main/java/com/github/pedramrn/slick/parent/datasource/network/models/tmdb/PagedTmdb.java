@@ -4,6 +4,7 @@ import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class PersonPageTmdb {
+public abstract class PagedTmdb<T> {
 
     @SerializedName("page")
     public abstract Integer page();
@@ -25,10 +26,10 @@ public abstract class PersonPageTmdb {
     public abstract Integer totalResults();
 
     @SerializedName("results")
-    public abstract List<PersonSearchTmdb> persons();
+    public abstract List<T> persons();
 
-    public static TypeAdapter<PersonPageTmdb> typeAdapter(Gson gson) {
-        return new AutoValue_PersonPageTmdb.GsonTypeAdapter(gson);
+    public static <T> TypeAdapter<PagedTmdb<T>> typeAdapter(Gson gson, TypeToken<? extends PagedTmdb<T>> typeToken) {
+        return new AutoValue_PagedTmdb.GsonTypeAdapter(gson, typeToken);
     }
 
 }

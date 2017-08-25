@@ -4,6 +4,7 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonPageTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
 import com.google.gson.Gson;
 
@@ -88,6 +89,11 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
     @Override
     public Observable<PersonPageTmdb> searchPerson(@Query("query") String query, @Query("page") int page) {
+        return Observable.never();
+    }
+
+    @Override
+    public Observable<PersonTmdb> personDetails(@Path("id") int id) {
         return Observable.never();
     }
 

@@ -14,7 +14,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
-import io.reactivex.Observer;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -25,9 +25,9 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
 
     private final String title;
     private final String buttonText;
-    private final Observer<Object> onClickListener;
+    private final Consumer<Object> onClickListener;
 
-    public ItemCardHeader(long id, @NonNull String title, @Nullable String buttonText, @Nullable Observer<Object> onClickListener) {
+    public ItemCardHeader(long id, @NonNull String title, @Nullable String buttonText, @Nullable Consumer<Object> onClickListener) {
         super(id);
         this.title = title;
         this.buttonText = buttonText;

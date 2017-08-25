@@ -24,7 +24,7 @@ public abstract class Cast extends AutoBase implements Parcelable, ItemView {
     public abstract String name();
 
     @Nullable
-    protected abstract String profilePath();
+    public abstract String profilePicId();
 
     public abstract String character();
 
@@ -47,26 +47,25 @@ public abstract class Cast extends AutoBase implements Parcelable, ItemView {
 
     @Nullable
     public String profileIcon() {
-        if (profilePath() == null) return null;
-        return "http://image.tmdb.org/t/p/w92" + profilePath();
+        if (profilePicId() == null) return null;
+        return "http://image.tmdb.org/t/p/w92" + profilePicId();
     }
 
     @Nullable
     public String profileOriginal() {
-        if (profilePath() == null) return null;
-        return "http://image.tmdb.org/t/p/original" + profilePath();
+        if (profilePicId() == null) return null;
+        return "http://image.tmdb.org/t/p/original" + profilePicId();
     }
 
-    public static Cast create(Integer id, Integer uniqueId, Integer castId, String creditId, String name, String profilePath, String character,
-                              Integer gender,
+    public static Cast create(Integer id, Integer castId, String creditId, String name, String profilePicId, String character, Integer gender,
                               Integer order) {
         return builder()
                 .id(id)
-                .uniqueId(uniqueId)
+                .uniqueId(id)
                 .castId(castId)
                 .creditId(creditId)
                 .name(name)
-                .profilePath(profilePath)
+                .profilePicId(profilePicId)
                 .character(character)
                 .gender(gender)
                 .order(order)
@@ -91,13 +90,13 @@ public abstract class Cast extends AutoBase implements Parcelable, ItemView {
 
         public abstract Builder name(String name);
 
-        public abstract Builder profilePath(String profilePath);
-
         public abstract Builder character(String character);
 
         public abstract Builder gender(Integer gender);
 
         public abstract Builder order(Integer order);
+
+        public abstract Builder profilePicId(String profilePicId);
 
         public abstract Cast build();
     }

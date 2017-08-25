@@ -40,4 +40,22 @@ public class ImageViewCircular extends AppCompatImageView {
                 .transform(new CropCircleTransformation())
                 .into(this);
     }
+
+    /**
+     * Loads url without placeholder
+     *
+     * @param url the image url
+     */
+    public void loadNP(String url) {
+        if (url == null) {
+            setImageResource(R.drawable.circle);
+            return;
+        }
+        Context context = getContext().getApplicationContext();
+        Picasso.with(context)
+                .load(url)
+                .noPlaceholder()
+                .transform(new CropCircleTransformation())
+                .into(this);
+    }
 }

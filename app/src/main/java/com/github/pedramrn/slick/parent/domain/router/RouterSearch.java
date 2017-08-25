@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.domain.router;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
 import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
-import com.github.pedramrn.slick.parent.domain.model.PersonDomain;
+import com.github.pedramrn.slick.parent.domain.model.PersonSearchDomain;
 
 import io.reactivex.Observable;
 
@@ -23,5 +23,5 @@ public interface RouterSearch {
      * @param page the page number
      * @return a list of persons who match the given query parameter
      */
-    Observable<PagedDomain<PersonDomain>> persons(String query, int page);
+    Observable<PagedDomain<PersonSearchDomain>> persons(String query, int page);
 }

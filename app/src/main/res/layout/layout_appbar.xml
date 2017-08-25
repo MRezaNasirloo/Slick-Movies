@@ -1,0 +1,55 @@
+<android.support.design.widget.AppBarLayout
+    android:id="@+id/appbar"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:fitsSystemWindows="true"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:elevation="0dp"
+    >
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsing_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:contentScrim="?attr/colorPrimary"
+        app:expandedTitleGravity="center|start"
+        app:expandedTitleMarginTop="90dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        >
+
+        <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
+            android:id="@+id/imageView_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="1dp"
+            android:scaleType="centerCrop"
+            app:layout_collapseMode="none"
+            tools:ignore="ContentDescription"
+            tools:src="@mipmap/ic_launcher"
+
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#65222222"
+            />
+
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="none"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
+
+</android.support.design.widget.AppBarLayout>
