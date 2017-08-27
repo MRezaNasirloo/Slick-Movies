@@ -15,33 +15,13 @@ public abstract class ProductionCountry implements SimpleData {
 
     @SerializedName("iso_3166_1")
     public abstract String iso31661();
+
     @SerializedName("name")
     public abstract String name();
 
     @Override
     public String get() {
         return name();
-    }
-
-    public static ProductionCountry create(String iso31661, String name) {
-        return builder()
-                .iso31661(iso31661)
-                .name(name)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ProductionCountry.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder iso31661(String iso31661);
-
-        public abstract Builder name(String name);
-
-        public abstract ProductionCountry build();
     }
 
     public static TypeAdapter<ProductionCountry> typeAdapter(Gson gson) {

@@ -39,12 +39,6 @@ public abstract class CastTmdb {
     @SerializedName("order")
     public abstract Integer order();
 
-    public static CastTmdb create(Integer id, Integer castId, String creditId, String name, String profilePath, String character, Integer gender,
-                                  Integer order) {
-        return new AutoValue_CastTmdb(id, castId, creditId, name, profilePath, character, gender, order);
-    }
-
-
     public static TypeAdapter<CastTmdb> typeAdapter(Gson gson) {
         return new AutoValue_CastTmdb.GsonTypeAdapter(gson);
     }

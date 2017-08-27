@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -27,4 +29,8 @@ public abstract class ImageFileTmdb {
 
     @SerializedName("vote_count")
     public abstract Integer voteCount();
+
+    public static TypeAdapter<ImageFileTmdb> typeAdapter(Gson gson) {
+        return new AutoValue_ImageFileTmdb.GsonTypeAdapter(gson);
+    }
 }

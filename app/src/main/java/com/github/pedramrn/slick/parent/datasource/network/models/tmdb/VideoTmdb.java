@@ -21,10 +21,6 @@ public abstract class VideoTmdb {
     @SerializedName("name")
     public abstract String name();
 
-    public static VideoTmdb create(String type, String key, String name) {
-        return new AutoValue_VideoTmdb(type, key, name);
-    }
-
     public static TypeAdapter<VideoTmdb> typeAdapter(Gson gson) {
         return new AutoValue_VideoTmdb.GsonTypeAdapter(gson);
     }

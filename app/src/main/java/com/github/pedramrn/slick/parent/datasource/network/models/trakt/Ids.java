@@ -24,10 +24,6 @@ public abstract class Ids {
     @SerializedName("tmdb")
     public abstract Integer tmdb();
 
-    public static Ids create(Integer trakt, String slug, String imdb, Integer tmdb) {
-        return new AutoValue_Ids(trakt, slug, imdb, tmdb);
-    }
-
     public static TypeAdapter<Ids> typeAdapter(Gson gson) {
         return new AutoValue_Ids.GsonTypeAdapter(gson);
     }

@@ -36,43 +36,7 @@ public abstract class Crew {
     @SerializedName("profile_path")
     public abstract String profilePath();
 
-    public static Crew create(String creditId, String department, Integer gender, Integer id, String job, String name, String profilePath) {
-        return builder()
-                .creditId(creditId)
-                .department(department)
-                .gender(gender)
-                .id(id)
-                .job(job)
-                .name(name)
-                .profilePath(profilePath)
-                .build();
-    }
-
-
     public static TypeAdapter<Crew> typeAdapter(Gson gson) {
         return new AutoValue_Crew.GsonTypeAdapter(gson);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_Crew.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder creditId(String creditId);
-
-        public abstract Builder department(String department);
-
-        public abstract Builder gender(Integer gender);
-
-        public abstract Builder id(Integer id);
-
-        public abstract Builder job(String job);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder profilePath(String profilePath);
-
-        public abstract Crew build();
     }
 }

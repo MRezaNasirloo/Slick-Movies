@@ -25,27 +25,7 @@ public abstract class ProductionCompany implements SimpleData {
         return name();
     }
 
-    public static ProductionCompany create(String name, Integer id) {
-        return builder()
-                .name(name)
-                .id(id)
-                .build();
-    }
-
     public static TypeAdapter<ProductionCompany> typeAdapter(Gson gson) {
         return new AutoValue_ProductionCompany.GsonTypeAdapter(gson);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ProductionCompany.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder name(String name);
-
-        public abstract Builder id(Integer id);
-
-        public abstract ProductionCompany build();
     }
 }

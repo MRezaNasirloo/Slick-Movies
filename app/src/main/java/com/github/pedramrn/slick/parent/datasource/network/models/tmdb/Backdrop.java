@@ -13,56 +13,27 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class Backdrop implements SimpleData {
 
-
     @SerializedName("aspect_ratio")
     public abstract Float aspectRatio();
+
     @SerializedName("file_path")
     public abstract String filePath();
+
     @SerializedName("height")
     public abstract Integer height();
+
     @SerializedName("vote_average")
     public abstract Float voteAverage();
+
     @SerializedName("vote_count")
     public abstract Integer voteCount();
+
     @SerializedName("width")
     public abstract Integer width();
 
     @Override
     public String get() {
         return filePath();
-    }
-
-    public static Backdrop create(Float aspectRatio, String filePath, Integer height, Float voteAverage, Integer voteCount, Integer width) {
-        return builder()
-                .aspectRatio(aspectRatio)
-                .filePath(filePath)
-                .height(height)
-                .voteAverage(voteAverage)
-                .voteCount(voteCount)
-                .width(width)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_Backdrop.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder aspectRatio(Float aspectRatio);
-
-        public abstract Builder filePath(String filePath);
-
-        public abstract Builder height(Integer height);
-
-        public abstract Builder voteCount(Integer voteCount);
-
-        public abstract Builder width(Integer width);
-
-        public abstract Builder voteAverage(Float voteAverage);
-
-        public abstract Backdrop build();
     }
 
     public static TypeAdapter<Backdrop> typeAdapter(Gson gson) {

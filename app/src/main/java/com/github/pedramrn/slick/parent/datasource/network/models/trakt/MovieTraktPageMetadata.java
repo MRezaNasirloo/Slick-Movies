@@ -18,10 +18,6 @@ public abstract class MovieTraktPageMetadata {
     @SerializedName("movie")
     public abstract MovieTraktMetadata movie();
 
-    public static MovieTraktPageMetadata create(MovieTraktMetadata movie) {
-        return new AutoValue_MovieTraktPageMetadata(movie);
-    }
-
     public static TypeAdapter<MovieTraktPageMetadata> typeAdapter(Gson gson) {
         return new AutoValue_MovieTraktPageMetadata.GsonTypeAdapter(gson);
     }

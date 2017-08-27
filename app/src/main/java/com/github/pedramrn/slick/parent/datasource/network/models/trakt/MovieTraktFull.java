@@ -67,13 +67,6 @@ public abstract class MovieTraktFull {
     @SerializedName("certification")
     public abstract String certification();
 
-    public static MovieTraktFull create(String title, Integer year, Ids ids, String tagline, String overview, String released, Integer runtime,
-                                        String trailer, String homepage, Float rating, Integer votes, String updatedAt, String language,
-                                        List<String> availableTranslations, List<String> genres, String certification) {
-        return new AutoValue_MovieTraktFull(title, year, ids, tagline, overview, released, runtime, trailer, homepage, rating, votes, updatedAt,
-                language, availableTranslations, genres, certification);
-    }
-
     public static TypeAdapter<MovieTraktFull> typeAdapter(Gson gson) {
         return new AutoValue_MovieTraktFull.GsonTypeAdapter(gson);
     }

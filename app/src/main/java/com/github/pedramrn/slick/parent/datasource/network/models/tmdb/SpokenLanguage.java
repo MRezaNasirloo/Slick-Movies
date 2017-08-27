@@ -13,8 +13,8 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class SpokenLanguage implements SimpleData {
 
-    @SerializedName("iso_639_1")
-    public abstract String iso6391();
+    // @SerializedName("iso_639_1")
+    // public abstract String iso6391();
 
     @SerializedName("name")
     public abstract String name();
@@ -22,26 +22,6 @@ public abstract class SpokenLanguage implements SimpleData {
     @Override
     public String get() {
         return name();
-    }
-
-    public static SpokenLanguage create(String iso6391, String name) {
-        return builder()
-                .iso6391(iso6391)
-                .name(name)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_SpokenLanguage.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder iso6391(String iso6391);
-
-        public abstract Builder name(String name);
-
-        public abstract SpokenLanguage build();
     }
 
     public static TypeAdapter<SpokenLanguage> typeAdapter(Gson gson) {

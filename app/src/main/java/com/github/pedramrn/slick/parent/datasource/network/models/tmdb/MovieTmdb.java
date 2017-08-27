@@ -114,18 +114,6 @@ public abstract class MovieTmdb {
     @SerializedName("videos")
     public abstract VideoTmdbResults videos();
 
-    public static MovieTmdb create(Integer id, String imdbId, Boolean adult, String backdropPath, Object belongsToCollection, Integer budget,
-                                   List<Genre> genres, String homepage, String originalLanguage, String originalTitle, String overview,
-                                   Float popularity,
-                                   String posterPath, List<ProductionCompany> productionCompanies, List<ProductionCountry> productionCountries,
-                                   String releaseDate, Long revenue, Integer runtime, List<SpokenLanguage> spokenLanguages, String status,
-                                   String tagline, String title, Boolean video, Float voteAverage, Integer voteCount, Credit credits,
-                                   ImageTmdb images, VideoTmdbResults videos) {
-        return new AutoValue_MovieTmdb(id, imdbId, adult, backdropPath, belongsToCollection, budget, genres, homepage, originalLanguage,
-                originalTitle, overview, popularity, posterPath, productionCompanies, productionCountries, releaseDate, revenue, runtime,
-                spokenLanguages, status, tagline, title, video, voteAverage, voteCount, credits, images, videos);
-    }
-
     public static TypeAdapter<MovieTmdb> typeAdapter(Gson gson) {
         return new AutoValue_MovieTmdb.GsonTypeAdapter(gson);
     }
