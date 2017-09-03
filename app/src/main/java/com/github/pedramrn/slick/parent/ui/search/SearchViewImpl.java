@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.search;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
@@ -72,6 +73,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         setAdapter(adapter);
         setOnQueryTextListener(this);
         setOnOpenCloseListener(this);
+        mSearchEditText.setInputType(InputType.TYPE_CLASS_TEXT);
     }
 
     @Override

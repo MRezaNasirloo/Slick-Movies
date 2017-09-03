@@ -62,8 +62,18 @@ public abstract class PersonTmdb {
     @SerializedName("homepage")
     public abstract String homepage();
 
-    @SerializedName("profiles")
-    public abstract List<ImageFileTmdb> images();
+    @Nullable
+    @SerializedName("images")
+    public abstract Profiles images();
+
+    @Nullable
+    @SerializedName("movie_credits")
+    public abstract CreditsPersonDetails creditsMovie();
+
+    @Nullable
+    @SerializedName("tv_credits")
+    public abstract CreditsPersonDetails creditsTV();
+
 
     public static TypeAdapter<PersonTmdb> typeAdapter(Gson gson) {
         return new AutoValue_PersonTmdb.GsonTypeAdapter(gson);

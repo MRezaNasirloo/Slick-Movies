@@ -98,6 +98,11 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
     }
 
     @Override
+    public Observable<PersonTmdb> personDetailsWithCredits(@Path("id") int id) {
+        return Observable.never();
+    }
+
+    @Override
     protected Class<ApiTmdb> getApiClassType() {
         return ApiTmdb.class;
     }

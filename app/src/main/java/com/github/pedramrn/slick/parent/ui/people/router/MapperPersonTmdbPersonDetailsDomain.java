@@ -36,7 +36,7 @@ class MapperPersonTmdbPersonDetailsDomain implements Function<PersonTmdb, Person
                 pt.popularity(),
                 pt.adult(),
                 pt.homepage(),
-                Observable.fromIterable(pt.images()).map(new Function<ImageFileTmdb, String>() {
+                Observable.fromIterable(pt.images().profiles()).map(new Function<ImageFileTmdb, String>() {
                     @Override
                     public String apply(@NonNull ImageFileTmdb imageFileTmdb) throws Exception {
                         return imageFileTmdb.filePath();

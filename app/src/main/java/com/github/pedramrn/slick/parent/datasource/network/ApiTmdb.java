@@ -45,7 +45,10 @@ public interface ApiTmdb {
     @GET("search/person")
     Observable<PersonPageTmdb> searchPerson(@Query("query") String query, @Query("page") int page);
 
-    @GET("person/{id}?append_to_response=")
+    @GET("person/{id}?append_to_response=images")
     Observable<PersonTmdb> personDetails(@Path("id") int id);
+
+    @GET("person/{id}?append_to_response=movie_credits,tv_credits")
+    Observable<PersonTmdb> personDetailsWithCredits(@Path("id") int id);
 
 }

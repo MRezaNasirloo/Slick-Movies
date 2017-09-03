@@ -46,6 +46,11 @@ public class PresenterPeople extends PresenterBase<ViewPeople, ViewStatePeople> 
                     public PartialViewState<ViewStatePeople> apply(@NonNull PersonDetails personDetails) throws Exception {
                         return new ViewStatePeoplePartials.Person(personDetails);
                     }
+                }).onErrorReturn(new Function<Throwable, PartialViewState<ViewStatePeople>>() {
+                    @Override
+                    public PartialViewState<ViewStatePeople> apply(@NonNull Throwable throwable) throws Exception {
+                        return new ViewStatePeoplePartials.ErrorPerson(throwable);
+                    }
                 })
                 .subscribeOn(io);
 
