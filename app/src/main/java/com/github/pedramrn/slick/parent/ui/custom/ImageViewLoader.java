@@ -70,7 +70,6 @@ public class ImageViewLoader extends AppCompatImageView {
         Picasso.with(context)
                 .load(url)
                 .noFade()
-                .placeholder(R.drawable.rectangle_no_corners)
                 .into(this);
     }
 

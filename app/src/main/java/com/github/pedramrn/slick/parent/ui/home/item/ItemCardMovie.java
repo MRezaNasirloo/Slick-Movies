@@ -4,11 +4,18 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.support.annotation.Nullable;
+import android.text.Layout;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.AlignmentSpan;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.xwray.groupie.Item;
+
+import java.text.ParseException;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -33,11 +40,20 @@ public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie {
 
     @Override
     public void bind(RowCardBinding viewBinding, int position) {
-        viewBinding.textViewTitle.setText(movie.title());
+        SpannableStringBuilder builder = new SpannableStringBuilder(movie.title());
+        try {
+            builder.append("  (" + DateUtils.formatyyyy(DateUtils.toDate(movie.releaseDate())) + ")",
+                    new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            viewBinding.textViewTitle.setText(builder);
+        } catch (ParseException | NullPointerException e) {
+            viewBinding.textViewTitle.setText(builder);
+        }
         viewBinding.textViewTitle.setBackground(null);
         viewBinding.imageViewPoster.setBackground(null);
         viewBinding.imageViewPoster.setTransitionName(transitionName);
+        viewBinding.imageViewPoster.loadBlur(movie.thumbnailTinyPoster());
         viewBinding.imageViewPoster.load(movie.thumbnailPoster());
+
     }
 
     @Override

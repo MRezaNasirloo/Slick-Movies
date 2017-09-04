@@ -64,7 +64,7 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                 new SpannableStringBuilder(voteAveTmdb).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
-        viewBinding.imageViewIcon.loadNoFade(movie.thumbnailPoster());
+        viewBinding.imageViewIcon.load(movie.thumbnailPoster());
 
         if (movie.voteAverageTrakt() != null) {
             viewBinding.textViewScoreTrakt.setBackground(null);
