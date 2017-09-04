@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
@@ -106,6 +107,28 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
                 .popularity(popularity)
                 .video(video)
                 .build();
+    }
+
+    public static MovieSmall create(CastOrCrewPersonDetails coc) {
+        return create(
+                coc.id(),
+                coc.title(),
+                coc.overview(),
+                coc.posterPath(),
+                coc.backdropPath(),
+                coc.releaseDate(),
+                coc.voteAverage(),
+                coc.voteCount(),
+                null,
+                null,
+                null,
+                coc.id(),
+                coc.originalTitle(),
+                coc.originalLanguage(),
+                coc.adult(),
+                coc.popularity(),
+                false
+        );
     }
 
 

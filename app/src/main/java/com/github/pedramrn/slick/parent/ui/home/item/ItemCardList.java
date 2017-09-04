@@ -53,7 +53,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
     public ItemCardList(@NonNull Context context,
                         @NonNull GroupAdapter adapter,
                         @NonNull String tag,
-                        @NonNull Observer<Integer> observer,
+                        @Nullable Observer<Integer> observer,
                         @Nullable OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
         context = context.getApplicationContext();
@@ -83,7 +83,9 @@ public class ItemCardList extends Item<RowCardListBinding> {
         recyclerView.setAdapter(adapter);
         snapHelper.attachToRecyclerView(recyclerView);
         layoutManager.scrollToPosition(scrollPos);
-        registerLoadMoreTrigger(recyclerView).subscribe(observer);
+        if (observer != null) {
+            registerLoadMoreTrigger(recyclerView).subscribe(observer);
+        }
         adapter.setOnItemClickListener(onItemClickListener);
     }
 

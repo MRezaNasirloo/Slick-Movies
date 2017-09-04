@@ -17,6 +17,10 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> {
 
     protected final CastOrCrewPersonDetails coc;
 
+    public CastOrCrewPersonDetails getCoc() {
+        return coc;
+    }
+
     public ItemMovieCast(CastOrCrewPersonDetails coc) {
         this.coc = coc;
     }

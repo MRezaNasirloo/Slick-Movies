@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
@@ -165,7 +166,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
                     Cast cast = itemCast.getCast();
                     getRouter().pushController(
                             RouterTransaction.with(
-                                    new ControllerPeople(Person.create(cast.id(), cast.name(), cast.profilePicId()), itemCast.transitionName())));
+                                    new ControllerPeople(Person.create(cast.id(), cast.name(), cast.profilePicId()), itemCast.transitionName()))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
                 }
             }
         });

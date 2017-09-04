@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,14 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemCreditsProgressive;
+import com.github.pedramrn.slick.parent.ui.people.item.ItemMovieCast;
+import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
@@ -91,7 +98,13 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
                 new ItemCardList(getApplicationContext(), adapterMovies, MOVIES, PublishSubject.<Integer>create(), new OnItemClickListener() {
                     @Override
                     public void onItemClick(Item item, View view) {
-
+                        if (item instanceof ItemMovieCast) {
+                            CastOrCrewPersonDetails coc = ((ItemMovieCast) item).getCoc();
+                            getRouter().pushController(RouterTransaction.with(new ControllerDetails(MovieSmall.create(coc), null))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler())
+                            );
+                        }
                     }
                 });
 
@@ -103,13 +116,12 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
         adapterTvShows.add(new ItemCreditsProgressive());
         adapterTvShows.add(new ItemCreditsProgressive());
         adapterTvShows.add(new ItemCreditsProgressive());
-        ItemCardList tvShows =
-                new ItemCardList(getApplicationContext(), adapterTvShows, TV_SHOWS, PublishSubject.<Integer>create(), new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Item item, View view) {
-
-                    }
-                });
+        ItemCardList tvShows = new ItemCardList(getApplicationContext(), adapterTvShows, TV_SHOWS, null, new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                Snackbar.make(getView(), "Under Construction!!!", Snackbar.LENGTH_LONG).show();
+            }
+        });
 
         Section sectionTvShows = new Section(new ItemCardHeader(0, "TV Shows", null, null));
         sectionTvShows.add(tvShows);
