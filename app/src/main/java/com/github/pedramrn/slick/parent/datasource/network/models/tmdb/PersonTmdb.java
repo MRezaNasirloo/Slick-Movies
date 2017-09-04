@@ -68,11 +68,11 @@ public abstract class PersonTmdb {
 
     @Nullable
     @SerializedName("movie_credits")
-    public abstract CreditsPersonDetails creditsMovie();
+    public abstract CreditsPersonDetailsTmdb creditsMovie();
 
     @Nullable
     @SerializedName("tv_credits")
-    public abstract CreditsPersonDetails creditsTV();
+    public abstract CreditsPersonDetailsTmdb creditsTV();
 
 
     public static TypeAdapter<PersonTmdb> typeAdapter(Gson gson) {

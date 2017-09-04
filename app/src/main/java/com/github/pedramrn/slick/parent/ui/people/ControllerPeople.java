@@ -17,17 +17,23 @@ import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
-import com.github.pedramrn.slick.parent.ui.people.item.ItemPersonDetails;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
+import com.github.pedramrn.slick.parent.ui.people.item.ItemCreditsProgressive;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
+import com.xwray.groupie.Section;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * A simple {@link Controller} subclass.
@@ -45,6 +51,10 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
     private int maxScroll;
     private ControllerPeopleBinding binding;
     private int deltaHeight;
+    private String TV_SHOWS = "TV Shows";
+    private String MOVIES = "Movies";
+    private GroupAdapter adapterMovies;
+    private GroupAdapter adapterTvShows;
 
     public ControllerPeople(Person person, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -72,6 +82,42 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        adapterMovies = new GroupAdapter();
+        adapterMovies.add(new ItemCreditsProgressive());
+        adapterMovies.add(new ItemCreditsProgressive());
+        adapterMovies.add(new ItemCreditsProgressive());
+        ItemCardList movies =
+                new ItemCardList(getApplicationContext(), adapterMovies, MOVIES, PublishSubject.<Integer>create(), new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Item item, View view) {
+
+                    }
+                });
+
+
+        Section sectionMovies = new Section(new ItemCardHeader(0, "Movies", null, null));
+        sectionMovies.add(movies);
+
+        adapterTvShows = new GroupAdapter();
+        adapterTvShows.add(new ItemCreditsProgressive());
+        adapterTvShows.add(new ItemCreditsProgressive());
+        adapterTvShows.add(new ItemCreditsProgressive());
+        ItemCardList tvShows =
+                new ItemCardList(getApplicationContext(), adapterTvShows, TV_SHOWS, PublishSubject.<Integer>create(), new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Item item, View view) {
+
+                    }
+                });
+
+        Section sectionTvShows = new Section(new ItemCardHeader(0, "TV Shows", null, null));
+        sectionTvShows.add(tvShows);
+
+        adapter.add(sectionMovies);
+        adapter.add(sectionTvShows);
+
+
         binding.imageViewHeader.loadBlur(person.profileThumbnail());
         binding.imageViewHeader.loadBlur(person.profileMedium());
         binding.imageViewProfile.load(person.profileThumbnail());
@@ -97,9 +143,21 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
     public void onNext(ViewStatePeople viewStatePeople) {
         PersonDetails personDetails = viewStatePeople.personDetails();
         setHeader(personDetails);
-        int itemCount = adapter.getItemCount();
-        if (itemCount == 0 && personDetails != null) {
-            adapter.add(0, new ItemPersonDetails(personDetails));
+        Item bio = viewStatePeople.itemBio();
+        if (bio != null && adapter.getAdapterPosition(bio) == -1) {
+            adapter.add(2, bio);
+        }
+
+        if (!viewStatePeople.moviesCast().isEmpty() || !viewStatePeople.moviesCrew().isEmpty()) {
+            adapterMovies.clear();
+            adapterMovies.addAll(viewStatePeople.moviesCast());
+            adapterMovies.addAll(viewStatePeople.moviesCrew());
+        }
+
+        if (!viewStatePeople.tvShowsCast().isEmpty() || !viewStatePeople.tvShowsCrew().isEmpty()) {
+            adapterTvShows.clear();
+            adapterTvShows.addAll(viewStatePeople.tvShowsCast());
+            adapterTvShows.addAll(viewStatePeople.tvShowsCrew());
         }
 
         renderError(viewStatePeople.errorPersonDetails());

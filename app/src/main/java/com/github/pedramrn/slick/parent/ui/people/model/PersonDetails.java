@@ -8,7 +8,6 @@ import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.google.auto.value.AutoValue;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -56,17 +55,26 @@ public abstract class PersonDetails {
 
     public abstract List<String> images();
 
+    public abstract List<CastOrCrewPersonDetails> movieCast();
+
+    public abstract List<CastOrCrewPersonDetails> movieCrew();
+
+    public abstract List<CastOrCrewPersonDetails> tvCast();
+
+    public abstract List<CastOrCrewPersonDetails> tvCrew();
+
+    public abstract Builder toBuilder();
+
     public CharSequence nameBorn() {
         String name = name() + "\n";
-        SimpleDateFormat dateFormatNum = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
-        SimpleDateFormat dateFormatName = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+
         String born;
         String placeOfBirth = placeOfBirth();
         placeOfBirth = placeOfBirth == null ? "" : ", " + placeOfBirth;
         try {
-            Date date = dateFormatNum.parse(birthday());
+            Date date = DateUtils.toDate(birthday());
             int age = DateUtils.age(date);
-            born = String.format(Locale.getDefault(), "\nBorn: %s (%d)%s", dateFormatName.format(date), age, placeOfBirth);
+            born = String.format(Locale.getDefault(), "\nBorn: %s (%d)%s", DateUtils.formatMMMM_dd_yyyy(date), age, placeOfBirth);
         } catch (ParseException | NullPointerException e) {
             born = "\nBorn: n/a" + placeOfBirth;
         }
@@ -80,9 +88,72 @@ public abstract class PersonDetails {
     public static PersonDetails create(Integer id, String imdbId, String name, String biography, String placeOfBirth, String profilePicId,
                                        Integer gender,
                                        String birthday, String deathday, List<String> alsoKnownAs, Float popularity, Boolean adult, String homepage,
-                                       List<String> images) {
-        return new AutoValue_PersonDetails(id, imdbId, name, biography, placeOfBirth, profilePicId, gender, birthday, deathday, alsoKnownAs,
-                popularity, adult, homepage, images);
+                                       List<String> images, List<CastOrCrewPersonDetails> movieCast, List<CastOrCrewPersonDetails> movieCrew,
+                                       List<CastOrCrewPersonDetails> tvCast, List<CastOrCrewPersonDetails> tvCrew) {
+        return builder()
+                .id(id)
+                .imdbId(imdbId)
+                .name(name)
+                .biography(biography)
+                .placeOfBirth(placeOfBirth)
+                .profilePicId(profilePicId)
+                .gender(gender)
+                .birthday(birthday)
+                .deathday(deathday)
+                .alsoKnownAs(alsoKnownAs)
+                .popularity(popularity)
+                .adult(adult)
+                .homepage(homepage)
+                .images(images)
+                .movieCast(movieCast)
+                .movieCrew(movieCrew)
+                .tvCast(tvCast)
+                .tvCrew(tvCrew)
+                .build();
     }
 
+    public static Builder builder() {
+        return new AutoValue_PersonDetails.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(Integer id);
+
+        public abstract Builder imdbId(String imdbId);
+
+        public abstract Builder name(String name);
+
+        public abstract Builder biography(String biography);
+
+        public abstract Builder placeOfBirth(String placeOfBirth);
+
+        public abstract Builder profilePicId(String profilePicId);
+
+        public abstract Builder gender(Integer gender);
+
+        public abstract Builder birthday(String birthday);
+
+        public abstract Builder deathday(String deathday);
+
+        public abstract Builder alsoKnownAs(List<String> alsoKnownAs);
+
+        public abstract Builder popularity(Float popularity);
+
+        public abstract Builder adult(Boolean adult);
+
+        public abstract Builder homepage(String homepage);
+
+        public abstract Builder images(List<String> images);
+
+        public abstract Builder movieCast(List<CastOrCrewPersonDetails> movieCast);
+
+        public abstract Builder movieCrew(List<CastOrCrewPersonDetails> movieCrew);
+
+        public abstract Builder tvCast(List<CastOrCrewPersonDetails> tvCast);
+
+        public abstract Builder tvCrew(List<CastOrCrewPersonDetails> tvCrew);
+
+        public abstract PersonDetails build();
+    }
 }

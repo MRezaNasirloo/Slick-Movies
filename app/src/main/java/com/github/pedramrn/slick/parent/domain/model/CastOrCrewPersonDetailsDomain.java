@@ -1,11 +1,8 @@
-package com.github.pedramrn.slick.parent.datasource.network.models.tmdb;
+package com.github.pedramrn.slick.parent.domain.model;
 
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -15,35 +12,30 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class CastOrCrewPersonDetailsTmdb {
+public abstract class CastOrCrewPersonDetailsDomain {
 
     //crew/cast data
 
-    @SerializedName("id")
     public abstract Integer id();
 
-    @SerializedName("credit_id")
     public abstract String creditId();
 
     /**
      * NOTE: for casts only, otherwise null will be returned
      */
     @Nullable
-    @SerializedName("character")
     public abstract String character();
 
     /**
      * NOTE: for crews only, otherwise null will be returned
      */
     @Nullable
-    @SerializedName("job")
     public abstract String job();
 
     /**
      * NOTE: for crews only, otherwise null will be returned
      */
     @Nullable
-    @SerializedName("department")
     public abstract String department();
 
     /**
@@ -52,7 +44,6 @@ public abstract class CastOrCrewPersonDetailsTmdb {
      * @return the episode counts that this crew/cast has took part in it.
      */
     @Nullable
-    @SerializedName("episode_count")
     public abstract Integer episodeCount();
 
     //movie or tv data
@@ -61,80 +52,72 @@ public abstract class CastOrCrewPersonDetailsTmdb {
      * NOTE: for TV shows only, otherwise returns null
      */
     @Nullable
-    @SerializedName("name")
     public abstract String name();
 
     /**
      * NOTE: for TV shows only, otherwise returns null
      */
     @Nullable
-    @SerializedName("original_name")
     public abstract String originalName();
 
     /**
      * NOTE: for Movies only, otherwise returns null
      */
     @Nullable
-    @SerializedName("title")
     public abstract String title();
 
     /**
      * NOTE: for Movies only, otherwise returns null
      */
     @Nullable
-    @SerializedName("original_title")
     public abstract String originalTitle();
 
     @Nullable
-    @SerializedName("overview")
     public abstract String overview();
 
     @Nullable
-    @SerializedName("poster_path")
     public abstract String posterPath();
 
     @Nullable
-    @SerializedName("backdrop_path")
     public abstract String backdropPath();
 
     /**
      * NOTE: for TV shows only, otherwise returns null
      */
     @Nullable
-    @SerializedName("first_air_date")
     public abstract String firstAirDate();
 
     /**
      * NOTE: for Movies only, otherwise returns null
      */
     @Nullable
-    @SerializedName("release_date")
     public abstract String releaseDate();
 
     @Nullable
-    @SerializedName("original_language")
     public abstract String originalLanguage();
 
     @Nullable
-    @SerializedName("adult")
     public abstract Boolean adult();
 
-    @SerializedName("origin_country")
     public abstract List<String> originCountry();
 
-    @SerializedName("genre_ids")
     public abstract List<Integer> genreIds();
 
-    @SerializedName("popularity")
     public abstract Float popularity();
 
-    @SerializedName("vote_count")
     public abstract Integer voteCount();
 
-    @SerializedName("vote_average")
     public abstract Float voteAverage();
 
-    public static TypeAdapter<CastOrCrewPersonDetailsTmdb> typeAdapter(Gson gson) {
-        return new AutoValue_CastOrCrewPersonDetailsTmdb.GsonTypeAdapter(gson);
+    public static CastOrCrewPersonDetailsDomain create(Integer id, String creditId, String character, String job, String department,
+                                                       Integer episodeCount,
+                                                       String name, String originalName, String title, String originalTitle, String overview,
+                                                       String posterPath, String backdropPath, String firstAirDate, String releaseDate,
+                                                       String originalLanguage, Boolean adult, List<String> originCountry, List<Integer> genreIds,
+                                                       Float popularity, Integer voteCount, Float voteAverage) {
+        return new AutoValue_CastOrCrewPersonDetailsDomain(id, creditId, character, job, department, episodeCount, name, originalName, title,
+                originalTitle, overview, posterPath, backdropPath, firstAirDate, releaseDate, originalLanguage, adult, originCountry, genreIds,
+                popularity, voteCount, voteAverage);
     }
+
 }

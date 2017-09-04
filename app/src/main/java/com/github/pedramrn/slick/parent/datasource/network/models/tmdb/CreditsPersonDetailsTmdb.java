@@ -12,7 +12,7 @@ import java.util.List;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class CreditsPersonDetails {
+public abstract class CreditsPersonDetailsTmdb {
 
     @SerializedName("cast")
     public abstract List<CastOrCrewPersonDetailsTmdb> cast();
@@ -20,7 +20,7 @@ public abstract class CreditsPersonDetails {
     @SerializedName("crew")
     public abstract List<CastOrCrewPersonDetailsTmdb> crew();
 
-    public static TypeAdapter<CreditsPersonDetails> typeAdapter(Gson gson) {
-        return new AutoValue_CreditsPersonDetails.GsonTypeAdapter(gson);
+    public static TypeAdapter<CreditsPersonDetailsTmdb> typeAdapter(Gson gson) {
+        return new AutoValue_CreditsPersonDetailsTmdb.GsonTypeAdapter(gson);
     }
 }

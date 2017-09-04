@@ -10,11 +10,11 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-08-22
  */
 
-public class ItemPersonDetails extends Item<RowPersonDetailsBinding> {
+public class ItemBio extends Item<RowPersonDetailsBinding> {
 
     private final PersonDetails personDetails;
 
-    public ItemPersonDetails(PersonDetails personDetails) {
+    public ItemBio(PersonDetails personDetails) {
         super(0);
         this.personDetails = personDetails;
     }

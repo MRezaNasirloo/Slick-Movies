@@ -29,4 +29,7 @@ public class RouterPersonImpl implements RouterPerson {
         return apiTmdb.personDetails(id).map(mapper);
     }
 
+    public Observable<PersonDetailsDomain> works(int id) {
+        return apiTmdb.personDetailsWithCredits(id).map(mapper);
+    }
 }
