@@ -7,6 +7,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -43,8 +44,8 @@ public class ImageViewLoader extends AppCompatImageView {
         if (url == null) {
             return;
         }
-        Context context = getContext().getApplicationContext();
-        Picasso.with(context)
+        Context context = getContext();
+        picasso(context)
                 .load(url)
                 .placeholder(R.drawable.rectangle_no_corners)
                 .into(this);
@@ -54,8 +55,8 @@ public class ImageViewLoader extends AppCompatImageView {
         if (url == null) {
             return;
         }
-        Context context = getContext().getApplicationContext();
-        Picasso.with(context)
+        Context context = getContext();
+        picasso(context)
                 .load(url)
                 .placeholder(R.drawable.rectangle_no_corners)
                 .transform(new BlurTransformation(getContext()))
@@ -66,10 +67,11 @@ public class ImageViewLoader extends AppCompatImageView {
         if (url == null) {
             return;
         }
-        Context context = getContext().getApplicationContext();
-        Picasso.with(context)
+        Context context = getContext();
+        picasso(context)
                 .load(url)
                 .noFade()
+                .placeholder(R.drawable.rectangle_no_corners)
                 .into(this);
     }
 
@@ -85,13 +87,13 @@ public class ImageViewLoader extends AppCompatImageView {
                         onCompleteGlide.onCompleteGlide();
                     }
                 });
-        final Context context = getContext().getApplicationContext();
-        Picasso.with(context)
+        final Context context = getContext();
+        picasso(context)
                 .load(url)
                 .fetch(new Callback() {
                     @Override
                     public void onSuccess() {
-                        Picasso.with(context).load(url).noFade().noPlaceholder().into(ImageViewLoader.this);
+                        picasso(context).load(url).noFade().noPlaceholder().into(ImageViewLoader.this);
                         subject.onComplete();
                     }
 
@@ -108,12 +110,21 @@ public class ImageViewLoader extends AppCompatImageView {
         if (url == null) {
             return;
         }
-        Context context = getContext().getApplicationContext();
-        Picasso.with(context)
+        Context context = getContext();
+        picasso(context)
                 .load(url)
                 .placeholder(R.drawable.rectangle)
                 .transform(new RoundedCornersTransformation(context.getResources().getDimensionPixelSize(dimen), 0))
                 .into(this);
+    }
+
+    protected Picasso picasso(Context context) {
+        Picasso picasso = Picasso.with(context);
+        if (BuildConfig.DEBUG) {
+            picasso.setLoggingEnabled(true);
+            picasso.setIndicatorsEnabled(true);
+        }
+        return picasso;
     }
 
     private static final String TAG = ImageViewLoader.class.getSimpleName();

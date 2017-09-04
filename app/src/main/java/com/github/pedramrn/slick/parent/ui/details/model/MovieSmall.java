@@ -37,7 +37,7 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
     @Override
     public String thumbnailPoster() {
         if (backdropPath() == null) return null;
-        return "http://image.tmdb.org/t/p/w300" + posterPath();
+        return "http://image.tmdb.org/t/p/w342" + posterPath();
     }
 
     @Nullable
