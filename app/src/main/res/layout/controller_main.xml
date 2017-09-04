@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:bbn_entries="@menu/navigation"
-            app:bbn_scrollEnabled="true"
+            app:bbn_scrollEnabled="false"
             app:layout_behavior="@string/bbn_phone_view_behavior"
             />
     </android.support.design.widget.CoordinatorLayout>

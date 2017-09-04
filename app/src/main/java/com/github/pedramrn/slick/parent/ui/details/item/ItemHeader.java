@@ -7,8 +7,10 @@ import android.text.style.RelativeSizeSpan;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.xwray.groupie.Item;
 
+import java.text.ParseException;
 import java.util.Locale;
 
 import io.reactivex.Observable;
@@ -52,7 +54,11 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                     }
                 }).blockingGet());
         // FIXME: 2017-07-15 release date maybe null
-        viewBinding.textViewRelease.setText(movie.releaseDate());
+        try {
+            viewBinding.textViewRelease.setText(DateUtils.formatMMMM_dd_yyyy(DateUtils.toDate(movie.releaseDate())));
+        } catch (ParseException | NullPointerException e) {
+            viewBinding.textViewRelease.setText(movie.releaseDate());
+        }
         String voteAveTmdb = String.valueOf(movie.voteAverageTmdb());
         SpannableStringBuilder voteAveSpannedTmdb =
                 new SpannableStringBuilder(voteAveTmdb).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
