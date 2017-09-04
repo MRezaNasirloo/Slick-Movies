@@ -34,6 +34,7 @@ public abstract class PersonTmdb {
     @SerializedName("place_of_birth")
     public abstract String placeOfBirth();
 
+    @Nullable
     @SerializedName("profile_path")
     public abstract String profilePath();
 

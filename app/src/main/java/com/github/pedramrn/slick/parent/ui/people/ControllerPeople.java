@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
@@ -43,7 +42,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
- * A simple {@link Controller} subclass.
+ * FIXME: 2017-09-05 scrolling issue with collapsing toolbar
+ * FIXME: 2017-09-05 the controller does not retain scroll position
  */
 public class ControllerPeople extends ControllerElm<ViewStatePeople> implements ViewPeople, AppBarLayout.OnOffsetChangedListener {
 
@@ -54,14 +54,17 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
 
     private final String transitionName;
     private final Person person;
+
+    private final String TV_SHOWS = "TV Shows";
+    private final String MOVIES = "Movies";
+
     private GroupAdapter adapter;
-    private int maxScroll;
-    private ControllerPeopleBinding binding;
-    private int deltaHeight;
-    private String TV_SHOWS = "TV Shows";
-    private String MOVIES = "Movies";
     private GroupAdapter adapterMovies;
     private GroupAdapter adapterTvShows;
+
+    private ControllerPeopleBinding binding;
+    private int maxScroll;
+    private int deltaHeight;
 
     public ControllerPeople(Person person, String transitionName) {
         this(new BundleBuilder(new Bundle())

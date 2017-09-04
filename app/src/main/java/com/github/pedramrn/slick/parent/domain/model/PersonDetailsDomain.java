@@ -25,6 +25,7 @@ public abstract class PersonDetailsDomain {
     @Nullable
     public abstract String placeOfBirth();
 
+    @Nullable
     public abstract String profilePicId();
 
     @Nullable

@@ -33,6 +33,7 @@ public abstract class PersonDetails {
     @Nullable
     public abstract String placeOfBirth();
 
+    @Nullable
     public abstract String profilePicId();
 
     @Nullable
