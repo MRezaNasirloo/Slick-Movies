@@ -63,6 +63,18 @@ public class ImageViewLoader extends AppCompatImageView {
                 .into(this);
     }
 
+    public void loadBlurNP(String url) {
+        if (url == null) {
+            return;
+        }
+        Context context = getContext();
+        picasso(context)
+                .load(url)
+                .noPlaceholder()
+                .transform(new BlurTransformation(getContext()))
+                .into(this);
+    }
+
     public void loadNoFade(String url) {
         if (url == null) {
             return;

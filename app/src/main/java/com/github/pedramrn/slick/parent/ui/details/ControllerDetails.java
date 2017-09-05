@@ -237,7 +237,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         final MovieBasic movie = state.movieBasic();
 
         binding.collapsingToolbar.setTitle(movie.title());
-        binding.imageViewHeader.loadBlur(movie.thumbnailPoster());
+        binding.imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
         updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
 
