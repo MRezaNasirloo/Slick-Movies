@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -114,8 +115,8 @@ public class ModuleNetwork extends ModuleNetworkBase {
 
     @Provides
     @Singleton
-    public ApiTrakt apiTrakt(@Named("trakt") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson, NetworkBehavior behavior,
-                             List<MovieTraktMetadata> popular, List<MovieTraktPageMetadata> trending) {
+    public ApiTrakt apiTrakt(@Named("trakt") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson,
+                             NetworkBehavior behavior, List<MovieTraktMetadata> popular, List<MovieTraktPageMetadata> trending) {
         if (MOCK_MODE) {
             return new ApiTraktMock(behavior, gson, trending, popular);
         }
@@ -145,7 +146,6 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public NetworkBehavior networkBehavior() {
-        if (MOCK_MODE) return null;
         NetworkBehavior networkBehavior = NetworkBehavior.create();
         networkBehavior.setDelay(2, TimeUnit.SECONDS);
         networkBehavior.setVariancePercent(40);
@@ -159,14 +159,13 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public AssetManager asset(Context context) {
-        if (MOCK_MODE) return null;
         return context.getAssets();
     }
 
     @Provides
     @Singleton
     public List<MovieTraktMetadata> popular(AssetManager asset, Gson gson) {
-        if (MOCK_MODE) return null;
+        if (!MOCK_MODE) return Collections.emptyList();
         InputStream stream;
         String json = "[]";
         try {
@@ -183,7 +182,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public List<MovieTraktPageMetadata> trending(AssetManager asset, Gson gson) {
-        if (MOCK_MODE) return null;
+        if (!MOCK_MODE) return Collections.emptyList();
         InputStream stream;
         String json = "[]";
         try {
@@ -200,7 +199,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public List<MovieTmdb> tmdbList(AssetManager asset, Gson gson) {
-        if (MOCK_MODE) return null;
+        if (!MOCK_MODE) return Collections.emptyList();
         InputStream stream;
         String json = "[]";
         try {

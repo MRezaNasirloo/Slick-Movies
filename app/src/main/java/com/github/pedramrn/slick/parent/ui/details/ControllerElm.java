@@ -13,7 +13,7 @@ import io.reactivex.disposables.Disposable;
  *         Created on: 2017-08-22
  */
 
-public abstract class ControllerElm<VS> extends ControllerBase implements Observer<VS> {
+public abstract class ControllerElm<S> extends ControllerBase implements Observer<S> {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 

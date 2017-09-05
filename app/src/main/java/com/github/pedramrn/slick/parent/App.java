@@ -87,4 +87,8 @@ public class App extends Application {
     public static void disposeComponentMain() {
         app.componentMain = null;
     }
+
+    public static void disposeComponentApp() {
+        app.componentApp = null;
+    }
 }

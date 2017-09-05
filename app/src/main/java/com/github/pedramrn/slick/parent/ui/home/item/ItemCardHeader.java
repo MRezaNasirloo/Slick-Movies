@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -26,6 +27,7 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
     private final String title;
     private final String buttonText;
     private final Consumer<Object> onClickListener;
+    private Disposable disposable;
 
     public ItemCardHeader(long id, @NonNull String title, @Nullable String buttonText, @Nullable Consumer<Object> onClickListener) {
         super(id);
@@ -51,7 +53,7 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
         viewBinding.textViewTitle.setText(title);
         viewBinding.button.setText(buttonText);
         if (onClickListener != null) {
-            RxView.clicks(viewBinding.button).subscribe(onClickListener);
+            disposable = RxView.clicks(viewBinding.button).subscribe(onClickListener);
         }
         if (buttonText == null) {
             viewBinding.button.setVisibility(View.INVISIBLE);
@@ -62,6 +64,9 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
     @Override
     public void unbind(ViewHolder<RowCardHeaderBinding> holder) {
         Log.d(TAG, "unbind() called");
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
         holder.binding.button.setOnClickListener(null);
         super.unbind(holder);
     }

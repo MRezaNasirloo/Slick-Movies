@@ -27,15 +27,17 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.ControllerProvider;
 import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerAction;
 import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
+import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
+import com.github.pedramrn.slick.parent.ui.list.ControllerList;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
-import com.github.pedramrn.slick.parent.ui.people.ControllerPeople;
-import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.slick.Presenter;
 import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
@@ -51,10 +53,12 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -85,18 +89,20 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     private ItemListHorizontal itemBackdropList;
     private Section sectionOverview;
 
+    private final RouterProvider routerProvider = new RouterProvider() {
+        @Override
+        public Router get() {
+            return getRouter();
+        }
+    };
     private final OnItemClickListenerAction onItemClickListener = new OnItemClickListenerAction(
-            new RouterProvider() {
-                @Override
-                public Router get() {
-                    return getRouter();
-                }
-            }, new ControllerProvider() {
+            routerProvider, new ControllerProvider() {
         @Override
         public Controller get(MovieBasic movie, String transitionName) {
             return new ControllerDetails(movie, transitionName);
         }
     });
+    private ViewStateDetails state;
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -147,28 +153,29 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
                 Toast.makeText(context, "Under Construction", Toast.LENGTH_SHORT).show();
             }
         };
-        Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar", "See All", onClickListener));
+        Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar"));
         sectionSimilar.add(itemCardListSimilar);
         adapterSimilar.add(progressiveSimilar);
 
         Section sectionCasts = new Section(new ItemCardHeader(0, "Casts", "See All", new Consumer<Object>() {
             @Override
             public void accept(@NonNull Object o) throws Exception {
-                // getRouter().pushController(RouterTransaction.with(new ControllerDetails(null)));
+                Log.e(TAG, "See All Casts called");
+                if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
+                    getRouter().pushController(RouterTransaction.with(new ControllerList(state.movieBasic().title() + "'s Casts",
+                            ((Movie) state.movieBasic()).casts().toArray(new ItemViewListParcelable[state.casts().size()])))
+                            .popChangeHandler(new HorizontalChangeHandler())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                    );
+                }
             }
         }));
         sectionCasts.add(progressiveCast);
         adapterMain.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                if (item instanceof ItemCast) {
-                    ItemCast itemCast = (ItemCast) item;
-                    Cast cast = itemCast.getCast();
-                    getRouter().pushController(
-                            RouterTransaction.with(
-                                    new ControllerPeople(Person.create(cast.id(), cast.name(), cast.profilePicId()), itemCast.transitionName()))
-                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
+                if (item instanceof OnItemAction) {
+                    ((OnItemAction) item).action(routerProvider);
                 }
             }
         });
@@ -179,11 +186,11 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         sectionComments.setHideWhenEmpty(true);
 
         itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
-        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops", "See All", onClickListener));
+        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);
 
-        sectionOverview = new Section(new ItemCardHeader(0, "Overview", null, onClickListener));
+        sectionOverview = new Section(new ItemCardHeader(0, "Overview"));
 
         adapterMain.add(itemHeader);
         adapterMain.add(sectionCasts);
@@ -206,8 +213,25 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         return binding.getRoot();
     }
 
+    @NonNull
+    protected ItemViewListParcelable[] casts() {
+        return Observable.fromIterable(state.casts())
+                .cast(ItemCast.class)
+                .map(new Function<ItemCast, Cast>() {
+                    @Override
+                    public Cast apply(@io.reactivex.annotations.NonNull ItemCast itemCast) throws Exception {
+                        return itemCast.cast();
+                    }
+                })
+                .cast(ItemViewListParcelable.class)
+                .buffer(state.casts().size())
+                .blockingFirst()
+                .toArray(new ItemViewListParcelable[state.casts().size()]);
+    }
+
     @Override
     public void render(ViewStateDetails state) {
+        this.state = state;
         long before = System.currentTimeMillis();
 
         final MovieBasic movie = state.movieBasic();
