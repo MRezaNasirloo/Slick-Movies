@@ -42,7 +42,7 @@ public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie {
     public void bind(RowCardBinding viewBinding, int position) {
         SpannableStringBuilder builder = new SpannableStringBuilder(movie.title());
         try {
-            builder.append("  (" + DateUtils.formatyyyy(DateUtils.toDate(movie.releaseDate())) + ")",
+            builder.append("  (" + DateUtils.format_yyyy(DateUtils.toDate(movie.releaseDate())) + ")",
                     new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             viewBinding.textViewTitle.setText(builder);
         } catch (ParseException | NullPointerException e) {

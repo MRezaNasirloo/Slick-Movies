@@ -75,7 +75,7 @@ public abstract class PersonDetails {
         try {
             Date date = DateUtils.toDate(birthday());
             int age = DateUtils.age(date);
-            born = String.format(Locale.getDefault(), "\nBorn: %s (%d)%s", DateUtils.formatMMMM_dd_yyyy(date), age, placeOfBirth);
+            born = String.format(Locale.getDefault(), "\nBorn: %s (%d)%s", DateUtils.format_MMM_dd_yyyy(date), age, placeOfBirth);
         } catch (ParseException | NullPointerException e) {
             born = "\nBorn: n/a" + placeOfBirth;
         }

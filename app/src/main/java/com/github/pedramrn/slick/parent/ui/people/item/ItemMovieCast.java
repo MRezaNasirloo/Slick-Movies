@@ -46,7 +46,7 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> {
 
     protected void renderDate(RowCardCreditBinding viewBinding, String date) {
         try {
-            viewBinding.textViewEpisodeAndYear.setText(DateUtils.formatyyyy(DateUtils.toDate(date)));
+            viewBinding.textViewEpisodeAndYear.setText(DateUtils.format_yyyy(DateUtils.toDate(date)));
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
             // viewBinding.textViewEpisodeAndYear.setVisibility(View.INVISIBLE);

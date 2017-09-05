@@ -55,7 +55,7 @@ public class ItemHeader extends Item<RowHeaderBinding> {
                 }).blockingGet());
         // FIXME: 2017-07-15 release date maybe null
         try {
-            viewBinding.textViewRelease.setText(DateUtils.formatMMMM_dd_yyyy(DateUtils.toDate(movie.releaseDate())));
+            viewBinding.textViewRelease.setText(DateUtils.format_MMM_dd_yyyy(DateUtils.toDate(movie.releaseDate())));
         } catch (ParseException | NullPointerException e) {
             viewBinding.textViewRelease.setText(movie.releaseDate());
         }

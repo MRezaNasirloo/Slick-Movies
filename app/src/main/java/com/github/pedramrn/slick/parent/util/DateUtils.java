@@ -33,16 +33,21 @@ public class DateUtils {
     }
 
     public static Date toDate(String date) throws ParseException, NullPointerException {
-        SimpleDateFormat dateFormatNum = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+        SimpleDateFormat dateFormatNum = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormatNum.parse(date);
     }
 
-    public static String formatMMMM_dd_yyyy(Date date) {
-        SimpleDateFormat dateFormatName = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+    public static String format(Date date, String pattern) {
+        SimpleDateFormat dateFormatName = new SimpleDateFormat(pattern, Locale.getDefault());
         return dateFormatName.format(date);
     }
 
-    public static String formatyyyy(Date date) {
+    public static String format_MMM_dd_yyyy(Date date) {
+        SimpleDateFormat dateFormatName = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        return dateFormatName.format(date);
+    }
+
+    public static String format_yyyy(Date date) {
         SimpleDateFormat dateFormatName = new SimpleDateFormat("yyyy", Locale.getDefault());
         return dateFormatName.format(date);
     }
