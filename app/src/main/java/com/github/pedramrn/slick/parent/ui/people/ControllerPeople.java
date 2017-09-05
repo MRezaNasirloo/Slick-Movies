@@ -42,8 +42,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
- * FIXME: 2017-09-05 scrolling issue with collapsing toolbar
- * FIXME: 2017-09-05 the controller does not retain scroll position
+ *
  */
 public class ControllerPeople extends ControllerElm<ViewStatePeople> implements ViewPeople, AppBarLayout.OnOffsetChangedListener {
 

@@ -5,6 +5,7 @@
     >
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -19,6 +20,7 @@
             >
 
             <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 app:layout_scrollFlags="scroll|snap"
@@ -46,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:layout_scrollFlags="scroll|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
                 />
@@ -61,7 +63,7 @@
                 android:padding="18dp"
                 android:textSize="24sp"
                 android:minHeight="125dp"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
+                app:layout_scrollFlags="scroll|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 tools:text="Chris Pratt\n USA ٔNebraska"
                 />
