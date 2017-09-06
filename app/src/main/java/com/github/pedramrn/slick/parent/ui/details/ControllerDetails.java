@@ -143,7 +143,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
 
         adapterMain.setSpanCount(6);
 
-        ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER", onItemClickListener);
+        ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER", null);
         adapterHeader.add(updatingHeader);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create(), onItemClickListener);

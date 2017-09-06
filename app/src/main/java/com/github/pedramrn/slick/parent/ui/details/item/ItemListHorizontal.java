@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -26,7 +27,7 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     private final String SCROLL_POS;
     private int scrollPos;
 
-    public ItemListHorizontal(Context context, GroupAdapter adapter, String tag, OnItemClickListener onItemClickListener) {
+    public ItemListHorizontal(Context context, GroupAdapter adapter, String tag, @Nullable OnItemClickListener onItemClickListener) {
         this.adapter = adapter;
         SCROLL_POS = "SCROLL_POS_" + tag;
         adapter.setOnItemClickListener(onItemClickListener);
