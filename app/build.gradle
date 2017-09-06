@@ -1,8 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'hu.supercluster.paperwork'
 //apply plugin: 'com.frogermcs.androiddevmetrics'
 //apply plugin: 'blockcanaryex'
 //apply plugin: 'com.jakewharton.hugo'
 
+def SHA
+paperwork {
+    SHA = gitSha()
+    set = [
+            gitSha   : SHA,
+            buildDate: buildTime("yyyy-MM-dd HH:00:00 z", "UTC"),
+    ]
+}
 
 android {
     signingConfigs {
@@ -22,18 +31,20 @@ android {
     }
 
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.github.pedramrn.slick.parent"
         minSdkVersion 21
         //noinspection OldTargetApi
         targetSdkVersion 25
         versionCode 1
-        versionName "0.1-eaef8d7"
+        versionName "0.2 beta ${SHA}"
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true;
         dataBinding.enabled = true
         multiDexEnabled true
+
+        archivesBaseName = "slick-movies-${versionCode}-${versionName}-${SHA}".replace(" ${SHA}", "")
 
         javaCompileOptions {
             annotationProcessorOptions {
