@@ -29,9 +29,9 @@ public class BottomNavigationHandlerImpl implements BottomNavigationHandler {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull RecyclerViewScrollEvent event) throws Exception {
                         if (event.dy() >= 0) {
-                            bottomBarHost.hide();
+                            // bottomBarHost.hide();
                         } else {
-                            bottomBarHost.show();
+                            // bottomBarHost.show();
                         }
                     }
                 });

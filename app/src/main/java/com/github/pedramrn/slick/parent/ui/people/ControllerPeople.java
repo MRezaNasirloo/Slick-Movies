@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
@@ -23,6 +24,7 @@ import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
+import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemCreditsProgressive;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemMovieCast;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
@@ -30,15 +32,21 @@ import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
 import com.github.slick.Presenter;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -64,6 +72,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
     private ControllerPeopleBinding binding;
     private int maxScroll;
     private int deltaHeight;
+    private ViewStatePeople state;
 
     public ControllerPeople(Person person, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -84,10 +93,30 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
         App.componentMain().inject(this);
         ControllerPeople_Slick.bind(this);
         binding = ControllerPeopleBinding.inflate(inflater, container, false);
+
         setToolbar(binding.toolbar).setupButton(true);
         binding.toolbar.setTitle("");
-        RecyclerView recyclerView = binding.recyclerView;
+
+        RxView.clicks(binding.imageViewProfile)
+                .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Object o) throws Exception {
+                        PersonDetails ps = state.personDetails();
+                        if (ps != null) {
+                            ArrayList<String> images = new ArrayList<>(ps.images());
+                            images.add(0, ps.profilePicId());
+                            getRouter().pushController(RouterTransaction.with(new ControllerImage(ps.name(), images))
+                                    .pushChangeHandler(new FadeChangeHandler())
+                                    .popChangeHandler(new FadeChangeHandler()));
+
+                        }
+                    }
+                });
+
         adapter = new GroupAdapter();
+
+        RecyclerView recyclerView = binding.recyclerView;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -133,7 +162,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
 
 
         binding.imageViewHeader.loadBlur(person.profileThumbnail());
-        binding.imageViewHeader.loadBlur(person.profileMedium());
+        binding.imageViewHeader.loadBlurNP(person.profileMedium());
         binding.imageViewProfile.load(person.profileThumbnail());
         binding.imageViewProfile.loadNP(person.profileMedium());
         binding.textViewName.setText(person.name());
@@ -154,27 +183,28 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
 
     @Override
     @SuppressWarnings("SpellCheckingInspection")
-    public void onNext(ViewStatePeople viewStatePeople) {
-        PersonDetails personDetails = viewStatePeople.personDetails();
+    public void onNext(ViewStatePeople state) {
+        this.state = state;
+        PersonDetails personDetails = state.personDetails();
         setHeader(personDetails);
-        Item bio = viewStatePeople.itemBio();
+        Item bio = state.itemBio();
         if (bio != null && adapter.getAdapterPosition(bio) == -1) {
             adapter.add(2, bio);
         }
 
-        if (!viewStatePeople.moviesCast().isEmpty() || !viewStatePeople.moviesCrew().isEmpty()) {
+        if (!state.moviesCast().isEmpty() || !state.moviesCrew().isEmpty()) {
             adapterMovies.clear();
-            adapterMovies.addAll(viewStatePeople.moviesCast());
-            adapterMovies.addAll(viewStatePeople.moviesCrew());
+            adapterMovies.addAll(state.moviesCast());
+            adapterMovies.addAll(state.moviesCrew());
         }
 
-        if (!viewStatePeople.tvShowsCast().isEmpty() || !viewStatePeople.tvShowsCrew().isEmpty()) {
+        if (!state.tvShowsCast().isEmpty() || !state.tvShowsCrew().isEmpty()) {
             adapterTvShows.clear();
-            adapterTvShows.addAll(viewStatePeople.tvShowsCast());
-            adapterTvShows.addAll(viewStatePeople.tvShowsCrew());
+            adapterTvShows.addAll(state.tvShowsCast());
+            adapterTvShows.addAll(state.tvShowsCrew());
         }
 
-        renderError(viewStatePeople.errorPersonDetails());
+        renderError(state.errorPersonDetails());
     }
 
     private void setHeader(PersonDetails personDetails) {

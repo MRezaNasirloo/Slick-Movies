@@ -51,6 +51,54 @@ public class ImageViewLoader extends AppCompatImageView {
                 .into(this);
     }
 
+    public void load(String url, @DimenRes int dimen) {
+        if (url == null) {
+            return;
+        }
+        Context context = getContext();
+        picasso(context)
+                .load(url)
+                .placeholder(R.drawable.rectangle)
+                .transform(new RoundedCornersTransformation(context.getResources().getDimensionPixelSize(dimen), 0))
+                .into(this);
+    }
+
+    public void loadNP(String url) {
+        if (url == null) {
+            return;
+        }
+        Context context = getContext();
+        picasso(context)
+                .load(url)
+                .noPlaceholder()
+                .into(this);
+    }
+
+    public void loadNF(String url) {
+        if (url == null) {
+            return;
+        }
+        Context context = getContext();
+        picasso(context)
+                .load(url)
+                .noFade()
+                .placeholder(R.drawable.rectangle_no_corners)
+                .into(this);
+    }
+
+    public void loadNFNP(String url) {
+        if (url == null) {
+            return;
+        }
+        Context context = getContext();
+        picasso(context)
+                .load(url)
+                .noFade()
+                .noPlaceholder()
+                .placeholder(R.drawable.rectangle_no_corners)
+                .into(this);
+    }
+
     public void loadBlur(String url) {
         if (url == null) {
             return;
@@ -72,18 +120,6 @@ public class ImageViewLoader extends AppCompatImageView {
                 .load(url)
                 .noPlaceholder()
                 .transform(new BlurTransformation(getContext()))
-                .into(this);
-    }
-
-    public void loadNoFade(String url) {
-        if (url == null) {
-            return;
-        }
-        Context context = getContext();
-        picasso(context)
-                .load(url)
-                .noFade()
-                .placeholder(R.drawable.rectangle_no_corners)
                 .into(this);
     }
 
@@ -116,18 +152,6 @@ public class ImageViewLoader extends AppCompatImageView {
                     }
                 });
 
-    }
-
-    public void load(String url, @DimenRes int dimen) {
-        if (url == null) {
-            return;
-        }
-        Context context = getContext();
-        picasso(context)
-                .load(url)
-                .placeholder(R.drawable.rectangle)
-                .transform(new RoundedCornersTransformation(context.getResources().getDimensionPixelSize(dimen), 0))
-                .into(this);
     }
 
     protected Picasso picasso(Context context) {

@@ -16,7 +16,7 @@ public class ItemCreditsProgressive extends ItemMovieCast {
     @Override
     public void bind(RowCardCreditBinding viewBinding, int position) {
         viewBinding.textViewTitle.setText("         ");
-        viewBinding.textViewCharacterOrJob.setText("    ");
+        viewBinding.textViewCharacterOrJob.setText("       ");
         viewBinding.textViewTitle.setBackgroundResource(R.drawable.line);
         viewBinding.textViewCharacterOrJob.setBackgroundResource(R.drawable.line);
         viewBinding.textViewEpisodeAndYear.setBackgroundResource(R.drawable.line);

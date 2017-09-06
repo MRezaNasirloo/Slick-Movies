@@ -153,22 +153,18 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
 
     @Override
     public void show() {
-/*
         BottomNavigation navigation = binding.navigation;
         if (!navigation.isExpanded()) {
             navigation.setExpanded(true, true);
         }
-*/
     }
 
     @Override
     public void hide() {
-/*
         BottomNavigation navigation = binding.navigation;
         if (navigation.isExpanded()) {
             navigation.setExpanded(false, true);
         }
-*/
 
     }
 }
