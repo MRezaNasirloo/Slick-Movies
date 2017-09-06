@@ -27,8 +27,9 @@ public class ItemImage extends Item<RowImageBinding> {
 
     @Override
     public void bind(RowImageBinding viewBinding, int position) {
-        viewBinding.imageView.loadBlur(urlTiny);
-        viewBinding.imageView.loadBlur(urlMedium);
+        viewBinding.imageView.setImageDrawable(null);
+        viewBinding.imageView.loadBlurNP(urlTiny);
+        viewBinding.imageView.loadBlurNP(urlMedium);
         viewBinding.imageView.loadNP(urlOriginal);
     }
 }

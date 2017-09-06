@@ -30,6 +30,8 @@ import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.ControllerProvider;
+import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
+import com.github.pedramrn.slick.parent.ui.home.OnItemActionBackdrops;
 import com.github.pedramrn.slick.parent.ui.home.OnItemClickListenerAction;
 import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
@@ -66,7 +68,7 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-04-28
  */
 
-public class ControllerDetails extends ControllerBase implements ViewDetails, Observer<ViewStateDetails> {
+public class ControllerDetails extends ControllerBase implements ViewDetails, Observer<ViewStateDetails>, MovieProvider {
 
     @Inject
     Provider<PresenterDetails> provider;
@@ -185,7 +187,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         sectionComments.setPlaceholder(new ItemCastProgressive(-1));
         sectionComments.setHideWhenEmpty(true);
 
-        itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemClickListener);
+        OnItemActionBackdrops onItemActionBackdrops = new OnItemActionBackdrops(routerProvider, this, adapterBackdrops);
+        itemBackdropList = new ItemListHorizontal(context, adapterBackdrops, "BACKDROPS", onItemActionBackdrops);
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
         adapterBackdrops.add(progressiveBackdrop);
@@ -234,12 +237,12 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         this.state = state;
         long before = System.currentTimeMillis();
 
-        final MovieBasic movie = state.movieBasic();
+        movie = state.movieBasic();
 
         binding.collapsingToolbar.setTitle(movie.title());
         binding.imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
+        updatingHeader.update(Collections.singletonList(new ItemHeader(routerProvider, movie, transitionName)));
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));
@@ -319,5 +322,10 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     protected void onDestroy() {
         dispose(disposable);
         super.onDestroy();
+    }
+
+    @Override
+    public MovieBasic get() {
+        return movie;
     }
 }

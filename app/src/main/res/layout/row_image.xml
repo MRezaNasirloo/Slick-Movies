@@ -4,8 +4,9 @@
     >
 
     <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
+        android:background="@color/black"
         android:id="@+id/imageView"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="ContentDescription"

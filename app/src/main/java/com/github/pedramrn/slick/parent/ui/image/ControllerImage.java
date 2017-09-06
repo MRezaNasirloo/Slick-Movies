@@ -13,6 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.ControllerChangeHandler;
+import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerImageBinding;
@@ -54,6 +58,19 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
                 .putStringArrayList("DATA", items)
                 .putString("TITLE", title)
                 .build());
+    }
+
+    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items) {
+        router.pushController(RouterTransaction.with(new ControllerImage(title, items))
+                .pushChangeHandler(new FadeChangeHandler())
+                .popChangeHandler(new FadeChangeHandler()));
+    }
+
+    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items,
+                             ControllerChangeHandler changeHandler) {
+        router.pushController(RouterTransaction.with(new ControllerImage(title, items))
+                .pushChangeHandler(changeHandler)
+                .popChangeHandler(changeHandler));
     }
 
     @NonNull

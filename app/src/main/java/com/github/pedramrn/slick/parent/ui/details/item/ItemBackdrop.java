@@ -10,7 +10,6 @@ import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
 
 public class ItemBackdrop extends ItemBackdropProgressive {
 
-
     private final Backdrop backdrop;
 
     public ItemBackdrop(int id, Backdrop backdrop) {
@@ -23,4 +22,6 @@ public class ItemBackdrop extends ItemBackdropProgressive {
     public void bind(RowBackdropBinding viewBinding, int position) {
         viewBinding.imageViewBackdrop.load(backdrop.backdropThumbnail());
     }
+
+    private static final String TAG = ItemBackdrop.class.getSimpleName();
 }

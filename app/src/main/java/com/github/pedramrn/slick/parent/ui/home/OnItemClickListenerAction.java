@@ -25,12 +25,14 @@ public class OnItemClickListenerAction implements OnItemClickListener {
 
     @Override
     public void onItemClick(Item item, View view) {
-        ItemMovie itemCardMovie = (ItemMovie) item;
-        MovieBasic movie = itemCardMovie.movie();
-        if (movie == null) return;
-        router.get().pushController(RouterTransaction.with(provider.get(movie, itemCardMovie.transitionName()))
-                .pushChangeHandler(new HorizontalChangeHandler())
-                .popChangeHandler(new HorizontalChangeHandler())
-        );
+        if (item instanceof ItemMovie) {
+            ItemMovie itemCardMovie = (ItemMovie) item;
+            MovieBasic movie = itemCardMovie.movie();
+            if (movie == null) return;
+            router.get().pushController(RouterTransaction.with(provider.get(movie, itemCardMovie.transitionName()))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())
+            );
+        }
     }
 }

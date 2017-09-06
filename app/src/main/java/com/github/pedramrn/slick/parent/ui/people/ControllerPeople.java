@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
@@ -105,11 +104,9 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
                         PersonDetails ps = state.personDetails();
                         if (ps != null) {
                             ArrayList<String> images = new ArrayList<>(ps.images());
+                            images.remove(ps.profilePicId());
                             images.add(0, ps.profilePicId());
-                            getRouter().pushController(RouterTransaction.with(new ControllerImage(ps.name(), images))
-                                    .pushChangeHandler(new FadeChangeHandler())
-                                    .popChangeHandler(new FadeChangeHandler()));
-
+                            ControllerImage.start(getRouter(), ps.name(), images);
                         }
                     }
                 });

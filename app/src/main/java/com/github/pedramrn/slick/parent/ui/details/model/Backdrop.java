@@ -16,7 +16,7 @@ import com.xwray.groupie.Item;
 public abstract class Backdrop extends AutoBase implements Parcelable, ItemView {
 
     @Nullable
-    protected abstract String backdropPath();
+    public abstract String backdropPath();
 
     public abstract Builder toBuilder();
 

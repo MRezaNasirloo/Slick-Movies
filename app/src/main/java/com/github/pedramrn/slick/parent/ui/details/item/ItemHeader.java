@@ -6,16 +6,24 @@ import android.text.style.RelativeSizeSpan;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
+import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.util.DateUtils;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -24,12 +32,14 @@ import io.reactivex.functions.BiFunction;
 
 public class ItemHeader extends Item<RowHeaderBinding> {
 
+    private final RouterProvider router;
     private final MovieBasic movie;
     private final String transitionName;
     private RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
 
-    public ItemHeader(MovieBasic movie, String transitionName) {
+    public ItemHeader(RouterProvider router, MovieBasic movie, String transitionName) {
         super(0);
+        this.router = router;
         this.movie = movie;
         this.transitionName = transitionName;
     }
@@ -65,6 +75,17 @@ public class ItemHeader extends Item<RowHeaderBinding> {
         viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
         viewBinding.imageViewIcon.load(movie.thumbnailPoster());
+        RxView.clicks(viewBinding.imageViewIcon)
+                .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(@NonNull Object o) throws Exception {
+                        if (movie instanceof Movie) {
+                            ControllerImage.start(router.get(), ItemHeader.this.movie.title(),
+                                    ((ArrayList<String>) ((Movie) movie).images().posters()));
+                        }
+                    }
+                });
 
         if (movie.voteAverageTrakt() != null) {
             viewBinding.textViewScoreTrakt.setBackground(null);
