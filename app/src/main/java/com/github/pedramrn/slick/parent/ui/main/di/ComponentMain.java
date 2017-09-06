@@ -4,6 +4,7 @@ import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
+import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
 import com.github.pedramrn.slick.parent.ui.people.ControllerPeople;
@@ -36,6 +37,8 @@ public interface ComponentMain {
     void inject(ControllerPeople controllerPeople);
 
     void inject(ControllerList controllerList);
+
+    void inject(ControllerImage controllerImage);
 
     @Subcomponent.Builder
     interface Builder {
