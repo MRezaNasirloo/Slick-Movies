@@ -29,7 +29,7 @@ public class ItemImage extends Item<RowImageBinding> {
     public void bind(RowImageBinding viewBinding, int position) {
         viewBinding.imageView.setImageDrawable(null);
         viewBinding.imageView.loadBlurNP(urlTiny);
-        viewBinding.imageView.loadBlurNP(urlMedium);
-        viewBinding.imageView.loadNP(urlOriginal);
+        // viewBinding.imageView.loadBlurNP(urlMedium);
+        viewBinding.imageView.loadNP(urlMedium);
     }
 }

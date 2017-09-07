@@ -46,7 +46,7 @@ public class OnItemActionBackdrops implements OnItemClickListener {
                     .distinct()
                     .buffer(movie.images().backdrops().size())
                     .blockingFirst();
-            ControllerImage.start(router.get(), movie.title(), ((ArrayList<String>) backdrops));
+            ControllerImage.start(router.get(), movie.title(), ((ArrayList<String>) backdrops), adapter.getAdapterPosition(item));
         }
     }
 

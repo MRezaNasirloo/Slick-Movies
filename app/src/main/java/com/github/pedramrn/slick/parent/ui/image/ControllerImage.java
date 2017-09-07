@@ -45,12 +45,24 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
     PresenterImage presenter;
     private final ArrayList<String> data;
     private final String title;
+    private final int pos;
     private GroupAdapter adapter;
+    private LinearLayoutManager layoutManager;
+    private int newPos;
 
     public ControllerImage(@NonNull Bundle args) {
         super(args);
         data = args.getStringArrayList("DATA");
         title = args.getString("TITLE");
+        pos = args.getInt("POS", 0);
+    }
+
+    public ControllerImage(@NonNull String title, @NonNull ArrayList<String> items, int position) {
+        this(new BundleBuilder(new Bundle())
+                .putStringArrayList("DATA", items)
+                .putString("TITLE", title)
+                .putInt("POS", position)
+                .build());
     }
 
     public ControllerImage(@NonNull String title, @NonNull ArrayList<String> items) {
@@ -73,9 +85,24 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
                 .popChangeHandler(changeHandler));
     }
 
+    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items, int position) {
+        router.pushController(RouterTransaction.with(new ControllerImage(title, items, position))
+                .pushChangeHandler(new FadeChangeHandler())
+                .popChangeHandler(new FadeChangeHandler()));
+    }
+
+    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items, int position,
+                             ControllerChangeHandler changeHandler) {
+        router.pushController(RouterTransaction.with(new ControllerImage(title, items, position))
+                .pushChangeHandler(changeHandler)
+                .popChangeHandler(changeHandler));
+    }
+
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        Log.d(TAG, "onCreateView() called");
         // TODO: 2017-07-22 Inject dependencies 
         App.componentMain().inject(this);
         ControllerImage_Slick.bind(this);
@@ -86,19 +113,35 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         }
 
         RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        new PagerSnapHelper().attachToRecyclerView(recyclerView);
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        new PagerSnapHelper().attachToRecyclerView(recyclerView);
+
+        newPos = pos;
+        ((BottomBarHost) getParentController()).hide();
+        ((BottomBarHost) getParentController()).hide();
+
         presenter.updateStream().subscribe(this);
         return binding.getRoot();
     }
 
     @Override
+    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        outState.putInt("POS", layoutManager.findFirstVisibleItemPosition());
+    }
+
+    @Override
+    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+        newPos = savedViewState.getInt("POS", this.pos);
+    }
+
+
+    @Override
     protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        toggleHideyBar();
+        layoutManager.scrollToPosition(newPos);
+        toggleHideBar();
         // TODO: 2017-09-06 maybe adding a footer?
-        ((BottomBarHost) getParentController()).hide();
         View parentView = getParentController().getView();
         ViewPager viewPager = (ViewPager) parentView.findViewById(R.id.view_pager);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
@@ -109,15 +152,19 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
 
     @Override
     protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        toggleHideyBar();
-        ((BottomBarHost) getParentController()).show();
+        toggleHideBar();
         View parentView = getParentController().getView();
         int measuredHeight = parentView.findViewById(R.id.navigation).getMeasuredHeight();
         ViewPager viewPager = (ViewPager) parentView.findViewById(R.id.view_pager);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
         layoutParams.setMargins(0, 0, 0, measuredHeight);
         viewPager.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((BottomBarHost) getParentController()).show();
     }
 
     @Override
@@ -140,14 +187,13 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         Log.d(TAG, "onComplete() called");
     }
 
-    public void toggleHideyBar() {
+    public void toggleHideBar() {
 
         // The UI options currently enabled are represented by a bitfield.
         // getSystemUiVisibility() gives us that bitfield.
         int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
         int newUiOptions = uiOptions;
-        boolean isImmersiveModeEnabled =
-                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+        boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
         if (isImmersiveModeEnabled) {
             Log.i(TAG, "Turning immersive mode mode off. ");
         } else {
