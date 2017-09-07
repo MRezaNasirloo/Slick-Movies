@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,9 +119,8 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         recyclerView.setAdapter(adapter);
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
+        ((BottomBarHost) getParentController()).hide();
         newPos = pos;
-        ((BottomBarHost) getParentController()).hide();
-        ((BottomBarHost) getParentController()).hide();
 
         presenter.updateStream().subscribe(this);
         return binding.getRoot();
@@ -151,16 +151,26 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
 
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onDetach(@NonNull View view) {
         toggleHideBar();
         View parentView = getParentController().getView();
-        int measuredHeight = parentView.findViewById(R.id.navigation).getMeasuredHeight();
         ViewPager viewPager = (ViewPager) parentView.findViewById(R.id.view_pager);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
-        layoutParams.setMargins(0, 0, 0, measuredHeight);
+        layoutParams.setMargins(0, 0, 0, getActionBarHeight());
         viewPager.setLayoutParams(layoutParams);
     }
 
+    @SuppressWarnings("ConstantConditions")
+    private int getActionBarHeight() {
+        TypedValue tv = new TypedValue();
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return getResources().getDimensionPixelOffset(R.dimen.action_bar_size);
+    }
+
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void onDestroy() {
         super.onDestroy();

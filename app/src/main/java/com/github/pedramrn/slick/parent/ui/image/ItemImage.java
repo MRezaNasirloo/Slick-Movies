@@ -12,11 +12,13 @@ import com.xwray.groupie.Item;
 public class ItemImage extends Item<RowImageBinding> {
     private final String urlTiny;
     private final String urlMedium;
+    private final String urlHigh;
     private final String urlOriginal;
 
     public ItemImage(String url) {
         this.urlTiny = "http://image.tmdb.org/t/p/w92" + url;
         this.urlMedium = "http://image.tmdb.org/t/p/w300" + url;
+        this.urlHigh = "http://image.tmdb.org/t/p/w500" + url;
         this.urlOriginal = "http://image.tmdb.org/t/p/original" + url;
     }
 
@@ -28,8 +30,8 @@ public class ItemImage extends Item<RowImageBinding> {
     @Override
     public void bind(RowImageBinding viewBinding, int position) {
         viewBinding.imageView.setImageDrawable(null);
-        viewBinding.imageView.loadBlurNP(urlTiny);
-        // viewBinding.imageView.loadBlurNP(urlMedium);
-        viewBinding.imageView.loadNP(urlMedium);
+        // viewBinding.imageView.loadBlurNP(urlTiny);
+        viewBinding.imageView.loadBlurNP(urlMedium);
+        viewBinding.imageView.loadNP(urlHigh);
     }
 }
