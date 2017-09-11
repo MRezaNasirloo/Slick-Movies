@@ -26,7 +26,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 
 public class ImageViewLoader extends AppCompatImageView {
-    private String url;
+    private boolean mock = true;
 
     public ImageViewLoader(Context context) {
         super(context);
@@ -41,6 +41,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void load(String url) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -52,6 +53,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void load(String url, @DimenRes int dimen) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -64,6 +66,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadNP(String url) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -75,6 +78,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadNF(String url) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -87,6 +91,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadNFNP(String url) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -100,6 +105,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadBlur(String url) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -112,6 +118,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadBlurNP(String url) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }
@@ -124,6 +131,7 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadForSE(final String url, final OnCompleteGlide onCompleteGlide) {
+        if (mock) { return; }
         if (url == null) {
             return;
         }

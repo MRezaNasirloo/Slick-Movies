@@ -14,6 +14,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardListBinding;
 import com.github.pedramrn.slick.parent.ui.custom.StartSnapHelper;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
+import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.GroupAdapter;
@@ -22,10 +23,11 @@ import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.ViewHolder;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -42,28 +44,31 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private final LinearLayoutManager layoutManager;
     private final ItemDecorationMargin margin;
     private final GroupAdapter adapter;
-    private final Observer<Integer> observer;
     private final OnItemClickListener onItemClickListener;
+    private PublishSubject<Integer> observer = PublishSubject.create();
+
 
     private boolean isLoading = false;
     private Integer page = 1;
     private int scrollPos;
     private int itemLoadedCount;
+    private Disposable disposable;
 
-    public ItemCardList(@NonNull Context context,
-                        @NonNull GroupAdapter adapter,
-                        @NonNull String tag,
-                        @Nullable Observer<Integer> observer,
-                        @Nullable OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public ItemCardList(
+            @NonNull Context context,
+            @NonNull GroupAdapter adapter,
+            @NonNull String tag,
+            @Nullable OnItemClickListener onItemClickListener
+    ) {
         context = context.getApplicationContext();
-        margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
-        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        this.margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
+        this.layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        this.onItemClickListener = onItemClickListener;
         this.adapter = adapter;
-        this.observer = observer;
-        POPULAR_PAGE = "POPULAR_PAGE_" + tag;
-        POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
+
         POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + tag;
+        POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
+        POPULAR_PAGE = "POPULAR_PAGE_" + tag;
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     @Override
     public void bind(RowCardListBinding binding, int position) {
-        Log.d(TAG, "ItemCardList bind() called");
+        Log.d(TAG, "bind() called with: binding = [" + binding + "], position = [" + position + "]");
         RecyclerView recyclerView = binding.recyclerViewCard;
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
@@ -83,54 +88,55 @@ public class ItemCardList extends Item<RowCardListBinding> {
         recyclerView.setAdapter(adapter);
         snapHelper.attachToRecyclerView(recyclerView);
         layoutManager.scrollToPosition(scrollPos);
-        if (observer != null) {
-            registerLoadMoreTrigger(recyclerView).subscribe(observer);
-        }
+        disposable = registerLoadMoreTrigger(recyclerView).subscribe();
         adapter.setOnItemClickListener(onItemClickListener);
     }
 
     @Override
     public void unbind(ViewHolder<RowCardListBinding> holder) {
+        Log.d(TAG, "unbind() called with: holder = [" + holder + "]");
         RecyclerView recyclerView = holder.binding.recyclerViewCard;
         recyclerView.removeItemDecoration(margin);
         recyclerView.setOnFlingListener(null);
         adapter.setOnItemClickListener(null);
+        UtilsRx.dispose(disposable);
         super.unbind(holder);
     }
 
     private static final String TAG = ItemCardList.class.getSimpleName();
 
     protected Observable<Integer> registerLoadMoreTrigger(RecyclerView recyclerView) {
+        Log.d(TAG, "registerLoadMoreTrigger called");
         return RxRecyclerView.scrollEvents(recyclerView)
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        Log.d(TAG, "isLoading() called with: event = [" + isLoading + "]");
+                        // Log.d(TAG, "isLoading() called with: event = [" + isLoading + "]");
                         return !isLoading;
                     }
                 })
-                .filter(new Predicate<RecyclerViewScrollEvent>() {
+                /*.filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         boolean b = layoutManager.getItemCount() <= itemLoadedCount;
-                        Log.d(TAG, "itemLoadedCount() called with: event = [" + b + "]");
+                        // Log.d(TAG, "itemLoadedCount() called with: event = [" + b + "]");
                         return b;
                     }
-                })
+                })*/
                 .filter(new Predicate<RecyclerViewScrollEvent>() {
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         int totalItemCount = layoutManager.getItemCount();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
                         boolean b = totalItemCount < (lastVisibleItem + 2);
-                        Log.d(TAG, "shouldWeLoad() called with: event = [" + b + "]");
+                        // Log.d(TAG, "shouldWeLoad() called with: event = [" + b + "]");
                         return b;
                     }
                 })
                 .map(new Function<RecyclerViewScrollEvent, Integer>() {
                     @Override
                     public Integer apply(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return page + 1;
+                        return page;
                     }
                 })
                 .doOnNext(new Consumer<Integer>() {
@@ -138,6 +144,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
                     @Override
                     public void accept(@NonNull Integer page) throws Exception {
                         isLoading = true;
+                        observer.onNext(page);
                         Log.d(TAG, "accept() called with: page = [" + page + "]");
                     }
                 });
@@ -145,19 +152,16 @@ public class ItemCardList extends Item<RowCardListBinding> {
     }
 
     public void onSaveViewState(View view, Bundle outState) {
-        outState.putInt(POPULAR_PAGE, page);
-        outState.putBoolean(POPULAR_IS_LOADING, isLoading);
         outState.putInt(POPULAR_SCROLL_POS, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
+        outState.putBoolean(POPULAR_IS_LOADING, isLoading);
     }
 
     public void onRestoreViewState(View view, Bundle savedViewState) {
-        page = savedViewState.getInt(POPULAR_PAGE, page);
         isLoading = savedViewState.getBoolean(POPULAR_IS_LOADING, isLoading);
         scrollPos = savedViewState.getInt(POPULAR_SCROLL_POS);
     }
 
     public void loading(boolean loading) {
-        Log.d(TAG, "loading() called load again");
         this.isLoading = loading;
     }
 
@@ -167,5 +171,9 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     public void page(int page) {
         this.page = page;
+    }
+
+    public PublishSubject<Integer> observer() {
+        return observer;
     }
 }

@@ -60,7 +60,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                 if (!router.hasRootController()) {
                     switch (position) {
                         case 0:
-                            router.setRoot(RouterTransaction.with(new ControllerHome()));
+                            router.setRoot(RouterTransaction.with(new ControllerHome()).tag("ControllerHome"));
                             break;
                         case 1:
                             router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));

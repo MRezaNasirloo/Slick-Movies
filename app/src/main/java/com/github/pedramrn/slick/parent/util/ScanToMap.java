@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.util;
 
 import android.annotation.SuppressLint;
 
-import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.xwray.groupie.Item;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,19 +18,19 @@ import io.reactivex.functions.Function;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-22
  */
-public class ScanToMap implements ObservableTransformer<ItemView, Map<Integer, ItemView>> {
+public class ScanToMap<T extends Item> implements ObservableTransformer<T, Map<Integer, T>> {
     @Override
-    public ObservableSource<Map<Integer, ItemView>> apply(Observable<ItemView> upstream) {
-        return upstream.map(new Function<ItemView, Map<Integer, ItemView>>() {
+    public ObservableSource<Map<Integer, T>> apply(Observable<T> upstream) {
+        return upstream.map(new Function<T, Map<Integer, T>>() {
             @Override
-            public Map<Integer, ItemView> apply(@NonNull ItemView data) throws Exception {
-                @SuppressLint("UseSparseArrays") Map<Integer, ItemView> set = new LinkedHashMap<>(1);
-                set.put(Long.valueOf(data.itemId()).intValue(), data);
+            public Map<Integer, T> apply(@NonNull T data) throws Exception {
+                @SuppressLint("UseSparseArrays") Map<Integer, T> set = new LinkedHashMap<>(1);
+                set.put(((int) data.getId()), data);
                 return set;
             }
-        }).scan(new BiFunction<Map<Integer, ItemView>, Map<Integer, ItemView>, Map<Integer, ItemView>>() {
+        }).scan(new BiFunction<Map<Integer, T>, Map<Integer, T>, Map<Integer, T>>() {
             @Override
-            public Map<Integer, ItemView> apply(@NonNull Map<Integer, ItemView> set, @NonNull Map<Integer, ItemView> set2) throws Exception {
+            public Map<Integer, T> apply(@NonNull Map<Integer, T> set, @NonNull Map<Integer, T> set2) throws Exception {
                 set.putAll(set2);
                 return set;
             }

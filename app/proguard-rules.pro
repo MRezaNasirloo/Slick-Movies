@@ -22,6 +22,8 @@
 -keepclasseswithmembernames class * { @com.github.slick.* <fields>; }
 
 #-dontwarn javax.**
+-dontwarn net.bytebuddy.**
+-dontwarn org.mockito.**
 -dontwarn com.squareup.**
 -dontwarn retrofit2.**
 -dontwarn rx.internal.**

@@ -6,6 +6,8 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonPageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdbResults;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -15,7 +17,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.NetworkBehavior;
 
 /**
@@ -26,20 +27,23 @@ import retrofit2.mock.NetworkBehavior;
 public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
     private final List<MovieTmdb> popularList;
+    private final List<MovieTraktPageMetadata> trendingList;
 
-    public ApiTmdbMock(BehaviorDelegate<ApiTmdb> delegate, Gson gson, List<MovieTmdb> popularList) {
-        super(delegate, gson);
-        this.popularList = popularList;
-    }
-
-    public ApiTmdbMock(NetworkBehavior behavior, Gson gson, List<MovieTmdb> popularList) {
+    public ApiTmdbMock(
+            NetworkBehavior behavior,
+            Gson gson,
+            List<MovieTmdb> popularList,
+            List<MovieTraktPageMetadata> trendingList
+    ) {
         super(behavior, gson);
         this.popularList = popularList;
+        this.trendingList = trendingList;
     }
 
-    public ApiTmdbMock(Gson gson, List<MovieTmdb> popularList) {
+    public ApiTmdbMock(Gson gson, List<MovieTmdb> popularList, List<MovieTraktPageMetadata> trendingList) {
         super(gson);
         this.popularList = popularList;
+        this.trendingList = trendingList;
     }
 
     @Override
@@ -49,12 +53,26 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
 
     @Override
     public Observable<MovieTmdb> movie(@Path("movie_id") final Integer id) {
+        MovieTraktMetadata metadata = Observable.fromIterable(trendingList)
+                .filter(new Predicate<MovieTraktPageMetadata>() {
+                    @Override
+                    public boolean test(@NonNull MovieTraktPageMetadata movieTraktPageMetadata) throws Exception {
+                        return id.equals(movieTraktPageMetadata.movie().ids().tmdb());
+                    }
+                })
+                .blockingFirst().movie();
+        MovieTmdb movieTmdb = popularList.get(0)
+                .toBuilder()
+                .id(metadata.ids().tmdb())
+                .title(metadata.title())
+                .releaseDate(metadata.year() + "-01-01")
+                .build();
         return Observable.fromIterable(popularList).filter(new Predicate<MovieTmdb>() {
             @Override
             public boolean test(@NonNull MovieTmdb movieTmdb) throws Exception {
                 return movieTmdb.id().equals(id);
             }
-        }).first(popularList.get(0)).toObservable();
+        }).first(movieTmdb).toObservable();
     }
 
     @Override

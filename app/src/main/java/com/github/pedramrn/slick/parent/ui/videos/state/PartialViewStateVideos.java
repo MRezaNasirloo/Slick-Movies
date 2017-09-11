@@ -38,13 +38,10 @@ public final class PartialViewStateVideos {
             super(count, tag, new ProgressiveVideosRenderer());
         }
 
-        public VideosProgressive(String tag) {
-            super(tag, new ProgressiveVideosRenderer());
-        }
 
         @Override
         public ViewStateVideos reduce(ViewStateVideos state) {
-            return state.toBuilder().videos(progressive).build();
+            return state.toBuilder().videos(state.videos()).build();
         }
 
         private static class ProgressiveVideosRenderer implements ItemRenderer {

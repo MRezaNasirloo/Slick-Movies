@@ -114,8 +114,72 @@ public abstract class MovieTmdb {
     @SerializedName("videos")
     public abstract VideoTmdbResults videos();
 
+    public abstract Builder toBuilder();
+
     public static TypeAdapter<MovieTmdb> typeAdapter(Gson gson) {
         return new AutoValue_MovieTmdb.GsonTypeAdapter(gson);
     }
 
+    public static Builder builder() {return new AutoValue_MovieTmdb.Builder();}
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(Integer id);
+
+        public abstract Builder imdbId(String imdbId);
+
+        public abstract Builder adult(Boolean adult);
+
+        public abstract Builder backdropPath(String backdropPath);
+
+        public abstract Builder belongsToCollection(Object belongsToCollection);
+
+        public abstract Builder budget(Integer budget);
+
+        public abstract Builder genres(List<Genre> genres);
+
+        public abstract Builder homepage(String homepage);
+
+        public abstract Builder originalLanguage(String originalLanguage);
+
+        public abstract Builder originalTitle(String originalTitle);
+
+        public abstract Builder overview(String overview);
+
+        public abstract Builder popularity(Float popularity);
+
+        public abstract Builder posterPath(String posterPath);
+
+        public abstract Builder productionCompanies(List<ProductionCompany> productionCompanies);
+
+        public abstract Builder productionCountries(List<ProductionCountry> productionCountries);
+
+        public abstract Builder releaseDate(String releaseDate);
+
+        public abstract Builder revenue(Long revenue);
+
+        public abstract Builder runtime(Integer runtime);
+
+        public abstract Builder spokenLanguages(List<SpokenLanguage> spokenLanguages);
+
+        public abstract Builder status(String status);
+
+        public abstract Builder tagline(String tagline);
+
+        public abstract Builder title(String title);
+
+        public abstract Builder video(Boolean video);
+
+        public abstract Builder voteAverage(Float voteAverage);
+
+        public abstract Builder voteCount(Integer voteCount);
+
+        public abstract Builder credits(Credit credits);
+
+        public abstract Builder images(ImageTmdb images);
+
+        public abstract Builder videos(VideoTmdbResults videos);
+
+        public abstract MovieTmdb build();
+    }
 }

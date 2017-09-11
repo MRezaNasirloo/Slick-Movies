@@ -29,9 +29,6 @@ public class PartialViewStateDetails {
             super(count, tag, new ItemRendererProgressiveCard());
         }
 
-        public SimilarProgressive(String tag) {
-            super(tag, new ItemRendererProgressiveCard());
-        }
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
@@ -154,10 +151,6 @@ public class PartialViewStateDetails {
             super(count, tag, new ItemRendererBackdrops());
         }
 
-        public MovieBackdropsProgressive(String tag) {
-            super(tag, new ItemRendererBackdrops());
-        }
-
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             return state.toBuilder().backdrops(reduce(state.backdrops())).build();
@@ -175,10 +168,6 @@ public class PartialViewStateDetails {
 
         public MovieCastsProgressive(int count, String tag) {
             super(count, tag, new ItemRendererCasts());
-        }
-
-        public MovieCastsProgressive(String tag) {
-            super(tag, new ItemRendererCasts());
         }
 
         @Override
@@ -214,13 +203,9 @@ public class PartialViewStateDetails {
             super(count, tag, new ItemRendererComments());
         }
 
-        public CommentsProgressive(String tag) {
-            super(tag, new ItemRendererComments());
-        }
-
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().comments(progressive).build();
+            return state.toBuilder().comments(state.comments()).build();
         }
 
         static class ItemRendererComments implements ItemRenderer {

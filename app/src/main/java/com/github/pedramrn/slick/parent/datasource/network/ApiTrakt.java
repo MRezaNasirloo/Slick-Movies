@@ -5,6 +5,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.trakt.Anticipa
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.CommentTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
 
 import java.util.List;
@@ -36,6 +37,9 @@ public interface ApiTrakt {
 
     @GET("/movies/trending")
     Observable<List<MovieTraktPageMetadata>> trending(@Query("page") int page, @Query("limit") int size);
+
+    @GET("/movies/trending?extended=full")
+    Observable<List<MovieTraktPageFull>> trendingFull(@Query("page") int page, @Query("limit") int size);
 
     @GET("/movies/popular")
     Observable<List<MovieTraktMetadata>> popular(@Query("page") int page, @Query("limit") int size);

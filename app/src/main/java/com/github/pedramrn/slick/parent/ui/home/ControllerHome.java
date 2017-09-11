@@ -12,10 +12,9 @@ import android.widget.Toast;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
-import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
+import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
@@ -25,24 +24,30 @@ import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 import com.github.slick.Presenter;
-import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
+
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.Observer;
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-20
  */
 
-public class ControllerHome extends ControllerBase implements ViewHome, Observer<ViewStateHome> {
+public class ControllerHome extends ControllerElm<ViewStateHome> implements ViewHome {
 
     private static final String TAG = ControllerHome.class.getSimpleName();
 
@@ -57,7 +62,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
     private ItemCardList itemListPopular;
     private UpdatingGroup progressiveUpcoming;
     private ItemListHorizontal itemListUpcoming;
-    private Disposable disposable;
 
     private final RouterProvider routerProvider = new RouterProvider() {
         @Override
@@ -78,15 +82,18 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         }
     });
 
-    private LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
     private SearchViewImpl searchView;
+    private ViewStateHome state;
 
+    private PublishSubject<Object> onRetryTrending = PublishSubject.create();
+    private PublishSubject<Integer> observerPopular = PublishSubject.create();
+    private DisposableObserver<Object> disposable;
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
-        Slick.bind(this);
+        ControllerHome_Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
         GroupAdapter adapterMain = new GroupAdapter();
@@ -96,8 +103,8 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         progressiveUpcoming = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemListTrending = new ItemCardList(getActivity(), adapterTrending, "trending", presenter.onLoadMoreObserverTrending(), actionDetails);
-        itemListPopular = new ItemCardList(getActivity(), adapterPopular, "popular", presenter.onLoadMoreObserverPoplar(), actionDetails);
+        itemListTrending = new ItemCardList(getActivity(), adapterTrending, "trending", actionDetails);
+        itemListPopular = new ItemCardList(getActivity(), adapterPopular, "popular", actionDetails);
 
         itemListUpcoming = new ItemListHorizontalPager(getActivity(), adapterUpcoming, "UPCOMING", actionVideos);
 
@@ -132,11 +139,19 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         searchView = binding.searchView;
         ((GroupAdapter) searchView.getAdapter()).setOnItemClickListener(actionDetails);
 
-        int pageSize = getResources().getInteger(R.integer.page_size);
+        presenter.updateStream().doOnTerminate(new Action() {
+            @Override
+            public void run() throws Exception {
+                System.out.println("ControllerHome.OnTerminate");
+            }
+        }).subscribe(this);
 
-
-        presenter.updateStream().subscribe(this);
-        presenter.start(pageSize);
+        onRetryTrending.subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(@io.reactivex.annotations.NonNull Object o) throws Exception {
+                Log.d(TAG, "clicked 1");
+            }
+        });
 
         return binding.getRoot();
     }
@@ -157,9 +172,10 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void render(@NonNull ViewStateHome state) {
+        this.state = state;
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
-        progressiveTrending.update(state.trending());
+        progressiveTrending.update(Arrays.asList(state.trending().values().toArray(new Item[state.trending().size()])));
         progressivePopular.update(state.popular());
         itemListTrending.loading(state.loadingTrending());
         itemListTrending.itemLoadedCount(state.itemLoadingCountTrending());
@@ -168,18 +184,17 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         itemListPopular.itemLoadedCount(state.itemLoadingCountPopular());
         itemListPopular.page(state.pagePopular());
 
-
-        // TODO: 2017-07-01 You're better than this...
+        // TODO: 2017-07-01 You're better than this... IKR Look what I just made :))))
         renderError(state.errorVideos());
         renderError(state.errorUpcoming());
-        renderError(state.error());
+//        renderError(state.error()); //handled
+
 
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-        dispose(disposable);
-        this.disposable = d;
+        add(d);
     }
 
     @Override
@@ -189,18 +204,13 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
 
     @Override
     public void onError(Throwable e) {
+        System.out.println("ControllerHome.onError");
         e.printStackTrace();
     }
 
     @Override
     public void onComplete() {
         Log.wtf(TAG, "onComplete() called x_X");
-    }
-
-    @Override
-    protected void onDestroyView(@NonNull View view) {
-        dispose(disposable);
-        super.onDestroyView(view);
     }
 
     @Override
@@ -211,5 +221,45 @@ public class ControllerHome extends ControllerBase implements ViewHome, Observer
         }
 
         return super.handleBack();
+    }
+
+    @Override
+    public Observable<Integer> triggerTrending() {
+        System.out.println("PresenterHome.triggerTrending");
+        return itemListTrending.observer().doOnNext(new Consumer<Integer>() {
+            @Override
+            public void accept(@io.reactivex.annotations.NonNull Integer integer) throws Exception {
+                System.out.println("PresenterHome.onNext [" + integer + "]");
+            }
+        }).mergeWith(retryTrending());
+    }
+
+    @Override
+    public Observable<Integer> triggerPopular() {
+        System.out.println("PresenterHome.triggerPopular");
+        return itemListPopular.observer().startWith(1);
+    }
+
+    @Override
+    public int pageSize() {
+        System.out.println("PresenterHome.pageSize");
+        return 3;
+    }
+
+    @Override
+    public Observable<Integer> retryTrending() {
+        System.out.println("PresenterHome.retryTrending");
+        return onRetryTrending.map(new Function<Object, Integer>() {
+            @Override
+            public Integer apply(@NonNull Object o) throws Exception {
+                return state.pageTrending();
+            }
+        });
+        /*Observable.intervalRange(0, 100, 3, 3, TimeUnit.SECONDS).cast(Object.class);*/
+    }
+
+    public void onClickRetryTrending(Object o) {
+        System.out.println("ControllerHome.onClickRetryTrending");
+        onRetryTrending.onNext(o);
     }
 }

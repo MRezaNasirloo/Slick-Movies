@@ -1,10 +1,15 @@
 package com.github.pedramrn.slick.parent.ui.item;
 
-import com.github.pedramrn.slick.parent.util.IdBank;
+import android.support.annotation.NonNull;
+
+import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -12,28 +17,55 @@ import java.util.List;
  */
 public abstract class PartialProgressive {
 
-    protected final List<Item> progressive;
+    private final int count;
+    private final String tag;
+    private final ItemRenderer itemRenderer;
 
     public PartialProgressive(int count, String tag, ItemRenderer itemRenderer) {
-        progressive = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            int id = IdBank.nextId(tag);
-            progressive.add(itemRenderer.render(id, tag));
-        }
+        this.count = count;
+        this.tag = tag;
+        this.itemRenderer = itemRenderer;
     }
 
-    public PartialProgressive(String tag, ItemRenderer itemRenderer) {
-        progressive = new ArrayList<>(3);
-        for (int i = 0; i < 3; i++) {
-            int id = IdBank.nextId(tag);
+    protected List<Item> reduce(@NonNull List<Item> items) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i) instanceof ItemError) {
+                items.remove(i);
+                break;
+            }
+        }
+        List<Item> progressive = new ArrayList<>(count);
+        for (int i = 0, id = items.size(); i < count; i++, id++) {
             progressive.add(itemRenderer.render(id, tag));
         }
-    }
-
-    protected List<Item> reduce(List<Item> items) {
-        if (items != null && items.size() > 0) {
+        if (!items.isEmpty()) {
             items.addAll(progressive);
-        } else {
+        }
+        else {
+            items = progressive;
+        }
+        return items;
+    }
+
+    protected Map<Integer, Item> reduce(@NonNull Map<Integer, Item> items) {
+        Iterator<Item> iterator = items.values().iterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (item instanceof ItemError) {
+                iterator.remove();
+                break;
+            }
+
+        }
+
+        Map<Integer, Item> progressive = new LinkedHashMap<>(count);
+        for (int i = 0, id = items.size(); i < count; i++, id++) {
+            progressive.put(id, itemRenderer.render(id, tag));
+        }
+        if (!items.isEmpty()) {
+            items.putAll(progressive);
+        }
+        else {
             items = progressive;
         }
         return items;

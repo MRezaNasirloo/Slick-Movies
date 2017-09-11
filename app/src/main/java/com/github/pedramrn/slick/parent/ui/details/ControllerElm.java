@@ -21,6 +21,9 @@ public abstract class ControllerElm<S> extends ControllerBase implements Observe
         super(args);
     }
 
+    public ControllerElm() {
+    }
+
     protected void add(Disposable disposable) {
         compositeDisposable.add(disposable);
     }

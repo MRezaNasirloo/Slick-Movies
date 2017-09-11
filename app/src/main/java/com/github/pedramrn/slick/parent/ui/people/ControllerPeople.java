@@ -46,7 +46,6 @@ import javax.inject.Provider;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  *
@@ -123,7 +122,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
         adapterMovies.add(new ItemCreditsProgressive());
         adapterMovies.add(new ItemCreditsProgressive());
         ItemCardList movies =
-                new ItemCardList(getApplicationContext(), adapterMovies, MOVIES, PublishSubject.<Integer>create(), new OnItemClickListener() {
+                new ItemCardList(getApplicationContext(), adapterMovies, MOVIES, new OnItemClickListener() {
                     @Override
                     public void onItemClick(Item item, View view) {
                         if (item instanceof ItemMovieCast) {
@@ -144,7 +143,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
         adapterTvShows.add(new ItemCreditsProgressive());
         adapterTvShows.add(new ItemCreditsProgressive());
         adapterTvShows.add(new ItemCreditsProgressive());
-        ItemCardList tvShows = new ItemCardList(getApplicationContext(), adapterTvShows, TV_SHOWS, null, new OnItemClickListener() {
+        ItemCardList tvShows = new ItemCardList(getApplicationContext(), adapterTvShows, TV_SHOWS, new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
                 Snackbar.make(getView(), "Under Construction!!!", Snackbar.LENGTH_LONG).show();

@@ -7,6 +7,7 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
+import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
@@ -21,14 +22,19 @@ import java.util.List;
 @AutoValue
 public abstract class MovieSmall extends AutoBase implements Parcelable, ItemView, MovieBasic {
 
+    @Nullable
     public abstract String originalTitle();
 
+    @Nullable
     public abstract String originalLanguage();
 
+    @Nullable
     public abstract Boolean adult();
 
+    @Nullable
     public abstract Float popularity();
 
+    @Nullable
     public abstract Boolean video();
 
     public abstract Builder toBuilder();
@@ -68,7 +74,7 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
     @Override
     public Item render(String tag) {
         if ("BANNER".equals(tag)) {
-            return new ItemBanner(itemId(), this);
+            return new ItemBanner(uniqueId(), this);
         } else {
             return new ItemCardMovie(uniqueId(), this, tag);
 
@@ -84,13 +90,32 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
         return uniqueId().longValue();
     }
 
-    public static MovieSmall create(Integer id, String title, String overview, String posterPath, String backdropPath, String releaseDate,
-                                    Float voteAverageTmdb, Integer voteCountTmdb, Float voteAverageTrakt, Integer voteCountTrakt,
-                                    String certification,
-                                    Integer uniqueId, String originalTitle, String originalLanguage, Boolean adult, Float popularity, Boolean video) {
+    public static MovieSmall create(
+            Integer id,
+            String imdbId,
+            String title,
+            Integer year,
+            String overview,
+            String posterPath,
+            String backdropPath,
+            String releaseDate,
+            Float voteAverageTmdb,
+            Integer voteCountTmdb,
+            Float voteAverageTrakt,
+            Integer voteCountTrakt,
+            String certification,
+            String originalTitle,
+            String originalLanguage,
+            Boolean adult,
+            Float popularity,
+            Boolean video
+    ) {
         return builder()
                 .id(id)
+                .uniqueId(id)
+                .imdbId(imdbId)
                 .title(title)
+                .year(year)
                 .overview(overview)
                 .posterPath(posterPath)
                 .backdropPath(backdropPath)
@@ -100,7 +125,6 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
                 .voteAverageTrakt(voteAverageTrakt)
                 .voteCountTrakt(voteCountTrakt)
                 .certification(certification)
-                .uniqueId(uniqueId)
                 .originalTitle(originalTitle)
                 .originalLanguage(originalLanguage)
                 .adult(adult)
@@ -112,7 +136,9 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
     public static MovieSmall create(CastOrCrewPersonDetails coc) {
         return create(
                 coc.id(),
+                null,
                 coc.title(),
+                DateUtils.year(coc.releaseDate()),
                 coc.overview(),
                 coc.posterPath(),
                 coc.backdropPath(),
@@ -122,7 +148,6 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
                 null,
                 null,
                 null,
-                coc.id(),
                 coc.originalTitle(),
                 coc.originalLanguage(),
                 coc.adult(),
@@ -172,6 +197,10 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
         public abstract Builder voteCountTrakt(Integer voteCountTrakt);
 
         public abstract Builder certification(String certification);
+
+        public abstract Builder imdbId(String imdbId);
+
+        public abstract Builder year(Integer year);
 
         public abstract MovieSmall build();
     }

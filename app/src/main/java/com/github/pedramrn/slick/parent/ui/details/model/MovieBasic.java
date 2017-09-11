@@ -3,14 +3,19 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.github.pedramrn.slick.parent.domain.model.MovieMetadata;
+
 import java.util.List;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-14
  */
-public interface MovieBasic extends Parcelable {
+public interface MovieBasic extends Parcelable, MovieMetadata {
     Integer id();
+
+    @Nullable
+    String imdbId();
 
     String title();
 
@@ -34,8 +39,10 @@ public interface MovieBasic extends Parcelable {
 
     List<String> genres();
 
+    @Nullable
     Float voteAverageTmdb();
 
+    @Nullable
     Integer voteCountTmdb();
 
     @Nullable

@@ -2,13 +2,18 @@ package com.github.pedramrn.slick.parent.ui.home.state;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovieProgressive;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -35,9 +40,9 @@ public final class PartialViewStateHome {
         }
     }
 
-    public static class UpcomingError extends Error {
+    public static class UpcomingErrorTrending extends ErrorTrending {
 
-        public UpcomingError(Throwable throwable) {
+        public UpcomingErrorTrending(Throwable throwable) {
             super(throwable);
         }
 
@@ -85,13 +90,9 @@ public final class PartialViewStateHome {
             super(count, tag, new ItemRendererBanner());
         }
 
-        public ProgressiveBannerImpl(String tag) {
-            super(tag, new ItemRendererBanner());
-        }
-
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().upcoming(reduce(progressive)).build();
+            return viewStateHome.toBuilder().upcoming(reduce(viewStateHome.upcoming())).build();
         }
 
         public static class ItemRendererBanner implements ItemRenderer {
@@ -105,30 +106,62 @@ public final class PartialViewStateHome {
 
     public static class Trending implements PartialViewState<ViewStateHome> {
 
-        private final List<Item> movies;
-        private final boolean loading;
+        private final Map<Integer, Item> movies;
 
-        public Trending(List<Item> movies, boolean loading) {
+        public Trending(Map<Integer, Item> movies) {
             this.movies = movies;
-            this.loading = loading;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            /*List<Item> trending = viewStateHome.trending();
-            if (trending != null) {
-                trending.addAll(movies);
-            } else {
-                trending = movies;
-            }*/
+            Map<Integer, Item> trending = viewStateHome.trending();
+            Iterator<Item> iterator = trending.values().iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                if (item instanceof ItemError || item instanceof ItemCardMovieProgressive) {
+                    iterator.remove();
+                }
+
+            }
+            trending.putAll(movies);
             return viewStateHome.toBuilder()
-                    .trending(new ArrayList<>(movies))
-                    .loadingTrending(loading)
-                    .itemLoadingCountTrending(movies.size())
-                    .pageTrending(viewStateHome.pageTrending() + 1)
+                    .trending(new LinkedHashMap<>(trending))
+                    .itemLoadingCountTrending(trending.size())
+                    .error(null)
                     .build();
         }
     }
+
+    public static class TrendingLoaded implements PartialViewState<ViewStateHome> {
+
+        private final boolean loading;
+
+        public TrendingLoaded(boolean loaded) {
+            this.loading = !loaded;
+
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            Map<Integer, Item> trending = viewStateHome.trending();
+            Iterator<Item> iterator = trending.values().iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                if (item instanceof ItemError || item instanceof ItemCardMovieProgressive) {
+                    iterator.remove();
+                }
+
+            }
+            return viewStateHome.toBuilder()
+                    .trending(new LinkedHashMap<>(trending))
+                    .loadingTrending(loading)
+                    .itemLoadingCountTrending(trending.size())
+                    .pageTrending(viewStateHome.pageTrending() + 1)
+                    .error(null)
+                    .build();
+        }
+    }
+
 
     public static class ItemRendererProgressiveCard implements ItemRenderer {
 
@@ -144,13 +177,9 @@ public final class PartialViewStateHome {
             super(count, tag, new ItemRendererProgressiveCard());
         }
 
-        public CardProgressiveTrending(String tag) {
-            super(tag, new ItemRendererProgressiveCard());
-        }
-
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().trending(reduce(viewStateHome.trending())).build();
+            return viewStateHome.toBuilder().trending(reduce(viewStateHome.trending())).loadingTrending(true).build();
         }
     }
 
@@ -160,27 +189,49 @@ public final class PartialViewStateHome {
             super(count, tag, new ItemRendererProgressiveCard());
         }
 
-        public CardProgressivePopular(String tag) {
-            super(tag, new ItemRendererProgressiveCard());
-        }
-
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             return viewStateHome.toBuilder().popular(reduce(viewStateHome.popular())).build();
         }
     }
 
-    public static class Error implements PartialViewState<ViewStateHome> {
+    public static class ErrorTrending implements PartialViewState<ViewStateHome> {
 
         protected final Throwable throwable;
 
-        public Error(Throwable throwable) {
+        public ErrorTrending(Throwable throwable) {
             this.throwable = throwable;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().error(throwable).build();
+            Item itemError = null;
+            Map<Integer, Item> trending = viewStateHome.trending();
+            //because there are 6 progressive items at most
+            /*int limit = size - 6 < 0 ? 0 : size - 6;
+            for (int i = size - 1; i >= limit; i--)*/
+            Iterator<Item> iterator = trending.values().iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                if (item instanceof ItemCardMovieProgressive) {
+                    iterator.remove();
+                }
+                else if (item instanceof ItemError) {
+                    itemError = item;
+                    iterator.remove();
+                }
+
+            }
+
+            if (itemError == null) {
+                itemError = new ItemError(-1, throwable.getMessage());
+            }
+            trending.put(((int) itemError.getId()), itemError);
+            return viewStateHome.toBuilder()
+                    .error(throwable)
+                    .loadingTrending(true)
+                    .trending(new LinkedHashMap<>(trending))
+                    .build();
         }
     }
 

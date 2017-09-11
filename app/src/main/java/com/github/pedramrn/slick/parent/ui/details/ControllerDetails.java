@@ -61,7 +61,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -148,7 +147,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         ItemListHorizontal itemHeader = new ItemListHorizontal(context, adapterHeader, "HEADER", null);
         adapterHeader.add(updatingHeader);
 
-        itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", PublishSubject.<Integer>create(), onItemClickListener);
+        itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR", onItemClickListener);
         Consumer<Object> onClickListener = new Consumer<Object>() {
             @Override
             public void accept(@NonNull Object o) throws Exception {

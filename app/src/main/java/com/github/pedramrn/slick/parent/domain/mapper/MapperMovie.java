@@ -16,6 +16,7 @@ import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
+import com.github.pedramrn.slick.parent.util.DateUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -127,10 +128,11 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
         }
 
 
-
-
-        return MovieDomain.create(mt.id(),
+        return MovieDomain.create(
+                mt.id(),
                 mt.imdbId(),
+                mt.title(),
+                DateUtils.year(mt.releaseDate()),
                 mt.adult(),
                 mt.backdropPath(),
                 mt.budget(),
@@ -149,7 +151,6 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                 spokenLanguages,
                 mt.status(),
                 mt.tagline(),
-                mt.title(),
                 mt.video(),
                 mt.voteAverage(),
                 mt.voteCount(),
@@ -158,6 +159,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                 null,
                 castDomains,
                 ImageDomain.create(backdrops, posters),
-                videosDomains);
+                videosDomains
+        );
     }
 }

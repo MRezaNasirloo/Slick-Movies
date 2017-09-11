@@ -11,12 +11,14 @@ import java.util.List;
  *         Created on: 2017-04-11
  */
 @AutoValue
-public abstract class MovieDomain {
+public abstract class MovieDomain implements MovieBasicDomain {
 
     public abstract Integer id();
 
     @Nullable
     public abstract String imdbId();
+
+    public abstract String title();
 
     public abstract Boolean adult();
 
@@ -69,8 +71,6 @@ public abstract class MovieDomain {
     @Nullable
     public abstract String tagline();
 
-    public abstract String title();
-
     public abstract Boolean video();
 
     public abstract Float voteAverageTmdb();
@@ -94,17 +94,44 @@ public abstract class MovieDomain {
 
     public abstract Builder toBuilder();
 
-    public static MovieDomain create(Integer id, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
-                                     String homepage,
-                                     String originalLanguage, String originalTitle, String overview, Float popularity, String posterPath,
-                                     List<String> productionCompanies, List<String> productionCountries, String releaseDate, Long revenue,
-                                     Integer runtime, List<String> spokenLanguages, String status, String tagline, String title, Boolean video,
-                                     Float voteAverageTmdb, Integer voteCountTmdb, Float voteAverageTrakt, Integer voteCountTrakt,
-                                     String certification,
-                                     List<CastDomain> casts, ImageDomain images, List<VideoDomain> videos) {
+    public static MovieDomain create(
+            Integer id,
+            String imdbId,
+            String title,
+            Integer year,
+            Boolean adult,
+            String backdropPath,
+            Integer budget,
+            List<String> genres,
+            String homepage,
+            String originalLanguage,
+            String originalTitle,
+            String overview,
+            Float popularity,
+            String posterPath,
+            List<String> productionCompanies,
+            List<String> productionCountries,
+            String releaseDate,
+            Long revenue,
+            Integer runtime,
+            List<String> spokenLanguages,
+            String status,
+            String tagline,
+            Boolean video,
+            Float voteAverageTmdb,
+            Integer voteCountTmdb,
+            Float voteAverageTrakt,
+            Integer voteCountTrakt,
+            String certification,
+            List<CastDomain> casts,
+            ImageDomain images,
+            List<VideoDomain> videos
+    ) {
         return builder()
                 .id(id)
                 .imdbId(imdbId)
+                .title(title)
+                .year(year)
                 .adult(adult)
                 .backdropPath(backdropPath)
                 .budget(budget)
@@ -123,7 +150,6 @@ public abstract class MovieDomain {
                 .spokenLanguages(spokenLanguages)
                 .status(status)
                 .tagline(tagline)
-                .title(title)
                 .video(video)
                 .voteAverageTmdb(voteAverageTmdb)
                 .voteCountTmdb(voteCountTmdb)
@@ -202,6 +228,8 @@ public abstract class MovieDomain {
         public abstract Builder images(ImageDomain images);
 
         public abstract Builder videos(List<VideoDomain> videos);
+
+        public abstract Builder year(Integer year);
 
         public abstract MovieDomain build();
     }

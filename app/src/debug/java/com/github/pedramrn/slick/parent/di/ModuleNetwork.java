@@ -105,9 +105,10 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Provides
     @Singleton
     public ApiTmdb apiTmdb(@Named("tmdb") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson,
-                           NetworkBehavior behavior, List<MovieTmdb> tmdbList) {
+                           NetworkBehavior behavior, List<MovieTmdb> tmdbList, List<MovieTraktPageMetadata> traktList
+    ) {
         if (MOCK_MODE) {
-            return new ApiTmdbMock(behavior, gson, tmdbList);
+            return new ApiTmdbMock(behavior, gson, tmdbList, traktList);
         }
         return baseApiTmdb(url, okHttpClient, builder, gson);
 
@@ -147,10 +148,10 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Singleton
     public NetworkBehavior networkBehavior() {
         NetworkBehavior networkBehavior = NetworkBehavior.create();
-        networkBehavior.setDelay(2, TimeUnit.SECONDS);
-        networkBehavior.setVariancePercent(40);
+        networkBehavior.setDelay(1, TimeUnit.SECONDS);
+        networkBehavior.setVariancePercent(0);
         networkBehavior.setFailurePercent(0);
-        networkBehavior.setErrorPercent(0);
+        networkBehavior.setErrorPercent(50);
         return networkBehavior;
     }
 

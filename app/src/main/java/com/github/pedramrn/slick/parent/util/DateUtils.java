@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.util;
 
+import android.support.annotation.Nullable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,7 +30,7 @@ public class DateUtils {
         toDateCal.setTime(toDate);
 
         int age = toDateCal.get(YEAR) - bornDate.get(YEAR);
-        if (toDateCal.get(DAY_OF_YEAR) <= bornDate.get(DAY_OF_YEAR)) age--;
+        if (toDateCal.get(DAY_OF_YEAR) <= bornDate.get(DAY_OF_YEAR)) { age--; }
         return age;
     }
 
@@ -50,5 +52,16 @@ public class DateUtils {
     public static String format_yyyy(Date date) {
         SimpleDateFormat dateFormatName = new SimpleDateFormat("yyyy", Locale.getDefault());
         return dateFormatName.format(date);
+    }
+
+    @Nullable
+    public static Integer year(@Nullable String date) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.toDate(date));
+            return calendar.get(Calendar.YEAR);
+        } catch (ParseException | NullPointerException e) {
+            return null;
+        }
     }
 }

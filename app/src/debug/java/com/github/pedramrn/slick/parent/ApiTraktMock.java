@@ -6,6 +6,7 @@ import com.github.pedramrn.slick.parent.datasource.network.models.trakt.Anticipa
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.CommentTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
+import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageFull;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
 import com.google.gson.Gson;
 
@@ -83,6 +84,11 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
                 .toList()
                 .blockingGet();
         return delegate.returningResponse(response).trending(page, size);
+    }
+
+    @Override
+    public Observable<List<MovieTraktPageFull>> trendingFull(@Query("page") int page, @Query("limit") int size) {
+        return Observable.never();
     }
 
     @Override

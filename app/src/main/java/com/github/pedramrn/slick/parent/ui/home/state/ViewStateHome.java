@@ -6,6 +6,7 @@ import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -15,7 +16,7 @@ import java.util.List;
 public abstract class ViewStateHome {
     public abstract List<Item> anticipated();
 
-    public abstract List<Item> trending();
+    public abstract Map<Integer, Item> trending();
 
     public abstract List<Item> popular();
 
@@ -45,13 +46,24 @@ public abstract class ViewStateHome {
 
     public abstract Builder toBuilder();
 
-    public static ViewStateHome create(List<Item> anticipated, List<Item> trending, List<Item> popular, List<Item> upcoming, boolean loadingTrending,
-                                       int itemLoadingCountTrending, int pageTrending, boolean loadingPopular, int itemLoadingCountPopular,
-                                       int pagePopular, Throwable errorVideos, Throwable errorUpcoming, Throwable error) {
+    public static ViewStateHome create(
+            List<Item> anticipated,
+            Map<Integer, Item> trending,
+            List<Item> popular,
+            List<Item> upcoming,
+            boolean loadingTrending,
+            int itemLoadingCountTrending,
+            int pageTrending,
+            boolean loadingPopular,
+            int itemLoadingCountPopular,
+            int pagePopular,
+            Throwable errorVideos,
+            Throwable errorUpcoming,
+            Throwable error
+    ) {
         return builder()
                 .anticipated(anticipated)
-                .trending(trending)
-                .popular(popular)
+                .trending(trending).popular(popular)
                 .upcoming(upcoming)
                 .loadingTrending(loadingTrending)
                 .itemLoadingCountTrending(itemLoadingCountTrending)
@@ -74,7 +86,7 @@ public abstract class ViewStateHome {
 
         public abstract Builder anticipated(List<Item> anticipated);
 
-        public abstract Builder trending(List<Item> trending);
+        public abstract Builder trending(Map<Integer, Item> trending);
 
         public abstract Builder popular(List<Item> popular);
 

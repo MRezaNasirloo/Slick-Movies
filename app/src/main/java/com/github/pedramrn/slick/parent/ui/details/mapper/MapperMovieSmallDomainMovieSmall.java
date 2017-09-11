@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 
+import static com.github.pedramrn.slick.parent.util.DateUtils.year;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-14
@@ -20,8 +22,11 @@ public class MapperMovieSmallDomainMovieSmall implements Function<MovieSmallDoma
 
     @Override
     public MovieSmall apply(@NonNull MovieSmallDomain msd) throws Exception {
-        return MovieSmall.create(msd.id(),
+        return MovieSmall.create(
+                msd.id(),
+                null,
                 msd.title(),
+                year(msd.releaseDate()),
                 msd.overview(),
                 msd.posterPath(),
                 msd.backdropPath(),
@@ -31,7 +36,6 @@ public class MapperMovieSmallDomainMovieSmall implements Function<MovieSmallDoma
                 null,
                 null,
                 null,
-                msd.id(),
                 msd.originalTitle(),
                 msd.originalLanguage(),
                 msd.adult(),

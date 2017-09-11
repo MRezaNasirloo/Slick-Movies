@@ -1,8 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.pedramrn.slick.parent.domain.model.CastDomain;
+import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.videos.model.Video;
@@ -11,6 +15,9 @@ import com.xwray.groupie.Item;
 
 import java.util.List;
 import java.util.Locale;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -40,7 +47,6 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
 
     public abstract List<String> productionCountries();
 
-
     @Nullable
     public abstract Long revenue();
 
@@ -68,21 +74,21 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     @Nullable
     @Override
     public String thumbnailPoster() {
-        if (backdropPath() == null) return null;
+        if (backdropPath() == null) { return null; }
         return "http://image.tmdb.org/t/p/w342" + posterPath();
     }
 
     @Nullable
     @Override
     public String thumbnailTinyPoster() {
-        if (backdropPath() == null) return null;
+        if (backdropPath() == null) { return null; }
         return "http://image.tmdb.org/t/p/w92" + posterPath();
     }
 
     @Nullable
     @Override
     public String thumbnailBackdrop() {
-        if (backdropPath() == null) return null;
+        if (backdropPath() == null) { return null; }
         return "http://image.tmdb.org/t/p/w300" + backdropPath();
     }
 
@@ -106,40 +112,69 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
         return runtime() + " min";
     }
 
+    public static Movie create(MovieDomain md) {
+        return map(md);
+    }
 
-    public static Movie create(Integer id, Integer uniqueId, String imdbId, Boolean adult, String backdropPath, Integer budget, List<String> genres,
-                               String homepage, String overview, Float popularity, String posterPath, List<String> productionCompanies,
-                               List<String> productionCountries, String releaseDate, Long revenue, Integer runtime, List<String> spokenLanguages,
-                               String status, String tagline, String title, Boolean video, Float voteAverageTmdb, Integer voteCountTmdb,
-                               Float voteAverageTrakt, Integer voteCountTrakt, String certification, List<Cast> casts, Image images,
-                               List<Video> videos) {
+    public static Movie create(
+            Integer id,
+            String title,
+            Integer year,
+            String overview,
+            String posterPath,
+            String backdropPath,
+            String releaseDate,
+            Float voteAverageTmdb,
+            Integer voteCountTmdb,
+            Float voteAverageTrakt,
+            Integer voteCountTrakt,
+            String certification,
+            String imdbId,
+            Boolean adult,
+            Integer budget,
+            List<String> genres,
+            String homepage,
+            Float popularity,
+            List<String> productionCompanies,
+            List<String> productionCountries,
+            Long revenue,
+            Integer runtime,
+            List<String> spokenLanguages,
+            String status,
+            String tagline,
+            Boolean video,
+            List<Cast> casts,
+            Image images,
+            List<Video> videos
+    ) {
         return builder()
                 .id(id)
-                .uniqueId(uniqueId)
-                .imdbId(imdbId)
-                .adult(adult)
-                .backdropPath(backdropPath)
-                .budget(budget)
-                .genres(genres)
-                .homepage(homepage)
-                .overview(overview)
-                .popularity(popularity)
-                .posterPath(posterPath)
-                .productionCompanies(productionCompanies)
-                .productionCountries(productionCountries)
-                .releaseDate(releaseDate)
-                .revenue(revenue)
-                .runtime(runtime)
-                .spokenLanguages(spokenLanguages)
-                .status(status)
-                .tagline(tagline)
+                .uniqueId(id)
                 .title(title)
-                .video(video)
+                .year(year)
+                .overview(overview)
+                .posterPath(posterPath)
+                .backdropPath(backdropPath)
+                .releaseDate(releaseDate)
                 .voteAverageTmdb(voteAverageTmdb)
                 .voteCountTmdb(voteCountTmdb)
                 .voteAverageTrakt(voteAverageTrakt)
                 .voteCountTrakt(voteCountTrakt)
                 .certification(certification)
+                .imdbId(imdbId)
+                .adult(adult)
+                .budget(budget)
+                .genres(genres)
+                .homepage(homepage)
+                .popularity(popularity)
+                .productionCompanies(productionCompanies)
+                .productionCountries(productionCountries)
+                .revenue(revenue)
+                .runtime(runtime)
+                .spokenLanguages(spokenLanguages)
+                .status(status)
+                .tagline(tagline)
+                .video(video)
                 .casts(casts)
                 .images(images)
                 .videos(videos)
@@ -210,6 +245,84 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
 
         public abstract Builder certification(String certification);
 
+        public abstract Builder year(Integer year);
+
         public abstract Movie build();
+    }
+
+    protected static Movie map(MovieDomain md) {//casts
+        List<CastDomain> castDomains = md.casts();
+        int size = castDomains.size();
+        List<Cast> casts = Observable.fromIterable(castDomains).map(new Function<CastDomain, Cast>() {
+            @Override
+            public Cast apply(@NonNull CastDomain cd) throws Exception {
+                return Cast.create(
+                        cd.id(),
+                        cd.castId(),
+                        cd.creditId(),
+                        cd.name(),
+                        cd.profilePath(),
+                        cd.character(),
+                        cd.gender(),
+                        cd.order()
+                );
+            }
+        }).toList(size == 0 ? 1 : size).blockingGet();
+
+        //backdrops
+        List<String> backdropsDomain = md.images().backdrops();
+        size = backdropsDomain.size();
+        final List<Backdrop> backdrops = Observable.fromIterable(backdropsDomain).map(new Function<String, Backdrop>() {
+            @Override
+            public Backdrop apply(@NonNull String s) throws Exception {
+                return Backdrop.create(-1, s.hashCode(), s);
+            }
+        }).toList(size == 0 ? 1 : size).blockingGet();
+
+        //videos
+        List<VideoDomain> videosDomain = md.videos();
+        size = videosDomain.size();
+        final List<Video> videos = Observable.fromIterable(videosDomain).map(new Function<VideoDomain, Video>() {
+            @Override
+            public Video apply(@NonNull VideoDomain vd) throws Exception {
+                return Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name());
+            }
+        }).toList(size == 0 ? 1 : size).blockingGet();
+
+
+        //image
+        Image image = Image.create(backdrops, md.images().posters());
+
+        return Movie.create(
+                md.id(),
+                md.title(),
+                md.year(),
+                md.overview(),
+                md.posterPath(),
+                md.backdropPath(),
+                md.releaseDate(),
+                md.voteAverageTmdb(),
+                md.voteCountTmdb(),
+                md.voteAverageTrakt(),
+                md.voteCountTrakt(),
+                md.certification(),
+                md.imdbId(),
+                md.adult(),
+                md.budget(),
+                md.genres(),
+                md.homepage(),
+                md.popularity(),
+                md.productionCompanies(),
+                md.productionCountries(),
+                md.revenue(),
+                md.runtime(),
+                md.spokenLanguages(),
+                md.status(),
+                md.tagline(),
+                md.video(),
+                casts,
+                image,
+                videos
+        );
     }
 }

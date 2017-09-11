@@ -78,7 +78,6 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
     public void onSubscribe(Disposable d) {
         hasSubscribed = true;
         disposable.add(d);
-
     }
 
     @Override
