@@ -41,7 +41,6 @@ import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.slick.Presenter;
-import com.github.slick.Slick;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
@@ -124,7 +123,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
-        Slick.bind(this);
+        ControllerDetails_Slick.bind(this);
         binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(true);
@@ -201,9 +200,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Ob
         adapterMain.add(sectionComments);
         adapterMain.add(sectionSimilar);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
-        layoutManager.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
-        binding.recyclerViewDetails.setLayoutManager(layoutManager);
+        GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
+        lm.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
+        binding.recyclerViewDetails.setLayoutManager(lm);
         binding.recyclerViewDetails.setAdapter(adapterMain);
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
         binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);

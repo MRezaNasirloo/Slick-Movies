@@ -46,10 +46,10 @@ public class App extends Application {
             BlockCanaryEx.install(new Config(this));
         }*/
 
-        // refWatcher = LeakCanary.install(this);
-
         refWatcher = RefWatcher.DISABLED;
+
         if (BuildConfig.DEBUG) {
+            refWatcher = LeakCanary.install(this);
             // AndroidDevMetrics.initWith(this);
             StrictMode.enableDefaults();
         }
@@ -63,6 +63,7 @@ public class App extends Application {
         }
         return ((App) context.getApplicationContext()).refWatcher;
     }
+
 
     @NonNull
     protected DaggerComponentApp.Builder prepareDi() {
@@ -81,6 +82,7 @@ public class App extends Application {
     }
 
     protected ComponentMain.Builder componentMainBuilder() {
+        if (componentApp == null) { componentApp = prepareDi().build(); }
         return componentApp.plus().mainModule(new MainModule());
     }
 

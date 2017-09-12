@@ -51,6 +51,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     protected void onDestroy() {
         if (isFinishing()) {
             App.disposeComponentMain();
+            App.disposeComponentApp();
         }
         super.onDestroy();
     }

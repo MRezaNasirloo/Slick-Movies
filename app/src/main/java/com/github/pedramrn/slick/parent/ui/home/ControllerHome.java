@@ -36,7 +36,6 @@ import javax.inject.Provider;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
@@ -137,12 +136,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         searchView = binding.searchView;
         ((GroupAdapter) searchView.getAdapter()).setOnItemClickListener(actionDetails);
 
-        presenter.updateStream().doOnTerminate(new Action() {
-            @Override
-            public void run() throws Exception {
-                System.out.println("ControllerHome.OnTerminate");
-            }
-        }).subscribe(this);
+        presenter.updateStream().subscribe(this);
 
         return binding.getRoot();
     }
