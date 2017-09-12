@@ -15,7 +15,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie {
+public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie, RemovableOnError {
 
     private final MovieBasic movie;
     private final String transitionName;
@@ -51,5 +51,10 @@ public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie {
     @Nullable
     public MovieBasic movie() {
         return movie;
+    }
+
+    @Override
+    public boolean removable() {
+        return false;
     }
 }

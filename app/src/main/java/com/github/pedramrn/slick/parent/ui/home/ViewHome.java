@@ -19,4 +19,6 @@ public interface ViewHome {
     int pageSize();
 
     Observable<Integer> retryTrending();
+
+    Observable<Object> retryUpcoming();
 }

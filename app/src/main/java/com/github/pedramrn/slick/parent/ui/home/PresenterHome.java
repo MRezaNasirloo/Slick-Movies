@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
+import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
 import com.github.pedramrn.slick.parent.domain.router.RouterTrending;
 import com.github.pedramrn.slick.parent.domain.router.RouterUpcoming;
@@ -10,6 +12,7 @@ import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterTrendingImpl;
@@ -17,7 +20,6 @@ import com.github.pedramrn.slick.parent.ui.home.router.RouterUpcomingImpl;
 import com.github.pedramrn.slick.parent.ui.home.state.PartialViewStateHome;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
-import com.github.pedramrn.slick.parent.util.IdBank;
 import com.github.pedramrn.slick.parent.util.ScanList;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
@@ -80,9 +82,65 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
     public void start(ViewHome view) {
         System.out.println("PresenterHome.start");
         final int pageSize = view.pageSize();
-        IdBank.reset(BANNER);
-        IdBank.reset(TRENDING);
-        IdBank.reset(POPULAR);
+
+        Observable<PartialViewState<ViewStateHome>> upcoming = intent(new IntentProvider<Object, ViewHome>() {
+            @Override
+            public Observable<Object> provide(ViewHome view) {
+                return view.retryUpcoming();
+            }
+        }).startWith(this).flatMap(new Function<Object, ObservableSource<PartialViewState<ViewStateHome>>>() {
+            @Override
+            public ObservableSource<PartialViewState<ViewStateHome>> apply(@NonNull Object o) throws Exception {
+                System.out.println("PresenterHome.routerUpcoming(1)");
+                return routerUpcoming.upcoming(1)
+                        .concatMap(new Function<PagedDomain<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
+                            @Override
+                            public ObservableSource<MovieSmallDomain> apply(@NonNull PagedDomain<MovieSmallDomain> pagedData)
+                                    throws Exception {
+                                return Observable.fromIterable(pagedData.data());
+                            }
+                        })
+                        .map(mapperMovieSmall)
+                        .map(new MapProgressive())
+                        .cast(MovieSmall.class)
+                        .map(new Function<MovieSmall, Item>() {
+                            @Override
+                            public Item apply(@NonNull MovieSmall movieSmall)
+                                    throws Exception {
+                                return movieSmall.render(BANNER);
+                            }
+                        })
+                        .buffer(20)
+                        .map(new Function<List<Item>, PartialViewState<ViewStateHome>>() {
+                            @Override
+                            public PartialViewState<ViewStateHome> apply(@NonNull List<Item> items) throws Exception {
+                                System.out.println("PresenterHome.Upcoming");
+                                return new PartialViewStateHome.Upcoming(items);
+                            }
+                        })
+                        .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateHome>>() {
+                            @Override
+                            public PartialViewState<ViewStateHome> apply(@NonNull Throwable throwable) throws Exception {
+                                System.out.println("PresenterHome.UpcomingError");
+                                return new PartialViewStateHome.UpcomingError(throwable);
+                            }
+                        })
+                        .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, BANNER))
+                        .subscribeOn(io)
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                System.out.println("PresenterHome.Upcoming.onComplete");
+                            }
+                        });
+            }
+        }).doOnComplete(new Action() {
+            @Override
+            public void run() throws Exception {
+                System.out.println("PresenterHome.Upcoming.onComplete2");
+
+            }
+        });
 
         /*Observable<PartialViewState<ViewStateHome>> upcoming = routerUpcoming.upcoming(1)
                 .concatMap(new Function<PagedDomain<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
@@ -112,15 +170,13 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                 .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateHome>>() {
                     @Override
                     public PartialViewState<ViewStateHome> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateHome.UpcomingErrorTrending(throwable);
+                        return new PartialViewStateHome.UpcomingError(throwable);
                     }
                 })
                 .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, BANNER))
                 .subscribeOn(io);*/
 
         // TODO: 2017-07-08 extract a transformer
-        // FIXME: 2017-07-08 trending items order changes frequently and we end up with next page and duplicate items, which
-        // causes wrong list animations on every update
 
         Observable<Integer> triggerTrending = intent(new IntentProvider<Integer, ViewHome>() {
             @Override
@@ -242,8 +298,6 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                 .popular(Collections.<Item>emptyList())
                 .trending(Collections.<Integer, Item>emptyMap())
                 .anticipated(Collections.<Item>emptyList())
-                // .retryTrending(Observable.empty())
-                // .onRetryPopular(Observable.never())
                 .loadingTrending(true)
                 .loadingPopular(true)
                 .itemLoadingCountPopular(0)
@@ -252,17 +306,10 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                 .pageTrending(1)
                 .build();
 
-        reduce(initialState, merge(trending, trendingProgressiveLoading, popular, popularProgressiveLoading))
+        reduce(initialState, merge(upcoming, trending, trendingProgressiveLoading, popular, popularProgressiveLoading))
                 .subscribe(this);
     }
 
     private static final String TAG = PresenterHome.class.getSimpleName();
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        IdBank.dispose(TRENDING);
-        IdBank.dispose(POPULAR);
-    }
 
 }

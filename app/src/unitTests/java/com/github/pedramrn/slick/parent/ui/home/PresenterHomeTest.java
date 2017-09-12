@@ -132,6 +132,11 @@ public class PresenterHomeTest {
                 }
             });
         }
+
+        @Override
+        public Observable<Object> retryUpcoming() {
+            return Observable.never();
+        }
     };
 
 }

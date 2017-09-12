@@ -25,10 +25,17 @@ public class ItemBannerProgressive extends ItemBanner {
         Context context = viewBinding.getRoot().getContext();
         viewBinding.textViewTitleAnticipated.setText("                         ");
         viewBinding.textViewTitleAnticipated.setBackgroundResource(R.drawable.line);
+        viewBinding.imageViewPlay.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+        viewBinding.imageViewThumbnail.setBackgroundResource(R.drawable.rectangle_no_corners);
         setBackgroundTint(context, viewBinding.textViewTitleAnticipated, R.color.color_gray_1);
     }
 
     private void setBackgroundTint(Context context, TextView view, @ColorRes int color) {
         view.getBackground().setColorFilter(ResourcesCompat.getColor(context.getResources(), color, null), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public boolean removable() {
+        return true;
     }
 }

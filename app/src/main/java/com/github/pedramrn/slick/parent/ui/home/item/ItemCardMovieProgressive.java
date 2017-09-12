@@ -32,4 +32,9 @@ public class ItemCardMovieProgressive extends ItemCardMovie {
         viewBinding.textViewTitle.setBackgroundResource(R.drawable.line);
         viewBinding.imageViewPoster.setImageResource(R.drawable.rectangle_no_corners);
     }
+
+    @Override
+    public boolean removable() {
+        return true;
+    }
 }

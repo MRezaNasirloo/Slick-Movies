@@ -1,10 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.home.state;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerError;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovieProgressive;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
+import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.xwray.groupie.Item;
@@ -30,7 +31,6 @@ public final class PartialViewStateHome {
         private final List<Item> movies;
 
         public Upcoming(List<Item> movies) {
-
             this.movies = movies;
         }
 
@@ -40,15 +40,32 @@ public final class PartialViewStateHome {
         }
     }
 
-    public static class UpcomingErrorTrending extends ErrorTrending {
+    public static class UpcomingError implements PartialViewState<ViewStateHome> {
 
-        public UpcomingErrorTrending(Throwable throwable) {
-            super(throwable);
+        private final Throwable throwable;
+
+        public UpcomingError(Throwable throwable) {
+            this.throwable = throwable;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome state) {
-            return state.toBuilder().errorUpcoming(throwable).build();
+            List<Item> upcoming = state.upcoming();
+            Iterator<Item> iterator = upcoming.iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                if (((RemovableOnError) item).removable()) {
+                    iterator.remove();
+                }
+            }
+
+            Item itemError = new ItemBannerError(-1, throwable);
+            upcoming.add(itemError);
+
+            return state.toBuilder()
+                    .upcoming(new ArrayList<>(upcoming))
+                    .errorUpcoming(throwable)
+                    .build();
         }
     }
 
@@ -118,7 +135,7 @@ public final class PartialViewStateHome {
             Iterator<Item> iterator = trending.values().iterator();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
-                if (item instanceof ItemError || item instanceof ItemCardMovieProgressive) {
+                if (((RemovableOnError) item).removable()) {
                     iterator.remove();
                 }
 
@@ -147,7 +164,7 @@ public final class PartialViewStateHome {
             Iterator<Item> iterator = trending.values().iterator();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
-                if (item instanceof ItemError || item instanceof ItemCardMovieProgressive) {
+                if (((RemovableOnError) item).removable()) {
                     iterator.remove();
                 }
 
@@ -205,7 +222,6 @@ public final class PartialViewStateHome {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            Item itemError = null;
             Map<Integer, Item> trending = viewStateHome.trending();
             //because there are 6 progressive items at most
             /*int limit = size - 6 < 0 ? 0 : size - 6;
@@ -213,20 +229,15 @@ public final class PartialViewStateHome {
             Iterator<Item> iterator = trending.values().iterator();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
-                if (item instanceof ItemCardMovieProgressive) {
-                    iterator.remove();
-                }
-                else if (item instanceof ItemError) {
-                    itemError = item;
+                if (((RemovableOnError) item).removable()) {
                     iterator.remove();
                 }
 
             }
 
-            if (itemError == null) {
-                itemError = new ItemError(-1, throwable.getMessage());
-            }
+            Item itemError = new ItemError(-1, throwable.getMessage());
             trending.put(((int) itemError.getId()), itemError);
+
             return viewStateHome.toBuilder()
                     .error(throwable)
                     .loadingTrending(true)

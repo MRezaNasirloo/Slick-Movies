@@ -39,7 +39,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -86,8 +85,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private ViewStateHome state;
 
     private PublishSubject<Object> onRetryTrending = PublishSubject.create();
-    private PublishSubject<Integer> observerPopular = PublishSubject.create();
-    private DisposableObserver<Object> disposable;
+    private PublishSubject<Object> onRetryUpcoming = PublishSubject.create();
 
     @NonNull
     @Override
@@ -146,13 +144,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
             }
         }).subscribe(this);
 
-        onRetryTrending.subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(@io.reactivex.annotations.NonNull Object o) throws Exception {
-                Log.d(TAG, "clicked 1");
-            }
-        });
-
         return binding.getRoot();
     }
 
@@ -186,7 +177,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
         // TODO: 2017-07-01 You're better than this... IKR Look what I just made :))))
         renderError(state.errorVideos());
-        renderError(state.errorUpcoming());
+//        renderError(state.errorUpcoming());
 //        renderError(state.error()); //handled
     }
 
@@ -256,8 +247,18 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         /*Observable.intervalRange(0, 100, 3, 3, TimeUnit.SECONDS).cast(Object.class);*/
     }
 
+    @Override
+    public Observable<Object> retryUpcoming() {
+        return onRetryUpcoming;
+    }
+
     public void onClickRetryTrending(Object o) {
         System.out.println("ControllerHome.onClickRetryTrending");
         onRetryTrending.onNext(o);
+    }
+
+    public void onClickRetryUpcoming(Object o) {
+        System.out.println("ControllerHome.onClickRetryUpcoming");
+        onRetryUpcoming.onNext(o);
     }
 }

@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.item;
 
 import android.support.annotation.NonNull;
 
-import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
+import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -28,12 +28,15 @@ public abstract class PartialProgressive {
     }
 
     protected List<Item> reduce(@NonNull List<Item> items) {
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i) instanceof ItemError) {
-                items.remove(i);
+        Iterator<Item> iterator = items.iterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (((RemovableOnError) item).removable()) {
+                iterator.remove();
                 break;
             }
         }
+
         List<Item> progressive = new ArrayList<>(count);
         for (int i = 0, id = items.size(); i < count; i++, id++) {
             progressive.add(itemRenderer.render(id, tag));
@@ -51,11 +54,10 @@ public abstract class PartialProgressive {
         Iterator<Item> iterator = items.values().iterator();
         while (iterator.hasNext()) {
             Item item = iterator.next();
-            if (item instanceof ItemError) {
+            if (((RemovableOnError) item).removable()) {
                 iterator.remove();
                 break;
             }
-
         }
 
         Map<Integer, Item> progressive = new LinkedHashMap<>(count);

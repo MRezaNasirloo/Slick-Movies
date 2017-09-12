@@ -12,7 +12,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-20
  */
 
-public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie {
+public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie, RemovableOnError {
 
     private final MovieBasic movie;
 
@@ -28,8 +28,8 @@ public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie {
 
     @Override
     public void bind(RowBannerBinding viewBinding, int position) {
+        viewBinding.imageViewPlay.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
         viewBinding.imageViewThumbnail.load(movie.thumbnailBackdrop());
-        viewBinding.imageViewThumbnail.setBackground(null);
         viewBinding.textViewTitleAnticipated.setBackground(null);
         viewBinding.textViewTitleAnticipated.setText(movie.title());
     }
@@ -44,5 +44,10 @@ public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie {
     @Override
     public String transitionName() {
         return null;
+    }
+
+    @Override
+    public boolean removable() {
+        return false;
     }
 }

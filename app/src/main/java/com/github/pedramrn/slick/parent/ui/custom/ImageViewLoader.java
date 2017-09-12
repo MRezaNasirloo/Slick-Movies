@@ -41,7 +41,10 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void load(String url) {
-        if (mock) { return; }
+        if (mock) {
+            setBackgroundResource(R.drawable.rectangle_no_corners);
+            return;
+        }
         if (url == null) {
             return;
         }

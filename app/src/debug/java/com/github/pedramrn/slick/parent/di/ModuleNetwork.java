@@ -45,7 +45,7 @@ import retrofit2.mock.NetworkBehavior;
 @Module(subcomponents = ComponentMain.class)
 public class ModuleNetwork extends ModuleNetworkBase {
 
-    private static boolean MOCK_MODE = false;
+    private static boolean MOCK_MODE = true;
 
     public ModuleNetwork() {
         // TODO: 2017-07-02 read from preference manager

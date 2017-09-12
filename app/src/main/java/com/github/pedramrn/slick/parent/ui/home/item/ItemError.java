@@ -14,7 +14,7 @@ import com.xwray.groupie.Item;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-09
  */
-public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction {
+public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction, RemovableOnError {
 
     private final String message;
     private final Throwable throwable;
@@ -59,4 +59,9 @@ public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction
     }
 
     public static final String TAG = ItemError.class.getSimpleName();
+
+    @Override
+    public boolean removable() {
+        return true;
+    }
 }
