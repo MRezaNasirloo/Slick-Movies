@@ -188,8 +188,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         renderError(state.errorVideos());
         renderError(state.errorUpcoming());
 //        renderError(state.error()); //handled
-
-
     }
 
     @Override
