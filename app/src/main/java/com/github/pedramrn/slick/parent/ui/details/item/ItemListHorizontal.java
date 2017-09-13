@@ -10,7 +10,6 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -50,12 +49,6 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
         layoutManager.scrollToPosition(scrollPos);
     }
 
-    @Override
-    public void unbind(ViewHolder<RowCastListBinding> holder) {
-        adapter.setOnItemClickListener(null);
-        super.unbind(holder);
-    }
-
     @NonNull
     protected RecyclerView.LayoutManager layoutManager(View root) {
         return new LinearLayoutManager(root.getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -67,12 +60,5 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
 
     public void onRestoreViewState(View view, Bundle savedViewState) {
         scrollPos = savedViewState.getInt(SCROLL_POS);
-    }
-
-    public void onDestroyView() {
-        adapter.setOnItemClickListener(null);
-        adapter.clear();
-//        adapter = null;
-        layoutManager = null;
     }
 }

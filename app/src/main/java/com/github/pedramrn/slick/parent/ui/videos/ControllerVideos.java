@@ -22,6 +22,7 @@ import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.state.ViewStateVideos;
+import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
@@ -92,7 +93,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        dispose(disposable);
+        UtilsRx.dispose(disposable);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
     private static final String TAG = ControllerVideos.class.getSimpleName();
     @Override
     public void onNext(ViewStateVideos state) {
-        Log.d(TAG, "onNext() called with: state = [" + state + "]");
+//        Log.d(TAG, "onNext() called with: state = [" + state + "]");
         adapterProgressive.update(state.videos());
         renderError(state.errorVideos());
     }

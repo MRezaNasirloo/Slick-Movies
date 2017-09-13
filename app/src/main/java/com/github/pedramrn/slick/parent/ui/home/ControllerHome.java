@@ -164,7 +164,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     }
 
-    @Override
+    /*@Override
     protected void onAttach(@NonNull View view) {
         Log.d(TAG, "onAttach");
         super.onAttach(view);
@@ -186,7 +186,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
-    }
+    }*/
 
     @Override
     public void onSubscribe(Disposable d) {

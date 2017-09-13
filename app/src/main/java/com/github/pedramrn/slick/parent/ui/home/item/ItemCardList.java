@@ -34,8 +34,8 @@ import io.reactivex.subjects.PublishSubject;
 
 public class ItemCardList extends Item<RowCardListBinding> {
 
-    private final String POPULAR_IS_LOADING;
-    private final String POPULAR_SCROLL_POS;
+    private final String IS_LOADING;
+    private final String SCROLL_POS;
 
     private final PublishSubject<Integer> observer = PublishSubject.create();
     @NonNull
@@ -55,13 +55,13 @@ public class ItemCardList extends Item<RowCardListBinding> {
             @NonNull GroupAdapter adapter,
             @NonNull String tag
     ) {
-        this.tag = tag;
         context = context.getApplicationContext();
+        this.tag = tag;
         this.adapter = adapter;
         this.margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
         this.layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        POPULAR_SCROLL_POS = "POPULAR_SCROLL_POS_" + tag;
-        POPULAR_IS_LOADING = "POPULAR_IS_LOADING_" + tag;
+        SCROLL_POS = "SCROLL_POS_" + tag;
+        IS_LOADING = "IS_LOADING_" + tag;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
         RecyclerView recyclerView = holder.binding.recyclerViewCard;
         recyclerView.removeItemDecoration(margin);
         recyclerView.setOnFlingListener(null);
-        recyclerView.setLayoutManager(null);
+//        recyclerView.setLayoutManager(null);
         UtilsRx.dispose(disposable);
         super.unbind(holder);
     }
@@ -129,14 +129,14 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     public void onSaveViewState(View view, Bundle outState) {
         Log.d(TAG + tag, "onSaveViewState");
-        outState.putInt(POPULAR_SCROLL_POS, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
-        outState.putBoolean(POPULAR_IS_LOADING, isLoading);
+        outState.putInt(SCROLL_POS, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
+        outState.putBoolean(IS_LOADING, isLoading);
     }
 
     public void onRestoreViewState(View view, Bundle savedViewState) {
         Log.d(TAG + tag, "onRestoreViewState");
-        isLoading = savedViewState.getBoolean(POPULAR_IS_LOADING, isLoading);
-        scrollPos = savedViewState.getInt(POPULAR_SCROLL_POS);
+        isLoading = savedViewState.getBoolean(IS_LOADING, isLoading);
+        scrollPos = savedViewState.getInt(SCROLL_POS);
     }
 
     public void loading(boolean loading) {

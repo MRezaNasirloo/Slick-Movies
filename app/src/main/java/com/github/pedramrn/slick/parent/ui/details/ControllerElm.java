@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
+import com.github.pedramrn.slick.parent.util.UtilsRx;
+
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -36,14 +38,14 @@ public abstract class ControllerElm<S> extends ControllerBase implements Observe
     @Override
     protected void onDestroyView(@NonNull View view) {
         Log.d(TAG, "onDestroyView: disposing");
-        dispose(compositeDisposable);
+//        dispose(compositeDisposable);
         super.onDestroyView(view);
     }
 
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: disposing");
-        dispose(compositeDisposable);
+        UtilsRx.dispose(compositeDisposable);
         super.onDestroy();
     }
 }

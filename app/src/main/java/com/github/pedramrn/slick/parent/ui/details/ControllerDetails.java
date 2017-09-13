@@ -305,7 +305,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     protected void onDestroyView(@NonNull View view) {
         binding.fab.setOnClickListener(null);
-        itemBackdropList.onDestroyView();
         headerCast.onDestroyView();
         headerCast.setOnClickListener(null);
         headerComments.onDestroyView();

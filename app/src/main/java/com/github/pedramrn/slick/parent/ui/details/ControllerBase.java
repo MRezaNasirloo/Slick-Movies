@@ -10,8 +10,6 @@ import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 
-import io.reactivex.disposables.Disposable;
-
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-18
@@ -50,12 +48,6 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
     protected void onDestroy() {
         super.onDestroy();
         App.refWatcher(getActivity()).watch(this);
-    }
-
-    protected void dispose(Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
     }
 
     protected void renderError(@Nullable Throwable throwable) {
