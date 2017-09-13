@@ -9,5 +9,5 @@ import android.support.v7.widget.Toolbar;
 
 public interface ToolbarHost {
     ToolbarHost setToolbar(Toolbar toolbar);
-    ToolbarHost setupButton(boolean enable);
+    ToolbarHost setupButton(Toolbar toolbar, boolean enable);
 }

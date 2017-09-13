@@ -71,7 +71,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
         ControllerListBinding binding = ControllerListBinding.inflate(inflater, container, false);
 
         binding.toolbar.setTitle(title);
-        setToolbar(binding.toolbar).setupButton(true);
+        setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
 
         adapter = new GroupAdapter();
         adapterItems = new UpdatingGroup();

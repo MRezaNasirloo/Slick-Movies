@@ -18,7 +18,6 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     private static final String TAG = ActivityMain.class.getSimpleName();
 
     private Router router;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +52,21 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
             App.disposeComponentMain();
             App.disposeComponentApp();
         }
-        this.toolbar.setNavigationOnClickListener(null);
+//        this.toolbar.setNavigationOnClickListener(null);
         super.onDestroy();
     }
 
     @Override
     public ToolbarHost setToolbar(Toolbar toolbar) {
-        this.toolbar = toolbar;
-        setSupportActionBar(this.toolbar);
+        setSupportActionBar(toolbar);
         return this;
     }
 
     @Override
-    public ToolbarHost setupButton(boolean enable) {
+    public ToolbarHost setupButton(Toolbar toolbar, boolean enable) {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(enable);
-        this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();

@@ -87,7 +87,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
         ControllerPeople_Slick.bind(this);
         binding = ControllerPeopleBinding.inflate(inflater, container, false);
 
-        setToolbar(binding.toolbar).setupButton(true);
+        setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle("");
 
         RxView.clicks(binding.imageViewProfile)

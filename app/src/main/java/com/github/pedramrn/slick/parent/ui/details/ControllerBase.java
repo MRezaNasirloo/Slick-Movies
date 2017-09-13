@@ -38,10 +38,10 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
 
 
     @Override
-    public ToolbarHost setupButton(boolean enable) {
+    public ToolbarHost setupButton(Toolbar toolbar, boolean enable) {
         Activity activity = getActivity();
         if (activity != null && activity instanceof ToolbarHost) {
-            return ((ToolbarHost) activity).setupButton(enable);
+            return ((ToolbarHost) activity).setupButton(toolbar, enable);
         }//emulates no-op impl
         return this;
     }

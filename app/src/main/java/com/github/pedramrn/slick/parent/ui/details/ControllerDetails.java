@@ -114,7 +114,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         ControllerDetails_Slick.bind(this);
         binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
-            ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(true);
+            ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         }
         final Context context = getApplicationContext();
 
@@ -306,7 +306,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     protected void onDestroyView(@NonNull View view) {
         binding.fab.setOnClickListener(null);
         itemBackdropList.onDestroyView();
-        itemCardListSimilar.onDestroyView();
         headerCast.onDestroyView();
         headerCast.setOnClickListener(null);
         headerComments.onDestroyView();

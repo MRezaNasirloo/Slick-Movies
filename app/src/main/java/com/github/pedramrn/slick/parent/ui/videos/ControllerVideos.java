@@ -69,7 +69,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
         App.componentMain().inject(this);
         ControllerVideos_Slick.bind(this);
         ControllerVideosBinding binding = ControllerVideosBinding.inflate(inflater, container, false);
-        setToolbar(binding.toolbar).setupButton(true);
+        setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
         final GroupAdapter adapter = new GroupAdapter();
         adapterProgressive = new UpdatingGroup();
