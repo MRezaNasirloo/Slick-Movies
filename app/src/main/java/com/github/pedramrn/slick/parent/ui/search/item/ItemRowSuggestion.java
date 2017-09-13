@@ -2,10 +2,13 @@ package com.github.pedramrn.slick.parent.ui.search.item;
 
 import android.support.annotation.Nullable;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowSearchSuggestionBinding;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemMovie;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
 /**
@@ -13,12 +16,14 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-08-11
  */
 
-public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implements ItemMovie {
+public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implements ItemMovie, OnItemAction {
     private final MovieBasic movie;
+    private final String transitionName;
 
     public ItemRowSuggestion(MovieBasic movie) {
         super(movie.id());
         this.movie = movie;
+        this.transitionName = ItemRowSuggestion.class.getSimpleName() + movie.id();
     }
 
     @Override
@@ -29,6 +34,7 @@ public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implemen
     @Override
     public void bind(RowSearchSuggestionBinding viewBinding, int position) {
         viewBinding.imageViewIcon.load(movie.thumbnailTinyPoster());
+        viewBinding.imageViewIcon.setTransitionName(transitionName);
         String releaseDate = movie.releaseDate();
         viewBinding.textViewTitle.setText(String.format("%s (%s)", movie.title(), releaseDate != null ? releaseDate.split("-")[0] : "n/a"));
     }
@@ -42,6 +48,11 @@ public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implemen
     @Nullable
     @Override
     public String transitionName() {
-        return movie.title() + getPosition(this);
+        return transitionName;
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        ControllerDetails.start(controller.getRouter(), movie, transitionName);
     }
 }

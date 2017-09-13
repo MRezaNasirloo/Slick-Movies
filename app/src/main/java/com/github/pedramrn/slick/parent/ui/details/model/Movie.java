@@ -250,7 +250,7 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
         public abstract Movie build();
     }
 
-    protected static Movie map(MovieDomain md) {//casts
+    protected static Movie map(final MovieDomain md) {//casts
         List<CastDomain> castDomains = md.casts();
         int size = castDomains.size();
         List<Cast> casts = Observable.fromIterable(castDomains).map(new Function<CastDomain, Cast>() {
@@ -270,14 +270,16 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
         }).toList(size == 0 ? 1 : size).blockingGet();
 
         //backdrops
-        List<String> backdropsDomain = md.images().backdrops();
+        final List<String> backdropsDomain = md.images().backdrops();
         size = backdropsDomain.size();
-        final List<Backdrop> backdrops = Observable.fromIterable(backdropsDomain).map(new Function<String, Backdrop>() {
-            @Override
-            public Backdrop apply(@NonNull String s) throws Exception {
-                return Backdrop.create(-1, s.hashCode(), s);
-            }
-        }).toList(size == 0 ? 1 : size).blockingGet();
+        final List<Backdrop> backdrops = Observable.fromIterable(backdropsDomain)
+                .distinct()
+                .map(new Function<String, Backdrop>() {
+                    @Override
+                    public Backdrop apply(@NonNull String s) throws Exception {
+                        return Backdrop.create(-1, s.hashCode(), backdropsDomain, md.title(), s);
+                    }
+                }).toList(size == 0 ? 1 : size).blockingGet();
 
         //videos
         List<VideoDomain> videosDomain = md.videos();

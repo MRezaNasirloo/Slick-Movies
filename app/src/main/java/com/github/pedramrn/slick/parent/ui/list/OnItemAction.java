@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.list;
 
-import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
+import com.bluelinelabs.conductor.Controller;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -8,5 +8,5 @@ import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
  */
 
 public interface OnItemAction {
-    void action(RouterProvider router);
+    void action(Controller controller, int position);
 }

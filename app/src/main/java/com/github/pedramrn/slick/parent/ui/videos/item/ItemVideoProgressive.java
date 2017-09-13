@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.videos.item;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowVideoBinding;
 
@@ -22,4 +23,8 @@ public class ItemVideoProgressive extends ItemVideo {
         viewBinding.imageViewThumbnail.setImageResource(R.drawable.rectangle_no_corners);
     }
 
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
+    }
 }

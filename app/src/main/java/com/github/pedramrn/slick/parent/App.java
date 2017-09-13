@@ -35,6 +35,7 @@ public class App extends Application {
     public void onCreate() {
         final long before = System.currentTimeMillis();
         super.onCreate();
+//        IMMLeaks.fixFocusedViewLeak(this);
         app = ((App) getApplicationContext());
         componentApp = prepareDi().build();
         if (LeakCanary.isInAnalyzerProcess(this)) {

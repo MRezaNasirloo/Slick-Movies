@@ -1,8 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.videos;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerVideosBinding;
@@ -20,7 +20,7 @@ import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
-import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideo;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.state.ViewStateVideos;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
@@ -71,7 +71,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
         ControllerVideosBinding binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(true);
         binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
-        GroupAdapter adapter = new GroupAdapter();
+        final GroupAdapter adapter = new GroupAdapter();
         adapterProgressive = new UpdatingGroup();
         adapter.add(adapterProgressive);
 
@@ -82,10 +82,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                if (item instanceof ItemVideo) {
-                    String key = ((ItemVideo) item).video().key();
-                    playYoutubeVideo(key);
-                }
+                ((OnItemAction) item).action(ControllerVideos.this, adapter.getAdapterPosition(item));
             }
         });
         presenter.updateStream().subscribe(this);
@@ -113,22 +110,17 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
 
     @Override
     public void onError(Throwable e) {
-
+        e.printStackTrace();
     }
 
     @Override
     public void onComplete() {
-
+        Log.d(TAG, "onComplete");
     }
 
-    public void playYoutubeVideo(String id) {
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            startActivity(webIntent);
-        }
+    public static void start(Router router, MovieBasic movie, String transitionName, int position) {
+        router.pushController(RouterTransaction.with(new ControllerVideos(movie, transitionName))
+                                      .pushChangeHandler(new HorizontalChangeHandler())
+                                      .popChangeHandler(new HorizontalChangeHandler()));
     }
-
 }

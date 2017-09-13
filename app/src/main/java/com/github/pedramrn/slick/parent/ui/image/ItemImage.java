@@ -1,7 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.image;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowImageBinding;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
 /**
@@ -9,7 +11,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-09-06
  */
 
-public class ItemImage extends Item<RowImageBinding> {
+public class ItemImage extends Item<RowImageBinding> implements OnItemAction {
     private final String urlTiny;
     private final String urlMedium;
     private final String urlHigh;
@@ -33,5 +35,10 @@ public class ItemImage extends Item<RowImageBinding> {
         // viewBinding.imageView.loadBlurNP(urlTiny);
         viewBinding.imageView.loadBlurNP(urlMedium);
         viewBinding.imageView.loadNP(urlHigh);
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+
     }
 }

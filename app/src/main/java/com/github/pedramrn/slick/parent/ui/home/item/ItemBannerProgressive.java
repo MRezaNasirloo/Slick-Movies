@@ -6,6 +6,7 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.widget.TextView;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 
@@ -37,5 +38,15 @@ public class ItemBannerProgressive extends ItemBanner {
     @Override
     public boolean removable() {
         return true;
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
+    }
+
+    @Override
+    public boolean isClickable() {
+        return false;
     }
 }

@@ -15,7 +15,6 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
-import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.github.slick.Presenter;
 
@@ -63,7 +62,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                             router.setRoot(RouterTransaction.with(new ControllerHome()).tag("ControllerHome"));
                             break;
                         case 1:
-                            router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
+//                            router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
                             // router.setRoot(RouterTransaction.with(new ControllerUpComing()));
                             break;
                         case 2:
@@ -108,6 +107,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     @Override
     protected void onDestroyView(@NonNull View view) {
         binding.navigation.setOnMenuItemClickListener(null);
+        binding.viewPager.setAdapter(null);
+        binding = null;
         super.onDestroyView(view);
 
     }

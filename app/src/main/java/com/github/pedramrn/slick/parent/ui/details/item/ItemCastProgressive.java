@@ -6,8 +6,10 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.widget.TextView;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
@@ -16,7 +18,7 @@ import com.xwray.groupie.ViewHolder;
  *         Created on: 2017-06-16
  */
 
-public class ItemCastProgressive extends Item<RowCastHorizontalBinding> {
+public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implements OnItemAction {
 
     public ItemCastProgressive(long id) {
         super(id);
@@ -53,5 +55,10 @@ public class ItemCastProgressive extends Item<RowCastHorizontalBinding> {
     @Override
     public int getSpanSize(int spanCount, int position) {
         return 3;
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
     }
 }

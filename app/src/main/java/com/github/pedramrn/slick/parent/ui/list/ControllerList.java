@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerListBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
-import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
 import com.github.slick.Presenter;
@@ -79,12 +80,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
             @Override
             public void onItemClick(Item item, View view) {
                 if (item instanceof OnItemAction) {
-                    ((OnItemAction) item).action(new RouterProvider() {
-                        @Override
-                        public Router get() {
-                            return getRouter();
-                        }
-                    });
+                    ((OnItemAction) item).action(ControllerList.this, adapter.getAdapterPosition(item));
                 }
             }
         });
@@ -125,5 +121,18 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
     @Override
     public void onComplete() {
         Log.d(TAG, "onComplete() called");
+    }
+
+    public static void start(Router router, String title, ItemViewListParcelable... itemViews) {
+        router.pushController(RouterTransaction.with(new ControllerList(title, itemViews))
+                                      .pushChangeHandler(new HorizontalChangeHandler())
+                                      .popChangeHandler(new HorizontalChangeHandler()));
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        adapter.setOnItemClickListener(null);
+        adapter.clear();
+        super.onDestroyView(view);
     }
 }

@@ -1,7 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBackdropBinding;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
 /**
@@ -9,7 +11,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-17
  */
 
-public class ItemBackdropProgressive extends Item<RowBackdropBinding> {
+public class ItemBackdropProgressive extends Item<RowBackdropBinding> implements OnItemAction {
 
     @Override
     public int getLayout() {
@@ -27,5 +29,10 @@ public class ItemBackdropProgressive extends Item<RowBackdropBinding> {
     @Override
     public long getId() {
         return super.getId();
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
     }
 }

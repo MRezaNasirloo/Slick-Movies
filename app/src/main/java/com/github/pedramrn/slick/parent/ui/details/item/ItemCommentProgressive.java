@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCommentBinding;
 
@@ -21,5 +22,10 @@ public class ItemCommentProgressive extends ItemComment {
         // viewBinding.textViewReadMore.setVisibility(View.INVISIBLE);
         viewBinding.textViewComment.setBackgroundResource(R.drawable.line);
         viewBinding.textViewUserNameDate.setBackgroundResource(R.drawable.line);
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
     }
 }

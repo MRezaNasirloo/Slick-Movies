@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,21 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular;
-import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
-import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemCreditsProgressive;
-import com.github.pedramrn.slick.parent.ui.people.item.ItemMovieCast;
-import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
@@ -50,7 +44,8 @@ import io.reactivex.functions.Consumer;
 /**
  *
  */
-public class ControllerPeople extends ControllerElm<ViewStatePeople> implements ViewPeople, AppBarLayout.OnOffsetChangedListener {
+public class ControllerPeople extends ControllerElm<ViewStatePeople>
+        implements ViewPeople, AppBarLayout.OnOffsetChangedListener, OnItemClickListener {
 
     @Inject
     Provider<PresenterPeople> provider;
@@ -121,41 +116,25 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
         adapterMovies.add(new ItemCreditsProgressive());
         adapterMovies.add(new ItemCreditsProgressive());
         adapterMovies.add(new ItemCreditsProgressive());
-        ItemCardList movies =
-                new ItemCardList(getApplicationContext(), adapterMovies, MOVIES, new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Item item, View view) {
-                        if (item instanceof ItemMovieCast) {
-                            CastOrCrewPersonDetails coc = ((ItemMovieCast) item).getCoc();
-                            getRouter().pushController(RouterTransaction.with(new ControllerDetails(MovieSmall.create(coc), null))
-                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler())
-                            );
-                        }
-                    }
-                });
 
-
-        Section sectionMovies = new Section(new ItemCardHeader(0, "Movies", null, null));
+        ItemCardList movies = new ItemCardList(getActivity(), adapterMovies, MOVIES);
+        Section sectionMovies = new Section(new ItemCardHeader(0, "Movies", null));
         sectionMovies.add(movies);
 
         adapterTvShows = new GroupAdapter();
         adapterTvShows.add(new ItemCreditsProgressive());
         adapterTvShows.add(new ItemCreditsProgressive());
         adapterTvShows.add(new ItemCreditsProgressive());
-        ItemCardList tvShows = new ItemCardList(getApplicationContext(), adapterTvShows, TV_SHOWS, new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                Snackbar.make(getView(), "Under Construction!!!", Snackbar.LENGTH_LONG).show();
-            }
-        });
+        ItemCardList tvShows = new ItemCardList(getActivity(), adapterTvShows, TV_SHOWS);
 
-        Section sectionTvShows = new Section(new ItemCardHeader(0, "TV Shows", null, null));
+        Section sectionTvShows = new Section(new ItemCardHeader(0, "TV Shows", null));
         sectionTvShows.add(tvShows);
 
         adapter.add(sectionMovies);
         adapter.add(sectionTvShows);
 
+        adapter.setOnItemClickListener(this);
+        adapterMovies.setOnItemClickListener(this);
 
         binding.imageViewHeader.loadBlur(person.profileThumbnail());
         binding.imageViewHeader.loadBlurNP(person.profileMedium());
@@ -242,4 +221,9 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople> implements 
     }
 
     private static final String TAG = ControllerPeople.class.getSimpleName();
+
+    @Override
+    public void onItemClick(Item item, View view) {
+        ((OnItemAction) item).action(this, adapterMovies.getAdapterPosition(item));
+    }
 }

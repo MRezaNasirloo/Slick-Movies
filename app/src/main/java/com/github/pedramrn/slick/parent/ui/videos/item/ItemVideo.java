@@ -1,7 +1,15 @@
 package com.github.pedramrn.slick.parent.ui.videos.item;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowVideoBinding;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 import com.xwray.groupie.Item;
 
@@ -10,7 +18,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-07-22
  */
 
-public class ItemVideo extends Item<RowVideoBinding> {
+public class ItemVideo extends Item<RowVideoBinding> implements OnItemAction {
 
     private final Video video;
 
@@ -33,7 +41,19 @@ public class ItemVideo extends Item<RowVideoBinding> {
         viewBinding.textViewChannelDateViews.setText(String.format("Type: %s", video.type()));
     }
 
-    public Video video() {
-        return video;
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public void action(Controller controller, int position) {
+        playYoutubeVideo(controller.getActivity(), video.key());
+    }
+
+    private static void playYoutubeVideo(@NonNull Context context, @NonNull String id) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            context.startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            context.startActivity(webIntent);
+        }
     }
 }

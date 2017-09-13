@@ -248,7 +248,7 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
             public Observable<Integer> provide(ViewHome view) {
                 return view.triggerPopular();
             }
-        });
+        }).startWith(1);
         Observable<PartialViewState<ViewStateHome>> popular = intent
                 .concatMap(new Function<Integer, ObservableSource<MovieDomain>>() {
                     @Override

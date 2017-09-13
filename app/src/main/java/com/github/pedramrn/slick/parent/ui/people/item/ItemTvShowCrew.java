@@ -1,5 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.people.item;
 
+import android.support.design.widget.Snackbar;
+import android.view.View;
+
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 
@@ -19,5 +23,13 @@ public class ItemTvShowCrew extends ItemMovieCast {
         renderDate(viewBinding, coc.firstAirDate());
         viewBinding.textViewTitle.setText(coc.name());
         viewBinding.textViewCharacterOrJob.setText(coc.job());
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        View view = controller.getView();
+        if (view != null) {
+            Snackbar.make(view, "Under Construction!!!", Snackbar.LENGTH_LONG).show();
+        }
     }
 }

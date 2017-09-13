@@ -8,12 +8,20 @@ import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
+import java.util.List;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-09
  */
 @AutoValue
 public abstract class Backdrop extends AutoBase implements Parcelable, ItemView {
+
+    public abstract Integer uniqueId();
+
+    public abstract List<String> allBackdrops();
+
+    public abstract String movieTitle();
 
     @Nullable
     public abstract String backdropPath();
@@ -37,10 +45,18 @@ public abstract class Backdrop extends AutoBase implements Parcelable, ItemView 
         return "http://image.tmdb.org/t/p/original" + backdropPath();
     }
 
-    public static Backdrop create(long itemId, Integer uniqueId, String backdropPath) {
+    public static Backdrop create(
+            long itemId,
+            Integer uniqueId,
+            List<String> allBackdrops,
+            String movieTitle,
+            String backdropPath
+    ) {
         return builder()
-                .uniqueId(uniqueId)
                 .itemId(itemId)
+                .uniqueId(uniqueId)
+                .allBackdrops(allBackdrops)
+                .movieTitle(movieTitle)
                 .backdropPath(backdropPath)
                 .build();
     }
@@ -57,6 +73,10 @@ public abstract class Backdrop extends AutoBase implements Parcelable, ItemView 
         public abstract Builder itemId(long itemId);
 
         public abstract Builder backdropPath(String backdropPath);
+
+        public abstract Builder allBackdrops(List<String> allBackdrops);
+
+        public abstract Builder movieTitle(String movieTitle);
 
         public abstract Backdrop build();
     }

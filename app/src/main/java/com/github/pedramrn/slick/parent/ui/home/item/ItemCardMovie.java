@@ -5,9 +5,12 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.support.annotation.Nullable;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
 /**
@@ -15,7 +18,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie, RemovableOnError {
+public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction, ItemMovie, RemovableOnError {
 
     private final MovieBasic movie;
     private final String transitionName;
@@ -56,5 +59,10 @@ public class ItemCardMovie extends Item<RowCardBinding> implements ItemMovie, Re
     @Override
     public boolean removable() {
         return false;
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        ControllerDetails.start(controller.getRouter(), movie, transitionName);
     }
 }

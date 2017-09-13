@@ -2,9 +2,12 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.support.annotation.Nullable;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
+import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 import com.xwray.groupie.Item;
 
 /**
@@ -12,7 +15,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-20
  */
 
-public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie, RemovableOnError {
+public class ItemBanner extends Item<RowBannerBinding> implements OnItemAction, ItemMovie, RemovableOnError {
 
     private final MovieBasic movie;
 
@@ -49,5 +52,10 @@ public class ItemBanner extends Item<RowBannerBinding> implements ItemMovie, Rem
     @Override
     public boolean removable() {
         return false;
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        ControllerVideos.start(controller.getRouter(), movie, transitionName(), position);
     }
 }

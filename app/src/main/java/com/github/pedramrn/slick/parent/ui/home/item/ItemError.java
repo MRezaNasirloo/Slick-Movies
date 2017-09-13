@@ -1,12 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
-import android.util.Log;
-
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardErrorBinding;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
-import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -46,9 +43,8 @@ public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction
     }
 
     @Override
-    public void action(RouterProvider router) {
-        Log.d(TAG, "action: called");
-        Controller controller = router.get().getControllerWithTag("ControllerHome");
+    public void action(Controller controller, int position) {
+        controller = controller.getRouter().getControllerWithTag("ControllerHome");
         if (controller != null) {
             ((ControllerHome) controller).onClickRetryTrending(this);
         }

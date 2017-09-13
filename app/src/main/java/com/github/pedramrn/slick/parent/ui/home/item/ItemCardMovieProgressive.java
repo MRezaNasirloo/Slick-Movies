@@ -3,6 +3,7 @@
 
 package com.github.pedramrn.slick.parent.ui.home.item;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -36,5 +37,10 @@ public class ItemCardMovieProgressive extends ItemCardMovie {
     @Override
     public boolean removable() {
         return true;
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
     }
 }

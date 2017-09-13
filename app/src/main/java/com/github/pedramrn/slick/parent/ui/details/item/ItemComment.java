@@ -1,8 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCommentBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.Comment;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
 /**
@@ -10,7 +12,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-07-24
  */
 
-public class ItemComment extends Item<RowCommentBinding> {
+public class ItemComment extends Item<RowCommentBinding> implements OnItemAction {
 
     private final Comment comment;
 
@@ -38,5 +40,10 @@ public class ItemComment extends Item<RowCommentBinding> {
         viewBinding.textViewUserNameDate.setBackground(null);
         viewBinding.textViewReplies.setBackground(null);
         viewBinding.textViewLikes.setBackground(null);
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
     }
 }

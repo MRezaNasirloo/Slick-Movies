@@ -1,7 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.people.item;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.xwray.groupie.Item;
@@ -13,9 +17,11 @@ import java.text.ParseException;
  *         Created on: 2017-08-22
  */
 
-public class ItemMovieCast extends Item<RowCardCreditBinding> {
+@SuppressWarnings("WeakerAccess")
+public class ItemMovieCast extends Item<RowCardCreditBinding> implements OnItemAction {
 
     protected final CastOrCrewPersonDetails coc;
+    private final String transitionName;
 
     public CastOrCrewPersonDetails getCoc() {
         return coc;
@@ -23,6 +29,7 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> {
 
     public ItemMovieCast(CastOrCrewPersonDetails coc) {
         this.coc = coc;
+        this.transitionName = ItemMovieCast.class.getSimpleName() + "_" + coc.id();
     }
 
     @Override
@@ -55,7 +62,13 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> {
 
     protected void loadPoster(RowCardCreditBinding viewBinding) {
         clearBackgrounds(viewBinding);
+        viewBinding.imageViewPoster.setTransitionName(transitionName);
         viewBinding.imageViewPoster.loadBlur(coc.thumbnailTinyPoster());
         viewBinding.imageViewPoster.load(coc.thumbnailPoster());
+    }
+
+    @Override
+    public void action(Controller controller, int position) {
+        ControllerDetails.start(controller.getRouter(), MovieSmall.create(coc), transitionName);
     }
 }

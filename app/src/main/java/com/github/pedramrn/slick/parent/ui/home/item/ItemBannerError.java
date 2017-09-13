@@ -6,7 +6,6 @@ import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
-import com.github.pedramrn.slick.parent.ui.home.RouterProvider;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 
 /**
@@ -31,9 +30,9 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
     }
 
     @Override
-    public void action(RouterProvider router) {
+    public void action(Controller controller, int position) {
         Log.d(TAG, "action: called");
-        Controller controller = router.get().getControllerWithTag("ControllerHome");
+        controller = controller.getRouter().getControllerWithTag("ControllerHome");
         if (controller != null) {
             ((ControllerHome) controller).onClickRetryUpcoming(this);
         }

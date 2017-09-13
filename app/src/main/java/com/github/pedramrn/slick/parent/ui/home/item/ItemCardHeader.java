@@ -8,8 +8,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
+import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
@@ -22,25 +25,23 @@ import io.reactivex.functions.Consumer;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardHeader extends Item<RowCardHeaderBinding> {
+public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItemAction {
 
     private final String title;
     private final String buttonText;
-    private final Consumer<Object> onClickListener;
+    private Consumer<Object> onClickListener;
     private Disposable disposable;
 
-    public ItemCardHeader(long id, @NonNull String title, @Nullable String buttonText, @Nullable Consumer<Object> onClickListener) {
+    public ItemCardHeader(long id, @NonNull String title, @Nullable String buttonText) {
         super(id);
         this.title = title;
         this.buttonText = buttonText;
-        this.onClickListener = onClickListener;
     }
 
     public ItemCardHeader(int id, @NonNull String title) {
         super(id);
         this.title = title;
-        this.onClickListener = null;
-        this.buttonText = null;
+        this.buttonText = title;
     }
 
     @Override
@@ -64,12 +65,23 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> {
     @Override
     public void unbind(ViewHolder<RowCardHeaderBinding> holder) {
         Log.d(TAG, "unbind() called");
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
+        UtilsRx.dispose(disposable);
         holder.binding.button.setOnClickListener(null);
         super.unbind(holder);
     }
 
     private static final String TAG = ItemCardHeader.class.getSimpleName();
+
+    @Override
+    public void action(Controller controller, int position) {
+        //no-op
+    }
+
+    public void setOnClickListener(Consumer<Object> onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
+    public void onDestroyView() {
+        UtilsRx.dispose(disposable);
+    }
 }

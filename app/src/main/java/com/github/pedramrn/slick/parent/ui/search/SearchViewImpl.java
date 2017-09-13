@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.search.state.ViewStateSearch;
+import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.github.slick.Presenter;
 import com.lapism.searchview.SearchView;
 import com.xwray.groupie.GroupAdapter;
@@ -89,7 +90,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         SearchViewImpl_Slick.onDetach(this);
-        dispose(disposable);
+        UtilsRx.dispose(disposable);
     }
 
     @Override
@@ -129,12 +130,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     }
 
     private static final String TAG = SearchViewImpl.class.getSimpleName();
-
-    protected void dispose(Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
-    }
 
     protected void renderError(@Nullable Throwable throwable) {
         if (throwable != null) {

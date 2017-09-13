@@ -1,31 +1,29 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
-import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
-import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
-import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -56,29 +54,10 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     private UpdatingGroup progressiveTrending;
     private UpdatingGroup progressivePopular;
+    private UpdatingGroup progressiveUpcoming;
     private ItemCardList itemListTrending;
     private ItemCardList itemListPopular;
-    private UpdatingGroup progressiveUpcoming;
     private ItemListHorizontal itemListUpcoming;
-
-    private final RouterProvider routerProvider = new RouterProvider() {
-        @Override
-        public Router get() {
-            return getRouter();
-        }
-    };
-    private OnItemClickListenerAction actionDetails = new OnItemClickListenerAction(routerProvider, new ControllerProvider() {
-        @Override
-        public Controller get(MovieBasic movie, String transitionName) {
-            return new ControllerDetails(movie, transitionName);
-        }
-    });
-    private OnItemClickListenerAction actionVideos = new OnItemClickListenerAction(routerProvider, new ControllerProvider() {
-        @Override
-        public Controller get(MovieBasic movie, String transitionName) {
-            return new ControllerVideos(movie, transitionName);
-        }
-    });
 
     private SearchViewImpl searchView;
     private ViewStateHome state;
@@ -86,9 +65,14 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private PublishSubject<Object> onRetryTrending = PublishSubject.create();
     private PublishSubject<Object> onRetryUpcoming = PublishSubject.create();
 
+    private static final String trending = "Trending";
+    private static final String popular = "Popular";
+    private static final String upcoming = "Upcoming";
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        Log.d(TAG, "onCreateView");
         App.componentMain().inject(this);
         ControllerHome_Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
@@ -97,48 +81,58 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         GroupAdapter adapterUpcoming = new GroupAdapter();
         GroupAdapter adapterTrending = new GroupAdapter();
         GroupAdapter adapterPopular = new GroupAdapter();
+
         progressiveUpcoming = new UpdatingGroup();
         progressiveTrending = new UpdatingGroup();
         progressivePopular = new UpdatingGroup();
-        itemListTrending = new ItemCardList(getActivity(), adapterTrending, "trending", actionDetails);
-        itemListPopular = new ItemCardList(getActivity(), adapterPopular, "popular", actionDetails);
 
-        itemListUpcoming = new ItemListHorizontalPager(getActivity(), adapterUpcoming, "UPCOMING", actionVideos);
+        final Context context = getApplicationContext();
 
-        adapterUpcoming.add(progressiveUpcoming);
-        Section sectionUpcoming = new Section(new ItemCardHeader(1, "UPCOMING", "See All", null));
+        itemListTrending = new ItemCardList(context, adapterTrending, trending);
+        itemListPopular = new ItemCardList(context, adapterPopular, popular);
+        itemListUpcoming = new ItemListHorizontalPager(context, adapterUpcoming, upcoming);
+
+        Section sectionUpcoming = new Section(new ItemCardHeader(1, upcoming));
         sectionUpcoming.add(itemListUpcoming);
 
-        Consumer<Object> onClickListener = new Consumer<Object>() {
-            @Override
-            public void accept(@NonNull Object o) throws Exception {
-                Toast.makeText(getApplicationContext(), "Under Construction...", Toast.LENGTH_SHORT).show();
-            }
-        };
-        Section sectionTrending = new Section(new ItemCardHeader(1, "TRENDING", "See All", onClickListener));
-
-        adapterTrending.add(progressiveTrending);
+        Section sectionTrending = new Section(new ItemCardHeader(1, trending));
         sectionTrending.add(itemListTrending);
 
-        Section sectionPopular = new Section(new ItemCardHeader(1, "Popular", "See All", onClickListener));
-
-        adapterPopular.add(progressivePopular);
+        Section sectionPopular = new Section(new ItemCardHeader(1, popular));
         sectionPopular.add(itemListPopular);
+
+        adapterUpcoming.add(progressiveUpcoming);
+        adapterPopular.add(progressivePopular);
+        adapterTrending.add(progressiveTrending);
+
+
+        // setToolbar(binding.toolbar);
+        searchView = binding.searchView;
+        setOnItemClickListener(adapterUpcoming);
+        setOnItemClickListener(adapterTrending);
+        setOnItemClickListener(adapterPopular);
+        setOnItemClickListener((GroupAdapter) searchView.getAdapter());
 
         adapterMain.add(sectionUpcoming);
         adapterMain.add(sectionTrending);
         adapterMain.add(sectionPopular);
 
-        binding.recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        binding.recyclerViewHome.setAdapter(adapterMain);
-        // setToolbar(binding.toolbar);
-        // binding.searchView.setOnQueryTextListener();
-        searchView = binding.searchView;
-        ((GroupAdapter) searchView.getAdapter()).setOnItemClickListener(actionDetails);
+        RecyclerView recyclerViewHome = binding.recyclerViewHome;
+        recyclerViewHome.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        recyclerViewHome.setAdapter(adapterMain);
 
         presenter.updateStream().subscribe(this);
 
         return binding.getRoot();
+    }
+
+    private void setOnItemClickListener(final GroupAdapter adapter) {
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                ((OnItemAction) item).action(ControllerHome.this, adapter.getAdapterPosition(item));
+            }
+        });
     }
 
     @Override
@@ -162,17 +156,36 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         progressiveUpcoming.update(state.upcoming());
         progressiveTrending.update(Arrays.asList(state.trending().values().toArray(new Item[state.trending().size()])));
         progressivePopular.update(state.popular());
+
         itemListTrending.loading(state.loadingTrending());
-        itemListTrending.itemLoadedCount(state.itemLoadingCountTrending());
         itemListTrending.page(state.pageTrending());
         itemListPopular.loading(state.loadingPopular());
-        itemListPopular.itemLoadedCount(state.itemLoadingCountPopular());
         itemListPopular.page(state.pagePopular());
 
-        // TODO: 2017-07-01 You're better than this... IKR Look what I just made :))))
-        renderError(state.errorVideos());
-//        renderError(state.errorUpcoming());
-//        renderError(state.error()); //handled
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        Log.d(TAG, "onAttach");
+        super.onAttach(view);
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        Log.d(TAG, "onDetach");
+        super.onDetach(view);
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        Log.d(TAG, "onDestroyView");
+        super.onDestroyView(view);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     @Override
@@ -209,6 +222,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Override
     public Observable<Integer> triggerTrending() {
         System.out.println("PresenterHome.triggerTrending");
+//        return Observable.just(1);
         return itemListTrending.observer().doOnNext(new Consumer<Integer>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull Integer integer) throws Exception {
@@ -220,7 +234,8 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Override
     public Observable<Integer> triggerPopular() {
         System.out.println("PresenterHome.triggerPopular");
-        return itemListPopular.observer().startWith(1);
+//        return Observable.just(1);
+        return itemListPopular.observer();
     }
 
     @Override

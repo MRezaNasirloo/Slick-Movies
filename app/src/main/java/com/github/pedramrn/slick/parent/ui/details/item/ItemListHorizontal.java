@@ -1,9 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,7 +10,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
+import com.xwray.groupie.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -22,15 +20,17 @@ import com.xwray.groupie.OnItemClickListener;
 public class ItemListHorizontal extends Item<RowCastListBinding> {
 
 
-    private final RecyclerView.Adapter adapter;
+    private GroupAdapter adapter;
     private LinearLayoutManager layoutManager;
     private final String SCROLL_POS;
     private int scrollPos;
 
-    public ItemListHorizontal(Context context, GroupAdapter adapter, String tag, @Nullable OnItemClickListener onItemClickListener) {
+    public ItemListHorizontal(
+            GroupAdapter adapter,
+            String tag
+    ) {
         this.adapter = adapter;
         SCROLL_POS = "SCROLL_POS_" + tag;
-        adapter.setOnItemClickListener(onItemClickListener);
     }
 
     @Override
@@ -50,6 +50,12 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
         layoutManager.scrollToPosition(scrollPos);
     }
 
+    @Override
+    public void unbind(ViewHolder<RowCastListBinding> holder) {
+        adapter.setOnItemClickListener(null);
+        super.unbind(holder);
+    }
+
     @NonNull
     protected RecyclerView.LayoutManager layoutManager(View root) {
         return new LinearLayoutManager(root.getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -61,5 +67,12 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
 
     public void onRestoreViewState(View view, Bundle savedViewState) {
         scrollPos = savedViewState.getInt(SCROLL_POS);
+    }
+
+    public void onDestroyView() {
+        adapter.setOnItemClickListener(null);
+        adapter.clear();
+//        adapter = null;
+        layoutManager = null;
     }
 }
