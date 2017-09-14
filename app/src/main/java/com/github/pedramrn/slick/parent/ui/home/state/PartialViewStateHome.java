@@ -102,14 +102,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            Iterator<Item> iterator = trending.values().iterator();
-            while (iterator.hasNext()) {
-                Item item = iterator.next();
-                if (((RemovableOnError) item).removable()) {
-                    iterator.remove();
-                }
-
-            }
+            removeRemovables(trending);
             trending.putAll(movies);
             return viewStateHome.toBuilder()
                     .trending(new LinkedHashMap<>(trending))
@@ -131,19 +124,35 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            Iterator<Item> iterator = trending.values().iterator();
-            while (iterator.hasNext()) {
-                Item item = iterator.next();
-                if (((RemovableOnError) item).removable()) {
-                    iterator.remove();
-                }
-
-            }
+            removeRemovables(trending);
             return viewStateHome.toBuilder()
                     .trending(new LinkedHashMap<>(trending))
                     .loadingTrending(loading)
                     .itemLoadingCountTrending(trending.size())
                     .pageTrending(viewStateHome.pageTrending() + 1)
+                    .error(null)
+                    .build();
+        }
+    }
+
+    public static class PopularLoaded implements PartialViewState<ViewStateHome> {
+
+        private final boolean loading;
+
+        public PopularLoaded(boolean loaded) {
+            this.loading = !loaded;
+
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            Map<Integer, Item> popular = viewStateHome.popular();
+            removeRemovables(popular);
+            return viewStateHome.toBuilder()
+                    .popular(new LinkedHashMap<>(popular))
+                    .loadingPopular(loading)
+                    .itemLoadingCountPopular(popular.size())
+                    .pagePopular(viewStateHome.pagePopular() + 1)
                     .error(null)
                     .build();
         }
@@ -193,14 +202,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            Iterator<Item> iterator = trending.values().iterator();
-            while (iterator.hasNext()) {
-                Item item = iterator.next();
-                if (((RemovableOnError) item).removable()) {
-                    iterator.remove();
-                }
-
-            }
+            removeRemovables(trending);
 
             Item itemError = new ItemError(-1, PresenterHome.TRENDING, throwable.getMessage());
             trending.put(((int) itemError.getId()), itemError);
@@ -213,22 +215,57 @@ public final class PartialViewStateHome {
         }
     }
 
-    public static class Popular implements PartialViewState<ViewStateHome> {
-        private final List<Item> movies;
-        private final boolean isLoading;
+    public static class ErrorPopular implements PartialViewState<ViewStateHome> {
 
-        public Popular(List<Item> movies, boolean isLoading) {
-            this.movies = movies;
-            this.isLoading = isLoading;
+        protected final Throwable throwable;
+
+        public ErrorPopular(Throwable throwable) {
+            this.throwable = throwable;
         }
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            Map<Integer, Item> popular = viewStateHome.popular();
+            removeRemovables(popular);
+
+            Item itemError = new ItemError(-1, PresenterHome.POPULAR, throwable.getMessage());
+            popular.put(((int) itemError.getId()), itemError);
+
             return viewStateHome.toBuilder()
-                    .popular(new ArrayList<>(movies))
-                    .loadingPopular(isLoading)
-                    .itemLoadingCountPopular(movies.size())
-                    .pagePopular(viewStateHome.pagePopular() + 1)
+                    .error(throwable)
+                    .loadingPopular(true)
+                    .popular(new LinkedHashMap<>(popular))
+                    .build();
+        }
+    }
+
+    private static void removeRemovables(Map<Integer, Item> popular) {
+        Iterator<Item> iterator = popular.values().iterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (((RemovableOnError) item).removable()) {
+                iterator.remove();
+            }
+
+        }
+    }
+
+    public static class Popular implements PartialViewState<ViewStateHome> {
+        private final Map<Integer, Item> movies;
+
+        public Popular(Map<Integer, Item> movies) {
+            this.movies = movies;
+        }
+
+        @Override
+        public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            Map<Integer, Item> popular = viewStateHome.popular();
+            removeRemovables(popular);
+            popular.putAll(movies);
+            return viewStateHome.toBuilder()
+                    .popular(new LinkedHashMap<>(popular))
+                    .itemLoadingCountPopular(popular.size())
+                    .error(null)
                     .build();
         }
     }

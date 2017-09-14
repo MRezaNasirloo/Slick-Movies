@@ -52,7 +52,7 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
 
     @Override
     public void start(ViewSearch view) {
-        Observable<PartialViewState<ViewStateSearch>> searchMovies = intent(new IntentProvider<String, ViewSearch>() {
+        Observable<PartialViewState<ViewStateSearch>> searchMovies = command(new CommandProvider<String, ViewSearch>() {
             @Override
             public Observable<String> provide(ViewSearch view) {
                 return view.queryNexText();
@@ -94,7 +94,7 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
                     }
                 });
 
-        Observable<PartialViewState<ViewStateSearch>> searchOpenClose = intent(new IntentProvider<Boolean, ViewSearch>() {
+        Observable<PartialViewState<ViewStateSearch>> searchOpenClose = command(new CommandProvider<Boolean, ViewSearch>() {
             @Override
             public Observable<Boolean> provide(ViewSearch view) {
                 return view.searchOpenClose();

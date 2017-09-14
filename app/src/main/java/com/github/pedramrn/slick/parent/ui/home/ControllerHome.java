@@ -155,7 +155,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
         progressiveTrending.update(Arrays.asList(state.trending().values().toArray(new Item[state.trending().size()])));
-        progressivePopular.update(state.popular());
+        progressivePopular.update(Arrays.asList(state.popular().values().toArray(new Item[state.popular().size()])));
 
         itemListTrending.loading(state.loadingTrending());
         itemListTrending.page(state.pageTrending());
@@ -219,7 +219,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Override
     public Observable<Integer> triggerPopular() {
         System.out.println("PresenterHome.triggerPopular");
-        return itemListPopular.observer();
+        return itemListPopular.observer().mergeWith(retryPopular());
     }
 
     @Override

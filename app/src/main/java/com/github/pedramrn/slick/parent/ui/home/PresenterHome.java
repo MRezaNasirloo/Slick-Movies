@@ -1,6 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
-import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
 import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
@@ -9,7 +8,6 @@ import com.github.pedramrn.slick.parent.domain.router.RouterUpcoming;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
@@ -20,7 +18,6 @@ import com.github.pedramrn.slick.parent.ui.home.router.RouterUpcomingImpl;
 import com.github.pedramrn.slick.parent.ui.home.state.PartialViewStateHome;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
-import com.github.pedramrn.slick.parent.util.ScanList;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
 
@@ -45,25 +42,27 @@ import io.reactivex.functions.Function;
 
 public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
-    private final RouterTrending routerTrending;
-    private final RouterUpcoming routerUpcoming;
-    private final RouterPopular routerPopular;
-    private final MapperMovieDomainMovie mapper;
-    private final MapperMovieSmallDomainMovieSmall mapperMovieSmall;
     public static final String TRENDING = "TRENDING";
     public static final String POPULAR = "POPULAR";
     public static final String BANNER = "BANNER";
 
-    private MapProgressive mapProgressive = new MapProgressive();
-    private MapperMovieMetadataToMovieBasic mapperMetadata;
-    private ScanToMap<Item> scanToMap = new ScanToMap<>();
+    private final RouterTrending routerTrending;
+    private final RouterUpcoming routerUpcoming;
+    private final RouterPopular routerPopular;
+
+    private final MapperMovieMetadataToMovieBasic mapperMetadata;
+    private final MapperMovieSmallDomainMovieSmall mapperMovieSmall;
+
+    private final MapProgressive mapProgressiveTrending = new MapProgressive();
+    private final MapProgressive mapProgressivePopular = new MapProgressive();
+
+    private final ScanToMap<Item> scanToMap = new ScanToMap<>();
 
     @Inject
     public PresenterHome(
             RouterTrendingImpl routerTrending,
             RouterPopularImpl routerPopular,
             RouterUpcomingImpl routerUpcoming,
-            MapperMovieDomainMovie mapper,
             MapperMovieSmallDomainMovieSmall mapperMovieSmall,
             MapperMovieMetadataToMovieBasic mapperMetadata,
             @Named("io") Scheduler io,
@@ -72,7 +71,6 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
         super(main, io);
         this.routerTrending = routerTrending;
         this.routerUpcoming = routerUpcoming;
-        this.mapper = mapper;
         this.routerPopular = routerPopular;
         this.mapperMovieSmall = mapperMovieSmall;
         this.mapperMetadata = mapperMetadata;
@@ -83,7 +81,7 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
         System.out.println("PresenterHome.start");
         final int pageSize = view.pageSize();
 
-        Observable<PartialViewState<ViewStateHome>> upcoming = intent(new IntentProvider<Object, ViewHome>() {
+        Observable<PartialViewState<ViewStateHome>> upcoming = command(new CommandProvider<Object, ViewHome>() {
             @Override
             public Observable<Object> provide(ViewHome view) {
                 return view.retryUpcoming();
@@ -126,59 +124,13 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                             }
                         })
                         .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, BANNER))
-                        .subscribeOn(io)
-                        .doOnComplete(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                System.out.println("PresenterHome.Upcoming.onComplete");
-                            }
-                        });
-            }
-        }).doOnComplete(new Action() {
-            @Override
-            public void run() throws Exception {
-                System.out.println("PresenterHome.Upcoming.onComplete2");
-
+                        .subscribeOn(io);
             }
         });
 
-        /*Observable<PartialViewState<ViewStateHome>> upcoming = routerUpcoming.upcoming(1)
-                .concatMap(new Function<PagedDomain<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
-                    @Override
-                    public ObservableSource<MovieSmallDomain> apply(@NonNull PagedDomain<MovieSmallDomain> pagedDomain) throws
-                    Exception {
-                        return Observable.fromIterable(pagedDomain.data());
-                    }
-                })
-                .map(mapperMovieSmall)
-                .map(new MapProgressive())
-                .cast(MovieSmall.class)
-                .map(new Function<MovieSmall, Item>() {
-                    @Override
-                    public Item apply(@NonNull final MovieSmall movieSmall) throws Exception {
-                        return movieSmall.render(BANNER);
-                    }
-                })
-                .buffer(20)
-                .compose(new ScanList<Item>())
-                .map(new Function<List<Item>, PartialViewState<ViewStateHome>>() {
-                    @Override
-                    public PartialViewState<ViewStateHome> apply(@NonNull List<Item> items) throws Exception {
-                        return new PartialViewStateHome.Upcoming(items);
-                    }
-                })
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateHome>>() {
-                    @Override
-                    public PartialViewState<ViewStateHome> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateHome.UpcomingError(throwable);
-                    }
-                })
-                .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, BANNER))
-                .subscribeOn(io);*/
-
         // TODO: 2017-07-08 extract a transformer
 
-        Observable<Integer> triggerTrending = intent(new IntentProvider<Integer, ViewHome>() {
+        Observable<Integer> triggerTrending = command(new CommandProvider<Integer, ViewHome>() {
             @Override
             public Observable<Integer> provide(ViewHome view) {
                 return view.triggerTrending();
@@ -192,7 +144,7 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                 return routerTrending.trending(page, pageSize).subscribeOn(io)
                         .map(mapperMetadata)
                         .cast(AutoBase.class)
-                        .map(mapProgressive)
+                        .map(mapProgressiveTrending)
                         .cast(ItemView.class)
                         .map(new Function<ItemView, Item>() {
                             @Override
@@ -224,18 +176,12 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                                                return new PartialViewStateHome.ErrorTrending(throwable);
                                            }
                                        }
-                        ).doOnComplete(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                System.out.println("PresenterHome.doOnComplete");
-                            }
-                        });
+                        );
             }
         });
 
         // TODO: 2017-07-08 extract a transformer
         Observable<PartialViewState<ViewStateHome>> trendingProgressiveLoading = triggerTrending
-                .skip(1)
                 .map(new Function<Integer, PartialViewState<ViewStateHome>>() {
                     @Override
                     public PartialViewState<ViewStateHome> apply(@NonNull Integer integer) throws Exception {
@@ -243,48 +189,62 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                     }
                 });
 
-        Observable<Integer> intent = intent(new IntentProvider<Integer, ViewHome>() {
+        Observable<Integer> triggerPopular = command(new CommandProvider<Integer, ViewHome>() {
             @Override
             public Observable<Integer> provide(ViewHome view) {
                 return view.triggerPopular();
             }
-        }).startWith(1);
-        Observable<PartialViewState<ViewStateHome>> popular = intent
-                .concatMap(new Function<Integer, ObservableSource<MovieDomain>>() {
+        });
+        Observable<PartialViewState<ViewStateHome>> popular = triggerPopular.startWith(1)
+                .concatMap(new Function<Integer, ObservableSource<PartialViewState<ViewStateHome>>>() {
                     @Override
-                    public ObservableSource<MovieDomain> apply(@NonNull Integer page) throws Exception {
-                        return routerPopular.popular(page, pageSize).subscribeOn(io);
+                    public ObservableSource<PartialViewState<ViewStateHome>> apply(@NonNull Integer page) throws Exception {
+                        return routerPopular.popular(page, pageSize).subscribeOn(io)
+                                .map(mapperMetadata)
+                                .cast(AutoBase.class)
+                                .map(mapProgressivePopular)
+                                .cast(ItemView.class)
+                                .map(new Function<ItemView, Item>() {
+                                    @Override
+                                    public Item apply(@NonNull ItemView itemView) throws Exception {
+                                        return itemView.render(POPULAR);
+                                    }
+                                })
+                                .compose(scanToMap)
+                                .map(new Function<Map<Integer, Item>, PartialViewState<ViewStateHome>>() {
+                                    @Override
+                                    public PartialViewState<ViewStateHome> apply(@NonNull Map<Integer, Item> items) throws Exception {
+                                        System.out.println("PresenterHome.Popular");
+                                        return new PartialViewStateHome.Popular(items);
+                                    }
+                                })
+                                .lift(new OnCompleteReturn<PartialViewState<ViewStateHome>>() {
+                                    @Override
+                                    public PartialViewState<ViewStateHome> apply(@NonNull Boolean hadError) throws Exception {
+                                        System.out.println("PresenterHome.PopularLoaded had Error: " + hadError);
+                                        return new PartialViewStateHome.PopularLoaded(!hadError);
+                                    }
+                                })
+                                .startWith(new PartialViewStateHome.CardProgressivePopular(pageSize, POPULAR))
+                                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateHome>>() {
+                                                   @Override
+                                                   public PartialViewState<ViewStateHome> apply(@NonNull Throwable throwable)
+                                                           throws Exception {
+                                                       System.out.println("PresenterHome.ErrorPopular");
+                                                       return new PartialViewStateHome.ErrorPopular(throwable);
+                                                   }
+                                               }
+                                ).doOnComplete(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        System.out.println("PresenterHome.doOnComplete");
+                                    }
+                                })
+                                ;
                     }
-                })
-                .map(mapper)
-                .map(new MapProgressive())
-                .cast(ItemView.class)
-                .map(new Function<ItemView, Item>() {
-                    @Override
-                    public Item apply(@NonNull ItemView itemCard) throws Exception {
-                        return itemCard.render(POPULAR);
-                    }
-                })
-                .buffer(pageSize)
-                .compose(new ScanList<Item>())
-                .map(new Function<List<Item>, PartialViewState<ViewStateHome>>() {
-                    @Override
-                    public PartialViewState<ViewStateHome> apply(@NonNull List<Item> movies) throws Exception {
-                        return new PartialViewStateHome.Popular(movies, false);
-                    }
-                })
-                .startWith(new PartialViewStateHome.CardProgressivePopular(pageSize, POPULAR))
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateHome>>() {
-                    @Override
-                    public PartialViewState<ViewStateHome> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateHome.ErrorTrending(throwable);
-                    }
-                })
-                .distinctUntilChanged()
-                .subscribeOn(io);
+                });
 
-        Observable<PartialViewState<ViewStateHome>> popularProgressiveLoading = intent
-                .skip(1)
+        Observable<PartialViewState<ViewStateHome>> popularProgressiveLoading = triggerPopular
                 .map(new Function<Integer, PartialViewState<ViewStateHome>>() {
                     @Override
                     public PartialViewState<ViewStateHome> apply(@NonNull Integer integer) throws Exception {
@@ -295,7 +255,7 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
         ViewStateHome initialState = ViewStateHome.builder()
                 .upcoming(Collections.<Item>emptyList())
-                .popular(Collections.<Item>emptyList())
+                .popular(Collections.<Integer, Item>emptyMap())
                 .trending(Collections.<Integer, Item>emptyMap())
                 .loadingTrending(true)
                 .loadingPopular(true)
@@ -308,7 +268,4 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
         reduce(initialState, merge(upcoming, trending, trendingProgressiveLoading, popular, popularProgressiveLoading))
                 .subscribe(this);
     }
-
-    private static final String TAG = PresenterHome.class.getSimpleName();
-
 }

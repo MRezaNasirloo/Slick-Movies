@@ -32,8 +32,8 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
     protected final Scheduler main;
     private final BehaviorSubject<S> state = BehaviorSubject.create();
     private final CompositeDisposable disposable = new CompositeDisposable();
-    private CompositeDisposable disposableIntents;
-    private final ArrayMap<IntentProvider, PublishSubject> intents = new ArrayMap<>(3);
+    private CompositeDisposable disposableCommands;
+    private final ArrayMap<CommandProvider, PublishSubject> commands = new ArrayMap<>(3);
     private boolean hasSubscribed;
 
     public PresenterBase(@Named("main") Scheduler main, @Named("io") Scheduler io) {
@@ -53,14 +53,14 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
     @Override
     public void onViewDown() {
         super.onViewDown();
-        dispose(disposableIntents);
+        dispose(disposableCommands);
     }
 
     @CallSuper
     @Override
     public void onDestroy() {
         dispose(disposable);
-        intents.clear();
+        commands.clear();
         super.onDestroy();
     }
 
@@ -111,21 +111,21 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
         return Observable.merge(Arrays.asList(partials));
     }
 
-    protected <T> Observable<T> intent(IntentProvider<T, V> intent) {
+    protected <T> Observable<T> command(CommandProvider<T, V> cmd) {
         PublishSubject<T> publishSubject = PublishSubject.create();
-        intents.put(intent, publishSubject);
+        commands.put(cmd, publishSubject);
         return publishSubject;
     }
 
     @SuppressWarnings("unchecked")
     private void subscribeIntents(V view) {
-        if (disposableIntents == null || disposableIntents.isDisposed()) {
-            disposableIntents = new CompositeDisposable();
+        if (disposableCommands == null || disposableCommands.isDisposed()) {
+            disposableCommands = new CompositeDisposable();
         }
-        for (IntentProvider intentProvider : intents.keySet()) {
-            Observable<Object> observable = intentProvider.provide(view);
-            final PublishSubject<Object> subject = intents.get(intentProvider);
-            disposableIntents.add(observable.subscribeWith(new DisposableObserver() {
+        for (CommandProvider commandProvider : commands.keySet()) {
+            Observable<Object> observable = commandProvider.provide(view);
+            final PublishSubject<Object> subject = commands.get(commandProvider);
+            disposableCommands.add(observable.subscribeWith(new DisposableObserver() {
                 @Override
                 public void onNext(Object o) {
                     subject.onNext(o);
@@ -139,14 +139,14 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
 
                 @Override
                 public void onComplete() {
-                    System.out.println("Intent completed!");
+                    System.out.println("Command completed!");
                     //no-op
                 }
             }));
         }
     }
 
-    protected interface IntentProvider<T, V> {
+    protected interface CommandProvider<T, V> {
         Observable<T> provide(V view);
     }
 

@@ -60,7 +60,7 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
                         return id.equals(movieTraktPageMetadata.movie().ids().tmdb());
                     }
                 })
-                .blockingFirst().movie();
+                .blockingFirst(trendingList.get(0)).movie();
         MovieTmdb movieTmdb = popularList.get(0)
                 .toBuilder()
                 .id(metadata.ids().tmdb())

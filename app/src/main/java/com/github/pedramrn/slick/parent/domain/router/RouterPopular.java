@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
-import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.MovieMetadata;
 
 import io.reactivex.Observable;
 
@@ -14,12 +14,12 @@ public interface RouterPopular {
     /**
      * @return only the first page with 10 item
      */
-    Observable<MovieDomain> popular();
+    Observable<MovieMetadata> popular();
 
     /**
      * @param page the page number
      * @param size the size of each page
      * @return a list of popular movies base on given parameter
      */
-    Observable<MovieDomain> popular(int page, int size);
+    Observable<MovieMetadata> popular(int page, int size);
 }

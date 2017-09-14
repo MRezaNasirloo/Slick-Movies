@@ -16,7 +16,7 @@ import java.util.Map;
 public abstract class ViewStateHome {
     public abstract Map<Integer, Item> trending();
 
-    public abstract List<Item> popular();
+    public abstract Map<Integer, Item> popular();
 
     public abstract List<Item> upcoming();
 
@@ -43,7 +43,7 @@ public abstract class ViewStateHome {
 
     public static ViewStateHome create(
             Map<Integer, Item> trending,
-            List<Item> popular,
+            Map<Integer, Item> popular,
             List<Item> upcoming,
             boolean loadingTrending,
             int itemLoadingCountTrending,
@@ -78,8 +78,6 @@ public abstract class ViewStateHome {
 
         public abstract Builder trending(Map<Integer, Item> trending);
 
-        public abstract Builder popular(List<Item> popular);
-
         public abstract Builder loadingTrending(boolean loadingTrending);
 
         public abstract Builder itemLoadingCountTrending(int itemLoadingCountTrending);
@@ -97,6 +95,8 @@ public abstract class ViewStateHome {
         public abstract Builder upcoming(List<Item> upcoming);
 
         public abstract Builder errorUpcoming(Throwable errorUpcoming);
+
+        public abstract Builder popular(Map<Integer, Item> popular);
 
         public abstract ViewStateHome build();
     }
