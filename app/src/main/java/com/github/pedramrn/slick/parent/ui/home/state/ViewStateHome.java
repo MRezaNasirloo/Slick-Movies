@@ -14,8 +14,6 @@ import java.util.Map;
  */
 @AutoValue
 public abstract class ViewStateHome {
-    public abstract List<Item> anticipated();
-
     public abstract Map<Integer, Item> trending();
 
     public abstract List<Item> popular();
@@ -35,9 +33,6 @@ public abstract class ViewStateHome {
     public abstract int pagePopular();
 
     @Nullable
-    public abstract Throwable errorVideos();
-
-    @Nullable
     public abstract Throwable errorUpcoming();
 
     @Nullable
@@ -47,7 +42,6 @@ public abstract class ViewStateHome {
     public abstract Builder toBuilder();
 
     public static ViewStateHome create(
-            List<Item> anticipated,
             Map<Integer, Item> trending,
             List<Item> popular,
             List<Item> upcoming,
@@ -57,13 +51,12 @@ public abstract class ViewStateHome {
             boolean loadingPopular,
             int itemLoadingCountPopular,
             int pagePopular,
-            Throwable errorVideos,
             Throwable errorUpcoming,
             Throwable error
     ) {
         return builder()
-                .anticipated(anticipated)
-                .trending(trending).popular(popular)
+                .trending(trending)
+                .popular(popular)
                 .upcoming(upcoming)
                 .loadingTrending(loadingTrending)
                 .itemLoadingCountTrending(itemLoadingCountTrending)
@@ -71,7 +64,6 @@ public abstract class ViewStateHome {
                 .loadingPopular(loadingPopular)
                 .itemLoadingCountPopular(itemLoadingCountPopular)
                 .pagePopular(pagePopular)
-                .errorVideos(errorVideos)
                 .errorUpcoming(errorUpcoming)
                 .error(error)
                 .build();
@@ -83,8 +75,6 @@ public abstract class ViewStateHome {
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder anticipated(List<Item> anticipated);
 
         public abstract Builder trending(Map<Integer, Item> trending);
 
@@ -105,8 +95,6 @@ public abstract class ViewStateHome {
         public abstract Builder pagePopular(int pagePopular);
 
         public abstract Builder upcoming(List<Item> upcoming);
-
-        public abstract Builder errorVideos(Throwable errorVideos);
 
         public abstract Builder errorUpcoming(Throwable errorUpcoming);
 

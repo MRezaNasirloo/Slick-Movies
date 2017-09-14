@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.state;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.github.pedramrn.slick.parent.ui.home.PresenterHome;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerError;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
@@ -59,7 +60,7 @@ public final class PartialViewStateHome {
                 }
             }
 
-            Item itemError = new ItemBannerError(-1, throwable);
+            Item itemError = new ItemBannerError(-1, PresenterHome.BANNER, throwable);
             upcoming.add(itemError);
 
             return state.toBuilder()
@@ -68,37 +69,6 @@ public final class PartialViewStateHome {
                     .build();
         }
     }
-
-    /*public static class VideosImpl implements PartialViewState<ViewStateHome> {
-
-        private final List<Item> itemVideos;
-
-        public VideosImpl(List<Item> itemVideos) {
-            this.itemVideos = itemVideos;
-        }
-
-        public List<Item> getItems() {
-            return itemVideos;
-        }
-
-        @Override
-        public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().anticipated(itemVideos).build();
-        }
-    }
-
-    public static class VideosErrorImpl implements PartialViewState<ViewStateHome> {
-        private final Throwable e;
-
-        public VideosErrorImpl(Throwable e) {
-            this.e = e;
-        }
-
-        @Override
-        public ViewStateHome reduce(ViewStateHome viewStateHome) {
-            return viewStateHome.toBuilder().errorVideos(e).build();
-        }
-    }*/
 
     public static class ProgressiveBannerImpl extends PartialProgressive implements PartialViewState<ViewStateHome> {
 
@@ -223,9 +193,6 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            //because there are 6 progressive items at most
-            /*int limit = size - 6 < 0 ? 0 : size - 6;
-            for (int i = size - 1; i >= limit; i--)*/
             Iterator<Item> iterator = trending.values().iterator();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
@@ -235,7 +202,7 @@ public final class PartialViewStateHome {
 
             }
 
-            Item itemError = new ItemError(-1, throwable.getMessage());
+            Item itemError = new ItemError(-1, PresenterHome.TRENDING, throwable.getMessage());
             trending.put(((int) itemError.getId()), itemError);
 
             return viewStateHome.toBuilder()

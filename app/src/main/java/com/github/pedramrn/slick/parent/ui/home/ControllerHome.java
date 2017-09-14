@@ -36,6 +36,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -62,8 +63,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private SearchViewImpl searchView;
     private ViewStateHome oldState;
 
-    private PublishSubject<Object> onRetryTrending = PublishSubject.create();
-    private PublishSubject<Object> onRetryUpcoming = PublishSubject.create();
+    private PublishSubject<String> onRetry = PublishSubject.create();
 
     private static final String trending = "Trending";
     private static final String popular = "Popular";
@@ -230,7 +230,12 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     public Observable<Integer> retryTrending() {
-        return onRetryTrending.map(new Function<Object, Integer>() {
+        return onRetry.filter(new Predicate<String>() {
+            @Override
+            public boolean test(@NonNull String s) throws Exception {
+                return PresenterHome.TRENDING.equals(s);
+            }
+        }).map(new Function<Object, Integer>() {
             @Override
             public Integer apply(@NonNull Object o) throws Exception {
                 return oldState.pageTrending();
@@ -239,17 +244,31 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     }
 
     @Override
+    public Observable<Integer> retryPopular() {
+        return onRetry.filter(new Predicate<String>() {
+            @Override
+            public boolean test(@NonNull String s) throws Exception {
+                return PresenterHome.POPULAR.equals(s);
+            }
+        }).map(new Function<Object, Integer>() {
+            @Override
+            public Integer apply(@NonNull Object o) throws Exception {
+                return oldState.pagePopular();
+            }
+        });    }
+
+    @Override
     public Observable<Object> retryUpcoming() {
-        return onRetryUpcoming;
+        return onRetry.filter(new Predicate<String>() {
+            @Override
+            public boolean test(@NonNull String s) throws Exception {
+                return PresenterHome.BANNER.equals(s);
+            }
+        }).cast(Object.class);
     }
 
-    public void onClickRetryTrending(Object o) {
-        System.out.println("ControllerHome.onClickRetryTrending");
-        onRetryTrending.onNext(o);
-    }
-
-    public void onClickRetryUpcoming(Object o) {
-        System.out.println("ControllerHome.onClickRetryUpcoming");
-        onRetryUpcoming.onNext(o);
+    @Override
+    public void onRetry(String tag) {
+        onRetry.onNext(tag);
     }
 }

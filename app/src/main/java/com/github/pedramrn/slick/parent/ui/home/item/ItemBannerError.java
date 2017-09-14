@@ -1,11 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
-import android.util.Log;
-
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
-import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 
 /**
@@ -15,10 +13,12 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 public class ItemBannerError extends ItemBanner implements OnItemAction, RemovableOnError {
     public static final String TAG = ItemBannerError.class.getSimpleName();
     private final Throwable error;
+    private final String tag;
 
-    public ItemBannerError(long id, Throwable error) {
+    public ItemBannerError(long id, String tag, Throwable error) {
         super(id, null);
         this.error = error;
+        this.tag = tag;
     }
 
     @Override
@@ -31,12 +31,10 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
 
     @Override
     public void action(Controller controller, int position) {
-        Log.d(TAG, "action: called");
-        controller = controller.getRouter().getControllerWithTag("ControllerHome");
-        if (controller != null) {
-            ((ControllerHome) controller).onClickRetryUpcoming(this);
-        }
+        if (controller instanceof Retryable)
+            ((Retryable) controller).onRetry(tag);
     }
+
 
     @Override
     public boolean removable() {

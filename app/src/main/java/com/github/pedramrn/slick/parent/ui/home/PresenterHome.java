@@ -297,7 +297,6 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                 .upcoming(Collections.<Item>emptyList())
                 .popular(Collections.<Item>emptyList())
                 .trending(Collections.<Integer, Item>emptyMap())
-                .anticipated(Collections.<Item>emptyList())
                 .loadingTrending(true)
                 .loadingPopular(true)
                 .itemLoadingCountPopular(0)

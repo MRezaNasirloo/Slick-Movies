@@ -3,7 +3,7 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardErrorBinding;
-import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -13,23 +13,15 @@ import com.xwray.groupie.Item;
  */
 public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction, RemovableOnError {
 
+    private final String tag;
     private final String message;
     private final Throwable throwable;
 
-    public ItemError(String message) {
-        this.message = message;
-        throwable = null;
-    }
-
-    public ItemError(long id, String message) {
+    public ItemError(long id, String tag, String message) {
         super(id);
+        this.tag = tag;
         this.message = message;
         throwable = null;
-    }
-
-    public ItemError(Throwable throwable) {
-        message = throwable.getMessage();
-        this.throwable = throwable;
     }
 
     @Override
@@ -44,10 +36,8 @@ public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction
 
     @Override
     public void action(Controller controller, int position) {
-        controller = controller.getRouter().getControllerWithTag("ControllerHome");
-        if (controller != null) {
-            ((ControllerHome) controller).onClickRetryTrending(this);
-        }
+        if (controller instanceof Retryable)
+            ((Retryable) controller).onRetry(tag);
     }
 
     public Throwable throwable() {

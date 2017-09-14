@@ -9,7 +9,7 @@ import io.reactivex.Observable;
  *         Created on: 2017-06-20
  */
 
-public interface ViewHome {
+public interface ViewHome extends Retryable {
     void render(ViewStateHome state);
 
     Observable<Integer> triggerTrending();
@@ -19,6 +19,8 @@ public interface ViewHome {
     int pageSize();
 
     Observable<Integer> retryTrending();
+
+    Observable<Integer> retryPopular();
 
     Observable<Object> retryUpcoming();
 }

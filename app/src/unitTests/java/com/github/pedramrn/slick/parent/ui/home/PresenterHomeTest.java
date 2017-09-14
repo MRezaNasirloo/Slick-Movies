@@ -96,6 +96,11 @@ public class PresenterHomeTest {
 
     private ViewHome viewHome = new ViewHome() {
         @Override
+        public void onRetry(String tag) {
+
+        }
+
+        @Override
         public void render(ViewStateHome state) {
             System.out.println("PresenterHomeTest.render");
         }
@@ -131,6 +136,11 @@ public class PresenterHomeTest {
                     return aLong.intValue();
                 }
             });
+        }
+
+        @Override
+        public Observable<Integer> retryPopular() {
+            return null;
         }
 
         @Override
