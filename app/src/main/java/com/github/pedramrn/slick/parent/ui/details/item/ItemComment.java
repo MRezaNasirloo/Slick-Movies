@@ -4,6 +4,7 @@ import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCommentBinding;
 import com.github.pedramrn.slick.parent.ui.details.model.Comment;
+import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -12,7 +13,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-07-24
  */
 
-public class ItemComment extends Item<RowCommentBinding> implements OnItemAction {
+public class ItemComment extends Item<RowCommentBinding> implements OnItemAction, RemovableOnError {
 
     private final Comment comment;
 
@@ -45,5 +46,14 @@ public class ItemComment extends Item<RowCommentBinding> implements OnItemAction
     @Override
     public void action(Controller controller, int position) {
         //no-op
+    }
+
+    public Comment comment() {
+        return comment;
+    }
+
+    @Override
+    public boolean removable() {
+        return false;
     }
 }

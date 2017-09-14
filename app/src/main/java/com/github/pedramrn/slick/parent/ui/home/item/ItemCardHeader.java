@@ -61,6 +61,9 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
         }
         if (buttonText == null) {
             viewBinding.button.setVisibility(View.INVISIBLE);
+        } else {
+            viewBinding.button.setVisibility(View.VISIBLE);
+
         }
 
     }

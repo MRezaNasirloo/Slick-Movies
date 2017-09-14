@@ -26,11 +26,13 @@ import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
+import com.github.pedramrn.slick.parent.ui.details.model.Comment;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
@@ -57,6 +59,9 @@ import javax.inject.Provider;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -101,6 +106,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private ItemCardHeader headerComments;
     private ItemCardHeader headerCast;
     private ItemHeader headerMovie;
+    private PublishSubject<String> onRetry = PublishSubject.create();
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -161,10 +167,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
         adapterSimilar.add(progressiveSimilar);
 
-        Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar"));
+        Section sectionSimilar = new Section(new ItemCardHeader(100, "Similar"));
         sectionSimilar.add(itemCardListSimilar);
 
-        headerCast = new ItemCardHeader(0, "Casts", "See All");
+        headerCast = new ItemCardHeader(101, "Casts", "See All");
         headerCast.setOnClickListener(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
@@ -178,24 +184,26 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         Section sectionCasts = new Section(headerCast);
         sectionCasts.add(progressiveCast);
 
-        headerComments = new ItemCardHeader(0, "Comments", "See All");
+        headerComments = new ItemCardHeader(102, "Comments", "See All");
         headerComments.setOnClickListener(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                Snackbar.make(getView(), "Coming soon :)", Snackbar.LENGTH_LONG).show();
+                if (!state.comments().isEmpty() && state.comments().get(0) instanceof ItemComment) {
+                    ControllerList.start(ControllerDetails.this.getRouter(), "Comments for " + movie.title(), comments());
+                }
             }
         });
         Section sectionComments = new Section(headerComments);
         sectionComments.add(progressiveComments);
-        sectionComments.setHideWhenEmpty(true);
+//        sectionComments.setHideWhenEmpty(true);
 
         itemBackdropList = new ItemListHorizontal(adapterBackdrops, "BACKDROPS");
         adapterBackdrops.add(progressiveBackdrop);
 
-        Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops"));
+        Section sectionBackdrops = new Section(new ItemCardHeader(103, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
 
-        sectionOverview = new Section(new ItemCardHeader(0, "Overview"));
+        sectionOverview = new Section(new ItemCardHeader(104, "Overview"));
 
         adapterMain.add(itemHeader);
         adapterMain.add(sectionCasts);
@@ -248,8 +256,14 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         progressiveCast.update(state.casts());
         progressiveBackdrop.update(state.backdrops());
-        progressiveComments.update(state.comments());
         progressiveSimilar.update(state.similar());
+
+        List<Item> comments = Observable.fromIterable(state.comments())
+                .take(2)
+                .buffer(2)
+                .blockingFirst(Collections.<Item>emptyList());
+        //only show the first 2 items
+        progressiveComments.update(comments);
 
         renderError(state.errorSimilar());
         renderError(state.errorComments());
@@ -344,6 +358,21 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         return movie;
     }
 
+    @NonNull
+    protected ArrayList<ItemViewListParcelable> comments() {
+        return (ArrayList<ItemViewListParcelable>) Observable.fromIterable(state.comments())
+                .cast(ItemComment.class)
+                .map(new Function<ItemComment, Comment>() {
+                    @Override
+                    public Comment apply(@NonNull ItemComment itemComment) throws Exception {
+                        return itemComment.comment();
+                    }
+                })
+                .cast(ItemViewListParcelable.class)
+                .buffer(state.comments().size())
+                .blockingFirst(Collections.<ItemViewListParcelable>emptyList());
+    }
+
     private void setOnItemClickListener(final GroupAdapter adapter) {
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -353,4 +382,18 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         });
     }
 
+    @Override
+    public Observable<Object> onRetryComments(){
+        return onRetry.filter(new Predicate<String>() {
+            @Override
+            public boolean test(@NonNull String tag) throws Exception {
+                return "COMMENTS_ERROR".equals(tag);
+            }
+        }).cast(Object.class);
+    }
+
+    @Override
+    public void onRetry(String tag) {
+        onRetry.onNext(tag);
+    }
 }

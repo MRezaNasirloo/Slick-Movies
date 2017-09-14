@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
@@ -13,7 +14,7 @@ import com.xwray.groupie.Item;
  */
 
 @AutoValue
-public abstract class Comment extends AutoBase implements ItemView {
+public abstract class Comment extends AutoBase implements ItemViewListParcelable {
     public abstract Integer id();
 
     public abstract String comment();

@@ -38,7 +38,8 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private final PublishSubject<Integer> observer = PublishSubject.create();
     @NonNull
     private final String tag;
-//    private final SnapHelper snapHelper = new StartSnapHelper();
+    private final Context context;
+    //    private final SnapHelper snapHelper = new StartSnapHelper();
     private LinearLayoutManager layoutManager;
     private final ItemDecorationMargin margin;
     private GroupAdapter adapter;
@@ -53,11 +54,10 @@ public class ItemCardList extends Item<RowCardListBinding> {
             @NonNull GroupAdapter adapter,
             @NonNull String tag
     ) {
-        context = context.getApplicationContext();
+        this.context = context.getApplicationContext();
         this.tag = tag;
         this.adapter = adapter;
         this.margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
-        this.layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         SCROLL_POS = "SCROLL_POS_" + tag;
         IS_LOADING = "IS_LOADING_" + tag;
     }
@@ -70,6 +70,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
     @Override
     public void bind(RowCardListBinding binding, int position) {
         Log.d(TAG + tag, "bind() called with: binding = [" + binding + "], position = [" + position + "]");
+        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = binding.recyclerViewCard;
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);

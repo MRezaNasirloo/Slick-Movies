@@ -35,8 +35,9 @@ public class RouterCommentsImpl implements RouterComments {
     @Override
     public Observable<PagedDomain<CommentDomain>> comments(String imdb, int page, int size) {
         final PagedDomain.Builder<CommentDomain> builder = PagedDomain.builder();
-        return apiTrakt.comments(imdb, 1, 10)
-                .flatMap(new Function<Response<List<CommentTrakt>>, ObservableSource<CommentTrakt>>() {
+        return apiTrakt.comments(imdb, page, size)
+                .flatMap(
+                        new Function<Response<List<CommentTrakt>>, ObservableSource<CommentTrakt>>() {
                     @Override
                     public ObservableSource<CommentTrakt> apply(@NonNull Response<List<CommentTrakt>> listResponse) throws Exception {
                         Headers headers = listResponse.headers();

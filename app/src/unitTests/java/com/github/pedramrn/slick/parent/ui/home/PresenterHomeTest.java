@@ -80,7 +80,6 @@ public class PresenterHomeTest {
                 routerTrending,
                 routerPopular,
                 routerUpcoming,
-                new MapperMovieDomainMovie(),
                 new MapperMovieSmallDomainMovieSmall(),
                 new MapperMovieMetadataToMovieBasic(),
                 Schedulers.trampoline(),

@@ -28,4 +28,14 @@ public class ItemCommentProgressive extends ItemComment {
     public void action(Controller controller, int position) {
         //no-op
     }
+
+    @Override
+    public boolean isClickable() {
+        return false;
+    }
+
+    @Override
+    public boolean removable() {
+        return true;
+    }
 }

@@ -12,4 +12,5 @@
     <string name="read_more">Read more</string>
     <string name="bio">Bio</string>
     <string name="bio_empty">We don\'t know much about this person.</string>
+    <string name="comments_empty">No one has\n commented yet…</string>
 </resources>

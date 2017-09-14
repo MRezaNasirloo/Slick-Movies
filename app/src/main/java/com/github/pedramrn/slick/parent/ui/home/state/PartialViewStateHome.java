@@ -17,6 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.pedramrn.slick.parent.util.Utils.removeRemovables;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-22
@@ -102,7 +104,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            removeRemovables(trending);
+            removeRemovables(trending.values().iterator());
             trending.putAll(movies);
             return viewStateHome.toBuilder()
                     .trending(new LinkedHashMap<>(trending))
@@ -124,7 +126,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            removeRemovables(trending);
+            removeRemovables(trending.values().iterator());
             return viewStateHome.toBuilder()
                     .trending(new LinkedHashMap<>(trending))
                     .loadingTrending(loading)
@@ -147,7 +149,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> popular = viewStateHome.popular();
-            removeRemovables(popular);
+            removeRemovables(popular.values().iterator());
             return viewStateHome.toBuilder()
                     .popular(new LinkedHashMap<>(popular))
                     .loadingPopular(loading)
@@ -202,7 +204,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> trending = viewStateHome.trending();
-            removeRemovables(trending);
+            removeRemovables(trending.values().iterator());
 
             Item itemError = new ItemError(-1, PresenterHome.TRENDING, throwable.getMessage());
             trending.put(((int) itemError.getId()), itemError);
@@ -226,7 +228,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> popular = viewStateHome.popular();
-            removeRemovables(popular);
+            removeRemovables(popular.values().iterator());
 
             Item itemError = new ItemError(-1, PresenterHome.POPULAR, throwable.getMessage());
             popular.put(((int) itemError.getId()), itemError);
@@ -236,17 +238,6 @@ public final class PartialViewStateHome {
                     .loadingPopular(true)
                     .popular(new LinkedHashMap<>(popular))
                     .build();
-        }
-    }
-
-    private static void removeRemovables(Map<Integer, Item> popular) {
-        Iterator<Item> iterator = popular.values().iterator();
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-            if (((RemovableOnError) item).removable()) {
-                iterator.remove();
-            }
-
         }
     }
 
@@ -260,7 +251,7 @@ public final class PartialViewStateHome {
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
             Map<Integer, Item> popular = viewStateHome.popular();
-            removeRemovables(popular);
+            removeRemovables(popular.values().iterator());
             popular.putAll(movies);
             return viewStateHome.toBuilder()
                     .popular(new LinkedHashMap<>(popular))

@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -10,7 +11,7 @@ import com.google.auto.value.AutoValue;
  */
 
 @AutoValue
-public abstract class User {
+public abstract class User implements Parcelable {
     public abstract String username();
 
     @Nullable

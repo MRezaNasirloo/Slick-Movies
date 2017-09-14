@@ -2,6 +2,8 @@ package com.github.pedramrn.slick.parent.ui.details;
 
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentEmpty;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentError;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
@@ -11,6 +13,8 @@ import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.pedramrn.slick.parent.util.Utils.removeRemovables;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -205,7 +209,7 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().comments(state.comments()).build();
+            return state.toBuilder().comments(reduce(state.comments())).build();
         }
 
         static class ItemRendererComments implements ItemRenderer {
@@ -217,17 +221,37 @@ public class PartialViewStateDetails {
         }
     }
 
-    static class ErrorComments extends Error {
+    static class CommentsLoaded implements PartialViewState<ViewStateDetails> {
+        private final boolean hadError;
 
-        ErrorComments(Throwable throwable) {
-            super(throwable);
+        public CommentsLoaded(boolean hadError) {
+            this.hadError = hadError;
         }
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().errorComments(throwable).build();
+            List<Item> comments = state.comments();
+            removeRemovables(comments.iterator());
+            if (comments.isEmpty()){
+                comments.add(new ItemCommentEmpty(0, "EMPTY"));
+            }
+            return state.toBuilder().comments(comments).build();
         }
     }
 
+    static class CommentsError implements PartialViewState<ViewStateDetails> {
+        private final Throwable throwable;
 
+        public CommentsError(Throwable throwable) {
+            this.throwable = throwable;
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            List<Item> comments = state.comments();
+            removeRemovables(comments.iterator());
+            comments.add(new ItemCommentError(0, throwable.getMessage(), "COMMENTS_ERROR"));
+            return state.toBuilder().comments(comments).errorComments(throwable).build();
+        }
+    }
 }
