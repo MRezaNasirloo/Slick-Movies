@@ -2,8 +2,10 @@ package com.github.pedramrn.slick.parent.ui.details;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
@@ -23,7 +25,6 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
     protected ControllerBase() {
     }
 
-
     @Override
     public ToolbarHost setToolbar(Toolbar toolbar) {
         Activity activity = getActivity();
@@ -42,6 +43,12 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
             return ((ToolbarHost) activity).setupButton(toolbar, enable);
         }//emulates no-op impl
         return this;
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        setToolbar(null);
+        super.onDestroyView(view);
     }
 
     @Override

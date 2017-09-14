@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,13 +18,18 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperCast;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
+import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
+import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
@@ -36,9 +42,11 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -47,10 +55,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -69,23 +75,32 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Inject
     BottomNavigationHandlerImpl bottomNavigationHandler;
 
+    @Inject
+    List<MovieTmdb> movieTmdbs;
+
     private MovieBasic movie;
     private String transitionName;
-    private UpdatingGroup progressiveCast;
+
     private UpdatingGroup progressiveBackdrop;
     private UpdatingGroup progressiveComments;
     private UpdatingGroup progressiveSimilar;
+    private UpdatingGroup progressiveCast;
     private UpdatingGroup updatingHeader;
-    private ControllerDetailsBinding binding;
-    private CompositeDisposable disposable;
-    private ItemCardList itemCardListSimilar;
+
+    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
+    private ItemCardList itemCardListSimilar;
+
     private Section sectionOverview;
+
+    private CollapsingToolbarLayout collapsingToolbar;
+    private ImageViewLoader imageViewHeader;
+
     private ViewStateDetails state;
-    private ItemCardHeader headerCast;
-    private ItemCardHeader headerComments;
-    private ItemHeader headerMovie;
     private GroupAdapter adapterMain;
+    private ItemCardHeader headerComments;
+    private ItemCardHeader headerCast;
+    private ItemHeader headerMovie;
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -94,6 +109,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
                 .build());
     }
 
+    @SuppressWarnings("WeakerAccess")
     public ControllerDetails(@Nullable Bundle args) {
         super(args);
         transitionName = getArgs().getString("TRANSITION_NAME");
@@ -112,16 +128,25 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
         ControllerDetails_Slick.bind(this);
-        binding = ControllerDetailsBinding.inflate(inflater, container, false);
+        ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         }
+
+        collapsingToolbar = binding.collapsingToolbar;
+        imageViewHeader = binding.imageViewHeader;
+
         final Context context = getApplicationContext();
 
         adapterMain = new GroupAdapter();
         GroupAdapter adapterHeader = new GroupAdapter();
-        GroupAdapter adapterBackdrops = new GroupAdapter();
         GroupAdapter adapterSimilar = new GroupAdapter();
+        GroupAdapter adapterBackdrops = new GroupAdapter();
+
+        setOnItemClickListener(adapterMain);
+        setOnItemClickListener(adapterSimilar);
+        setOnItemClickListener(adapterBackdrops);
+
         updatingHeader = new UpdatingGroup();
         progressiveCast = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
@@ -130,11 +155,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         adapterMain.setSpanCount(6);
 
-        ItemListHorizontal itemHeader = new ItemListHorizontal(adapterHeader, "HEADER");
+        itemHeader = new ItemListHorizontal(adapterHeader, "HEADER");
         adapterHeader.add(updatingHeader);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
-//        adapterSimilar.setOnItemClickListener(this);
         adapterSimilar.add(progressiveSimilar);
 
         Section sectionSimilar = new Section(new ItemCardHeader(0, "Similar"));
@@ -145,10 +169,9 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
             @Override
             public void accept(Object o) throws Exception {
                 if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
+                    ArrayList<Cast> casts = (ArrayList<Cast>) ((Movie) state.movieBasic()).casts();
                     ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts",
-                                         ((Movie) state.movieBasic()).casts()
-                                                 .toArray(new ItemViewListParcelable[state.casts().size()])
-                    );
+                                         new ArrayList<ItemViewListParcelable>(casts));
                 }
             }
         });
@@ -159,7 +182,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         headerComments.setOnClickListener(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                Snackbar.make(getView(), "Comming soon :)", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getView(), "Coming soon :)", Snackbar.LENGTH_LONG).show();
             }
         });
         Section sectionComments = new Section(headerComments);
@@ -167,9 +190,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         sectionComments.setHideWhenEmpty(true);
 
         itemBackdropList = new ItemListHorizontal(adapterBackdrops, "BACKDROPS");
-//        adapterBackdrops.setOnItemClickListener(this);
         adapterBackdrops.add(progressiveBackdrop);
-
 
         Section sectionBackdrops = new Section(new ItemCardHeader(0, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
@@ -182,8 +203,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionComments);
         adapterMain.add(sectionSimilar);
-        //        adapterMain.setOnItemClickListener(this);
-
 
         GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
         lm.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
@@ -195,7 +214,11 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((OnItemAction) state.similar().get(0)).action(ControllerDetails.this, 0);
+                Movie movie = Observable.fromIterable(movieTmdbs)
+                        .map(new MapperMovie(new MapperCast(), new MapperSimpleData()))
+                        .map(new MapperMovieDomainMovie())
+                        .blockingFirst();
+                ((OnItemAction) movie.render("")).action(ControllerDetails.this, 0);
             }
         });
 
@@ -206,22 +229,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         return binding.getRoot();
     }
 
-    @NonNull
-    protected ItemViewListParcelable[] casts() {
-        return Observable.fromIterable(state.casts())
-                .cast(ItemCast.class)
-                .map(new Function<ItemCast, Cast>() {
-                    @Override
-                    public Cast apply(@io.reactivex.annotations.NonNull ItemCast itemCast) throws Exception {
-                        return itemCast.cast();
-                    }
-                })
-                .cast(ItemViewListParcelable.class)
-                .buffer(state.casts().size())
-                .blockingFirst()
-                .toArray(new ItemViewListParcelable[state.casts().size()]);
-    }
-
     @Override
     public void render(ViewStateDetails state) {
         this.state = state;
@@ -229,10 +236,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         movie = state.movieBasic();
 
-        binding.collapsingToolbar.setTitle(movie.title());
-        binding.imageViewHeader.loadBlur(movie.thumbnailBackdrop());
+        collapsingToolbar.setTitle(movie.title());
+        imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        headerMovie = new ItemHeader(null, movie, transitionName);
+        headerMovie = new ItemHeader(this, movie, transitionName);
         updatingHeader.update(Collections.singletonList(headerMovie));
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
@@ -241,11 +248,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         progressiveCast.update(state.casts());
         progressiveBackdrop.update(state.backdrops());
-        List<Item> comments = state.comments();
-        progressiveComments.update(comments);
+        progressiveComments.update(state.comments());
         progressiveSimilar.update(state.similar());
-
-        Log.e(TAG, comments.toString());
 
         renderError(state.errorSimilar());
         renderError(state.errorComments());
@@ -304,16 +308,33 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        binding.fab.setOnClickListener(null);
-        headerCast.onDestroyView();
-        headerCast.setOnClickListener(null);
-        headerComments.onDestroyView();
-        headerComments.setOnClickListener(null);
-        headerMovie.onDestroyView();
-        headerCast.setOnClickListener(null);
-        adapterMain.setOnItemClickListener(null);
-        adapterMain.setOnItemLongClickListener(null);
+        Log.d(TAG, "onDestroyView");
         adapterMain.clear();
+        itemCardListSimilar.onDestroyView();
+        itemBackdropList.onDestroyView();
+        itemHeader.onDestroyView();
+        headerCast.onDestroyView();
+        headerComments.onDestroyView();
+        headerMovie.onDestroyView();
+
+        updatingHeader = null;
+        progressiveCast = null;
+        progressiveSimilar = null;
+        progressiveBackdrop = null;
+        progressiveComments = null;
+
+        itemCardListSimilar = null;
+        itemBackdropList = null;
+        sectionOverview = null;
+
+        collapsingToolbar = null;
+        imageViewHeader = null;
+
+        headerComments = null;
+        headerMovie = null;
+        headerCast = null;
+        itemHeader = null;
+
         adapterMain = null;
         super.onDestroyView(view);
     }
@@ -321,6 +342,15 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public MovieBasic get() {
         return movie;
+    }
+
+    private void setOnItemClickListener(final GroupAdapter adapter) {
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                ((OnItemAction) item).action(ControllerDetails.this, adapter.getAdapterPosition(item));
+            }
+        });
     }
 
 }

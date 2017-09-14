@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.util;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -11,5 +12,10 @@ public class UtilsRx {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
+    }
+
+    public static void add(CompositeDisposable compositeDisposable, Disposable disposable) {
+        if (compositeDisposable == null || compositeDisposable.isDisposed()) { compositeDisposable = new CompositeDisposable(); }
+        compositeDisposable.add(disposable);
     }
 }

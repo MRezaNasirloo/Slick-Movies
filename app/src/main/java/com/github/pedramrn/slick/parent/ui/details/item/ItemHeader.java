@@ -3,40 +3,49 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-16
  */
 
-public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
+public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction, Consumer<Object> {
 
     private Controller controller;
-    private final MovieBasic movie;
+    private MovieBasic movie;
     private final String transitionName;
     private RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
-    private Disposable disposable;
+    private CompositeDisposable compositeDisposable;
 
     public ItemHeader(Controller controller, MovieBasic movie, String transitionName) {
-        super(0);
+        super(1000);
         this.controller = controller;
         this.movie = movie;
         this.transitionName = transitionName;
@@ -51,6 +60,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
 
     @Override
     public void bind(final RowHeaderBinding viewBinding, int position) {
+        Log.d(TAG, "bind: called " );
         viewBinding.textViewTitle.setText(movie.title());
         // TODO: 2017-06-18 use recycler view for this
         viewBinding.textViewGenre.setText(Observable.fromIterable(movie.genres())
@@ -61,7 +71,6 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
                         return s + " | " + s2;
                     }
                 }).blockingGet());
-        // FIXME: 2017-07-15 release date maybe null
         try {
             viewBinding.textViewRelease.setText(DateUtils.format_MMM_dd_yyyy(DateUtils.toDate(movie.releaseDate())));
         } catch (ParseException | NullPointerException e) {
@@ -73,18 +82,11 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
         viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
         viewBinding.imageViewIcon.load(movie.thumbnailPoster());
-        /*disposable = RxView.clicks(viewBinding.imageViewIcon)
+        Disposable disposable = RxView.clicks(viewBinding.imageViewIcon)
                 .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(@NonNull Object o) throws Exception {
-                        if (movie instanceof Movie) {
-                            ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
-                                                  ((ArrayList<String>) ((Movie) movie).images().posters())
-                            );
-                        }
-                    }
-                });*/
+                .subscribe(this);
+
+        UtilsRx.add(compositeDisposable, disposable);
 
         if (movie.voteAverageTrakt() != null) {
             viewBinding.textViewScoreTrakt.setBackground(null);
@@ -96,16 +98,14 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
             viewBinding.textViewCertification.setText("...");
             viewBinding.textViewScoreTrakt.setText("     ");
             viewBinding.textViewScoreTrakt.setBackgroundResource(R.drawable.line);
-
         }
-
-
     }
 
     @Override
     public void unbind(ViewHolder<RowHeaderBinding> holder) {
+        Log.d(TAG, "unbind: called ");
+        UtilsRx.dispose(compositeDisposable);
         super.unbind(holder);
-        UtilsRx.dispose(disposable);
     }
 
     @Override
@@ -113,8 +113,28 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
         //no-op
     }
 
+    @Override
+    public boolean isClickable() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        //don't call bind if the data is the same
+        return obj instanceof ItemHeader && ((ItemHeader) obj).movie.equals(movie);
+    }
+
     public void onDestroyView() {
-        UtilsRx.dispose(disposable);
+        UtilsRx.dispose(compositeDisposable);
         controller = null;
+    }
+
+    @Override
+    public void accept(Object o) throws Exception {
+        if (movie instanceof Movie) {
+            ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
+                                  ((ArrayList<String>) ((Movie) movie).images().posters())
+            );
+        }
     }
 }

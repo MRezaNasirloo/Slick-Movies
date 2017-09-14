@@ -38,14 +38,14 @@ public class PresenterList extends PresenterBase<ViewList, ViewStateList> {
     @Override
     protected void start(ViewList view) {
         Log.d(TAG, "start() called");
-        Observable<PartialViewState<ViewStateList>> data = Observable.fromArray(view.data())
+        Observable<PartialViewState<ViewStateList>> data = Observable.fromIterable(view.data())
                 .map(new Function<ItemViewListParcelable, Item>() {
                     @Override
                     public Item apply(@NonNull ItemViewListParcelable itemViewListParcelable) throws Exception {
                         return itemViewListParcelable.render("LIST");
                     }
                 })
-                .buffer(view.data().length)
+                .buffer(view.data().size())
                 .map(new Function<List<Item>, PartialViewState<ViewStateList>>() {
                     @Override
                     public PartialViewState<ViewStateList> apply(@NonNull List<Item> items) throws Exception {

@@ -152,7 +152,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                         return new PartialViewStateDetails.MovieCast(items);
                     }
                 })
-                .startWith(new PartialViewStateDetails.MovieCastsProgressive(5, CASTS))
+                .startWith(new PartialViewStateDetails.MovieCastsProgressive(6, CASTS))
                 .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
                     @Override
                     public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {

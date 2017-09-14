@@ -17,6 +17,8 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
@@ -41,7 +43,7 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
     public ItemCardHeader(int id, @NonNull String title) {
         super(id);
         this.title = title;
-        this.buttonText = title;
+        this.buttonText = null;
     }
 
     @Override
@@ -54,7 +56,8 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
         viewBinding.textViewTitle.setText(title);
         viewBinding.button.setText(buttonText);
         if (onClickListener != null) {
-            disposable = RxView.clicks(viewBinding.button).subscribe(onClickListener);
+            disposable = RxView.clicks(viewBinding.button).throttleFirst(1, TimeUnit.SECONDS)
+                    .subscribe(onClickListener);
         }
         if (buttonText == null) {
             viewBinding.button.setVisibility(View.INVISIBLE);
@@ -64,7 +67,7 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
 
     @Override
     public void unbind(ViewHolder<RowCardHeaderBinding> holder) {
-        Log.d(TAG, "unbind() called");
+        Log.d(TAG, "unbind() called " + title);
         UtilsRx.dispose(disposable);
         holder.binding.button.setOnClickListener(null);
         super.unbind(holder);
@@ -75,6 +78,11 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
     @Override
     public void action(Controller controller, int position) {
         //no-op
+    }
+
+    @Override
+    public boolean isClickable() {
+        return false;
     }
 
     public void setOnClickListener(Consumer<Object> onClickListener) {

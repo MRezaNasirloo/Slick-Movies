@@ -126,15 +126,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         return binding.getRoot();
     }
 
-    private void setOnItemClickListener(final GroupAdapter adapter) {
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerHome.this, adapter.getAdapterPosition(item));
-            }
-        });
-    }
-
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         itemListTrending.onSaveViewState(view, outState);
@@ -270,5 +261,14 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Override
     public void onRetry(String tag) {
         onRetry.onNext(tag);
+    }
+
+    private void setOnItemClickListener(final GroupAdapter adapter) {
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                ((OnItemAction) item).action(ControllerHome.this, adapter.getAdapterPosition(item));
+            }
+        });
     }
 }

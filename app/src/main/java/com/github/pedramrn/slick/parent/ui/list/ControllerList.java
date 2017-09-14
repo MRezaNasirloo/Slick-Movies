@@ -25,6 +25,8 @@ import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -39,26 +41,26 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
     Provider<PresenterList> provider;
     @Presenter
     PresenterList presenter;
-    private final ItemViewListParcelable[] data;
+    private final ArrayList<ItemViewListParcelable> data;
     private final String title;
     private GroupAdapter adapter;
     private UpdatingGroup adapterItems;
 
     @Override
-    public ItemViewListParcelable[] data() {
+    public ArrayList<ItemViewListParcelable> data() {
         return data;
     }
 
     public ControllerList(@NonNull Bundle args) {
         super(args);
-        data = (ItemViewListParcelable[]) args.getParcelableArray("DATA");
+        data =  args.getParcelableArrayList("DATA");
         title = args.getString("TITLE");
     }
 
-    public ControllerList(@NonNull String title, @NonNull ItemViewListParcelable... itemViews) {
+    public ControllerList(@NonNull String title, @NonNull ArrayList<ItemViewListParcelable> itemViews) {
         this(new BundleBuilder(new Bundle())
                 .putString("TITLE", title)
-                .putParcelableArray("DATA", itemViews)
+                .putParcelableArrayList("DATA", itemViews)
                 .build()
         );
     }
@@ -123,7 +125,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
         Log.d(TAG, "onComplete() called");
     }
 
-    public static void start(Router router, String title, ItemViewListParcelable... itemViews) {
+    public static void start(Router router, String title, ArrayList<ItemViewListParcelable> itemViews) {
         router.pushController(RouterTransaction.with(new ControllerList(title, itemViews))
                                       .pushChangeHandler(new HorizontalChangeHandler())
                                       .popChangeHandler(new HorizontalChangeHandler()));

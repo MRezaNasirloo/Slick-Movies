@@ -1,10 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCast;
-import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
@@ -14,7 +12,7 @@ import com.xwray.groupie.Item;
  *         Created on: 2017-06-09
  */
 @AutoValue
-public abstract class Cast extends AutoBase implements Parcelable, ItemView, ItemViewListParcelable {
+public abstract class Cast extends AutoBase implements ItemViewListParcelable {
 
     public abstract Integer id();
 
