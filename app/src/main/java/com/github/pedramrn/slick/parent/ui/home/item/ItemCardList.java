@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardListBinding;
-import com.github.pedramrn.slick.parent.ui.custom.StartSnapHelper;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
@@ -40,7 +38,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
     private final PublishSubject<Integer> observer = PublishSubject.create();
     @NonNull
     private final String tag;
-    private final SnapHelper snapHelper = new StartSnapHelper();
+//    private final SnapHelper snapHelper = new StartSnapHelper();
     private LinearLayoutManager layoutManager;
     private final ItemDecorationMargin margin;
     private GroupAdapter adapter;
@@ -79,7 +77,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(margin);
         recyclerView.setAdapter(adapter);
-        snapHelper.attachToRecyclerView(recyclerView);
+//        snapHelper.attachToRecyclerView(recyclerView);
         layoutManager.scrollToPosition(scrollPos);
         disposable = registerLoadMoreTrigger(recyclerView).subscribe();
     }
@@ -90,7 +88,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
         RecyclerView recyclerView = holder.binding.recyclerViewCard;
         recyclerView.removeItemDecoration(margin);
         recyclerView.setOnFlingListener(null);
-//        recyclerView.setLayoutManager(null);
+        recyclerView.setLayoutManager(null);
         UtilsRx.dispose(disposable);
         super.unbind(holder);
     }
@@ -149,5 +147,9 @@ public class ItemCardList extends Item<RowCardListBinding> {
 
     public PublishSubject<Integer> observer() {
         return observer;
+    }
+
+    public void onDestroyView(){
+        adapter.clear();
     }
 }

@@ -31,14 +31,15 @@ public abstract class ControllerElm<S> extends ControllerBase implements Observe
     }
 
     protected void add(Disposable disposable) {
-        if (compositeDisposable.isDisposed()) { compositeDisposable = new CompositeDisposable(); }
+        if (compositeDisposable == null || compositeDisposable.isDisposed()) { compositeDisposable = new CompositeDisposable(); }
         compositeDisposable.add(disposable);
     }
 
     @Override
     protected void onDestroyView(@NonNull View view) {
         Log.d(TAG, "onDestroyView: disposing");
-//        dispose(compositeDisposable);
+        UtilsRx.dispose(compositeDisposable);
+        compositeDisposable = null;
         super.onDestroyView(view);
     }
 
@@ -46,6 +47,7 @@ public abstract class ControllerElm<S> extends ControllerBase implements Observe
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: disposing");
         UtilsRx.dispose(compositeDisposable);
+        compositeDisposable = null;
         super.onDestroy();
     }
 }

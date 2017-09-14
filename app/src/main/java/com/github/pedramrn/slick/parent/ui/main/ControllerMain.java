@@ -107,8 +107,6 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     @Override
     protected void onDestroyView(@NonNull View view) {
         binding.navigation.setOnMenuItemClickListener(null);
-        binding.viewPager.setAdapter(null);
-        binding = null;
         super.onDestroyView(view);
 
     }

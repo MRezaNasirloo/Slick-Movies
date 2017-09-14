@@ -60,7 +60,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private ItemListHorizontal itemListUpcoming;
 
     private SearchViewImpl searchView;
-    private ViewStateHome state;
+    private ViewStateHome oldState;
 
     private PublishSubject<Object> onRetryTrending = PublishSubject.create();
     private PublishSubject<Object> onRetryUpcoming = PublishSubject.create();
@@ -151,7 +151,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     public void render(@NonNull ViewStateHome state) {
-        this.state = state;
+        this.oldState = state;
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
         progressiveTrending.update(Arrays.asList(state.trending().values().toArray(new Item[state.trending().size()])));
@@ -161,32 +161,19 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         itemListTrending.page(state.pageTrending());
         itemListPopular.loading(state.loadingPopular());
         itemListPopular.page(state.pagePopular());
-
-    }
-
-    /*@Override
-    protected void onAttach(@NonNull View view) {
-        Log.d(TAG, "onAttach");
-        super.onAttach(view);
-    }
-
-    @Override
-    protected void onDetach(@NonNull View view) {
-        Log.d(TAG, "onDetach");
-        super.onDetach(view);
     }
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        Log.d(TAG, "onDestroyView");
         super.onDestroyView(view);
+        itemListTrending.onDestroyView();
+        itemListPopular.onDestroyView();
+        itemListUpcoming.onDestroyView();
+        itemListPopular = null;
+        itemListTrending = null;
+        itemListUpcoming= null;
+        searchView = null;
     }
-
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "onDestroy");
-        super.onDestroy();
-    }*/
 
     @Override
     public void onSubscribe(Disposable d) {
@@ -221,8 +208,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     public Observable<Integer> triggerTrending() {
-        System.out.println("PresenterHome.triggerTrending");
-//        return Observable.just(1);
         return itemListTrending.observer().doOnNext(new Consumer<Integer>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull Integer integer) throws Exception {
@@ -234,7 +219,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Override
     public Observable<Integer> triggerPopular() {
         System.out.println("PresenterHome.triggerPopular");
-//        return Observable.just(1);
         return itemListPopular.observer();
     }
 
@@ -246,14 +230,12 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     public Observable<Integer> retryTrending() {
-        System.out.println("PresenterHome.retryTrending");
         return onRetryTrending.map(new Function<Object, Integer>() {
             @Override
             public Integer apply(@NonNull Object o) throws Exception {
-                return state.pageTrending();
+                return oldState.pageTrending();
             }
         });
-        /*Observable.intervalRange(0, 100, 3, 3, TimeUnit.SECONDS).cast(Object.class);*/
     }
 
     @Override

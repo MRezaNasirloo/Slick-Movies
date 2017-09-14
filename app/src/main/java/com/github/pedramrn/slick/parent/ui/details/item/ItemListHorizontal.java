@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -48,6 +50,15 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
         recyclerView.setAdapter(adapter);
         layoutManager.scrollToPosition(scrollPos);
     }
+public static final String TAG = ItemListHorizontal.class.getSimpleName();
+    @Override
+    public void unbind(ViewHolder<RowCastListBinding> holder) {
+        Log.d(TAG, "unbind() called with: holder = [" + holder + "]");
+        RecyclerView recyclerView = holder.binding.recyclerViewCasts;
+        recyclerView.setOnFlingListener(null);
+        recyclerView.setLayoutManager(null);
+        super.unbind(holder);
+    }
 
     @NonNull
     protected RecyclerView.LayoutManager layoutManager(View root) {
@@ -60,5 +71,9 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
 
     public void onRestoreViewState(View view, Bundle savedViewState) {
         scrollPos = savedViewState.getInt(SCROLL_POS);
+    }
+
+    public void onDestroyView() {
+        adapter.clear();
     }
 }
