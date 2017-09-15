@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -390,6 +389,15 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
                 return "COMMENTS_ERROR".equals(tag);
             }
         }).cast(Object.class);
+    }
+
+    @Override
+    public void showMainError() {
+    }
+
+    @Override
+    public void showMainContents() {
+
     }
 
     @Override

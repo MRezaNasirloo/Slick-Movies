@@ -121,7 +121,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                         return itemView.render(BACKDROPS);
                     }
                 })
-                .buffer(200)
+                .buffer(100)
                 .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
                     @Override
                     public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
@@ -173,7 +173,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
             public Observable<Object> provide(ViewDetails view) {
                 return view.onRetryComments();
             }
-        });
+        }).startWith(1);
 
         Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(new Function<Object,
                 ObservableSource<PartialViewState<ViewStateDetails>>>() {
@@ -220,10 +220,9 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                                 return new PartialViewStateDetails.CommentsError(throwable);
                             }
                         })
-                        ;
+                        .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS));
             }
-        })
-                .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS));
+        });
 
 
         Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(movieId, 1)

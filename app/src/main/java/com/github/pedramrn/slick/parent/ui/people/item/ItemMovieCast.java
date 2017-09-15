@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.people.item;
 
+import android.view.View;
+
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
@@ -53,10 +55,11 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> implements OnItemA
 
     protected void renderDate(RowCardCreditBinding viewBinding, String date) {
         try {
+            viewBinding.textViewEpisodeAndYear.setVisibility(View.VISIBLE);
             viewBinding.textViewEpisodeAndYear.setText(DateUtils.format_yyyy(DateUtils.toDate(date)));
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            // viewBinding.textViewEpisodeAndYear.setVisibility(View.INVISIBLE);
+             viewBinding.textViewEpisodeAndYear.setVisibility(View.INVISIBLE);
         }
     }
 

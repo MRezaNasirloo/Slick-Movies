@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.custom;
 
 import android.content.Context;
 import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
@@ -175,4 +176,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     private static final String TAG = ImageViewLoader.class.getSimpleName();
+
+    public void load(@DrawableRes int res) {
+        picasso(getContext()).load(res)
+                .into(this);
+    }
 }

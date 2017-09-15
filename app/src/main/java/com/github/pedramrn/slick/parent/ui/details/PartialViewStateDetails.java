@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropEmpty;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentEmpty;
@@ -123,6 +124,7 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
+            if (backdrops.isEmpty()) { backdrops.add(new ItemBackdropEmpty()); }
             return state.toBuilder().backdrops(new ArrayList<>(backdrops)).build();
         }
     }

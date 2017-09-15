@@ -16,4 +16,7 @@ public interface ViewDetails extends Retryable {
     MovieBasic getMovie();
 
     Observable<Object> onRetryComments();
+
+    void showMainError();
+    void showMainContents();
 }
