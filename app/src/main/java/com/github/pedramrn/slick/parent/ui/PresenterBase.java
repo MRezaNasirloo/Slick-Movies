@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
@@ -13,10 +14,10 @@ import javax.inject.Named;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
@@ -45,8 +46,15 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
     @Override
     public void onViewUp(V view) {
         super.onViewUp(view);
-        if (!hasSubscribed()) start(view);
+        if (!hasSubscribed())
+            start(view);
         subscribeIntents(view);
+        disposableCommands.add(updateStream().subscribe(new Consumer<S>() {
+            @Override
+            public void accept(S state) throws Exception {
+                if (getView() != null) render(state, getView());
+            }
+        }));
     }
 
     @CallSuper
@@ -145,6 +153,8 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
             }));
         }
     }
+
+    protected void render(@NonNull S state, @NonNull V view) {}
 
     protected interface CommandProvider<T, V> {
         Observable<T> provide(V view);

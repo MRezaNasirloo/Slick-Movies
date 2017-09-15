@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
 import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
@@ -31,7 +33,6 @@ import javax.inject.Named;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
@@ -267,5 +268,10 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
         reduce(initialState, merge(upcoming, trending, trendingProgressiveLoading, popular, popularProgressiveLoading))
                 .subscribe(this);
+    }
+
+    @Override
+    public void render(@NonNull ViewStateHome state, @NonNull ViewHome view) {
+        System.out.println("PresenterHome.render");
     }
 }
