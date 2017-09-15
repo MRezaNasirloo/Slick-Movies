@@ -41,26 +41,30 @@ import io.reactivex.functions.Function;
 
 public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetails> {
     private static final String TAG = PresenterDetails.class.getSimpleName();
+
     private final RouterMovieDetails routerMovieDetails;
     private final RouterSimilar routerSimilar;
     private final RouterComments routerComments;
+
+    private final MapperMovieSmallDomainMovieSmall mapperSmall;
     private final MapperCommentDomainComment mapperComment;
     private final MapperMovieDomainMovie mapper;
-    private final MapperMovieSmallDomainMovieSmall mapperSmall;
+
     private final String CASTS = "CASTS";
     private final String SIMILAR = "SIMILAR";
     private final String BACKDROPS = "BACKDROPS";
     private final String COMMENTS = "COMMENTS";
 
     @Inject
-    public PresenterDetails(RouterMovieDetailsImpl routerMovieDetails,
-                            RouterSimilarImpl routerSimilar,
-                            RouterCommentsImpl routerComments,
-                            MapperCommentDomainComment mapperComment,
-                            MapperMovieDomainMovie mapper,
-                            MapperMovieSmallDomainMovieSmall mapperSmall,
-                            @Named("io") Scheduler io,
-                            @Named("main") Scheduler main
+    public PresenterDetails(
+            RouterMovieDetailsImpl routerMovieDetails,
+            RouterSimilarImpl routerSimilar,
+            RouterCommentsImpl routerComments,
+            MapperCommentDomainComment mapperComment,
+            MapperMovieDomainMovie mapper,
+            MapperMovieSmallDomainMovieSmall mapperSmall,
+            @Named("io") Scheduler io,
+            @Named("main") Scheduler main
     ) {
         super(main, io);
         this.routerMovieDetails = routerMovieDetails;
@@ -79,7 +83,9 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
         IdBank.reset(BACKDROPS);
         IdBank.reset(COMMENTS);
 
-        final Observable<Movie> movieFull = routerMovieDetails.get(view.getMovie().id())
+        final Integer movieId = view.getMovie().id();
+
+        final Observable<Movie> movieFull = routerMovieDetails.get(movieId)
                 //Maps the domains Models to View Models which have android dependency
                 .map(mapper)
                 .subscribeOn(io)
@@ -162,63 +168,65 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 });
 
 
-        Observable<Movie> triggerRetry = command(new CommandProvider<Object, ViewDetails>() {
+        Observable<Object> triggerRetry = command(new CommandProvider<Object, ViewDetails>() {
             @Override
             public Observable<Object> provide(ViewDetails view) {
                 return view.onRetryComments();
             }
-        }).flatMap(new Function<Object, ObservableSource<Movie>>() {
+        });
+
+        Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(new Function<Object,
+                ObservableSource<PartialViewState<ViewStateDetails>>>() {
+            @Override
+            public ObservableSource<PartialViewState<ViewStateDetails>> apply(@NonNull Object o) throws Exception {
+                return movieFull.take(1).flatMap(new Function<Movie, ObservableSource<PagedDomain<CommentDomain>>>() {
                     @Override
-                    public ObservableSource<Movie> apply(@NonNull Object o) throws Exception {
-                        return movieFull.take(1);
+                    public ObservableSource<PagedDomain<CommentDomain>> apply(@NonNull Movie movie) throws Exception {
+                        return routerComments.comments(movie.imdbId(), 1, 15).subscribeOn(io);
                     }
-                });
-
-        Observable<PartialViewState<ViewStateDetails>> comments = movieFull.take(1).mergeWith(triggerRetry)
-                .flatMap(new Function<Movie, ObservableSource<PartialViewState<ViewStateDetails>>>() {
-                    @Override
-                    public ObservableSource<PartialViewState<ViewStateDetails>> apply(@NonNull Movie movie) throws Exception {
-                        return routerComments.comments(movie.imdbId(), 1, 20).subscribeOn(io)
-                                .concatMap(new Function<PagedDomain<CommentDomain>, ObservableSource<CommentDomain>>() {
-                                    @Override
-                                    public ObservableSource<CommentDomain> apply(@NonNull PagedDomain<CommentDomain> comments) throws Exception {
-                                        return Observable.fromIterable(comments.data());
-                                    }
-                                })
-                                .map(mapperComment)
-                                .map(new MapProgressive())
-                                .cast(ItemView.class)
-                                .map(new Function<ItemView, Item>() {
-                                    @Override
-                                    public Item apply(@NonNull ItemView itemView) throws Exception {
-                                        return itemView.render(COMMENTS);
-                                    }
-                                })
-                                .buffer(20)
-                                .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
-                                    @Override
-                                    public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
-                                        return new PartialViewStateDetails.Comments(items);
-                                    }
-                                })
-                                .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
-                                    @Override
-                                    public PartialViewState<ViewStateDetails> apply(@NonNull Boolean hadError) throws Exception {
-                                        return new PartialViewStateDetails.CommentsLoaded(hadError);
-                                    }
-                                })
-                                .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS))
-                                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
-                                    @Override
-                                    public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
-                                        return new PartialViewStateDetails.CommentsError(throwable);
-                                    }
-                                });
-                    }
-                });
+                })
+                        .concatMap(new Function<PagedDomain<CommentDomain>, ObservableSource<CommentDomain>>() {
+                            @Override
+                            public ObservableSource<CommentDomain> apply(@NonNull PagedDomain<CommentDomain> comments) throws Exception {
+                                return Observable.fromIterable(comments.data());
+                            }
+                        })
+                        .map(mapperComment)
+                        .map(new MapProgressive())
+                        .cast(ItemView.class)
+                        .map(new Function<ItemView, Item>() {
+                            @Override
+                            public Item apply(@NonNull ItemView itemView) throws Exception {
+                                return itemView.render(COMMENTS);
+                            }
+                        })
+                        .buffer(20)
+                        .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
+                            @Override
+                            public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
+                                return new PartialViewStateDetails.Comments(items);
+                            }
+                        })
+                        .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
+                            @Override
+                            public PartialViewState<ViewStateDetails> apply(@NonNull Boolean hadError) throws Exception {
+                                return new PartialViewStateDetails.CommentsLoaded(hadError);
+                            }
+                        })
+                        .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
+                            @Override
+                            public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable)
+                                    throws Exception {
+                                return new PartialViewStateDetails.CommentsError(throwable);
+                            }
+                        })
+                        ;
+            }
+        })
+                .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS));
 
 
-        Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(view.getMovie().id(), 1)
+        Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(movieId, 1)
                 .concatMap(new Function<List<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
                     @Override
                     public ObservableSource<MovieSmallDomain> apply(@NonNull List<MovieSmallDomain> movieSmallDomains) throws Exception {
