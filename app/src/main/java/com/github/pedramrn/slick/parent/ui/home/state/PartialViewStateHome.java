@@ -103,6 +103,7 @@ public final class PartialViewStateHome {
 
         @Override
         public ViewStateHome reduce(ViewStateHome viewStateHome) {
+            System.out.println("Trending.reduce movies size: " + movies.size() + " " + movies);
             Map<Integer, Item> trending = viewStateHome.trending();
             removeRemovables(trending.values().iterator());
             trending.putAll(movies);

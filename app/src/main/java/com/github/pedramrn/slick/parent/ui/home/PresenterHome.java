@@ -24,6 +24,7 @@ import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -157,8 +158,8 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                         .map(new Function<Map<Integer, Item>, PartialViewState<ViewStateHome>>() {
                             @Override
                             public PartialViewState<ViewStateHome> apply(@NonNull Map<Integer, Item> items) throws Exception {
-                                System.out.println("PresenterHome.Trending");
-                                return new PartialViewStateHome.Trending(items);
+                                System.out.println("PresenterHome.Trending size: " + items.size());
+                                return new PartialViewStateHome.Trending(new LinkedHashMap<>(items));
                             }
                         })
                         .lift(new OnCompleteReturn<PartialViewState<ViewStateHome>>() {

@@ -29,13 +29,7 @@ public abstract class PartialProgressive {
 
     protected List<Item> reduce(@NonNull List<Item> items) {
         Iterator<Item> iterator = items.iterator();
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-            if (((RemovableOnError) item).removable()) {
-                iterator.remove();
-                break;
-            }
-        }
+        removeError(iterator);
 
         List<Item> progressive = new ArrayList<>(count);
         for (int i = 0, id = items.size(); i < count; i++, id++) {
@@ -52,13 +46,7 @@ public abstract class PartialProgressive {
 
     protected Map<Integer, Item> reduce(@NonNull Map<Integer, Item> items) {
         Iterator<Item> iterator = items.values().iterator();
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-            if (((RemovableOnError) item).removable()) {
-                iterator.remove();
-                break;
-            }
-        }
+        removeError(iterator);
 
         Map<Integer, Item> progressive = new LinkedHashMap<>(count);
         for (int i = 0, id = items.size(); i < count; i++, id++) {
@@ -71,5 +59,15 @@ public abstract class PartialProgressive {
             items = progressive;
         }
         return items;
+    }
+
+    private void removeError(Iterator<Item> iterator) {
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (((RemovableOnError) item).removable()) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 }
