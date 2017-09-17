@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBackdropBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -32,7 +35,7 @@ public class ItemBackdropProgressive extends Item<RowBackdropBinding> implements
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 }

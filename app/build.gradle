@@ -93,6 +93,7 @@ dependencies {
 
 
     testCompile 'junit:junit:4.12'
+    testCompile 'com.google.truth:truth:0.35'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -217,4 +218,8 @@ dependencies {
 
     compile 'com.lapism:searchview:4.0'
 //    compile 'com.github.arimorty:floatingsearchview:2.1.1'
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.guava:guava:23.0'
+    }
 }

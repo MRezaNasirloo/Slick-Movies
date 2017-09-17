@@ -1,9 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.ControllerPeople;
@@ -39,8 +42,8 @@ public class ItemCast extends ItemCastProgressive implements OnItemAction {
     }
 
     @Override
-    public void action(Controller controller, int position) {
-        controller.getRouter().pushController(RouterTransaction.with(new ControllerPeople(Person.create(
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+        navigator.getRouter().pushController(RouterTransaction.with(new ControllerPeople(Person.create(
                 cast.id(),
                 cast.name(),
                 cast.profilePicId()

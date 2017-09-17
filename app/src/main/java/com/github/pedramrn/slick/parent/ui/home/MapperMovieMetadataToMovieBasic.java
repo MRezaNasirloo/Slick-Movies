@@ -16,7 +16,7 @@ import io.reactivex.functions.Function;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-10
  */
-class MapperMovieMetadataToMovieBasic implements Function<MovieMetadata, MovieBasic> {
+public class MapperMovieMetadataToMovieBasic implements Function<MovieMetadata, MovieBasic> {
 
     @Inject
     public MapperMovieMetadataToMovieBasic() {

@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.people.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -31,7 +34,7 @@ public class ItemCreditsProgressive extends Item<RowCardCreditBinding> implement
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 }

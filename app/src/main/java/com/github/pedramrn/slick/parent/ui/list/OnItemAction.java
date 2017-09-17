@@ -1,6 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.list;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.github.pedramrn.slick.parent.ui.Navigator;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -8,5 +11,5 @@ import com.bluelinelabs.conductor.Controller;
  */
 
 public interface OnItemAction {
-    void action(Controller controller, int position);
+    void action(@NonNull Navigator navigator, @Nullable Object payload, int position);
 }

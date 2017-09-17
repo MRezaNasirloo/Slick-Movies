@@ -10,7 +10,7 @@ import io.reactivex.Observable;
  *         Created on: 2017-06-21
  */
 
-public interface RouterTrending {
+public interface RouterTrending extends PagedRouter {
     /**
      * @return only the first page with 10 item
      */

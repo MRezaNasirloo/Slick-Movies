@@ -225,7 +225,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
                         .map(new MapperMovie(new MapperCast(), new MapperSimpleData()))
                         .map(new MapperMovieDomainMovie())
                         .blockingFirst();
-                ((OnItemAction) movie.render("")).action(ControllerDetails.this, 0);
+                ((OnItemAction) movie.render("")).action(ControllerDetails.this, null, 0);
             }
         });
 
@@ -376,7 +376,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerDetails.this, adapter.getAdapterPosition(item));
+                ((OnItemAction) item).action(ControllerDetails.this, null, adapter.getAdapterPosition(item));
             }
         });
     }

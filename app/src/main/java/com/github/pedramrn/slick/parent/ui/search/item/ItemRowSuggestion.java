@@ -1,10 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.search.item;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowSearchSuggestionBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemMovie;
@@ -52,7 +53,7 @@ public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implemen
     }
 
     @Override
-    public void action(Controller controller, int position) {
-        ControllerDetails.start(controller.getRouter(), movie, transitionName);
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+        ControllerDetails.start(navigator.getRouter(), movie, transitionName);
     }
 }

@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCommentBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -25,7 +28,7 @@ public class ItemCommentProgressive extends ItemComment {
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 

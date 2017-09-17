@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 
 /**
@@ -17,7 +20,7 @@ import com.github.pedramrn.slick.parent.ui.ToolbarHost;
  *         Created on: 2017-06-18
  */
 
-public abstract class ControllerBase extends Controller implements ToolbarHost {
+public abstract class ControllerBase extends Controller implements ToolbarHost, Navigator {
     protected ControllerBase(@Nullable Bundle args) {
         super(args);
     }
@@ -62,5 +65,12 @@ public abstract class ControllerBase extends Controller implements ToolbarHost {
             throwable.printStackTrace();
             Toast.makeText(ControllerBase.this.getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void navigateTo(Controller controller) {
+        getRouter().pushController(RouterTransaction.with(controller)
+                                           .popChangeHandler(new HorizontalChangeHandler())
+                                           .pushChangeHandler(new HorizontalChangeHandler()));
     }
 }

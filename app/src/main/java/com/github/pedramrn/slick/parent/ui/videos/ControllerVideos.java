@@ -83,7 +83,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerVideos.this, adapter.getAdapterPosition(item));
+                ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item));
             }
         });
         presenter.updateStream().subscribe(this);

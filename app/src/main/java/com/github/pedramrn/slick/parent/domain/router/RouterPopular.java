@@ -9,7 +9,7 @@ import io.reactivex.Observable;
  *         Created on: 2017-07-02
  */
 
-public interface RouterPopular {
+public interface RouterPopular extends PagedRouter {
 
     /**
      * @return only the first page with 10 item

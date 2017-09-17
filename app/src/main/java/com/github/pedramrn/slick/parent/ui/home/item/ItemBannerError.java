@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.home.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 
@@ -30,9 +33,9 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
     }
 
     @Override
-    public void action(Controller controller, int position) {
-        if (controller instanceof Retryable)
-            ((Retryable) controller).onRetry(tag);
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+        if (navigator instanceof Retryable)
+            ((Retryable) navigator).onRetry(tag);
     }
 
 

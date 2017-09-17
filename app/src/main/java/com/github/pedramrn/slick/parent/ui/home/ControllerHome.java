@@ -267,7 +267,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerHome.this, adapter.getAdapterPosition(item));
+                ((OnItemAction) item).action(ControllerHome.this, null, adapter.getAdapterPosition(item));
             }
         });
     }

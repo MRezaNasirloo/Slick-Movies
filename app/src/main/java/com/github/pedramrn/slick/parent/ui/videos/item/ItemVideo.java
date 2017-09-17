@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowVideoBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 import com.xwray.groupie.Item;
@@ -43,8 +44,8 @@ public class ItemVideo extends Item<RowVideoBinding> implements OnItemAction {
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public void action(Controller controller, int position) {
-        playYoutubeVideo(controller.getActivity(), video.key());
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+        playYoutubeVideo(navigator.getView().getContext(), video.key());
     }
 
     private static void playYoutubeVideo(@NonNull Context context, @NonNull String id) {

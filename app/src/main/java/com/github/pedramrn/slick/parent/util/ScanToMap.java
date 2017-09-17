@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 
 import com.xwray.groupie.Item;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -24,7 +24,7 @@ public class ScanToMap<T extends Item> implements ObservableTransformer<T, Map<I
         return upstream.map(new Function<T, Map<Integer, T>>() {
             @Override
             public Map<Integer, T> apply(@NonNull T data) throws Exception {
-                @SuppressLint("UseSparseArrays") Map<Integer, T> set = new LinkedHashMap<>(1);
+                @SuppressLint("UseSparseArrays") Map<Integer, T> set = new TreeMap<>();
                 set.put(((int) data.getId()), data);
                 return set;
             }

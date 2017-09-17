@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.videos.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowVideoBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -24,7 +27,7 @@ public class ItemVideoProgressive extends ItemVideo {
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 }

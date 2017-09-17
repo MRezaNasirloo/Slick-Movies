@@ -1,7 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.databinding.RowBackdropBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 
@@ -28,9 +31,9 @@ public class ItemBackdrop extends ItemBackdropProgressive {
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         ControllerImage.start(
-                controller.getRouter(),
+                navigator.getRouter(),
                 backdrop.movieTitle(),
                 ((ArrayList<String>) backdrop.allBackdrops()),
                 position

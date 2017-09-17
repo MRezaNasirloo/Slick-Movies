@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.people.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowPersonDetailsBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.xwray.groupie.Item;
@@ -36,7 +39,7 @@ public class ItemBio extends Item<RowPersonDetailsBinding> implements OnItemActi
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 }

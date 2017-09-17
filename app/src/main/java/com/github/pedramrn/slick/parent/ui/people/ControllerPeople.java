@@ -224,6 +224,6 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(this, adapterMovies.getAdapterPosition(item));
+        ((OnItemAction) item).action(this, null, adapterMovies.getAdapterPosition(item));
     }
 }

@@ -1,8 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.image;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowImageBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -38,7 +41,7 @@ public class ItemImage extends Item<RowImageBinding> implements OnItemAction {
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
 
     }
 }

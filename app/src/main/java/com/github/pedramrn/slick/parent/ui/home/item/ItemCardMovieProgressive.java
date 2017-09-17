@@ -3,9 +3,12 @@
 
 package com.github.pedramrn.slick.parent.ui.home.item;
 
-import com.bluelinelabs.conductor.Controller;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 
 /**
@@ -40,7 +43,7 @@ public class ItemCardMovieProgressive extends ItemCardMovie {
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 }

@@ -1,10 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.people.item;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
@@ -71,7 +73,7 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> implements OnItemA
     }
 
     @Override
-    public void action(Controller controller, int position) {
-        ControllerDetails.start(controller.getRouter(), MovieSmall.create(coc), transitionName);
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+        ControllerDetails.start(navigator.getRouter(), MovieSmall.create(coc), transitionName);
     }
 }

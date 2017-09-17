@@ -69,4 +69,10 @@ public class RouterPopularImpl implements RouterPopular {
                 });
     }
 
+    @Override
+    public Observable<MovieMetadata> page(
+            @IntRange(from = 1, to = Short.MAX_VALUE) int page, @IntRange(from = 1, to = Short.MAX_VALUE) int size
+    ) {
+        return popular(page, size);
+    }
 }

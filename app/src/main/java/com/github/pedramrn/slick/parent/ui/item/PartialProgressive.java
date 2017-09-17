@@ -7,9 +7,9 @@ import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -48,7 +48,7 @@ public abstract class PartialProgressive {
         Iterator<Item> iterator = items.values().iterator();
         removeError(iterator);
 
-        Map<Integer, Item> progressive = new LinkedHashMap<>(count);
+        Map<Integer, Item> progressive = new TreeMap<>();
         for (int i = 0, id = items.size(); i < count; i++, id++) {
             progressive.put(id, itemRenderer.render(id, tag));
         }

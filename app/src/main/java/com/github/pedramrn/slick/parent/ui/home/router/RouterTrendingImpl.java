@@ -106,4 +106,10 @@ public class RouterTrendingImpl implements RouterTrending {
                 .map(mapper);
     }
 
+    @Override
+    public Observable<MovieMetadata> page(
+            @IntRange(from = 1, to = Short.MAX_VALUE) int page, @IntRange(from = 1, to = Short.MAX_VALUE) int size
+    ) {
+        return trending(page, size);
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
@@ -8,6 +9,7 @@ import android.util.Log;
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
@@ -109,7 +111,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction, 
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@android.support.annotation.NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 

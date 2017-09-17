@@ -82,7 +82,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
             @Override
             public void onItemClick(Item item, View view) {
                 if (item instanceof OnItemAction) {
-                    ((OnItemAction) item).action(ControllerList.this, adapter.getAdapterPosition(item));
+                    ((OnItemAction) item).action(ControllerList.this, null, adapter.getAdapterPosition(item));
                 }
             }
         });

@@ -3,12 +3,14 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.widget.TextView;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -41,7 +43,7 @@ public class ItemBannerProgressive extends ItemBanner {
     }
 
     @Override
-    public void action(Controller controller, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
     }
 

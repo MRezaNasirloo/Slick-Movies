@@ -49,7 +49,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
 
     public ModuleNetwork() {
         // TODO: 2017-07-02 read from preference manager
-        // MOCK_MODE = true;
+         MOCK_MODE = true;
     }
 
 
