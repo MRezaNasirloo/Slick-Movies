@@ -28,37 +28,26 @@ public abstract class PartialProgressive {
     }
 
     protected List<Item> reduce(@NonNull List<Item> items) {
-        Iterator<Item> iterator = items.iterator();
+        List<Item> movies = new ArrayList<>(items);
+        Iterator<Item> iterator = movies.iterator();
         removeError(iterator);
 
-        List<Item> progressive = new ArrayList<>(count);
         for (int i = 0, id = items.size(); i < count; i++, id++) {
-            progressive.add(itemRenderer.render(id, tag));
+            movies.add(itemRenderer.render(id, tag));
         }
-        if (!items.isEmpty()) {
-            items.addAll(progressive);
-        }
-        else {
-            items = progressive;
-        }
-        return items;
+        return movies;
     }
 
     protected Map<Integer, Item> reduce(@NonNull Map<Integer, Item> items) {
-        Iterator<Item> iterator = items.values().iterator();
+        TreeMap<Integer, Item> movies = new TreeMap<>(items);
+        Iterator<Item> iterator = movies.values().iterator();
         removeError(iterator);
 
-        Map<Integer, Item> progressive = new TreeMap<>();
         for (int i = 0, id = items.size(); i < count; i++, id++) {
-            progressive.put(id, itemRenderer.render(id, tag));
+            movies.put(id, itemRenderer.render(id, tag));
         }
-        if (!items.isEmpty()) {
-            items.putAll(progressive);
-        }
-        else {
-            items = progressive;
-        }
-        return items;
+
+        return movies;
     }
 
     private void removeError(Iterator<Item> iterator) {

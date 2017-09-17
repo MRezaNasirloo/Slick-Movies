@@ -24,10 +24,10 @@ public class Loaded implements PartialViewState<ViewStateCardList> {
 
     @Override
     public ViewStateCardList reduce(ViewStateCardList state) {
-        Map<Integer, Item> movies = state.movies();
+        Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator());
         return state.toBuilder()
-                .movies(new TreeMap<>(movies))
+                .movies(movies)
                 .isLoading(loading)
                 .itemLoadedCount(movies.size())
                 .page(state.page() + 1)

@@ -69,7 +69,7 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
             public Integer apply(@NonNull Object o) throws Exception {
                 return state.page();
             }
-        });
+        }).startWith(1);
         final Observable<PartialViewState<ViewStateCardList>> movies = trigger.concatMap(new Function<Integer,
                 ObservableSource<PartialViewState<ViewStateCardList>>>() {
             @Override
@@ -115,7 +115,7 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
 
         ViewStateCardList initialState = ViewStateCardList.builder()
                 .page(1)
-                .isLoading(true)
+                .isLoading(false)
                 .itemLoadedCount(0)
                 .movies(Collections.<Integer, Item>emptyMap())
                 .build();

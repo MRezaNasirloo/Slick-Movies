@@ -85,11 +85,6 @@ public class PresenterHomeTest {
         }
 
         @Override
-        public Observable<Integer> triggerTrending() {
-            return triggerTrending;
-        }
-
-        @Override
         public Observable<Integer> triggerPopular() {
             return Observable.never();
         }
@@ -98,11 +93,6 @@ public class PresenterHomeTest {
         public int pageSize() {
             System.out.println("PresenterHomeTest.pageSize");
             return 3;
-        }
-
-        @Override
-        public Observable<Integer> retryTrending() {
-            return PublishSubject.create();
         }
 
         @Override

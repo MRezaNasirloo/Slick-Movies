@@ -58,6 +58,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         GroupAdapter groupAdapter = new GroupAdapter();
+        groupAdapter.setOnItemClickListener(this);
         updatingGroup = new UpdatingGroup();
         groupAdapter.add(updatingGroup);
         setAdapter(groupAdapter);
@@ -102,7 +103,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
                     @Override
                     public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
                         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-                        return layoutManager.getItemCount() < layoutManager.findLastVisibleItemPosition();
+                        return layoutManager.getItemCount() < layoutManager.findLastVisibleItemPosition() + 2;
                     }
                 })
                 .cast(Object.class)
@@ -121,7 +122,6 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(this, null, ((GroupAdapter) getAdapter()).getAdapterPosition(item));
-
     }
 
     public void setRouter(Router router) {

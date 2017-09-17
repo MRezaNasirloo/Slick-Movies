@@ -32,7 +32,6 @@ public class Utils {
             Item item = iterator.next();
             if (((RemovableOnError) item).removable()) {
                 iterator.remove();
-                break;
             }
         }
     }

@@ -40,6 +40,7 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (isInEditMode()) { return; }
         App.componentMain().inject(this);
         RecyclerViewCardListTrending_Slick.bind(this);
         RecyclerViewCardListTrending_Slick.onAttach(this);
@@ -48,6 +49,7 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        if (isInEditMode()) { return; }
         RecyclerViewCardListTrending_Slick.onDetach(this);
     }
 }

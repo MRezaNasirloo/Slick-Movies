@@ -19,7 +19,7 @@ public class CardProgressiveMovie extends PartialProgressive implements PartialV
 
     @Override
     public ViewStateCardList reduce(ViewStateCardList state) {
-        return state.toBuilder().movies(reduce(state.movies())).build();
+        return state.toBuilder().movies(reduce(state.movies())).isLoading(true).build();
     }
 
     private static class ItemRendererProgressiveCard implements ItemRenderer {

@@ -25,7 +25,7 @@ public class Error implements PartialViewState<ViewStateCardList> {
 
     @Override
     public ViewStateCardList reduce(ViewStateCardList state) {
-        Map<Integer, Item> movies = state.movies();
+        Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator());
 
         Item itemError = new ItemError(-1, PresenterCardList.MOVIES_CARD, throwable.getMessage());
@@ -34,7 +34,7 @@ public class Error implements PartialViewState<ViewStateCardList> {
         return state.toBuilder()
                 .error(throwable)
                 .isLoading(true)
-                .movies(new TreeMap<>(movies))
+                .movies(movies)
                 .build();
     }
 }

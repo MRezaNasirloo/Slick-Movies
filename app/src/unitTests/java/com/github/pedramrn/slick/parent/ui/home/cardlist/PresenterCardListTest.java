@@ -18,9 +18,7 @@ import com.xwray.groupie.Item;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.internal.verification.Times;
 
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
@@ -29,8 +27,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.TestScheduler;
 import io.reactivex.subjects.PublishSubject;
-
-import static org.mockito.Mockito.verify;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -74,8 +70,6 @@ public class PresenterCardListTest {
     @Test
     public void testProgressive() throws Exception {
         presenter.onViewUp(view);
-        verify(view, new Times(1)).updateList(Collections.<Item>emptyList());
-        trigger.onNext(1);
         presenter.updateStream().test()
                 .awaitCount(2, new Runnable() {
                     @Override
@@ -86,12 +80,14 @@ public class PresenterCardListTest {
                 .assertValueAt(0, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
-                        return viewStateCardList.page() == 1;
+                        return viewStateCardList.page() == 1 && !viewStateCardList.isLoading();
                     }
                 })
                 .assertValueAt(1, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, progressive, 1, progressive, 2, progressive).inOrder();
                         return true;
                     }
@@ -99,6 +95,8 @@ public class PresenterCardListTest {
                 .assertValueAt(2, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, progressive, 2, progressive).inOrder();
                         return true;
                     }
@@ -106,6 +104,8 @@ public class PresenterCardListTest {
                 .assertValueAt(3, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, progressive, 2, progressive).inOrder();
                         return true;
                     }
@@ -113,6 +113,8 @@ public class PresenterCardListTest {
                 .assertValueAt(4, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, progressive).inOrder();
                         return true;
                     }
@@ -120,6 +122,8 @@ public class PresenterCardListTest {
                 .assertValueAt(5, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, progressive).inOrder();
                         return true;
                     }
@@ -127,6 +131,8 @@ public class PresenterCardListTest {
                 .assertValueAt(6, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie).inOrder();
                         return true;
                     }
@@ -134,6 +140,8 @@ public class PresenterCardListTest {
                 .assertValueAt(7, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(1);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie).inOrder();
                         return true;
                     }
@@ -141,6 +149,8 @@ public class PresenterCardListTest {
                 .assertValueAt(8, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(false);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie).inOrder();
                         return true;
                     }
@@ -155,6 +165,8 @@ public class PresenterCardListTest {
                 .assertValueAt(9, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, progressive, 4, progressive, 5, progressive).inOrder();
                         return true;
                     }
@@ -162,6 +174,8 @@ public class PresenterCardListTest {
                 .assertValueAt(10, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, progressive, 5, progressive).inOrder();
                         return true;
                     }
@@ -169,6 +183,8 @@ public class PresenterCardListTest {
                 .assertValueAt(11, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, progressive, 5, progressive).inOrder();
                         return true;
                     }
@@ -176,6 +192,8 @@ public class PresenterCardListTest {
                 .assertValueAt(12, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, movie, 5, progressive).inOrder();
                         return true;
                     }
@@ -183,6 +201,8 @@ public class PresenterCardListTest {
                 .assertValueAt(13, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, movie, 5, progressive).inOrder();
                         return true;
                     }
@@ -190,6 +210,8 @@ public class PresenterCardListTest {
                 .assertValueAt(14, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, movie, 5, movie).inOrder();
                         return true;
                     }
@@ -197,6 +219,8 @@ public class PresenterCardListTest {
                 .assertValueAt(15, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(2);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(true);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, movie, 5, movie).inOrder();
                         return true;
                     }
@@ -204,6 +228,8 @@ public class PresenterCardListTest {
                 .assertValueAt(16, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
+                        Truth.assertThat(viewStateCardList.page()).isEqualTo(3);
+                        Truth.assertThat(viewStateCardList.isLoading()).isEqualTo(false);
                         assertThis(viewStateCardList).containsExactly(0, movie, 1, movie, 2, movie, 3, movie, 4, movie, 5, movie).inOrder();
                         return true;
                     }
