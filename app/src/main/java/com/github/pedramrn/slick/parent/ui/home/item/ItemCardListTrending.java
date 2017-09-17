@@ -52,8 +52,6 @@ public class ItemCardListTrending extends Item<RowCardListTrendingBinding> {
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.getItemAnimator().setChangeDuration(0);
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(margin);
         recyclerView.setRouter(router);
 //        snapHelper.attachToRecyclerView(recyclerView);

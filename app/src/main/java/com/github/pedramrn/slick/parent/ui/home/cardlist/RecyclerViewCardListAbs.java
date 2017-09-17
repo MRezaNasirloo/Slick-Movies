@@ -17,10 +17,8 @@ import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
-import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
-import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
 
@@ -39,8 +37,8 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     private PublishSubject<String> onRetry = PublishSubject.create();
     private boolean isLoading;
-    private UpdatingGroup updatingGroup;
     private Router router;
+    private AdapterLightWeight adapter;
 
     public RecyclerViewCardListAbs(Context context) {
         super(context);
@@ -57,11 +55,11 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        GroupAdapter groupAdapter = new GroupAdapter();
-        groupAdapter.setOnItemClickListener(this);
-        updatingGroup = new UpdatingGroup();
-        groupAdapter.add(updatingGroup);
-        setAdapter(groupAdapter);
+        getItemAnimator().setChangeDuration(0);
+        setNestedScrollingEnabled(false);
+        adapter = new AdapterLightWeight();
+        adapter.setOnItemClickListener(this);
+        setAdapter(adapter);
     }
 
     @Override
@@ -82,7 +80,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     public void updateList(List<Item> items) {
-        updatingGroup.update(items);
+        adapter.update(items);
     }
 
     @Override
@@ -121,7 +119,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(this, null, ((GroupAdapter) getAdapter()).getAdapterPosition(item));
+        ((OnItemAction) item).action(this, null, ((AdapterLightWeight) getAdapter()).getAdapterPosition(item));
     }
 
     public void setRouter(Router router) {
