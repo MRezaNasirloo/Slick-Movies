@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.home.cardlist;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,14 @@ import com.xwray.groupie.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-17
@@ -23,8 +32,30 @@ import java.util.List;
 public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
 
     List<Item> items = new ArrayList<>(10);
+    PublishSubject<List<Item>> updateStream = PublishSubject.create();
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
+
+    public AdapterLightWeight() {
+        updateStream.flatMap(new Function<List<Item>, Observable<Pair<DiffUtil.DiffResult, List<Item>>>>() {
+                    @Override
+                    public Observable<Pair<DiffUtil.DiffResult, List<Item>>> apply(@NonNull List<Item> newItems) throws Exception {
+                        System.out.println("Diffing on: " + Thread.currentThread().getName());
+                        return Observable.just(Pair.create(DiffUtil.calculateDiff(new MyCallback(newItems)), newItems));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Pair<DiffUtil.DiffResult, List<Item>>>() {
+                    @Override
+                    public void accept(Pair<DiffUtil.DiffResult, List<Item>> pair) throws Exception {
+                        items.clear();
+                        items.addAll(pair.second);
+                        pair.first.dispatchUpdatesTo(AdapterLightWeight.this);
+
+                    }
+                });
+    }
 
     @Override
     public ViewHolder<? extends ViewDataBinding> onCreateViewHolder(ViewGroup parent, int layoutResId) {
@@ -68,6 +99,11 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
+    public long getItemId(int position) {
+        return items.get(position).getId();
+    }
+
+    @Override
     public int getItemCount() {
         return items.size();
     }
@@ -94,39 +130,42 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
         if (newItems == null) {
             return;
         }
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return items.size();
-            }
-
-            @Override
-            public int getNewListSize() {
-                return newItems.size();
-            }
-
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                Item itemCardOld = items.get(oldItemPosition);
-                Item itemCardNew = newItems.get(newItemPosition);
-
-                return itemCardOld.getId() == itemCardNew.getId();
-            }
-
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                Item itemCardOld = items.get(oldItemPosition);
-                Item itemCardNew = newItems.get(newItemPosition);
-
-                return itemCardOld.equals(itemCardNew);
-            }
-        });
-        items.clear();
-        items.addAll(newItems);
-        diffResult.dispatchUpdatesTo(this);
+        updateStream.onNext(newItems);
     }
 
     public int getAdapterPosition(Item item) {
         return items.indexOf(item);
+    }
+
+    private class MyCallback extends DiffUtil.Callback {
+        private final List<Item> newItems;
+
+        public MyCallback(List<Item> newItems) {this.newItems = newItems;}
+
+        @Override
+        public int getOldListSize() {
+            return items.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newItems.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            Item itemCardOld = items.get(oldItemPosition);
+            Item itemCardNew = newItems.get(newItemPosition);
+
+            return itemCardOld.getId() == itemCardNew.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            Item itemCardOld = items.get(oldItemPosition);
+            Item itemCardNew = newItems.get(newItemPosition);
+
+            return itemCardOld.equals(itemCardNew);
+        }
     }
 }

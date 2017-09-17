@@ -59,6 +59,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         setNestedScrollingEnabled(false);
         adapter = new AdapterLightWeight();
         adapter.setOnItemClickListener(this);
+        adapter.setHasStableIds(true);
         setAdapter(adapter);
     }
 

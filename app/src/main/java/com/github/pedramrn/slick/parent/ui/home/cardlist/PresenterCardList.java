@@ -14,7 +14,6 @@ import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Loaded;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Movies;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
-import com.github.pedramrn.slick.parent.util.ScanListToMap;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
 
@@ -87,8 +86,7 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
                                 return itemView.render(tag);
                             }
                         })
-                        .buffer(pageSize * 2)
-                        .compose(new ScanListToMap<>())
+                        .compose(scanToMap)
                         .map(new Function<Map<Integer, Item>, PartialViewState<ViewStateCardList>>() {
                             @Override
                             public PartialViewState<ViewStateCardList> apply(@NonNull Map<Integer, Item> items) throws Exception {
