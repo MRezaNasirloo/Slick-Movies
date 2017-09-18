@@ -93,7 +93,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private UpdatingGroup progressiveCast;
     private UpdatingGroup updatingHeader;
 
-    private ItemListHorizontal itemHeader;
+//    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
     private ItemCardList itemCardListSimilar;
 
@@ -154,7 +154,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         setOnItemClickListener(adapterSimilar);
         setOnItemClickListener(adapterBackdrops);
 
-        updatingHeader = new UpdatingGroup();
+//        updatingHeader = new UpdatingGroup();
         progressiveCast = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
@@ -162,8 +162,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         adapterMain.setSpanCount(6);
 
-        itemHeader = new ItemListHorizontal(adapterHeader, "HEADER");
-        adapterHeader.add(updatingHeader);
+//        itemHeader = new ItemListHorizontal(adapterHeader, "HEADER");
+//        adapterHeader.add(updatingHeader);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
         adapterSimilar.add(progressiveSimilar);
@@ -206,7 +206,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         sectionOverview = new Section(new ItemCardHeader(104, "Overview"));
 
-        adapterMain.add(itemHeader);
+        adapterMain.add(new ItemHeader(this, movie, transitionName));
         adapterMain.add(sectionCasts);
         adapterMain.add(sectionOverview);
         adapterMain.add(sectionBackdrops);
@@ -214,7 +214,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapterMain.add(sectionSimilar);
 
         RecyclerView.RecycledViewPool recycledViewPool = new RecyclerView.RecycledViewPool();
-        recycledViewPool.setMaxRecycledViews(R.layout.row_card_list, 4);
+        recycledViewPool.setMaxRecycledViews(R.layout.row_header, 4);
         GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
         lm.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
         binding.recyclerViewDetails.setLayoutManager(lm);
@@ -251,8 +251,13 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         collapsingToolbar.setTitle(movie.title());
         imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        headerMovie = new ItemHeader(this, movie, transitionName);
-        updatingHeader.update(Collections.singletonList(headerMovie));
+        Item item = adapterMain.getItem(0);
+        if (item instanceof ItemHeader) {
+            adapterMain.remove(item);
+            adapterMain.add(0, new ItemHeader(this, movie, transitionName));
+        }else {
+            adapterMain.add(0, new ItemHeader(this, movie, transitionName));
+        }
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));
@@ -330,10 +335,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapterMain.clear();
         itemCardListSimilar.onDestroyView();
         itemBackdropList.onDestroyView();
-        itemHeader.onDestroyView();
+//        itemHeader.onDestroyView();
         headerCast.onDestroyView();
         headerComments.onDestroyView();
-        headerMovie.onDestroyView();
+//        headerMovie.onDestroyView();
 
         updatingHeader = null;
         progressiveCast = null;
@@ -351,7 +356,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         headerComments = null;
         headerMovie = null;
         headerCast = null;
-        itemHeader = null;
+//        itemHeader = null;
 
         adapterMain = null;
         super.onDestroyView(view);
