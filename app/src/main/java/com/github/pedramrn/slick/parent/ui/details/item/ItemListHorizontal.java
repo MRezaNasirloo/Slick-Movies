@@ -41,14 +41,19 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
 
     @Override
     public void bind(RowCastListBinding viewBinding, int position) {
+        long before = System.currentTimeMillis();
         RecyclerView recyclerView = viewBinding.recyclerViewCasts;
         layoutManager = (LinearLayoutManager) layoutManager(viewBinding.getRoot());
+        layoutManager.setInitialPrefetchItemCount(3);
+        layoutManager.setRecycleChildrenOnDetach(false);
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         layoutManager.scrollToPosition(scrollPos);
+        long took = System.currentTimeMillis() - before;
+        Log.e(TAG, "bind: took " + took + " ms");
     }
 public static final String TAG = ItemListHorizontal.class.getSimpleName();
     @Override

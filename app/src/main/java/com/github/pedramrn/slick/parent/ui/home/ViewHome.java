@@ -12,11 +12,5 @@ import io.reactivex.Observable;
 public interface ViewHome extends Retryable {
     void render(ViewStateHome state);
 
-    Observable<Integer> triggerPopular();
-
-    int pageSize();
-
-    Observable<Integer> retryPopular();
-
     Observable<Object> retryUpcoming();
 }

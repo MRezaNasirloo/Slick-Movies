@@ -53,7 +53,7 @@ public abstract class PartialProgressive {
     private void removeError(Iterator<Item> iterator) {
         while (iterator.hasNext()) {
             Item item = iterator.next();
-            if (((RemovableOnError) item).removable()) {
+            if (((RemovableOnError) item).removableByTag(tag)) {
                 iterator.remove();
                 break;
             }

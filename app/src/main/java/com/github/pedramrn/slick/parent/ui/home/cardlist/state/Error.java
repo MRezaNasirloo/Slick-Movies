@@ -26,7 +26,7 @@ public class Error implements PartialViewState<ViewStateCardList> {
     @Override
     public ViewStateCardList reduce(ViewStateCardList state) {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
-        removeRemovables(movies.values().iterator());
+        removeRemovables(movies.values().iterator(), null);
 
         Item itemError = new ItemError(-1, PresenterCardList.MOVIES_CARD, throwable.getMessage());
         movies.put(((int) itemError.getId()), itemError);

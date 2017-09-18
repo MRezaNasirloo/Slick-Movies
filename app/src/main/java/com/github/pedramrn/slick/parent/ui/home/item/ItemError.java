@@ -50,7 +50,7 @@ public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction
     public static final String TAG = ItemError.class.getSimpleName();
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return true;
     }
 }

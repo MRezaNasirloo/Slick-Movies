@@ -1,15 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
-import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperCast;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovieSmall;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
 import com.github.pedramrn.slick.parent.mock.ApiMockProvider;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
-import com.github.pedramrn.slick.parent.ui.home.router.RouterPopularImpl;
-import com.github.pedramrn.slick.parent.ui.home.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterUpcomingImpl;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 
@@ -34,25 +28,11 @@ public class PresenterHomeTest {
     public void setUp() throws Exception {
         ApiMockProvider apiMockProvider = new ApiMockProvider();
         ApiTmdb apiTmdbMock = apiMockProvider.apiTmdb();
-        ApiTrakt apiTraktMock = apiMockProvider.apiTrakt();
 
-        RouterTrendingImpl routerTrending = new RouterTrendingImpl(
-                apiTraktMock,
-                apiTmdbMock,
-                new MapperMovie(new MapperCast(), new MapperSimpleData())
-        );
-        RouterPopularImpl routerPopular = new RouterPopularImpl(
-                apiTraktMock,
-                apiTmdbMock,
-                new MapperMovie(new MapperCast(), new MapperSimpleData())
-        );
         RouterUpcomingImpl routerUpcoming = new RouterUpcomingImpl(apiTmdbMock, new MapperMovieSmall());
         presenterHome = new PresenterHome(
-                routerTrending,
-                routerPopular,
                 routerUpcoming,
                 new MapperMovieSmallDomainMovieSmall(),
-                new MapperMovieMetadataToMovieBasic(),
                 Schedulers.trampoline(),
                 Schedulers.trampoline()
         );
@@ -82,22 +62,6 @@ public class PresenterHomeTest {
         @Override
         public void render(ViewStateHome state) {
             System.out.println("PresenterHomeTest.render");
-        }
-
-        @Override
-        public Observable<Integer> triggerPopular() {
-            return Observable.never();
-        }
-
-        @Override
-        public int pageSize() {
-            System.out.println("PresenterHomeTest.pageSize");
-            return 3;
-        }
-
-        @Override
-        public Observable<Integer> retryPopular() {
-            return Observable.never();
         }
 
         @Override

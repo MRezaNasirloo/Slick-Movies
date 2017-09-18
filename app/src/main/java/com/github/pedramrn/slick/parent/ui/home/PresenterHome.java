@@ -4,20 +4,15 @@ import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
 import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
-import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
-import com.github.pedramrn.slick.parent.domain.router.RouterTrending;
 import com.github.pedramrn.slick.parent.domain.router.RouterUpcoming;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
-import com.github.pedramrn.slick.parent.ui.home.router.RouterPopularImpl;
-import com.github.pedramrn.slick.parent.ui.home.router.RouterTrendingImpl;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterUpcomingImpl;
 import com.github.pedramrn.slick.parent.ui.home.state.PartialViewStateHome;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
-import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -38,44 +33,27 @@ import io.reactivex.functions.Function;
 
 public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
-    public static final String TRENDING = "TRENDING";
-    public static final String POPULAR = "POPULAR";
-    public static final String BANNER = "BANNER";
+    public static final String UPCOMING = "UPCOMING";
 
-    private final RouterTrending routerTrending;
     private final RouterUpcoming routerUpcoming;
-    private final RouterPopular routerPopular;
 
-    private final MapperMovieMetadataToMovieBasic mapperMetadata;
     private final MapperMovieSmallDomainMovieSmall mapperMovieSmall;
-
-    private final MapProgressive mapProgressiveTrending = new MapProgressive();
-    private final MapProgressive mapProgressivePopular = new MapProgressive();
-
-    private final ScanToMap<Item> scanToMap = new ScanToMap<>();
 
     @Inject
     public PresenterHome(
-            RouterTrendingImpl routerTrending,
-            RouterPopularImpl routerPopular,
             RouterUpcomingImpl routerUpcoming,
             MapperMovieSmallDomainMovieSmall mapperMovieSmall,
-            MapperMovieMetadataToMovieBasic mapperMetadata,
             @Named("io") Scheduler io,
             @Named("main") Scheduler main
     ) {
         super(main, io);
-        this.routerTrending = routerTrending;
         this.routerUpcoming = routerUpcoming;
-        this.routerPopular = routerPopular;
         this.mapperMovieSmall = mapperMovieSmall;
-        this.mapperMetadata = mapperMetadata;
     }
 
     @Override
     public void start(ViewHome view) {
         System.out.println("PresenterHome.start");
-        final int pageSize = view.pageSize();
 
         Observable<PartialViewState<ViewStateHome>> upcoming = command(new CommandProvider<Object, ViewHome>() {
             @Override
@@ -101,7 +79,7 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                             @Override
                             public Item apply(@NonNull MovieSmall movieSmall)
                                     throws Exception {
-                                return movieSmall.render(BANNER);
+                                return movieSmall.render(UPCOMING);
                             }
                         })
                         .buffer(20)
@@ -119,23 +97,14 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                                 return new PartialViewStateHome.UpcomingError(throwable);
                             }
                         })
-                        .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, BANNER))
+                        .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, UPCOMING))
                         .subscribeOn(io);
             }
         });
 
 
-
         ViewStateHome initialState = ViewStateHome.builder()
                 .upcoming(Collections.<Item>emptyList())
-                .popular(Collections.<Integer, Item>emptyMap())
-                .trending(Collections.<Integer, Item>emptyMap())
-                .loadingTrending(true)
-                .loadingPopular(true)
-                .itemLoadingCountPopular(0)
-                .itemLoadingCountTrending(0)
-                .pagePopular(1)
-                .pageTrending(1)
                 .build();
 
         reduce(initialState, merge(upcoming))

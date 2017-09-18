@@ -4,6 +4,7 @@ import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.ui.list.ControllerList;
@@ -42,6 +43,8 @@ public interface ComponentMain {
     void inject(ControllerImage controllerImage);
 
     void inject(RecyclerViewCardListTrending recyclerViewCardListTrending);
+
+    void inject(RecyclerViewCardListPopular recyclerViewCardListPopular);
 
     @Subcomponent.Builder
     interface Builder {

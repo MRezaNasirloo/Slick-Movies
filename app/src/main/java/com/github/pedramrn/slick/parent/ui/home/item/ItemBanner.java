@@ -51,7 +51,7 @@ public class ItemBanner extends Item<RowBannerBinding> implements OnItemAction, 
     }
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return false;
     }
 

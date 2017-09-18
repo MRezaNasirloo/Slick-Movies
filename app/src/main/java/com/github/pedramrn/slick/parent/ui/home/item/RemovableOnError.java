@@ -5,5 +5,5 @@ package com.github.pedramrn.slick.parent.ui.home.item;
  *         Created on: 2017-09-12
  */
 public interface RemovableOnError {
-    boolean removable();
+    boolean removableByTag(String tag);
 }

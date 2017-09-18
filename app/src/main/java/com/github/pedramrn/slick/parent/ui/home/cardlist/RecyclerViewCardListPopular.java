@@ -11,30 +11,29 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import static com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList.TRENDING;
+import static com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList.POPULAR;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-17
  */
-public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
+public class RecyclerViewCardListPopular extends RecyclerViewCardListAbs {
 
     @Inject
-    @Named(TRENDING)
+    @Named(POPULAR)
     Provider<PresenterCardList> provider;
-
     @Presenter
     PresenterCardList presenter;
 
-    public RecyclerViewCardListTrending(Context context) {
+    public RecyclerViewCardListPopular(Context context) {
         super(context);
     }
 
-    public RecyclerViewCardListTrending(Context context, @Nullable AttributeSet attrs) {
+    public RecyclerViewCardListPopular(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RecyclerViewCardListTrending(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public RecyclerViewCardListPopular(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -43,8 +42,8 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
         if (isInEditMode()) { return; }
         super.onAttachedToWindow();
         App.componentMain().inject(this);
-        RecyclerViewCardListTrending_Slick.bind(this);
-        RecyclerViewCardListTrending_Slick.onAttach(this);
+        RecyclerViewCardListPopular_Slick.bind(this);
+        RecyclerViewCardListPopular_Slick.onAttach(this);
         getLayoutManager().scrollToPosition(scrollPosition);
     }
 
@@ -52,11 +51,11 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
     protected void onDetachedFromWindow() {
         if (isInEditMode()) { return; }
         super.onDetachedFromWindow();
-        RecyclerViewCardListTrending_Slick.onDetach(this);
+        RecyclerViewCardListPopular_Slick.onDetach(this);
     }
 
     @Override
     public void onDestroy() {
-        RecyclerViewCardListTrending_Slick.onDestroy(this);
+        RecyclerViewCardListPopular_Slick.onDestroy(this);
     }
 }

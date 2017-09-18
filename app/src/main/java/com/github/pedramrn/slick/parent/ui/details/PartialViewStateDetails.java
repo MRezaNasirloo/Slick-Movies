@@ -233,7 +233,7 @@ public class PartialViewStateDetails {
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             List<Item> comments = state.comments();
-            removeRemovables(comments.iterator());
+            removeRemovables(comments.iterator(), null);
             if (comments.isEmpty()){
                 comments.add(new ItemCommentEmpty(0, "EMPTY"));
             }
@@ -251,7 +251,7 @@ public class PartialViewStateDetails {
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             List<Item> comments = state.comments();
-            removeRemovables(comments.iterator());
+            removeRemovables(comments.iterator(), null);
             comments.add(new ItemCommentError(0, throwable.getMessage(), "COMMENTS_ERROR"));
             return state.toBuilder().comments(comments).errorComments(throwable).build();
         }

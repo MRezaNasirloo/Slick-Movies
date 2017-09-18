@@ -38,7 +38,7 @@ public class ItemBannerProgressive extends ItemBanner {
     }
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return true;
     }
 

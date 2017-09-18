@@ -40,7 +40,7 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
 
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return true;
     }
 }

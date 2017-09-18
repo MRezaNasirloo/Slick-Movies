@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.search.state.ViewStateSearch;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
+import com.github.slick.OnDestroyListener;
 import com.github.slick.Presenter;
 import com.lapism.searchview.SearchView;
 import com.xwray.groupie.GroupAdapter;
@@ -33,7 +34,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class SearchViewImpl extends SearchView implements ViewSearch, Observer<ViewStateSearch>, SearchView.OnQueryTextListener,
-        SearchView.OnOpenCloseListener {
+        SearchView.OnOpenCloseListener, OnDestroyListener {
 
     @Inject
     Provider<PresenterSearch> provider;
@@ -91,6 +92,11 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         super.onDetachedFromWindow();
         SearchViewImpl_Slick.onDetach(this);
         UtilsRx.dispose(disposable);
+    }
+
+    @Override
+    public void onDestroy() {
+        SearchViewImpl_Slick.onDestroy(this);
     }
 
     @Override

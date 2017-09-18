@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.OnItemLongClickListener;
@@ -18,11 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -31,30 +31,27 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
 
+    public static final String TAG = AdapterLightWeight.class.getSimpleName();
     List<Item> items = new ArrayList<>(10);
     PublishSubject<List<Item>> updateStream = PublishSubject.create();
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
 
     public AdapterLightWeight() {
-        updateStream.flatMap(new Function<List<Item>, Observable<Pair<DiffUtil.DiffResult, List<Item>>>>() {
+        updateStream.concatMap(new Function<List<Item>, Observable<Pair<DiffUtil.DiffResult, List<Item>>>>() {
                     @Override
-                    public Observable<Pair<DiffUtil.DiffResult, List<Item>>> apply(@NonNull List<Item> newItems) throws Exception {
-                        System.out.println("Diffing on: " + Thread.currentThread().getName());
-                        return Observable.just(Pair.create(DiffUtil.calculateDiff(new MyCallback(newItems)), newItems));
+                    public Observable<Pair<DiffUtil.DiffResult, List<Item>>> apply(@NonNull List<Item> items) throws Exception {
+                        Log.d(TAG, "diffCal on: " + Thread.currentThread().getName());
+                        return Observable.just(Pair.create(DiffUtil.calculateDiff(new MyCallback(items)), items));
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Pair<DiffUtil.DiffResult, List<Item>>>() {
-                    @Override
-                    public void accept(Pair<DiffUtil.DiffResult, List<Item>> pair) throws Exception {
-                        items.clear();
-                        items.addAll(pair.second);
-                        pair.first.dispatchUpdatesTo(AdapterLightWeight.this);
-
-                    }
-                });
+                }).subscribe(new Consumer<Pair<DiffUtil.DiffResult, List<Item>>>() {
+            @Override
+            public void accept(Pair<DiffUtil.DiffResult, List<Item>> diffResult) throws Exception {
+                items.clear();
+                items.addAll(diffResult.second);
+                diffResult.first.dispatchUpdatesTo(AdapterLightWeight.this);
+            }
+        });
     }
 
     @Override
@@ -68,7 +65,7 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Item item = items.get(position);
         item.bind(viewHolder.binding, position);
-        viewHolder.bind(item,onItemClickListener, onItemLongClickListener);
+        viewHolder.bind(item, onItemClickListener, onItemLongClickListener);
     }
 
     @Override
@@ -83,9 +80,10 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
         return contentItem.isRecyclable();
     }
 
-    @Override public int getItemViewType(int position) {
+    @Override
+    public int getItemViewType(int position) {
         Item contentItem = getItem(position);
-        if (contentItem == null) throw new RuntimeException("Invalid position " + position);
+        if (contentItem == null) { throw new RuntimeException("Invalid position " + position); }
         return getItem(position).getLayout();
     }
 
@@ -111,6 +109,7 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
     /**
      * Optionally register an {@link OnItemClickListener} that listens to click at the root of
      * each Item where {@link Item#isClickable()} returns true
+     *
      * @param onItemClickListener The click listener to set
      */
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -120,6 +119,7 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
     /**
      * Optionally register an {@link OnItemLongClickListener} that listens to long click at the root of
      * each Item where {@link Item#isLongClickable()} returns true
+     *
      * @param onItemLongClickListener The long click listener to set
      */
     public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
@@ -135,6 +135,10 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
 
     public int getAdapterPosition(Item item) {
         return items.indexOf(item);
+    }
+
+    public void showLoading() {
+        items.add(new ItemError(-1, "Loading", "Scroll for more"));
     }
 
     private class MyCallback extends DiffUtil.Callback {

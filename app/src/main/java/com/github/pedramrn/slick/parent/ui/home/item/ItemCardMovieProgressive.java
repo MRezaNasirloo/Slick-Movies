@@ -10,6 +10,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Loading;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -38,8 +39,8 @@ public class ItemCardMovieProgressive extends ItemCardMovie {
     }
 
     @Override
-    public boolean removable() {
-        return true;
+    public boolean removableByTag(String tag) {
+        return !Loading.TAG.equals(tag);
     }
 
     @Override

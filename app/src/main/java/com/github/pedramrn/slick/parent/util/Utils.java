@@ -27,10 +27,10 @@ public class Utils {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static void removeRemovables(Iterator<Item> iterator) {
+    public static void removeRemovables(Iterator<Item> iterator, String tag) {
         while (iterator.hasNext()) {
             Item item = iterator.next();
-            if (((RemovableOnError) item).removable()) {
+            if (((RemovableOnError) item).removableByTag(tag)) {
                 iterator.remove();
             }
         }

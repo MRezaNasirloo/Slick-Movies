@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Controller;
@@ -15,6 +16,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
+import com.github.slick.OnDestroyListener;
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.Item;
@@ -33,12 +35,16 @@ import io.reactivex.subjects.PublishSubject;
  *         <p>
  *         A base Recycler View for loaing a list of movies progressivly
  */
-public abstract class RecyclerViewCardListAbs extends RecyclerView implements ViewCardList, OnItemClickListener, Navigator, Retryable {
+public abstract class RecyclerViewCardListAbs extends RecyclerView implements ViewCardList, OnItemClickListener,
+        Navigator, Retryable, OnDestroyListener {
 
+    public static final String TAG = RecyclerViewCardListAbs.class.getSimpleName();
     private PublishSubject<String> onRetry = PublishSubject.create();
     private boolean isLoading;
     private Router router;
     private AdapterLightWeight adapter;
+
+    protected int scrollPosition;
 
     public RecyclerViewCardListAbs(Context context) {
         super(context);
@@ -54,6 +60,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     protected void onAttachedToWindow() {
+        Log.d(TAG, "onAttachedToWindow");
         super.onAttachedToWindow();
         getItemAnimator().setChangeDuration(0);
         setNestedScrollingEnabled(false);
@@ -65,8 +72,11 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     protected void onDetachedFromWindow() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
+        Log.d(TAG, "onDetachedFromWindow: X: Y: " + layoutManager.findFirstVisibleItemPosition());
+        Log.d(TAG, "onDetachedFromWindow");
+        adapter.setOnItemClickListener(null);
         super.onDetachedFromWindow();
-        router = null;
     }
 
     @Override
@@ -81,6 +91,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     public void updateList(List<Item> items) {
+        Log.d(TAG, "updateList: called");
         adapter.update(items);
     }
 
@@ -142,5 +153,9 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     @Override
     public View getView() {
         return getRootView();
+    }
+
+    public void setScrollPosition(int scrollPosition) {
+        this.scrollPosition = scrollPosition;
     }
 }

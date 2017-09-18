@@ -5,18 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.RecycledViewPool;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListBase;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListTrending;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
@@ -28,14 +31,11 @@ import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
@@ -53,14 +53,12 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Presenter
     PresenterHome presenter;
 
-    private UpdatingGroup progressivePopular;
     private UpdatingGroup progressiveUpcoming;
-    private ItemCardListTrending itemListTrending;
-    private ItemCardList itemListPopular;
+    private ItemCardListBase itemListTrending;
+    private ItemCardListBase itemListPopular;
     private ItemListHorizontal itemListUpcoming;
 
     private SearchViewImpl searchView;
-    private ViewStateHome oldState;
 
     private PublishSubject<String> onRetry = PublishSubject.create();
 
@@ -78,16 +76,19 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
         GroupAdapter adapterMain = new GroupAdapter();
         GroupAdapter adapterUpcoming = new GroupAdapter();
-        GroupAdapter adapterPopular = new GroupAdapter();
 
         progressiveUpcoming = new UpdatingGroup();
-        progressivePopular = new UpdatingGroup();
 
         final Context context = getApplicationContext();
 
-        itemListTrending = new ItemCardListTrending(context);
-        itemListPopular = new ItemCardList(context, adapterPopular, popular);
+        RecycledViewPool recycledViewPool = new RecycledViewPool();
+        recycledViewPool.setMaxRecycledViews(R.layout.row_card, 12);
+        itemListTrending = new ItemCardListTrending(context, trending, recycledViewPool);
+        itemListPopular = new ItemCardListPopular(context, popular, recycledViewPool);
         itemListUpcoming = new ItemListHorizontalPager(context, adapterUpcoming, upcoming);
+
+        itemListTrending.setRouter(getRouter());
+        itemListPopular.setRouter(getRouter());
 
         Section sectionUpcoming = new Section(new ItemCardHeader(1, upcoming));
         sectionUpcoming.add(itemListUpcoming);
@@ -99,13 +100,11 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         sectionPopular.add(itemListPopular);
 
         adapterUpcoming.add(progressiveUpcoming);
-        adapterPopular.add(progressivePopular);
 
 
         // setToolbar(binding.toolbar);
         searchView = binding.searchView;
         setOnItemClickListener(adapterUpcoming);
-        setOnItemClickListener(adapterPopular);
         setOnItemClickListener((GroupAdapter) searchView.getAdapter());
 
         adapterMain.add(sectionUpcoming);
@@ -136,20 +135,9 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     }
 
     @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        itemListTrending.setRouter(getRouter());
-    }
-
-    @Override
     public void render(@NonNull ViewStateHome state) {
-        this.oldState = state;
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
-        progressivePopular.update(Arrays.asList(state.popular().values().toArray(new Item[state.popular().size()])));
-
-        itemListPopular.loading(state.loadingPopular());
-        itemListPopular.page(state.pagePopular());
     }
 
     @Override
@@ -158,9 +146,14 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         itemListTrending.onDestroyView();
         itemListPopular.onDestroyView();
         itemListUpcoming.onDestroyView();
+        if (isBeingDestroyed()) {
+            itemListTrending.onDestroy();
+            itemListPopular.onDestroy();
+            searchView.onDestroy();
+        }
         itemListPopular = null;
         itemListTrending = null;
-        itemListUpcoming= null;
+        itemListUpcoming = null;
         searchView = null;
     }
 
@@ -196,51 +189,11 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     }
 
     @Override
-    public Observable<Integer> triggerPopular() {
-        System.out.println("PresenterHome.triggerPopular");
-        return itemListPopular.observer().mergeWith(retryPopular());
-    }
-
-    @Override
-    public int pageSize() {
-        System.out.println("PresenterHome.pageSize");
-        return 3;
-    }
-
-    public Observable<Integer> retryTrending() {
-        return onRetry.filter(new Predicate<String>() {
-            @Override
-            public boolean test(@NonNull String s) throws Exception {
-                return PresenterHome.TRENDING.equals(s);
-            }
-        }).map(new Function<Object, Integer>() {
-            @Override
-            public Integer apply(@NonNull Object o) throws Exception {
-                return oldState.pageTrending();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Integer> retryPopular() {
-        return onRetry.filter(new Predicate<String>() {
-            @Override
-            public boolean test(@NonNull String s) throws Exception {
-                return PresenterHome.POPULAR.equals(s);
-            }
-        }).map(new Function<Object, Integer>() {
-            @Override
-            public Integer apply(@NonNull Object o) throws Exception {
-                return oldState.pagePopular();
-            }
-        });    }
-
-    @Override
     public Observable<Object> retryUpcoming() {
         return onRetry.filter(new Predicate<String>() {
             @Override
             public boolean test(@NonNull String s) throws Exception {
-                return PresenterHome.BANNER.equals(s);
+                return PresenterHome.UPCOMING.equals(s);
             }
         }).cast(Object.class);
     }

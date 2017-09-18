@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending
-        android:id="@+id/recycler_view_trending"
+    <com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular
+        android:id="@+id/recycler_view_popular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

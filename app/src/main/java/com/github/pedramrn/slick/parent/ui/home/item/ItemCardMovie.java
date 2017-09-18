@@ -58,7 +58,7 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
     }
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return false;
     }
 

@@ -40,7 +40,7 @@ public class ItemCommentEmpty extends Item<RowCommentEmptyBinding> implements On
     }
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return false;
     }
 }

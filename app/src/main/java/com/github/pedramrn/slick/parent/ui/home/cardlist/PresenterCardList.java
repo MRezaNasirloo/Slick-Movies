@@ -11,6 +11,7 @@ import com.github.pedramrn.slick.parent.ui.home.MapperMovieMetadataToMovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.CardProgressiveMovie;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Error;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Loaded;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Loading;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Movies;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
@@ -34,6 +35,8 @@ import io.reactivex.functions.Function;
  */
 public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCardList> {
     public static final String MOVIES_CARD = "MOVIES_CARD_";
+    public static final String POPULAR = "POPULAR";
+    public static final String TRENDING = "TRENDING";
 
     private final PagedRouter router;
     private final MapperMovieMetadataToMovieBasic mapperMetadata;
@@ -98,10 +101,10 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
                             @Override
                             public PartialViewState<ViewStateCardList> apply(@NonNull Boolean hadError) throws Exception {
                                 System.out.println("PresenterCardList.Loaded had Error: " + hadError);
-                                return new Loaded(!hadError);
+                                return new Loaded();
                             }
                         })
-                        .startWith(new CardProgressiveMovie(pageSize, tag))
+                        .startWith(new Loading())
                         .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateCardList>>() {
                                            @Override
                                            public PartialViewState<ViewStateCardList> apply(@NonNull Throwable throwable) throws Exception {
@@ -111,11 +114,11 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
                                        }
                         );
             }
-        });
+        }).startWith(new CardProgressiveMovie(pageSize, tag));
 
         ViewStateCardList initialState = ViewStateCardList.builder()
                 .page(1)
-                .isLoading(false)
+                .isLoading(true)
                 .itemLoadedCount(0)
                 .movies(Collections.<Integer, Item>emptyMap())
                 .build();
@@ -125,7 +128,7 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
 
     @Override
     protected void render(@NonNull ViewStateCardList state, @NonNull ViewCardList view) {
-        System.out.println("PresenterCardList.render " + state.movies());
+        System.out.println("PresenterCardList.render " + state.toString());
         this.state = state;
         view.updateList(Arrays.asList(state.movies().values().toArray(new Item[state.movies().size()])));
         view.loading(state.isLoading());

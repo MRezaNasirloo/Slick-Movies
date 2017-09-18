@@ -3,7 +3,6 @@ package com.github.pedramrn.slick.parent.ui.main.di;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoader;
 import com.github.pedramrn.slick.parent.ui.android.ImageLoaderPicassoImpl;
 import com.github.pedramrn.slick.parent.ui.home.MapperMovieMetadataToMovieBasic;
-import com.github.pedramrn.slick.parent.ui.home.PresenterHome;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterPopularImpl;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterTrendingImpl;
@@ -28,24 +27,24 @@ public class MainModule {
     }
 
     @Provides
-    @Named(PresenterHome.TRENDING)
+    @Named(PresenterCardList.TRENDING)
     public PresenterCardList presenterCardListTrending(
             RouterTrendingImpl router,
             MapperMovieMetadataToMovieBasic mapper,
             @Named("io") Scheduler io,
             @Named("main") Scheduler main
     ) {
-        return new PresenterCardList(router, mapper, PresenterHome.TRENDING, main, io);
+        return new PresenterCardList(router, mapper, PresenterCardList.TRENDING, main, io);
     }
 
     @Provides
-    @Named(PresenterHome.POPULAR)
+    @Named(PresenterCardList.POPULAR)
     public PresenterCardList presenterCardListPopular(
             RouterPopularImpl router,
             MapperMovieMetadataToMovieBasic mapper,
             @Named("io") Scheduler io,
             @Named("main") Scheduler main
     ) {
-        return new PresenterCardList(router, mapper, PresenterHome.POPULAR, main, io);
+        return new PresenterCardList(router, mapper, PresenterCardList.POPULAR, main, io);
     }
 }

@@ -44,7 +44,7 @@ public class ItemCommentError extends Item<RowCommentErrorBinding> implements On
     }
 
     @Override
-    public boolean removable() {
+    public boolean removableByTag(String tag) {
         return true;
     }
 }
