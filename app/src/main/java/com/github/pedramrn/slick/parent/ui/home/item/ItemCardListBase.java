@@ -35,7 +35,8 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
     private Router router;
     private int scrollPos;
 
-    public ItemCardListBase(@NonNull Context context, @NonNull String tag, RecycledViewPool viewPool
+    public ItemCardListBase(
+            @NonNull Context context, @NonNull String tag, RecycledViewPool viewPool
     ) {
         this.context = context.getApplicationContext();
         this.margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
@@ -45,6 +46,7 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
 
     @Override
     public void bind(T binding, int position) {
+        System.out.println("ItemCardListBase.bind");
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         layoutManager.setInitialPrefetchItemCount(4);
         recyclerView = getRecyclerViewCardListAbs(binding);
@@ -59,6 +61,7 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
 
     @Override
     public void unbind(ViewHolder<T> holder) {
+        System.out.println("ItemCardListBase.unbind");
         recyclerView = getRecyclerViewCardListAbs(holder.binding);
         recyclerView.removeItemDecoration(margin);
         recyclerView.setOnFlingListener(null);
@@ -79,11 +82,13 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
     public void setRouter(Router router) {this.router = router;}
 
     public void onDestroyView() {
+        System.out.println("ItemCardListBase.onDestroyView");
         setRouter(null);
         layoutManager = null;
     }
 
     public void onDestroy() {
+        System.out.println("ItemCardListBase.onDestroy");
         recyclerView.onDestroy();
         recyclerView = null;
     }

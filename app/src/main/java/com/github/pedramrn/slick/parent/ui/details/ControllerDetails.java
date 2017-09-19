@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperCast;
@@ -146,7 +144,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         final Context context = getApplicationContext();
 
         adapterMain = new GroupAdapter();
-        GroupAdapter adapterHeader = new GroupAdapter();
         GroupAdapter adapterSimilar = new GroupAdapter();
         GroupAdapter adapterBackdrops = new GroupAdapter();
 
@@ -154,7 +151,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         setOnItemClickListener(adapterSimilar);
         setOnItemClickListener(adapterBackdrops);
 
-//        updatingHeader = new UpdatingGroup();
+        updatingHeader = new UpdatingGroup();
         progressiveCast = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
@@ -162,8 +159,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         adapterMain.setSpanCount(6);
 
-//        itemHeader = new ItemListHorizontal(adapterHeader, "HEADER");
-//        adapterHeader.add(updatingHeader);
+        Section header = new Section(updatingHeader);
+        updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
         adapterSimilar.add(progressiveSimilar);
@@ -196,7 +193,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         });
         Section sectionComments = new Section(headerComments);
         sectionComments.add(progressiveComments);
-//        sectionComments.setHideWhenEmpty(true);
 
         itemBackdropList = new ItemListHorizontal(adapterBackdrops, "BACKDROPS");
         adapterBackdrops.add(progressiveBackdrop);
@@ -206,20 +202,18 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         sectionOverview = new Section(new ItemCardHeader(104, "Overview"));
 
-        adapterMain.add(new ItemHeader(this, movie, transitionName));
+
+        adapterMain.add(header);
         adapterMain.add(sectionCasts);
         adapterMain.add(sectionOverview);
         adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionComments);
         adapterMain.add(sectionSimilar);
 
-        RecyclerView.RecycledViewPool recycledViewPool = new RecyclerView.RecycledViewPool();
-        recycledViewPool.setMaxRecycledViews(R.layout.row_header, 4);
         GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
         lm.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
         binding.recyclerViewDetails.setLayoutManager(lm);
         binding.recyclerViewDetails.setAdapter(adapterMain);
-        binding.recyclerViewDetails.setRecycledViewPool(recycledViewPool);
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
         binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);
 
@@ -251,13 +245,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         collapsingToolbar.setTitle(movie.title());
         imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        Item item = adapterMain.getItem(0);
-        if (item instanceof ItemHeader) {
-            adapterMain.remove(item);
-            adapterMain.add(0, new ItemHeader(this, movie, transitionName));
-        }else {
-            adapterMain.add(0, new ItemHeader(this, movie, transitionName));
-        }
+        updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));

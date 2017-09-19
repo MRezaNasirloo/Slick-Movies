@@ -114,6 +114,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         RecyclerView recyclerViewHome = binding.recyclerViewHome;
         recyclerViewHome.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerViewHome.setAdapter(adapterMain);
+        recyclerViewHome.setItemViewCacheSize(2);
 
         presenter.updateStream().subscribe(this);
 

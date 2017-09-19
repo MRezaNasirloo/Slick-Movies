@@ -27,7 +27,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 
 public class ImageViewLoader extends AppCompatImageView {
-    private boolean mock = true;
+    private boolean mock = false;
 
     public ImageViewLoader(Context context) {
         super(context);
