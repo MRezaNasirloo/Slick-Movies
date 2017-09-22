@@ -17,6 +17,8 @@ import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListBase;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListPopular;
@@ -65,6 +67,8 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private static final String trending = "Trending";
     private static final String popular = "Popular";
     private static final String upcoming = "Upcoming";
+    private RecyclerViewCardListTrending recyclerViewCardListTrending;
+    private RecyclerViewCardListPopular recyclerViewCardListPopular;
 
     @NonNull
     @Override
@@ -74,32 +78,35 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         ControllerHome_Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
-        GroupAdapter adapterMain = new GroupAdapter();
         GroupAdapter adapterUpcoming = new GroupAdapter();
-
         progressiveUpcoming = new UpdatingGroup();
 
         final Context context = getApplicationContext();
 
         RecycledViewPool recycledViewPool = new RecycledViewPool();
         recycledViewPool.setMaxRecycledViews(R.layout.row_card, 12);
-        itemListTrending = new ItemCardListTrending(context, trending, recycledViewPool);
-        itemListPopular = new ItemCardListPopular(context, popular, recycledViewPool);
+        recyclerViewCardListTrending = new RecyclerViewCardListTrending(context);
+        recyclerViewCardListPopular = new RecyclerViewCardListPopular(context);
         itemListUpcoming = new ItemListHorizontalPager(context, adapterUpcoming, upcoming);
 
-        itemListTrending.setRouter(getRouter());
-        itemListPopular.setRouter(getRouter());
+        recyclerViewCardListTrending.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewCardListPopular.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewCardListTrending.setRouter(getRouter());
+        recyclerViewCardListPopular.setRouter(getRouter());
 
-        Section sectionUpcoming = new Section(new ItemCardHeader(1, upcoming));
-        sectionUpcoming.add(itemListUpcoming);
+        binding.containerLinear.addView(recyclerViewCardListTrending);
+        binding.containerLinear.addView(recyclerViewCardListPopular);
 
-        Section sectionTrending = new Section(new ItemCardHeader(2, trending));
-        sectionTrending.add(itemListTrending);
-
-        Section sectionPopular = new Section(new ItemCardHeader(3, popular));
-        sectionPopular.add(itemListPopular);
-
+//        Section sectionUpcoming = new Section(new ItemCardHeader(1, upcoming));
+//        sectionUpcoming.add(itemListUpcoming);
         adapterUpcoming.add(progressiveUpcoming);
+
+//        Section sectionTrending = new Section(new ItemCardHeader(2, trending));
+//        sectionTrending.add(itemListTrending);
+
+//        Section sectionPopular = new Section(new ItemCardHeader(3, popular));
+//        sectionPopular.add(itemListPopular);
+
 
 
         // setToolbar(binding.toolbar);
@@ -107,14 +114,14 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         setOnItemClickListener(adapterUpcoming);
         setOnItemClickListener((GroupAdapter) searchView.getAdapter());
 
-        adapterMain.add(sectionUpcoming);
-        adapterMain.add(sectionTrending);
-        adapterMain.add(sectionPopular);
+//        adapterMain.add(sectionUpcoming);
+//        adapterMain.add(sectionTrending);
+//        adapterMain.add(sectionPopular);
 
-        RecyclerView recyclerViewHome = binding.recyclerViewHome;
-        recyclerViewHome.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        recyclerViewHome.setAdapter(adapterMain);
-        recyclerViewHome.setItemViewCacheSize(2);
+        RecyclerView recyclerViewHome = binding.recyclerViewUpcoming;
+        LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewHome.setLayoutManager(layout);
+        recyclerViewHome.setAdapter(adapterUpcoming);
 
         presenter.updateStream().subscribe(this);
 
@@ -123,15 +130,15 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        itemListTrending.onSaveViewState(view, outState);
-        itemListPopular.onSaveViewState(view, outState);
+//        itemListTrending.onSaveViewState(view, outState);
+//        itemListPopular.onSaveViewState(view, outState);
         itemListUpcoming.onSaveViewState(view, outState);
     }
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        itemListTrending.onRestoreViewState(view, savedViewState);
-        itemListPopular.onRestoreViewState(view, savedViewState);
+//        itemListTrending.onRestoreViewState(view, savedViewState);
+//        itemListPopular.onRestoreViewState(view, savedViewState);
         itemListUpcoming.onRestoreViewState(view, savedViewState);
     }
 
@@ -144,12 +151,14 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
-        itemListTrending.onDestroyView();
-        itemListPopular.onDestroyView();
+//        itemListTrending.onDestroyView();
+//        itemListPopular.onDestroyView();
         itemListUpcoming.onDestroyView();
         if (isBeingDestroyed()) {
-            itemListTrending.onDestroy();
-            itemListPopular.onDestroy();
+            recyclerViewCardListPopular.onDestroy();
+            recyclerViewCardListTrending.onDestroy();
+//            itemListTrending.onDestroy();
+//            itemListPopular.onDestroy();
             searchView.onDestroy();
         }
         itemListPopular = null;
