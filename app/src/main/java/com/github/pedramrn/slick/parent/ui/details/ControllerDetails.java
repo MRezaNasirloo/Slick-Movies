@@ -17,10 +17,6 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
-import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperCast;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
@@ -29,7 +25,6 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Comment;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -79,8 +74,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Inject
     BottomNavigationHandlerImpl bottomNavigationHandler;
 
-    @Inject
-    List<MovieTmdb> movieTmdbs;
+    // @Inject
+    // List<MovieTmdb> movieTmdbs;
 
     private MovieBasic movie;
     private String transitionName;
@@ -217,7 +212,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
         binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        /*binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Movie movie = Observable.fromIterable(movieTmdbs)
@@ -226,7 +221,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
                         .blockingFirst();
                 ((OnItemAction) movie.render("")).action(ControllerDetails.this, null, 0);
             }
-        });
+        });*/
 
 //        add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 

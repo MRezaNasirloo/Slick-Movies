@@ -13,7 +13,9 @@ import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.OnDestroyListener;
@@ -45,17 +47,26 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     private AdapterLightWeight adapter;
 
     protected int scrollPosition;
+    private ItemDecorationMargin margin;
 
     public RecyclerViewCardListAbs(Context context) {
         super(context);
+        init(context);
     }
 
     public RecyclerViewCardListAbs(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public RecyclerViewCardListAbs(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(context);
+    }
+
+    protected void init(Context context) {
+        this.margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
+
     }
 
     @Override
@@ -67,6 +78,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         adapter = new AdapterLightWeight();
         adapter.setOnItemClickListener(this);
         adapter.setHasStableIds(true);
+        addItemDecoration(margin);
         setAdapter(adapter);
     }
 
@@ -76,6 +88,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         Log.d(TAG, "onDetachedFromWindow: X: Y: " + layoutManager.findFirstVisibleItemPosition());
         Log.d(TAG, "onDetachedFromWindow");
         adapter.setOnItemClickListener(null);
+        removeItemDecoration(margin);
         super.onDetachedFromWindow();
     }
 

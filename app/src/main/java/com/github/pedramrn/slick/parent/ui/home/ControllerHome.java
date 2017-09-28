@@ -5,24 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.RecycledViewPool;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontalPager;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListBase;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListPopular;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListTrending;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
@@ -30,7 +24,6 @@ import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
-import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
 import javax.inject.Inject;
@@ -83,19 +76,16 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
         final Context context = getApplicationContext();
 
-        RecycledViewPool recycledViewPool = new RecycledViewPool();
-        recycledViewPool.setMaxRecycledViews(R.layout.row_card, 12);
-        recyclerViewCardListTrending = new RecyclerViewCardListTrending(context);
-        recyclerViewCardListPopular = new RecyclerViewCardListPopular(context);
-        itemListUpcoming = new ItemListHorizontalPager(context, adapterUpcoming, upcoming);
+        // RecycledViewPool recycledViewPool = new RecycledViewPool();
+        // recycledViewPool.setMaxRecycledViews(R.layout.row_card, 12);
+        recyclerViewCardListTrending = binding.recyclerViewTrending;
+        recyclerViewCardListPopular = binding.recyclerViewPopular;
 
         recyclerViewCardListTrending.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCardListPopular.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCardListTrending.setRouter(getRouter());
         recyclerViewCardListPopular.setRouter(getRouter());
 
-        binding.containerLinear.addView(recyclerViewCardListTrending);
-        binding.containerLinear.addView(recyclerViewCardListPopular);
 
 //        Section sectionUpcoming = new Section(new ItemCardHeader(1, upcoming));
 //        sectionUpcoming.add(itemListUpcoming);
@@ -130,16 +120,16 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-//        itemListTrending.onSaveViewState(view, outState);
-//        itemListPopular.onSaveViewState(view, outState);
-        itemListUpcoming.onSaveViewState(view, outState);
+        // itemListTrending.onSaveViewState(view, outState);
+        // itemListPopular.onSaveViewState(view, outState);
+        // itemListUpcoming.onSaveViewState(view, outState);
     }
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
 //        itemListTrending.onRestoreViewState(view, savedViewState);
 //        itemListPopular.onRestoreViewState(view, savedViewState);
-        itemListUpcoming.onRestoreViewState(view, savedViewState);
+        //         itemListUpcoming.onRestoreViewState(view, savedViewState);
     }
 
     @Override
@@ -153,7 +143,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         super.onDestroyView(view);
 //        itemListTrending.onDestroyView();
 //        itemListPopular.onDestroyView();
-        itemListUpcoming.onDestroyView();
+        //         itemListUpcoming.onDestroyView();
         if (isBeingDestroyed()) {
             recyclerViewCardListPopular.onDestroy();
             recyclerViewCardListTrending.onDestroy();

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <android.support.design.widget.CoordinatorLayout
@@ -27,7 +26,7 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,19 +36,35 @@
             <LinearLayout
                 android:id="@+id/container_linear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 >
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_upcoming"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="40dp"
                     />
+
+                <com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending
+                    android:id="@+id/recycler_view_trending"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="40dp"
+                    />
+
+                <com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular
+                    android:id="@+id/recycler_view_popular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
 
             </LinearLayout>
 
 
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
         <com.github.pedramrn.slick.parent.ui.search.SearchViewImpl
             android:id="@+id/searchView"
