@@ -8,7 +8,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -28,6 +27,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class ImageViewLoader extends AppCompatImageView {
     private boolean mock = false;
+    // private boolean debug = BuildConfig.DEBUG;
+    private boolean debug = false;
 
     public ImageViewLoader(Context context) {
         super(context);
@@ -168,7 +169,7 @@ public class ImageViewLoader extends AppCompatImageView {
 
     protected Picasso picasso(Context context) {
         Picasso picasso = Picasso.with(context);
-        if (BuildConfig.DEBUG) {
+        if (debug) {
             picasso.setLoggingEnabled(true);
             picasso.setIndicatorsEnabled(true);
         }

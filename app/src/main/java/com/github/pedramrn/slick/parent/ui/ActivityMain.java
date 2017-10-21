@@ -52,7 +52,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
             App.disposeComponentMain();
             App.disposeComponentApp();
         }
-//        this.toolbar.setNavigationOnClickListener(null);
+        // this.toolbar.setNavigationOnClickListener(null);
         super.onDestroy();
     }
 

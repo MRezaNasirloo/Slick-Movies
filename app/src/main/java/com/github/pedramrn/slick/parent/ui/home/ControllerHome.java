@@ -14,9 +14,9 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
-import com.github.pedramrn.slick.parent.ui.home.item.ItemCardListBase;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
@@ -49,8 +49,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     PresenterHome presenter;
 
     private UpdatingGroup progressiveUpcoming;
-    private ItemCardListBase itemListTrending;
-    private ItemCardListBase itemListPopular;
     private ItemListHorizontal itemListUpcoming;
 
     private SearchViewImpl searchView;
@@ -120,6 +118,8 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        recyclerViewCardListTrending.onSaveViewState(view, outState, PresenterCardList.TRENDING);
+        recyclerViewCardListPopular.onSaveViewState(view, outState, PresenterCardList.POPULAR);
         // itemListTrending.onSaveViewState(view, outState);
         // itemListPopular.onSaveViewState(view, outState);
         // itemListUpcoming.onSaveViewState(view, outState);
@@ -127,6 +127,8 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+        recyclerViewCardListTrending.onRestoreViewState(view, savedViewState, PresenterCardList.TRENDING);
+        recyclerViewCardListPopular.onRestoreViewState(view, savedViewState, PresenterCardList.POPULAR);
 //        itemListTrending.onRestoreViewState(view, savedViewState);
 //        itemListPopular.onRestoreViewState(view, savedViewState);
         //         itemListUpcoming.onRestoreViewState(view, savedViewState);
@@ -151,8 +153,8 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 //            itemListPopular.onDestroy();
             searchView.onDestroy();
         }
-        itemListPopular = null;
-        itemListTrending = null;
+        // itemListPopular = null;
+        // itemListTrending = null;
         itemListUpcoming = null;
         searchView = null;
     }
