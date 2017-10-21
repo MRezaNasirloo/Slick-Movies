@@ -37,6 +37,7 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
 
     @Override
     public void bind(RowCardBinding viewBinding, int position) {
+        viewBinding.imageViewPoster.setImageResource(R.drawable.rectangle_no_corners);
         viewBinding.textViewTitle.setText(movie.title() + "  (" + movie.year() + ")");
         viewBinding.textViewTitle.setBackground(null);
         viewBinding.imageViewPoster.setBackground(null);
