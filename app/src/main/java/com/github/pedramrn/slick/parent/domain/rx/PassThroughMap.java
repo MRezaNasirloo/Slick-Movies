@@ -74,6 +74,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
 
                     @Override
                     public void onError(@NonNull Throwable e) {
+                        System.out.println("Op.OnError.anonymous " + hashCode());
                         actual.onError(e);
                     }
 
@@ -89,12 +90,14 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
                     }
                 });
             } catch (Exception e) {
+                System.out.println("Op.OnError.anonymous.catch " + hashCode());
                 actual.onError(e);
             }
         }
 
         @Override
         public void onError(Throwable t) {
+            System.out.println("Op.onError");
             actual.onError(t);
         }
 

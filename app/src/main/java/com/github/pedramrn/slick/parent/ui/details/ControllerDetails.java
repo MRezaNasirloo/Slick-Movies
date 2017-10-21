@@ -154,9 +154,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         adapterMain.setSpanCount(6);
 
-        Section header = new Section(updatingHeader);
-        updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
-
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
         adapterSimilar.add(progressiveSimilar);
 
@@ -198,11 +195,11 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         sectionOverview = new Section(new ItemCardHeader(104, "Overview"));
 
 
-        adapterMain.add(header);
-        adapterMain.add(sectionCasts);
+        adapterMain.add(updatingHeader);
         adapterMain.add(sectionOverview);
-        adapterMain.add(sectionBackdrops);
+        adapterMain.add(sectionCasts);
         adapterMain.add(sectionComments);
+        adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionSimilar);
 
         GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);

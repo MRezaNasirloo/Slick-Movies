@@ -44,8 +44,7 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
         long before = System.currentTimeMillis();
         RecyclerView recyclerView = viewBinding.recyclerViewCasts;
         layoutManager = (LinearLayoutManager) layoutManager(viewBinding.getRoot());
-        layoutManager.setInitialPrefetchItemCount(3);
-        layoutManager.setRecycleChildrenOnDetach(false);
+        layoutManager.setInitialPrefetchItemCount(4);
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.setNestedScrollingEnabled(false);

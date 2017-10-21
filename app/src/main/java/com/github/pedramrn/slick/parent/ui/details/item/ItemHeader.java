@@ -127,12 +127,6 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         return false;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        //don't call bind if the data is the same
-        return obj instanceof ItemHeader && ((ItemHeader) obj).movie.equals(movie);
-    }
-
     public void onDestroyView() {
         UtilsRx.dispose(compositeDisposable);
         controller = null;
