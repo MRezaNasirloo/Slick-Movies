@@ -20,7 +20,7 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 >
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -40,18 +40,31 @@
                 android:orientation="vertical"
                 >
 
+                <include
+                    android:id="@+id/header_upcoming"
+                    layout="@layout/row_card_header"
+                    />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_upcoming"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="40dp"
+                    />
+
+                <include
+                    android:id="@+id/header_trending"
+                    layout="@layout/row_card_header"
                     />
 
                 <com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending
                     android:id="@+id/recycler_view_trending"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="40dp"
+                    />
+
+                <include
+                    android:id="@+id/header_popular"
+                    layout="@layout/row_card_header"
                     />
 
                 <com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular
@@ -59,7 +72,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     />
-
 
             </LinearLayout>
 

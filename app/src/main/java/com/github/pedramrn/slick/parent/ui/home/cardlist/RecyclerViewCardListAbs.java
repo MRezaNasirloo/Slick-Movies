@@ -16,7 +16,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.Navigator;
-import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
+import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMarginSide;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.OnDestroyListener;
@@ -50,7 +50,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     private AdapterLightWeight adapter;
 
     protected int scrollPosition;
-    private ItemDecorationMargin margin;
+    private ItemDecoration margin;
 
     public RecyclerViewCardListAbs(Context context) {
         super(context);
@@ -68,7 +68,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     }
 
     protected void init(Context context) {
-        this.margin = new ItemDecorationMargin(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
+        this.margin = new ItemDecorationMarginSide(context.getResources().getDimensionPixelSize(R.dimen.card_list_side_margin));
     }
 
     @Override

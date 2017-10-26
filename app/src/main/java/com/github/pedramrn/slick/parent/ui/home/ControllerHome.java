@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.home;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
+import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
@@ -22,16 +24,20 @@ import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.slick.Presenter;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
@@ -102,9 +108,27 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         recyclerViewHome.setLayoutManager(layout);
         recyclerViewHome.setAdapter(adapterUpcoming);
 
+        //setup headers
+        setupHeader(binding.headerUpcoming, upcoming);
+        setupHeader(binding.headerTrending, trending);
+        setupHeader(binding.headerPopular, popular);
+
         presenter.updateStream().subscribe(this);
 
         return binding.getRoot();
+    }
+
+    private void setupHeader(RowCardHeaderBinding header, String title, @Nullable Consumer<Object> clickListener) {
+        if (clickListener == null) {
+            header.button.setVisibility(View.INVISIBLE);
+        } else {
+            RxView.clicks(header.button).throttleLast(1, TimeUnit.SECONDS).subscribe(clickListener);
+        }
+        header.textViewTitle.setText(title);
+    }
+
+    private void setupHeader(RowCardHeaderBinding header, String title) {
+        setupHeader(header, title, null);
     }
 
     @Override

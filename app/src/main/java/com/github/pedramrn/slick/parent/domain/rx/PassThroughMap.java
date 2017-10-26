@@ -55,7 +55,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
         @Override
         public void onNext(T downStream) {
             try {
-                System.out.println("Op.onNext");
+                System.out.println("Op.onNext " + hashCode());
                 wip.incrementAndGet();
                 actual.onNext(downStream);
                 apply(downStream).subscribe(new Observer<T>() {
@@ -75,7 +75,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
                     @Override
                     public void onError(@NonNull Throwable e) {
                         System.out.println("Op.OnError.anonymous " + hashCode());
-                        actual.onError(e);
+                        Op.this.onError(e);
                     }
 
                     @Override
@@ -91,22 +91,28 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
                 });
             } catch (Exception e) {
                 System.out.println("Op.OnError.anonymous.catch " + hashCode());
-                actual.onError(e);
+                Op.this.onError(e);
             }
         }
 
         @Override
         public void onError(Throwable t) {
-            System.out.println("Op.onError");
+            System.out.println("Op.onError1 " + hashCode());
             actual.onError(t);
+            /*synchronized (actual) {//possible fix, swallows the errors after termination
+                if (!completed) {
+                    System.out.println("Op.onError2 " + hashCode());
+                    actual.onError(t);
+                }
+            }*/
         }
 
         @Override
         public void onComplete() {
-            System.out.println("Op.onComplete1");
+            System.out.println("Op.onComplete1 " + hashCode());
             synchronized (actual) {
                 if (!completed && wip.intValue() == 0) {
-                    System.out.println("Op.onComplete2");
+                    System.out.println("Op.onComplete2 " + hashCode());
                     actual.onComplete();
                     UtilsRx.dispose(d);
                     completed = true;
@@ -118,12 +124,12 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
         @Override
         public void dispose() {
             d.dispose();
-            System.out.println("Op.dispose");
+            System.out.println("Op.dispose " + hashCode());
         }
 
         @Override
         public boolean isDisposed() {
-            System.out.println("Op.isDisposed");
+            System.out.println("Op.isDisposed " + hashCode());
             return d.isDisposed();
         }
     }

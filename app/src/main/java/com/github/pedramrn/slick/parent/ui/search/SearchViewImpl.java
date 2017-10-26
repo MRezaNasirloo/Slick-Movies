@@ -84,7 +84,9 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         App.componentMain().inject(this);
         SearchViewImpl_Slick.bind(this);
         SearchViewImpl_Slick.onAttach(this);
-        presenter.updateStream().subscribe(this);
+        if (!isInEditMode()) {
+            presenter.updateStream().subscribe(this);
+        }
     }
 
     @Override

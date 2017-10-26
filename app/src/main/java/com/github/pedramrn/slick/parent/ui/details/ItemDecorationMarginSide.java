@@ -4,6 +4,8 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.github.pedramrn.slick.parent.R;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-19
@@ -25,9 +27,10 @@ public class ItemDecorationMarginSide extends RecyclerView.ItemDecoration {
             parent.setClipToPadding(false);
         }*/
 
-        outRect.top = halfSpace;
-        outRect.bottom = halfSpace;
-        // outRect.left = halfSpace;
-        // outRect.right = halfSpace;
+        int margin = view.getResources().getDimensionPixelSize(R.dimen.margin_2dp);
+        outRect.top = margin;
+        outRect.bottom = margin;
+        outRect.left = halfSpace;
+        outRect.right = halfSpace;
     }
 }

@@ -134,7 +134,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
 
     @Override
     public void accept(Object o) throws Exception {
-        if (movie instanceof Movie) {
+        if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty()) {
             ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
                                   ((ArrayList<String>) ((Movie) movie).images().posters())
             );
