@@ -8,9 +8,10 @@ buildscript {
         /*maven {
             url "https://plugins.gradle.org/m2/"
         }*/
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         classpath 'hu.supercluster:paperwork-plugin:1.2.7'
 
 //        classpath 'com.letv.sarrsdesktop:BlockCanaryExPlugin:0.9.9.2'
@@ -37,6 +38,7 @@ allprojects {
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
     }
 }
 
