@@ -92,6 +92,8 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        adapter.setOnItemClickListener(null);
+        adapter = null;
         SearchViewImpl_Slick.onDetach(this);
         UtilsRx.dispose(disposable);
     }

@@ -20,7 +20,7 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
                 >
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_anchor="@id/appbar"
-            app:layout_anchorGravity="bottom|right|end"
+            app:layout_anchorGravity="center"
             app:layout_behavior="com.lapism.searchview.SearchBehavior"
             app:search_clear_on_close="true"
             app:search_clear_on_open="true"

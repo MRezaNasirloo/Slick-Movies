@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +19,13 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
@@ -56,7 +59,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     PresenterHome presenter;
 
     private UpdatingGroup progressiveUpcoming;
-    private ItemListHorizontal itemListUpcoming;
 
     private SearchViewImpl searchView;
 
@@ -93,6 +95,10 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         recyclerViewCardListPopular.setRecycledViewPool(recycledViewPool);
         recyclerViewCardListTrending.setRecycledViewPool(recycledViewPool);
 
+        SnapHelper snapHelperStartTrending = new GravitySnapHelper(Gravity.START);
+        SnapHelper snapHelperStartPopular = new GravitySnapHelper(Gravity.START);
+        snapHelperStartTrending.attachToRecyclerView(recyclerViewCardListTrending);
+        snapHelperStartPopular.attachToRecyclerView(recyclerViewCardListPopular);
 
         adapterUpcoming.add(progressiveUpcoming);
 
@@ -102,11 +108,13 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         setOnItemClickListener(adapterUpcoming);
         setOnItemClickListener((GroupAdapter) searchView.getAdapter());
 
-        RecyclerView recyclerViewHome = binding.recyclerViewUpcoming;
-        recyclerViewHome.setNestedScrollingEnabled(false);
+        RecyclerView recyclerViewUpcoming = binding.recyclerViewUpcoming;
+        recyclerViewUpcoming.setNestedScrollingEnabled(false);
         LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewHome.setLayoutManager(layout);
-        recyclerViewHome.setAdapter(adapterUpcoming);
+        recyclerViewUpcoming.setLayoutManager(layout);
+        recyclerViewUpcoming.setAdapter(adapterUpcoming);
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(recyclerViewUpcoming);
 
         //setup headers
         setupHeader(binding.headerUpcoming, upcoming);
@@ -157,7 +165,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
             recyclerViewCardListTrending.onDestroy();
             searchView.onDestroy();
         }
-        itemListUpcoming = null;
         searchView = null;
     }
 
