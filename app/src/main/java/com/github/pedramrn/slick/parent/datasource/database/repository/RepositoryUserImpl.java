@@ -1,19 +1,13 @@
-package com.github.pedramrn.slick.parent.datasource.database;
+package com.github.pedramrn.slick.parent.datasource.database.repository;
 
+import com.github.pedramrn.slick.parent.datasource.database.UserEntity;
 import com.github.pedramrn.slick.parent.domain.model.User;
-import com.github.pedramrn.slick.parent.domain.repository.RepositoryUser;
-
-import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
-import io.requery.reactivex.ReactiveResult;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -31,7 +25,7 @@ public class RepositoryUserImpl implements RepositoryUser {
 
     @Override
     public Observable<User> get(String name) {
-        return entityStore.select(UserEntity.class)
+        return Observable.empty();/*entityStore.select(UserEntity.class, )
                 .where(UserEntity.NAME.equal(name))
                 .get()
                 .observableResult()
@@ -45,7 +39,7 @@ public class RepositoryUserImpl implements RepositoryUser {
                     public User apply(@NonNull UserEntity userEntity) throws Exception {
                         return User.create(userEntity.getId(), userEntity.getBio(), userEntity.isAwesome(), userEntity.getName());
                     }
-                }).distinctUntilChanged();
+                }).distinctUntilChanged();*/
     }
 
     @Override

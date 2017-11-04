@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "379627951422",
+    "firebase_url": "https://slick-movies.firebaseio.com",
+    "project_id": "slick-movies",
+    "storage_bucket": "slick-movies.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379627951422:android:cc88daba1e218c3a",
+        "android_client_info": {
+          "package_name": "com.mreza.nasirloo.slick.movies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379627951422-40c8se413dfiau2dg6c1eer8kfatf1fd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mreza.nasirloo.slick.movies",
+            "certificate_hash": "e5357ba14117730d2cf42a0b26441e3f0326f0dd"
+          }
+        },
+        {
+          "client_id": "379627951422-v4m96hi81pusleiqfnj4qmvnq0sher2u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mreza.nasirloo.slick.movies",
+            "certificate_hash": "74a113bc9327e9f24ff1126cd7c2b4ddee3e6d20"
+          }
+        },
+        {
+          "client_id": "379627951422-29r17lm7s5ug6cccbub9t9c1mlvrk0sa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_aLcxn03TwMdyJGg_iIF7sin_ye-IU6o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379627951422-29r17lm7s5ug6cccbub9t9c1mlvrk0sa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

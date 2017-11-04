@@ -28,14 +28,14 @@ public abstract class CommentDomain {
     @Nullable
     public abstract Integer userRating();
 
-    public abstract UserDomain user();
+    public abstract UserCommentDomain user();
 
     public abstract String createdAt();
 
     public abstract String updatedAt();
 
     public static CommentDomain create(Integer id, String comment, Boolean spoiler, Boolean review, Integer parentId, Integer replies, Integer likes,
-                                       Integer userRating, UserDomain user, String createdAt, String updatedAt) {
+                                       Integer userRating, UserCommentDomain user, String createdAt, String updatedAt) {
         return builder()
                 .id(id)
                 .comment(comment)
@@ -73,7 +73,7 @@ public abstract class CommentDomain {
 
         public abstract Builder userRating(Integer userRating);
 
-        public abstract Builder user(UserDomain user);
+        public abstract Builder user(UserCommentDomain user);
 
         public abstract Builder createdAt(String createdAt);
 

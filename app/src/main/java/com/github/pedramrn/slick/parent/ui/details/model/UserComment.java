@@ -11,7 +11,7 @@ import com.google.auto.value.AutoValue;
  */
 
 @AutoValue
-public abstract class User implements Parcelable {
+public abstract class UserComment implements Parcelable {
     public abstract String username();
 
     @Nullable
@@ -20,7 +20,7 @@ public abstract class User implements Parcelable {
     public abstract String id();
 
     public static Builder builder() {
-        return new AutoValue_User.Builder();
+        return new AutoValue_UserComment.Builder();
     }
 
     @AutoValue.Builder
@@ -31,7 +31,7 @@ public abstract class User implements Parcelable {
 
         public abstract Builder id(String id);
 
-        public abstract User build();
+        public abstract UserComment build();
     }
 
     // public abstract String avatar();

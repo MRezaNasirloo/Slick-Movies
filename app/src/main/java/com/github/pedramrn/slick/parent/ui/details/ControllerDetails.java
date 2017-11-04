@@ -1,10 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -15,11 +17,14 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
+import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
@@ -57,6 +62,8 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-28
@@ -65,6 +72,7 @@ import io.reactivex.subjects.PublishSubject;
 public class ControllerDetails extends ControllerElm<ViewStateDetails> implements ViewDetails, MovieProvider {
 
     private static final String TAG = ControllerDetails.class.getSimpleName();
+    private static final int RC_SIGN_IN = 123;
 
     @Inject
     Provider<PresenterDetails> provider;
@@ -73,9 +81,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @Inject
     BottomNavigationHandlerImpl bottomNavigationHandler;
-
-    // @Inject
-    // List<MovieTmdb> movieTmdbs;
 
     private MovieBasic movie;
     private String transitionName;
@@ -86,7 +91,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private UpdatingGroup progressiveCast;
     private UpdatingGroup updatingHeader;
 
-//    private ItemListHorizontal itemHeader;
+    //    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
     private ItemCardList itemCardListSimilar;
 
@@ -99,7 +104,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private GroupAdapter adapterMain;
     private ItemCardHeader headerComments;
     private ItemCardHeader headerCast;
-    private ItemHeader headerMovie;
     private PublishSubject<String> onRetry = PublishSubject.create();
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
@@ -118,8 +122,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     public static void start(@NonNull Router router, @NonNull MovieBasic movie, String transitionName) {
         router.pushController(RouterTransaction.with(new ControllerDetails(movie, transitionName))
-                                      .pushChangeHandler(new HorizontalChangeHandler())
-                                      .popChangeHandler(new HorizontalChangeHandler())
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler())
         );
     }
 
@@ -135,6 +139,33 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         collapsingToolbar = binding.collapsingToolbar;
         imageViewHeader = binding.imageViewHeader;
+        binding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getRouter().pushController(RouterTransaction.with(new ControllerAuth()));
+                /*FirebaseAuth.getInstance().signOut();
+                        FirebaseAuth auth = FirebaseAuth.getInstance();
+                if (auth.getCurrentUser() != null) {
+                    // already signed in
+                } else {
+                    // not signed in
+                    *//*Intent intent = AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                            .build();
+
+                    startActivityForResult(intent, RC_SIGN_IN);*//*
+                    auth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            String uid = task.getResult().getUser().getUid();
+                            showSnackbar(getView(), uid);
+                        }
+                    });
+                }*/
+            }
+        });
 
         final Context context = getApplicationContext();
 
@@ -167,7 +198,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
                 if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
                     ArrayList<Cast> casts = (ArrayList<Cast>) ((Movie) state.movieBasic()).casts();
                     ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts",
-                                         new ArrayList<ItemViewListParcelable>(casts));
+                            new ArrayList<ItemViewListParcelable>(casts));
                 }
             }
         });
@@ -220,7 +251,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
             }
         });*/
 
-//        add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
+        //        add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
         presenter.updateStream().subscribe(this);
 
@@ -315,10 +346,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapterMain.clear();
         itemCardListSimilar.onDestroyView();
         itemBackdropList.onDestroyView();
-//        itemHeader.onDestroyView();
+        //        itemHeader.onDestroyView();
         headerCast.onDestroyView();
         headerComments.onDestroyView();
-//        headerMovie.onDestroyView();
+        //        headerMovie.onDestroyView();
 
         updatingHeader = null;
         progressiveCast = null;
@@ -334,9 +365,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         imageViewHeader = null;
 
         headerComments = null;
-        headerMovie = null;
         headerCast = null;
-//        itemHeader = null;
+        //        itemHeader = null;
 
         adapterMain = null;
         super.onDestroyView(view);
@@ -372,7 +402,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
-    public Observable<Object> onRetryComments(){
+    public Observable<Object> onRetryComments() {
         return onRetry.filter(new Predicate<String>() {
             @Override
             public boolean test(@NonNull String tag) throws Exception {
@@ -393,5 +423,45 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public void onRetry(String tag) {
         onRetry.onNext(tag);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
+        if (requestCode == RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            // Successfully signed in
+            if (resultCode == RESULT_OK) {
+                // startActivity(SignedInActivity.createIntent(this, response));
+                // finish();
+                showSnackbar(getView(), "Signed In Successfully.");
+                return;
+            } else {
+                // Sign in failed
+                if (response == null) {
+                    // User pressed back button
+                    Snackbar.make(getView(), "Signed In Cancelled.", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    Snackbar.make(getView(), "No Internet Connection.", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                    Snackbar.make(getView(), "Unknown Error.", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+            }
+
+            Snackbar.make(getView(), "Unknown Sign In Response.", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    protected void showSnackbar(View view, String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
     }
 }

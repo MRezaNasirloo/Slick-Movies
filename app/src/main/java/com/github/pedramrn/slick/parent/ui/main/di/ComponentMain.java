@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.main.di;
 
 import com.github.pedramrn.slick.parent.ui.ActivityMain;
+import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
@@ -45,6 +46,8 @@ public interface ComponentMain {
     void inject(RecyclerViewCardListTrending recyclerViewCardListTrending);
 
     void inject(RecyclerViewCardListPopular recyclerViewCardListPopular);
+
+    void inject(ControllerAuth controllerAuth);
 
     @Subcomponent.Builder
     interface Builder {

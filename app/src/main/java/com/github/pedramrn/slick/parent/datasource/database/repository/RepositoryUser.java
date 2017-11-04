@@ -1,6 +1,5 @@
-package com.github.pedramrn.slick.parent.domain.repository;
+package com.github.pedramrn.slick.parent.datasource.database.repository;
 
-import com.github.pedramrn.slick.parent.datasource.database.UserEntity;
 import com.github.pedramrn.slick.parent.domain.model.User;
 
 import io.reactivex.Completable;

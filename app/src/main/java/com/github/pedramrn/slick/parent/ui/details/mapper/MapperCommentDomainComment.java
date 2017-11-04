@@ -1,9 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.details.mapper;
 
 import com.github.pedramrn.slick.parent.domain.model.CommentDomain;
-import com.github.pedramrn.slick.parent.domain.model.UserDomain;
+import com.github.pedramrn.slick.parent.domain.model.UserCommentDomain;
 import com.github.pedramrn.slick.parent.ui.details.model.Comment;
-import com.github.pedramrn.slick.parent.ui.details.model.User;
+import com.github.pedramrn.slick.parent.ui.details.model.UserComment;
 
 import javax.inject.Inject;
 
@@ -22,8 +22,8 @@ public class MapperCommentDomainComment implements Function<CommentDomain, Comme
 
     @Override
     public Comment apply(@NonNull CommentDomain ct) throws Exception {
-        UserDomain userDomain = ct.user();
-        User user = User.builder().id(userDomain.id()).name(userDomain.name()).username(userDomain.username()).build();
+        UserCommentDomain userDomain = ct.user();
+        UserComment user = UserComment.builder().id(userDomain.id()).name(userDomain.name()).username(userDomain.username()).build();
         return Comment.create(
                 ct.id(),
                 ct.comment(),

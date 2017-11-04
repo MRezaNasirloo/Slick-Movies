@@ -1,0 +1,56 @@
+{
+  "user_data": {
+    "some_user_id_1": {
+      "favorite_list": {
+        "movies": {
+          "t123": {
+            "name": "some_movie",
+            "type": "movie",
+            "imdb_id": "t123",
+            "tmdb_id": 123
+          },
+          "t124": {
+            "name": "some_movie",
+            "type": "movie",
+            "imdb_id": "t124",
+            "tmdb_id": 124
+          }
+        },
+        "persons": {
+          "t123": {
+            "name": "foo"
+          },
+          "t1234": {
+            "name": "bar"
+          }
+        }
+      }
+    },
+    "some_user_id_2": {
+      "favorite_list": {
+        "movies": {
+          "t123": {
+            "name": "some_movie",
+            "type": "movie",
+            "imdb_id": "t123",
+            "tmdb_id": 123
+          },
+          "t124": {
+            "name": "some_movie",
+            "type": "movie",
+            "imdb_id": "t124",
+            "tmdb_id": 124
+          }
+        },
+        "persons": {
+          "t123": {
+            "name": "foo"
+          },
+          "t1234": {
+            "name": "bar"
+          }
+        }
+      }
+    }
+  }
+}

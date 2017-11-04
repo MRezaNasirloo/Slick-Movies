@@ -3,7 +3,6 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
-import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
@@ -32,7 +31,7 @@ public abstract class Comment extends AutoBase implements ItemViewListParcelable
     @Nullable
     public abstract Integer userRating();
 
-    public abstract User user();
+    public abstract UserComment user();
 
     public abstract String createdAt();
 
@@ -51,7 +50,7 @@ public abstract class Comment extends AutoBase implements ItemViewListParcelable
     }
 
     public static Comment create(Integer id, String comment, Boolean spoiler, Boolean review, Integer parentId, Integer replies, Integer likes,
-                                 Integer userRating, User user, String createdAt, String updatedAt) {
+                                 Integer userRating, UserComment user, String createdAt, String updatedAt) {
         return builder()
                 .id(id)
                 .uniqueId(id)
@@ -92,7 +91,7 @@ public abstract class Comment extends AutoBase implements ItemViewListParcelable
 
         public abstract Builder userRating(Integer userRating);
 
-        public abstract Builder user(User user);
+        public abstract Builder user(UserComment user);
 
         public abstract Builder createdAt(String createdAt);
 
