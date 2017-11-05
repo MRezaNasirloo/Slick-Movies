@@ -91,7 +91,7 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
     public Observable<FirebaseState> signOut() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.signOut();
-        return authStateChangeListener.map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser(), false));
+        return authStateChangeListener.map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser(), false)).take(1);
     }
 
     @Override
