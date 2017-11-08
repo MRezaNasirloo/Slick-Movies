@@ -15,7 +15,7 @@ public interface ViewAuth {
 
     Observable<Object> signOut();
 
-    void showSignInDialog();
+    // void showSignInDialog();
 
     Observable<GugleSignInResult> result();
 

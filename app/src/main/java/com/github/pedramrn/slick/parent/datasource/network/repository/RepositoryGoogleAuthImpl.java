@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.github.pedramrn.slick.parent.R;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -20,7 +21,6 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 
@@ -36,9 +36,21 @@ public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, Googl
     private final Context context;
 
     @Inject
-    @Singleton
     public RepositoryGoogleAuthImpl(Context context) {
         this.context = context;
+    }
+
+    public Observable<String> currentUser() {
+        return Observable.create(emitter -> Auth.GoogleSignInApi.silentSignIn(googleApiClient).setResultCallback(result -> {
+            if (!emitter.isDisposed() && result.isSuccess() && result.getSignInAccount() != null &&
+                    result.getSignInAccount().getIdToken() != null) {
+                GoogleSignInAccount signInAccount = result.getSignInAccount();
+                emitter.onNext(signInAccount.getIdToken());
+                emitter.onComplete();
+            } else {
+                emitter.onError(new Throwable(result.getStatus().getStatusMessage()));
+            }
+        }));
     }
 
     public Observable<Object> signIn() {
@@ -54,10 +66,12 @@ public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, Googl
                         .addOnConnectionFailedListener(this)
                         .build();
             }
+            // TODO: 2017-11-08 catch has
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
             ((Activity) ownerWeakReference.get()).startActivityForResult(signInIntent, 123);
         });
     }
+
 
     public Observable<Object> signOut() {
         return Observable.create(emitter -> Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(status -> {

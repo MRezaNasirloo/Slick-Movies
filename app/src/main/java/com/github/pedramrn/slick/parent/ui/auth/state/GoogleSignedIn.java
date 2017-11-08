@@ -19,6 +19,8 @@ public class GoogleSignedIn implements PartialViewState<ViewStateAuth> {
 
     @Override
     public ViewStateAuth reduce(ViewStateAuth state) {
-        return state.toBuilder().showSignInDialog(false).googleSignInResult(result).build();
+        return state.toBuilder()
+                .googleSignInResult(result)
+                .build();
     }
 }

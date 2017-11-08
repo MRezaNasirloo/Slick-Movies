@@ -55,11 +55,13 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
     public Observable<FirebaseState> currentUser() {
         return Observable.create(emitter -> {
             FirebaseAuth auth = FirebaseAuth.getInstance();
-            if (!emitter.isDisposed()) {
+            if (!emitter.isDisposed() && auth.getCurrentUser() != null) {
                 emitter.onNext(FirebaseState.create(auth));
+                emitter.onComplete();
+            } else if (!emitter.isDisposed()) {
+                emitter.onError(new Throwable("User has not signed in yet."));
             }
         });
-
     }
 
     @Override
@@ -95,7 +97,7 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.signOut();
         return authStateChangeListener
-                .map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser(), false))
+                .map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser()))
                 .take(1);
     }
 

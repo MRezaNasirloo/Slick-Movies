@@ -16,7 +16,6 @@ public class SignInDialog implements PartialViewState<ViewStateAuth> {
     public ViewStateAuth reduce(ViewStateAuth state) {
         return state.toBuilder()
                 .user(null)
-                .showSignInDialog(true)
                 .signedOut(null)
                 .build();
     }

@@ -13,9 +13,13 @@ import io.reactivex.Observable;
 public interface RouterAuth {
     Observable<UserAppDomain> signInAnonymously();
 
-    Observable<UserStateAppDomain> signInGoogle(String idToken);
+    Observable<UserStateAppDomain> signInFirebaseWithGoogleAccount(String idToken);
 
-    Observable<UserStateAppDomain> currentUser();
+    Observable<Object> signInGoogleAccount();
+
+    Observable<UserStateAppDomain> currentFirebaseUser();
+
+    Observable<String> currentGoogleUser();
 
     Observable<UserStateAppDomain> signOut();
 

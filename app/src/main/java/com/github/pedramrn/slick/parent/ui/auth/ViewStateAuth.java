@@ -21,12 +21,10 @@ public abstract class ViewStateAuth {
     public abstract UserApp user();
 
     /**
-     * @return the Google login not to be mistaken with firebase with google login, it should be used to login the user in firebase
+     * @return the Google login not to be mistaken with firebase google login, it should be used to login the user in firebase
      */
     @Nullable
     public abstract GugleSignInResult googleSignInResult();
-
-    public abstract boolean showSignInDialog();
 
     @Nullable
     public abstract Boolean signedOut();
@@ -40,8 +38,6 @@ public abstract class ViewStateAuth {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder user(UserApp user);
-
-        public abstract Builder showSignInDialog(boolean showSignInDialog);
 
         public abstract Builder signedOut(Boolean signedOut);
 

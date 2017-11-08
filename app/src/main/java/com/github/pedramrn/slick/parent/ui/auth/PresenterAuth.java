@@ -8,8 +8,6 @@ import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
-import com.github.pedramrn.slick.parent.ui.auth.state.GoogleSignedIn;
-import com.github.pedramrn.slick.parent.ui.auth.state.SignInDialog;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedIn;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedOut;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
@@ -49,42 +47,37 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
                 .map(UserApp::create)
                 .map(LoggedIn::new);
 */
-        Observable<PartialViewState<ViewStateAuth>> signInGoogle = commandSignInGoogle
-                .flatMap(o -> routerAuth.currentUser())
-                .map(userStateAppDomain -> {
-                    if (userStateAppDomain.signedIn()) {
-                        return new SignedIn(UserApp.create(userStateAppDomain.user()));
-                    } else if (userStateAppDomain.showSignInDialog()) {
-                        return new SignInDialog();
-                    } else {
-                        // FIXME: 2017-11-01 should not reach.
-                        return null;
-                    }
-                }).subscribeOn(io);
+        // TODO: 2017-11-09 don't do it this way, it should be single purpose, don't mess things up, SOLID
+        //Load sign in state on start up, then enable or disable the login button (Show  or Hide)
+        Observable<PartialViewState<ViewStateAuth>> signInGoogle = commandSignInGoogle.startWith(1)
+                .flatMap(o -> routerAuth.currentFirebaseUser().filter(UserStateAppDomain::signedIn)
+                        .map((Function<UserStateAppDomain, PartialViewState<ViewStateAuth>>) usa -> new SignedIn(UserApp.create(usa.user())))
+                        .doOnError(Throwable::printStackTrace)
+                        .onErrorReturnItem(new SignedOut())
+                )
+                .subscribeOn(io);
 
         Observable<PartialViewState<ViewStateAuth>> signOut = commandSignOut
-                .flatMap(o -> routerAuth.signOut())
-                .filter(userStateAppDomain -> !userStateAppDomain.signedIn())
-                .map((Function<UserStateAppDomain, PartialViewState<ViewStateAuth>>) userStateAppDomain -> new SignedOut())
+                .flatMap(o -> routerAuth.signOut().filter(userStateAppDomain -> !userStateAppDomain.signedIn())
+                        .map((Function<UserStateAppDomain, PartialViewState<ViewStateAuth>>) usa -> new SignedOut())
+                        .doOnError(Throwable::printStackTrace)
+                )
                 .subscribeOn(io);
 
-        Observable<PartialViewState<ViewStateAuth>> changeShowDialogState = commandResult.map(GoogleSignedIn::new);
         Observable<PartialViewState<ViewStateAuth>> firebaseSignedIn = commandResult.filter(GugleSignInResult::isSuccess)
-                .flatMap(result -> routerAuth.signInGoogle(result.idToken()))
-                .filter(UserStateAppDomain::signedIn)
-                .map(userStateAppDomain -> UserApp.create(userStateAppDomain.user()))
-                .map((Function<UserApp, PartialViewState<ViewStateAuth>>) SignedIn::new)
+                .flatMap(result -> routerAuth.signInFirebaseWithGoogleAccount(result.idToken()).filter(UserStateAppDomain::signedIn)
+                        .map(usa -> UserApp.create(usa.user()))
+                        .map((Function<UserApp, PartialViewState<ViewStateAuth>>) SignedIn::new)
+                        .doOnError(Throwable::printStackTrace)
+                )
                 .subscribeOn(io);
 
-        reduce(ViewStateAuth.builder().showSignInDialog(false).build(), merge(signInGoogle, signOut, changeShowDialogState, firebaseSignedIn)).subscribe(this);
+        reduce(ViewStateAuth.builder().build(), merge(signInGoogle, signOut, firebaseSignedIn)).subscribe(this);
     }
 
 
     @Override
     protected void render(@NonNull ViewStateAuth state, @NonNull ViewAuth view) {
-        if (state.showSignInDialog()) {
-            view.showSignInDialog();
-        }
         if (state.user() != null) {
             view.userSignedIn(state.user());
         }
