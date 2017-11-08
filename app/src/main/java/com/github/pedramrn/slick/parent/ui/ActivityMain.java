@@ -12,10 +12,16 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
+import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
+
+import javax.inject.Inject;
 
 public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     private static final String TAG = ActivityMain.class.getSimpleName();
+
+    @Inject
+    RepositoryGoogleAuthImpl googleAuth;
 
     private Router router;
 
@@ -27,6 +33,8 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
         if (!router.hasRootController()) {
             router.setRoot(RouterTransaction.with(new ControllerMain()));
         }
+        App.componentMain().inject(this);
+        getLifecycle().addObserver(googleAuth);
     }
 
     @Override
@@ -49,6 +57,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     @Override
     protected void onDestroy() {
         if (isFinishing()) {
+            getLifecycle().removeObserver(googleAuth);
             App.disposeComponentMain();
             App.disposeComponentApp();
         }

@@ -103,7 +103,8 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
         }
         // Auth.GoogleSignInApi.signOut(mGoogleApiClient).await();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-
+        // Auth.GoogleSignInApi.
+        // mGoogleApiClient.clearDefaultAccountAndReconnect();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 

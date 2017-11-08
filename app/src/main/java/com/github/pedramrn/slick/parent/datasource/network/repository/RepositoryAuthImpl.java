@@ -78,10 +78,13 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
                 if (!emitter.isDisposed()) {
                     emitter.onError(e);
                 }
+            }).addOnCompleteListener(task -> {
+                if (!emitter.isDisposed()) {
+                    emitter.onComplete();
+                }
             });
 
-        })/*.mergeWith(authStateChangeListener.map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser(), false))
-                .doOnNext(firebaseState -> firebaseState.firebaseAuth().removeAuthStateListener(RepositoryAuthImpl.this)))*/;
+        });
 
     }
 
@@ -91,7 +94,9 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
     public Observable<FirebaseState> signOut() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.signOut();
-        return authStateChangeListener.map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser(), false)).take(1);
+        return authStateChangeListener
+                .map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser(), false))
+                .take(1);
     }
 
     @Override

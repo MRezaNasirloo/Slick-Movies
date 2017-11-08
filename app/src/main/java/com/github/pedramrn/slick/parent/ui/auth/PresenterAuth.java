@@ -50,7 +50,6 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
                 .map(LoggedIn::new);
 */
         Observable<PartialViewState<ViewStateAuth>> signInGoogle = commandSignInGoogle
-                .doOnNext(o -> System.out.println(TAG))
                 .flatMap(o -> routerAuth.currentUser())
                 .map(userStateAppDomain -> {
                     if (userStateAppDomain.signedIn()) {
