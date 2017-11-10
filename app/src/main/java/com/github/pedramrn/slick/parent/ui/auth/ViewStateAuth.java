@@ -14,6 +14,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class ViewStateAuth {
 
+    public abstract boolean loading();
+
     /**
      * @return the logged in user, and returns null if the user has not logged in.
      */
@@ -42,6 +44,8 @@ public abstract class ViewStateAuth {
         public abstract Builder signedOut(Boolean signedOut);
 
         public abstract Builder googleSignInResult(GugleSignInResult googleSignInResult);
+
+        public abstract Builder loading(boolean loading);
 
         public abstract ViewStateAuth build();
     }

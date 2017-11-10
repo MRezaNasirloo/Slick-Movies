@@ -4,9 +4,9 @@ import com.github.pedramrn.slick.parent.datasource.network.repository.Repository
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryAuthImpl;
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
-import com.github.pedramrn.slick.parent.domain.model.UserStateAppDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareInternetAccess;
+import com.github.slick.Middleware;
 
 import javax.inject.Inject;
 
@@ -35,28 +35,24 @@ public class RouterAuthImpl implements RouterAuth {
     }
 
     @Override
-    public Observable<UserStateAppDomain> signInFirebaseWithGoogleAccount(String idToken) {
-        return repositoryAuth.signInGoogle(idToken).map(firebaseState -> {
-            FirebaseUser fbu = firebaseState.firebaseUser();
-            return UserStateAppDomain.create(UserAppDomain.create(fbu));
-        });
+    public Observable<UserAppDomain> signInFirebaseWithGoogleAccount(String idToken) {
+        return repositoryAuth.signInGoogle(idToken).map(UserAppDomain::create);
     }
 
     @Override
-    public Observable<Object> signInGoogleAccount() {
-        return repositoryGoogleAuth.signIn();
+    @Middleware({MiddlewareInternetAccess.class})
+    public Observable<Object> signInGoogleAccount(String s) {
+        return repositoryGoogleAuth.signIn(s);
     }
 
     @Override
-    public Observable<UserStateAppDomain> currentFirebaseUser() {
-        return repositoryAuth.currentUser().flatMap(firebaseState -> {
-            FirebaseUser fbu = firebaseState.firebaseUser();
-            if (fbu != null) {
-                return Observable.just(UserStateAppDomain.create(UserAppDomain.create(fbu)));
-            } else {
-                return Observable.error(new Throwable());
-            }
-        });
+    public Observable<UserAppDomain> currentFirebaseUser() {
+        return repositoryAuth.currentUser().map(UserAppDomain::create);
+    }
+
+    @Override
+    public Observable<Boolean> firebaseUserSignInStateStream() {
+        return repositoryAuth.userSignInStateStream();
     }
 
     @Override
@@ -66,15 +62,8 @@ public class RouterAuthImpl implements RouterAuth {
 
 
     @Override
-    public Observable<UserStateAppDomain> signOut() {
-        //we get the result from
-        return repositoryAuth.signOut().map(firebaseState -> {
-            FirebaseUser fbu = firebaseState.firebaseUser();
-            if (fbu != null) {
-                return UserStateAppDomain.create(UserAppDomain.create(fbu));
-            } else {
-                return UserStateAppDomain.create(null);
-            }
-        });
+    public Observable<Object> signOut() {
+        //if we get an emission it means the sign out has occurred
+        return repositoryAuth.signOut().zipWith(repositoryGoogleAuth.signOut(), (o, o2) -> o);
     }
 }

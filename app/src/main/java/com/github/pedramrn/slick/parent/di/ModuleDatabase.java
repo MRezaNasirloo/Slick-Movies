@@ -1,23 +1,10 @@
 package com.github.pedramrn.slick.parent.di;
 
-import android.content.Context;
-
-import com.github.pedramrn.slick.parent.BuildConfig;
-import com.github.pedramrn.slick.parent.datasource.database.Models;
-import com.github.pedramrn.slick.parent.datasource.database.UserEntity;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
-import dagger.Provides;
-import io.requery.Persistable;
-import io.requery.android.sqlite.DatabaseSource;
-import io.requery.reactivex.ReactiveEntityStore;
-import io.requery.reactivex.ReactiveSupport;
-import io.requery.sql.Configuration;
-import io.requery.sql.EntityDataStore;
-import io.requery.sql.TableCreationMode;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -47,5 +34,10 @@ public class ModuleDatabase {
             entityStore.insert(userEntity).subscribe();
         }
         return entityStore;
+    }*/
+
+    /*@Provides
+    public FirebaseDatabase firebaseDatabase() {
+        return FirebaseDatabase.getInstance()
     }*/
 }

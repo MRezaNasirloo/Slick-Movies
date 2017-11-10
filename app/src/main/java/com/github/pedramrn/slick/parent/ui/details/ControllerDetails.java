@@ -1,12 +1,13 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -17,21 +18,19 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
-import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
-import com.github.pedramrn.slick.parent.ui.details.model.Comment;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
@@ -41,9 +40,10 @@ import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
+import com.github.slick.middleware.RequestStack;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.Section;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -58,11 +59,7 @@ import javax.inject.Provider;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -105,6 +102,9 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private ItemCardHeader headerComments;
     private ItemCardHeader headerCast;
     private PublishSubject<String> onRetry = PublishSubject.create();
+    private FloatingActionButton fab;
+    private Drawable drawableUnFav;
+    private Drawable drawableFav;
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -127,6 +127,17 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         );
     }
 
+    @Override
+    protected void onAttach(@NonNull View view) {
+        Navigator2.bind(this);
+        RequestStack.getInstance().processLastRequest();
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        Navigator2.unbindController();
+    }
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -139,33 +150,11 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         collapsingToolbar = binding.collapsingToolbar;
         imageViewHeader = binding.imageViewHeader;
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getRouter().pushController(RouterTransaction.with(new ControllerAuth()));
-                /*FirebaseAuth.getInstance().signOut();
-                        FirebaseAuth auth = FirebaseAuth.getInstance();
-                if (auth.getCurrentUser() != null) {
-                    // already signed in
-                } else {
-                    // not signed in
-                    *//*Intent intent = AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                            .build();
-
-                    startActivityForResult(intent, RC_SIGN_IN);*//*
-                    auth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            String uid = task.getResult().getUser().getUid();
-                            showSnackbar(getView(), uid);
-                        }
-                    });
-                }*/
-            }
-        });
+        fab = binding.fab;
+        if (drawableFav == null) {
+            drawableUnFav = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_unlike_black_24dp, null);
+            drawableFav = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_like_red_24dp, null);
+        }
 
         final Context context = getApplicationContext();
 
@@ -290,6 +279,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         renderError(state.errorMovie());
         renderError(state.errorMovieBackdrop());
         renderError(state.errorMovieCast());
+        renderError(state.errorFavorite());
 
         long delay = System.currentTimeMillis() - before;
         int sizeCast = state.casts().size();
@@ -369,6 +359,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         //        itemHeader = null;
 
         adapterMain = null;
+        // fab.setOnClickListener(null);
+        // fab = null;
         super.onDestroyView(view);
     }
 
@@ -381,87 +373,41 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     protected ArrayList<ItemViewListParcelable> comments() {
         return (ArrayList<ItemViewListParcelable>) Observable.fromIterable(state.comments())
                 .cast(ItemComment.class)
-                .map(new Function<ItemComment, Comment>() {
-                    @Override
-                    public Comment apply(@NonNull ItemComment itemComment) throws Exception {
-                        return itemComment.comment();
-                    }
-                })
+                .map(ItemComment::comment)
                 .cast(ItemViewListParcelable.class)
                 .buffer(state.comments().size())
                 .blockingFirst(Collections.<ItemViewListParcelable>emptyList());
     }
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerDetails.this, null, adapter.getAdapterPosition(item));
-            }
-        });
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item)
+                .action(ControllerDetails.this, null, adapter.getAdapterPosition(item)));
+    }
+
+    @Override
+    public Observable<Boolean> commandFavorite() {
+        return RxView.clicks(fab).throttleLast(1, TimeUnit.SECONDS)
+                .map(o -> drawableUnFav.equals(fab.getDrawable()))
+                ;
     }
 
     @Override
     public Observable<Object> onRetryComments() {
-        return onRetry.filter(new Predicate<String>() {
-            @Override
-            public boolean test(@NonNull String tag) throws Exception {
-                return "COMMENTS_ERROR".equals(tag);
-            }
-        }).cast(Object.class);
+        return onRetry.filter("COMMENTS_ERROR"::equals).cast(Object.class);
     }
 
     @Override
-    public void showMainError() {
+    public void notFavorite() {
+        fab.setImageDrawable(drawableUnFav);
     }
 
     @Override
-    public void showMainContents() {
-
+    public void favorite() {
+        fab.setImageDrawable(drawableFav);
     }
 
     @Override
     public void onRetry(String tag) {
         onRetry.onNext(tag);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            // Successfully signed in
-            if (resultCode == RESULT_OK) {
-                // startActivity(SignedInActivity.createIntent(this, response));
-                // finish();
-                showSnackbar(getView(), "Signed In Successfully.");
-                return;
-            } else {
-                // Sign in failed
-                if (response == null) {
-                    // User pressed back button
-                    Snackbar.make(getView(), "Signed In Cancelled.", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    Snackbar.make(getView(), "No Internet Connection.", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    Snackbar.make(getView(), "Unknown Error.", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-            }
-
-            Snackbar.make(getView(), "Unknown Sign In Response.", Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    protected void showSnackbar(View view, String message) {
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
     }
 }

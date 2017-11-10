@@ -11,7 +11,7 @@ import io.reactivex.Observable;
  */
 public interface ViewAuth {
     Observable<Object> signInAnonymously();
-    Observable<Object> signInWithGoogle();
+    Observable<String> signInWithGoogle();
 
     Observable<Object> signOut();
 

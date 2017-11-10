@@ -1,25 +1,29 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
-import com.github.pedramrn.slick.parent.domain.model.CommentDomain;
-import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
-import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.github.pedramrn.slick.parent.domain.model.FavoriteDomain;
+import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
 import com.github.pedramrn.slick.parent.domain.router.RouterComments;
+import com.github.pedramrn.slick.parent.domain.router.RouterFavorite;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterSimilar;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
+import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperCommentDomainComment;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
-import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
-import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterCommentsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
+import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
-import com.github.pedramrn.slick.parent.util.IdBank;
+import com.github.slick.middleware.BundleSlick;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -29,9 +33,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 
 /**
@@ -45,6 +47,8 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
     private final RouterMovieDetails routerMovieDetails;
     private final RouterSimilar routerSimilar;
     private final RouterComments routerComments;
+    private final RouterFavorite routerFavorite;
+    private final RouterAuth routerAuth;
 
     private final MapperMovieSmallDomainMovieSmall mapperSmall;
     private final MapperCommentDomainComment mapperComment;
@@ -60,6 +64,8 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
             RouterMovieDetailsImpl routerMovieDetails,
             RouterSimilarImpl routerSimilar,
             RouterCommentsImpl routerComments,
+            RouterAuthImpl routerAuth,
+            RouterFavoriteImplSlick routerFavorite,
             MapperCommentDomainComment mapperComment,
             MapperMovieDomainMovie mapper,
             MapperMovieSmallDomainMovieSmall mapperSmall,
@@ -70,6 +76,8 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
         this.routerMovieDetails = routerMovieDetails;
         this.routerSimilar = routerSimilar;
         this.routerComments = routerComments;
+        this.routerAuth = routerAuth;
+        this.routerFavorite = routerFavorite;
         this.mapperComment = mapperComment;
         this.mapper = mapper;
         this.mapperSmall = mapperSmall;
@@ -78,12 +86,8 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
 
     @Override
     protected void start(ViewDetails view) {
-        IdBank.reset(SIMILAR);
-        IdBank.reset(CASTS);
-        IdBank.reset(BACKDROPS);
-        IdBank.reset(COMMENTS);
-
-        final Integer movieId = view.getMovie().id();
+        MovieBasic movieBasic = view.getMovie();
+        final Integer movieId = movieBasic.id();
 
         final Observable<Movie> movieFull = routerMovieDetails.get(movieId)
                 //Maps the domains Models to View Models which have android dependency
@@ -92,190 +96,134 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .share();
 
         Observable<PartialViewState<ViewStateDetails>> movie = movieFull
-                .map(new Function<Movie, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull Movie movie) throws Exception {
-                        return new PartialViewStateDetails.MovieFull(movie);
-                    }
-                })
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateDetails.ErrorMovieFull(throwable);
-                    }
-                });
+                .map((Function<Movie, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.MovieFull::new)
+                .onErrorReturn(PartialViewStateDetails.ErrorMovieFull::new);
 
         Observable<PartialViewState<ViewStateDetails>> backdrops = movieFull
                 .take(1)
-                .concatMap(new Function<Movie, ObservableSource<Backdrop>>() {
-                    @Override
-                    public ObservableSource<Backdrop> apply(@NonNull Movie movie) throws Exception {
-                        return Observable.fromIterable(movie.images().backdrops());
-                    }
-                })
+                .concatMap(movie1 -> Observable.fromIterable(movie1.images().backdrops()))
                 .map(new MapProgressive())
                 .cast(ItemView.class)
-                .map(new Function<ItemView, Item>() {
-                    @Override
-                    public Item apply(@NonNull ItemView itemView) throws Exception {
-                        return itemView.render(BACKDROPS);
-                    }
-                })
+                .map(itemView -> itemView.render(BACKDROPS))
                 .buffer(100)
-                .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
-                        return new PartialViewStateDetails.MovieBackdrops(items);
-                    }
-                })
+                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.MovieBackdrops::new)
                 .startWith(new PartialViewStateDetails.MovieBackdropsProgressive(5, BACKDROPS))
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateDetails.ErrorMovieBackdrop(throwable);
-                    }
-                });
+                .onErrorReturn(PartialViewStateDetails.ErrorMovieBackdrop::new);
 
         Observable<PartialViewState<ViewStateDetails>> casts = movieFull
                 .take(1)
-                .concatMap(new Function<Movie, ObservableSource<Cast>>() {
-                    @Override
-                    public ObservableSource<Cast> apply(@NonNull Movie movie) throws Exception {
-                        return Observable.fromIterable(movie.casts()).take(6);
-                    }
-                })
+                .concatMap(movie13 -> Observable.fromIterable(movie13.casts()).take(6))
                 .map(new MapProgressive())
                 .cast(ItemView.class)
-                .map(new Function<ItemView, Item>() {
-                    @Override
-                    public Item apply(@NonNull ItemView itemView) throws Exception {
-                        return itemView.render(CASTS);
-                    }
-                })
+                .map(itemView -> itemView.render(CASTS))
                 .buffer(20)
-                .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
-                        return new PartialViewStateDetails.MovieCast(items);
-                    }
-                })
+                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.MovieCast::new)
                 .startWith(new PartialViewStateDetails.MovieCastsProgressive(6, CASTS))
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
+                .onErrorReturn(PartialViewStateDetails.ErrorMovieCast::new);
+
+
+        Observable<Object> triggerRetry = command(ViewDetails::onRetryComments).startWith(1);
+
+        Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull.take(1)
+                .flatMap(movie12 -> routerComments.comments(movie12.imdbId(), 1, 15).subscribeOn(io))
+                .concatMap(comments1 -> Observable.fromIterable(comments1.data()))
+                .map(mapperComment)
+                .map(new MapProgressive())
+                .cast(ItemView.class)
+                .map(itemView -> itemView.render(COMMENTS))
+                .buffer(20)
+                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Comments::new)
+                .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
                     @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateDetails.ErrorMovieCast(throwable);
-                    }
-                });
-
-
-        Observable<Object> triggerRetry = command(new CommandProvider<Object, ViewDetails>() {
-            @Override
-            public Observable<Object> provide(ViewDetails view) {
-                return view.onRetryComments();
-            }
-        }).startWith(1);
-
-        Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(new Function<Object,
-                ObservableSource<PartialViewState<ViewStateDetails>>>() {
-            @Override
-            public ObservableSource<PartialViewState<ViewStateDetails>> apply(@NonNull Object o) throws Exception {
-                return movieFull.take(1).flatMap(new Function<Movie, ObservableSource<PagedDomain<CommentDomain>>>() {
-                    @Override
-                    public ObservableSource<PagedDomain<CommentDomain>> apply(@NonNull Movie movie) throws Exception {
-                        return routerComments.comments(movie.imdbId(), 1, 15).subscribeOn(io);
+                    public PartialViewState<ViewStateDetails> apply(@NonNull Boolean hadError) throws Exception {
+                        return new PartialViewStateDetails.CommentsLoaded(hadError);
                     }
                 })
-                        .concatMap(new Function<PagedDomain<CommentDomain>, ObservableSource<CommentDomain>>() {
-                            @Override
-                            public ObservableSource<CommentDomain> apply(@NonNull PagedDomain<CommentDomain> comments) throws Exception {
-                                return Observable.fromIterable(comments.data());
-                            }
-                        })
-                        .map(mapperComment)
-                        .map(new MapProgressive())
-                        .cast(ItemView.class)
-                        .map(new Function<ItemView, Item>() {
-                            @Override
-                            public Item apply(@NonNull ItemView itemView) throws Exception {
-                                return itemView.render(COMMENTS);
-                            }
-                        })
-                        .buffer(20)
-                        .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
-                            @Override
-                            public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> items) throws Exception {
-                                return new PartialViewStateDetails.Comments(items);
-                            }
-                        })
-                        .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
-                            @Override
-                            public PartialViewState<ViewStateDetails> apply(@NonNull Boolean hadError) throws Exception {
-                                return new PartialViewStateDetails.CommentsLoaded(hadError);
-                            }
-                        })
-                        .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
-                            @Override
-                            public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable)
-                                    throws Exception {
-                                return new PartialViewStateDetails.CommentsError(throwable);
-                            }
-                        })
-                        .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS));
-            }
-        });
+                .onErrorReturn(PartialViewStateDetails.CommentsError::new)
+                .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS)));
 
 
         Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(movieId, 1)
-                .concatMap(new Function<List<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
-                    @Override
-                    public ObservableSource<MovieSmallDomain> apply(@NonNull List<MovieSmallDomain> movieSmallDomains) throws Exception {
-                        return Observable.fromIterable(movieSmallDomains);
-                    }
-                })
+                .concatMap(Observable::fromIterable)
                 .map(mapperSmall)
                 .map(new MapProgressive())
                 .cast(ItemView.class)
-                .map(new Function<ItemView, Item>() {
-                    @Override
-                    public Item apply(@NonNull ItemView itemCard) throws Exception {
-                        return itemCard.render(SIMILAR);
-                    }
-                })
+                .map(itemCard -> itemCard.render(SIMILAR))
                 .buffer(20)
-                .map(new Function<List<Item>, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull List<Item> movies) throws Exception {
-                        return new PartialViewStateDetails.Similar(movies);
-                    }
-                })
+                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Similar::new)
                 .startWith(new PartialViewStateDetails.SimilarProgressive(5, SIMILAR))
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull Throwable throwable) throws Exception {
-                        return new PartialViewStateDetails.ErrorSimilar(throwable);
-                    }
-                })
+                .onErrorReturn(PartialViewStateDetails.ErrorSimilar::new)
                 .subscribeOn(io);
 
+        Observable<Boolean> commandFavorite = command(ViewDetails::commandFavorite);
+
+
+        FavoriteDomain favoriteDomain = FavoriteDomain.create(movieBasic.imdbId(), movieBasic.id(), movieBasic.title(), "movie");
+        Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite.flatMap(addToFav -> routerAuth.currentFirebaseUser()
+                .flatMap(user -> {
+                    BundleSlick bundle = new BundleSlick().putString("uid", user.id()).putObject("fav", favoriteDomain);
+                    Observable<Object> objectObservable = addToFav ? routerFavorite.add(bundle) : routerFavorite.remove(bundle);
+                    return objectObservable.flatMap(o -> movieFull).flatMap(movie1 -> {
+                        // TODO: 2017-11-10 clean this mess
+                        FavoriteDomain favoriteDomain2 = FavoriteDomain.create(movie1.imdbId(), movie1.id(), movie1.title(), "movie");
+                        BundleSlick bundle2 = new BundleSlick().putString("uid", user.id()).putObject("fav", favoriteDomain2);
+                        return addToFav ? routerFavorite.add(bundle2) : routerFavorite.remove(bundle2);
+                    });
+                })
+                .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
+                .onErrorReturn(throwable -> {
+                    throwable.printStackTrace();
+                    return new PartialViewStateDetails.FavoriteError(throwable);
+                })
+        ).subscribeOn(io);
+
+        // FIXME: 2017-11-10 ahhh, do I need to now about every login change?
+        Observable<Boolean> signInStream = routerAuth.firebaseUserSignInStateStream().share();
+        Observable<PartialViewState<ViewStateDetails>> favoriteStream =
+                Observable.never().startWith(1).flatMap(o -> signInStream.filter(signedIn -> signedIn)
+                        .flatMap(signedIn1 -> routerAuth.currentFirebaseUser()
+                                .flatMap(user -> routerFavorite.updateStream(
+                                        new BundleSlick().putString("uid", user.id()).putInteger("tmdb_id", favoriteDomain.tmdb())))
+                                .map((Function<Boolean, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Favorite::new)
+                                .onErrorReturn(throwable -> {
+                                    throwable.printStackTrace();
+                                    return new PartialViewStateDetails.FavoriteError(throwable);
+                                })
+                                .takeUntil(signInStream.filter(signedIn2 -> !signedIn2))
+                        )
+                        .doOnComplete(() -> Log.e(TAG, "routerFavorite.updateStream Completed"))
+                        .subscribeOn(io));
+
+/*
+        Observable<PartialViewState<ViewStateDetails>> favoriteStream =
+                Observable.never().startWith(1).flatMap(fav -> routerFavorite.updateStream(movieBasic.imdbId())
+                        .map((Function<Boolean, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Favorite::new)
+                        .onErrorReturn(PartialViewStateDetails.FavoriteError::new)
+                );
+*/
+
+
         ViewStateDetails initial = ViewStateDetails.builder()
-                .casts(Collections.<Item>emptyList())
-                .backdrops(Collections.<Item>emptyList())
-                .similar(Collections.<Item>emptyList())
-                .comments(Collections.<Item>emptyList())
-                .movieBasic(view.getMovie())
+                .casts(Collections.emptyList())
+                .backdrops(Collections.emptyList())
+                .similar(Collections.emptyList())
+                .comments(Collections.emptyList())
+                .movieBasic(movieBasic)
                 .build();
 
-        reduce(initial, merge(movie, casts, backdrops, similar, comments)).subscribe(this);
+        reduce(initial, merge(movie, casts, backdrops, similar, comments, favorite, favoriteStream)).subscribe(this);
 
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        IdBank.dispose(SIMILAR);
-        IdBank.dispose(CASTS);
-        IdBank.dispose(BACKDROPS);
-        IdBank.dispose(COMMENTS);
+    protected void render(@NonNull ViewStateDetails state, @NonNull ViewDetails view) {
+        Boolean favorite = state.isFavorite();
+        if (favorite != null && favorite) {
+            view.favorite();
+        } else {
+            view.notFavorite();
+
+        }
     }
 
 }

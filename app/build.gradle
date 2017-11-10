@@ -130,10 +130,10 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
 
     //slick
-    implementation 'com.github.slick:slick:0.12'
-    implementation 'com.github.slick:slick-middleware:0.12'
-    implementation 'com.github.slick:slick-conductor:0.12'
-    annotationProcessor 'com.github.slick:slick-compiler:0.12'
+    implementation 'com.github.slick:slick:0.13'
+    implementation 'com.github.slick:slick-middleware:0.13'
+    implementation 'com.github.slick:slick-conductor:0.13'
+    annotationProcessor 'com.github.slick:slick-compiler:0.13'
 
     //conductor
     implementation 'com.bluelinelabs:conductor:2.1.5-SNAPSHOT'
@@ -235,4 +235,11 @@ dependencies {
         resolutionStrategy.force 'com.google.guava:guava:23.0'
     }
 }
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xmaxerrs" << "500"
+    }
+}
+
 apply plugin: 'com.google.gms.google-services'

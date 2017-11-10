@@ -10,7 +10,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.BehaviorSubject;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -19,11 +19,11 @@ import io.reactivex.subjects.PublishSubject;
 
 public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStateListener {
 
-    private PublishSubject<FirebaseAuth> authStateChangeListener;
+    private BehaviorSubject<FirebaseAuth> authStateChangeListener;
 
     @Inject
     public RepositoryAuthImpl() {
-        authStateChangeListener = PublishSubject.create();
+        authStateChangeListener = BehaviorSubject.create();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.addAuthStateListener(this);
     }
@@ -51,12 +51,20 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
         });
     }
 
+    /**
+     * @return true if signed in, false if signed out
+     */
     @Override
-    public Observable<FirebaseState> currentUser() {
+    public Observable<Boolean> userSignInStateStream(){
+        return this.authStateChangeListener.map(firebaseAuth -> firebaseAuth.getCurrentUser() != null);
+    }
+
+    @Override
+    public Observable<FirebaseUser> currentUser() {
         return Observable.create(emitter -> {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             if (!emitter.isDisposed() && auth.getCurrentUser() != null) {
-                emitter.onNext(FirebaseState.create(auth));
+                emitter.onNext(auth.getCurrentUser());
                 emitter.onComplete();
             } else if (!emitter.isDisposed()) {
                 emitter.onError(new Throwable("User has not signed in yet."));
@@ -65,7 +73,7 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
     }
 
     @Override
-    public Observable<FirebaseState> signInGoogle(String idToken) {
+    public Observable<FirebaseUser> signInGoogle(String idToken) {
         return Observable.create(emitter -> {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             /*if (!emitter.isDisposed()) {
@@ -74,7 +82,7 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
             AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
             auth.signInWithCredential(credential).addOnSuccessListener(authResult -> {
                 if (!emitter.isDisposed()) {
-                    emitter.onNext(FirebaseState.create(FirebaseAuth.getInstance()));
+                    emitter.onNext(FirebaseAuth.getInstance().getCurrentUser());
                 }
             }).addOnFailureListener(e -> {
                 if (!emitter.isDisposed()) {
@@ -93,11 +101,12 @@ public class RepositoryAuthImpl implements RepositoryAuth, FirebaseAuth.AuthStat
     private static final String TAG = RepositoryAuthImpl.class.getSimpleName();
 
     @Override
-    public Observable<FirebaseState> signOut() {
+    public Observable<Object> signOut() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.signOut();
         return authStateChangeListener
-                .map(firebaseAuth -> FirebaseState.create(firebaseAuth, firebaseAuth.getCurrentUser()))
+                .filter(firebaseAuth -> firebaseAuth.getCurrentUser() == null)
+                .cast(Object.class)
                 .take(1);
     }
 

@@ -20,7 +20,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.Locale;
@@ -46,7 +45,6 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     private SignInButton buttonGoogle;
     private final int RC_SIGN_IN = 123;
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
-    private GoogleApiClient mGoogleApiClient;
 
     @NonNull
     @Override
@@ -61,14 +59,15 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
         return binding.getRoot();
     }
 
+
     @Override
     public Observable<Object> signInAnonymously() {
         return RxView.clicks(buttonAnonymous).throttleFirst(1, TimeUnit.SECONDS);
     }
 
     @Override
-    public Observable<Object> signInWithGoogle() {
-        return RxView.clicks(buttonGoogle).throttleFirst(1, TimeUnit.SECONDS);
+    public Observable<String> signInWithGoogle() {
+        return RxView.clicks(buttonGoogle).throttleFirst(1, TimeUnit.SECONDS).map(o -> getInstanceId());
     }
 
     @Override
@@ -112,13 +111,15 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public void userSignedIn(UserApp user) {
+        buttonGoogle.setEnabled(false);
         Toast.makeText(getApplicationContext(), String.format(Locale.ENGLISH, "Name: %s\n id: %s", user.name(), user.id()), Toast.LENGTH_SHORT)
                 .show();
     }
 
     @Override
     public void userSignedOut() {
-        Toast.makeText(getApplicationContext(), "You've benn signed out.", Toast.LENGTH_SHORT).show();
+        buttonGoogle.setEnabled(true);
+        Toast.makeText(getApplicationContext(), "You've been signed out.", Toast.LENGTH_SHORT).show();
     }
 
     @Override

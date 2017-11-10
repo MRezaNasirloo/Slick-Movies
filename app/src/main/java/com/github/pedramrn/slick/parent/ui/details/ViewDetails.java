@@ -15,8 +15,11 @@ public interface ViewDetails extends Retryable {
 
     MovieBasic getMovie();
 
+    Observable<Boolean> commandFavorite();
+
     Observable<Object> onRetryComments();
 
-    void showMainError();
-    void showMainContents();
+    void notFavorite();
+
+    void favorite();
 }

@@ -27,6 +27,9 @@ abstract class ViewStateDetails {
     public abstract MovieBasic movieBasic();
 
     @Nullable
+    public abstract Boolean isFavorite();
+
+    @Nullable
     public abstract Throwable errorSimilar();
 
     @Nullable
@@ -40,6 +43,10 @@ abstract class ViewStateDetails {
 
     @Nullable
     public abstract Throwable errorComments();
+
+    @Nullable
+    public abstract Throwable errorFavorite();
+
 
     /*@Nullable
     public Throwable errorSimilarConsume(){
@@ -69,19 +76,21 @@ abstract class ViewStateDetails {
     public abstract Builder toBuilder();
 
     public static ViewStateDetails create(List<Item> similar, List<Item> casts, List<Item> backdrops, List<Item> comments, MovieBasic movieBasic,
-                                          Throwable errorSimilar, Throwable errorMovieCast, Throwable errorMovieBackdrop, Throwable errorMovie,
-                                          Throwable errorComments) {
+                                          Boolean isFavorite, Throwable errorSimilar, Throwable errorMovieCast, Throwable errorMovieBackdrop,
+                                          Throwable errorMovie, Throwable errorComments, Throwable errorFavorite) {
         return builder()
                 .similar(similar)
                 .casts(casts)
                 .backdrops(backdrops)
                 .comments(comments)
                 .movieBasic(movieBasic)
+                .isFavorite(isFavorite)
                 .errorSimilar(errorSimilar)
                 .errorMovieCast(errorMovieCast)
                 .errorMovieBackdrop(errorMovieBackdrop)
                 .errorMovie(errorMovie)
                 .errorComments(errorComments)
+                .errorFavorite(errorFavorite)
                 .build();
     }
 
@@ -110,6 +119,10 @@ abstract class ViewStateDetails {
         public abstract Builder comments(List<Item> comments);
 
         public abstract Builder errorComments(Throwable errorComments);
+
+        public abstract Builder isFavorite(Boolean isFavorite);
+
+        public abstract Builder errorFavorite(Throwable errorFavorite);
 
         public abstract ViewStateDetails build();
     }

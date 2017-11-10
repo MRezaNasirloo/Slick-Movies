@@ -1,6 +1,5 @@
 package com.github.pedramrn.slick.parent.datasource.network.repository;
 
-import android.app.Activity;
 import android.arch.lifecycle.DefaultLifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
@@ -10,7 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
+import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,6 +22,7 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 
@@ -28,16 +30,26 @@ import io.reactivex.Observable;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-11-08
  */
+@Singleton
 public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     private WeakReference<LifecycleOwner> ownerWeakReference;
     private GoogleApiClient googleApiClient;
-    private final Context context;
 
     @Inject
     public RepositoryGoogleAuthImpl(Context context) {
-        this.context = context;
+        if (googleApiClient == null) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(context.getResources().getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            googleApiClient = new GoogleApiClient.Builder(context)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
     }
 
     public Observable<String> currentUser() {
@@ -47,28 +59,22 @@ public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, Googl
                 GoogleSignInAccount signInAccount = result.getSignInAccount();
                 emitter.onNext(signInAccount.getIdToken());
                 emitter.onComplete();
-            } else {
+            } else if (!emitter.isDisposed() && !result.isSuccess()) {
                 emitter.onError(new Throwable(result.getStatus().getStatusMessage()));
             }
-        }));
+        }, 5, TimeUnit.SECONDS));
     }
 
-    public Observable<Object> signIn() {
+    public Observable<Object> signIn(String id) {
         return Observable.create(e -> {
-            if (googleApiClient == null) {
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(context.getResources().getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build();
-                googleApiClient = new GoogleApiClient.Builder(context)
-                        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                        .addConnectionCallbacks(this)
-                        .addOnConnectionFailedListener(this)
-                        .build();
-            }
             // TODO: 2017-11-08 catch has
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-            ((Activity) ownerWeakReference.get()).startActivityForResult(signInIntent, 123);
+            Controller controller = ((ActivityMain) ownerWeakReference.get()).getRouter().getControllerWithInstanceId(id);
+            if (controller != null) {
+                controller.startActivityForResult(signInIntent, 123);
+            } else if (!e.isDisposed()) {
+                e.onError(new Throwable("Cannot find the Requested Controller."));
+            }
         });
     }
 
@@ -100,7 +106,7 @@ public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, Googl
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d(TAG, "onConnected() called with: bundle = [" + bundle + "]");
+        Log.e(TAG, "onConnected() called with: bundle = [" + bundle + "]");
     }
 
     private static final String TAG = RepositoryGoogleAuthImpl.class.getSimpleName();

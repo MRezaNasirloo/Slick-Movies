@@ -14,6 +14,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
+import com.github.slick.middleware.RequestStack;
 
 import javax.inject.Inject;
 
@@ -29,6 +30,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActivityMainBinding view = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        Navigator2.bind(this);
         router = Conductor.attachRouter(this, view.controllerContainer, savedInstanceState);
         if (!router.hasRootController()) {
             router.setRoot(RouterTransaction.with(new ControllerMain()));
@@ -39,6 +41,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
 
     @Override
     public void onBackPressed() {
+        RequestStack.getInstance().handleBack();
         if (!router.handleBack()) {
             super.onBackPressed();
         }
@@ -56,6 +59,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
 
     @Override
     protected void onDestroy() {
+        Navigator2.unbindActivity();
         if (isFinishing()) {
             getLifecycle().removeObserver(googleAuth);
             App.disposeComponentMain();
@@ -82,5 +86,9 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
             }
         });
         return this;
+    }
+
+    public Router getRouter() {
+        return router;
     }
 }

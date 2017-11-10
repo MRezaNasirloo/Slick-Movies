@@ -12,9 +12,12 @@ import io.reactivex.Observable;
 
 public interface RepositoryAuth {
     Observable<FirebaseUser> signInAnonymously();
-    Observable<FirebaseState> currentUser();
 
-    Observable<FirebaseState> signInGoogle(String idToken);
+    Observable<Boolean> userSignInStateStream();
 
-    Observable<FirebaseState> signOut();
+    Observable<FirebaseUser> currentUser();
+
+    Observable<FirebaseUser> signInGoogle(String idToken);
+
+    Observable<Object> signOut();
 }

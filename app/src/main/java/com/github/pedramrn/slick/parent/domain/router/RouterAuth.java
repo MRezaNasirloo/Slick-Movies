@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
-import com.github.pedramrn.slick.parent.domain.model.UserStateAppDomain;
 
 import io.reactivex.Observable;
 
@@ -13,14 +12,16 @@ import io.reactivex.Observable;
 public interface RouterAuth {
     Observable<UserAppDomain> signInAnonymously();
 
-    Observable<UserStateAppDomain> signInFirebaseWithGoogleAccount(String idToken);
+    Observable<UserAppDomain> signInFirebaseWithGoogleAccount(String idToken);
 
-    Observable<Object> signInGoogleAccount();
+    Observable<Object> signInGoogleAccount(String s);
 
-    Observable<UserStateAppDomain> currentFirebaseUser();
+    Observable<UserAppDomain> currentFirebaseUser();
+
+    Observable<Boolean> firebaseUserSignInStateStream();
 
     Observable<String> currentGoogleUser();
 
-    Observable<UserStateAppDomain> signOut();
+    Observable<Object> signOut();
 
 }

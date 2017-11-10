@@ -124,7 +124,9 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            if (backdrops.isEmpty()) { backdrops.add(new ItemBackdropEmpty()); }
+            if (backdrops.isEmpty()) {
+                backdrops.add(new ItemBackdropEmpty());
+            }
             return state.toBuilder().backdrops(new ArrayList<>(backdrops)).build();
         }
     }
@@ -202,6 +204,44 @@ public class PartialViewStateDetails {
         }
     }
 
+    static class Favorite implements PartialViewState<ViewStateDetails> {
+        private final Boolean isFavorite;
+
+        public Favorite(Boolean isFavorite) {
+            this.isFavorite = isFavorite;
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state.toBuilder().isFavorite(isFavorite).build();
+        }
+    }
+
+    static class NoOp implements PartialViewState<ViewStateDetails> {
+
+        public NoOp() {
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state;
+        }
+    }
+
+
+    static class FavoriteError implements PartialViewState<ViewStateDetails> {
+        private final Throwable throwable;
+
+        public FavoriteError(Throwable throwable) {
+            this.throwable = throwable;
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state.toBuilder().errorFavorite(throwable).build();
+        }
+    }
+
 
     static class CommentsProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
@@ -234,7 +274,7 @@ public class PartialViewStateDetails {
         public ViewStateDetails reduce(ViewStateDetails state) {
             List<Item> comments = state.comments();
             removeRemovables(comments.iterator(), null);
-            if (comments.isEmpty()){
+            if (comments.isEmpty()) {
                 comments.add(new ItemCommentEmpty(0, "EMPTY"));
             }
             return state.toBuilder().comments(comments).build();
