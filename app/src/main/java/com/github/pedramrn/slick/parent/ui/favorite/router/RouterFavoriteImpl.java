@@ -8,6 +8,8 @@ import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareLogin;
 import com.github.slick.Middleware;
 import com.github.slick.middleware.BundleSlick;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -42,5 +44,16 @@ public class RouterFavoriteImpl implements RouterFavorite {
     @Middleware(MiddlewareLogin.class)
     public Observable<Boolean> updateStream(BundleSlick bundle) {
         return repositoryFavorite.updateStream(bundle.getSting("uid", null), bundle.getInteger("tmdb_id", null));
+    }
+
+    @Override
+    @Middleware(MiddlewareLogin.class)
+    public Observable<List<FavoriteDomain>> updateStream(String uid) {
+        return repositoryFavorite.updateStream(uid)
+                .flatMap(Observable::fromIterable)
+                .map(ifm -> FavoriteDomain.create(ifm.imdbId, ifm.tmdb, ifm.name, ifm.type))
+                .toList()
+                .toObservable()
+                ;
     }
 }

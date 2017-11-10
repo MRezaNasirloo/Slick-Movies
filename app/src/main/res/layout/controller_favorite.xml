@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.github.pedramrn.slick.parent.ui.favorite.Favorite"
+    >
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            >
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
+                >
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_favorite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/row_card"
+
+            />
+
+        <!--<com.github.pedramrn.slick.parent.ui.search.SearchViewImpl
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_anchor="@id/appbar"
+            app:layout_anchorGravity="center"
+            app:layout_behavior="com.lapism.searchview.SearchBehavior"
+            app:search_clear_on_close="true"
+            app:search_clear_on_open="true"
+            app:search_hide_on_keyboard_close="false"
+            app:search_hint="Movie name..."
+            app:search_version="toolbar"
+            app:search_version_margins="menu_item"
+            />-->
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</layout>

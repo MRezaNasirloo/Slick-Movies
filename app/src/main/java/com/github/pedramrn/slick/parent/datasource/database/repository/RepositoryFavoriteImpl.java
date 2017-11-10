@@ -12,6 +12,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -99,7 +102,7 @@ public class RepositoryFavoriteImpl {
                         .child("favorite_list")
                         .child("movies")
                         .child(tmbdId.toString()).getRef();
-                MyValueEventListener valueEventListener = new MyValueEventListener(emitter);
+                ExistenceValueListener valueEventListener = new ExistenceValueListener(emitter);
                 ref.addValueEventListener(valueEventListener);
             } catch (Exception e) {
                 if (!emitter.isDisposed()) {
@@ -109,10 +112,30 @@ public class RepositoryFavoriteImpl {
         });
     }
 
-    private static class MyValueEventListener implements ValueEventListener {
+    public Observable<List<ItemFavoriteModel>> updateStream(@NonNull String uid) {
+        return Observable.create(emitter -> {
+            try {
+                if (reference == null) reference = init();
+                DatabaseReference ref = reference.child("user_data")
+                        .child(uid)
+                        .child("favorite_list")
+                        .child("movies")
+                        .orderByChild("dateAdded")
+                        .getRef();
+                ValueEventListener valueEventListener = new MovieFavoriteListValueEventListener(emitter);
+                ref.addValueEventListener(valueEventListener);
+            } catch (Exception e) {
+                if (!emitter.isDisposed()) {
+                    emitter.onError(e);
+                }
+            }
+        });
+    }
+
+    private static class ExistenceValueListener implements ValueEventListener {
         private final ObservableEmitter<Boolean> emitter;
 
-        public MyValueEventListener(ObservableEmitter<Boolean> emitter) {
+        public ExistenceValueListener(ObservableEmitter<Boolean> emitter) {
             this.emitter = emitter;
         }
 
@@ -120,6 +143,33 @@ public class RepositoryFavoriteImpl {
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (!emitter.isDisposed()) {
                 emitter.onNext(dataSnapshot.exists());
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            if (!emitter.isDisposed()) {
+                emitter.onError(databaseError.toException());
+            }
+        }
+    }
+
+    private static class MovieFavoriteListValueEventListener implements ValueEventListener {
+
+        private final ObservableEmitter<List<ItemFavoriteModel>> emitter;
+
+        public MovieFavoriteListValueEventListener(ObservableEmitter<List<ItemFavoriteModel>> emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (!emitter.isDisposed()) {
+                ArrayList<ItemFavoriteModel> list = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    list.add(snapshot.getValue(ItemFavoriteModel.class));
+                }
+                emitter.onNext(list);
             }
         }
 

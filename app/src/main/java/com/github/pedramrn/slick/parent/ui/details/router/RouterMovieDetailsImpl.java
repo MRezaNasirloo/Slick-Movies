@@ -39,7 +39,8 @@ public class RouterMovieDetailsImpl implements RouterMovieDetails {
                 .lift(new PassThroughMap<MovieDomain>() {
                     @Override
                     public Observable<MovieDomain> apply(@NonNull final MovieDomain movieDomain) throws Exception {
-                        return apiTrakt.movie(movieDomain.imdbId()).map(new Function<MovieTraktFull, MovieDomain>() {
+                        return apiTrakt.
+                                movie(movieDomain.imdbId()).map(new Function<MovieTraktFull, MovieDomain>() {
                             @Override
                             public MovieDomain apply(@NonNull MovieTraktFull movieTraktFull) throws Exception {
                                 String certification = movieTraktFull.certification();

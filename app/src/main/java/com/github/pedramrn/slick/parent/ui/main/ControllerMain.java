@@ -15,7 +15,7 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
-import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
+import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.slick.Presenter;
 
 import java.util.List;
@@ -59,14 +59,14 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                 if (!router.hasRootController()) {
                     switch (position) {
                         case 0:
-                            router.setRoot(RouterTransaction.with(new ControllerHome()).tag("ControllerHome"));
+                            // router.setRoot(RouterTransaction.with(new ControllerHome()).tag("ControllerHome"));
                             break;
                         case 1:
 //                            router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
                             // router.setRoot(RouterTransaction.with(new ControllerUpComing()));
                             break;
                         case 2:
-                            // router.setRoot(RouterTransaction.with(new ControllerVideos()));
+                            router.setRoot(RouterTransaction.with(new ControllerFavorite()));
                             break;
                     }
                 }
