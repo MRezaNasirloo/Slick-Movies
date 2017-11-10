@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -50,10 +51,14 @@ public class RouterFavoriteImpl implements RouterFavorite {
     @Middleware(MiddlewareLogin.class)
     public Observable<List<FavoriteDomain>> updateStream(String uid) {
         return repositoryFavorite.updateStream(uid)
-                .flatMap(Observable::fromIterable)
-                .map(ifm -> FavoriteDomain.create(ifm.imdbId, ifm.tmdb, ifm.name, ifm.type))
-                .toList()
-                .toObservable()
-                ;
+                .map(source -> Observable.fromIterable(source).map(new MapperFavoriteModelToDomain())
+                        .toList(source.size() > 0 ? source.size() : 1).blockingGet()).distinctUntilChanged();
+    }
+
+    private static class MapperFavoriteModelToDomain implements Function<ItemFavoriteModel, FavoriteDomain> {
+        @Override
+        public FavoriteDomain apply(ItemFavoriteModel ifm) throws Exception {
+            return FavoriteDomain.create(ifm.imdbId, ifm.tmdb, ifm.name, ifm.type);
+        }
     }
 }

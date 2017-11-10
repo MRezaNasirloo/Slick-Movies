@@ -11,8 +11,12 @@ import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerFavoriteBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
@@ -23,16 +27,21 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerFavorite extends ControllerBase implements ViewFavorite {
+public class ControllerFavorite extends ControllerBase implements ViewFavorite, Navigator {
 
     @Inject
     Provider<PresenterFavorite> provider;
     @Presenter
     PresenterFavorite presenter;
     private UpdatingGroup updatingFavorite;
+    private PublishSubject<Object> triggerRefresh = PublishSubject.create();
+
 
     @NonNull
     @Override
@@ -42,24 +51,39 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite {
         ControllerFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
+        binding.collapsingToolbar.setTitle("Favorites");
+
         GroupAdapter adapter = new GroupAdapter();
         updatingFavorite = new UpdatingGroup();
         adapter.add(updatingFavorite);
 
-        binding.recyclerViewFavorite.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, LinearLayoutManager.VERTICAL, false));
+        binding.recyclerViewFavorite.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3, LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewFavorite.setAdapter(adapter);
+        binding.recyclerViewFavorite.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.margin_2dp)));
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
         return binding.getRoot();
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        triggerRefresh.onNext(1);
     }
 
     @Override
     public void renderError(@Nullable Throwable throwable) {
         if (throwable != null) {
             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            throwable.printStackTrace();
         }
     }
 
     @Override
     public void updateFavorites(List<Item> favorites) {
         updatingFavorite.update(favorites);
+    }
+
+    @Override
+    public Observable<Object> triggerRefresh() {
+        return triggerRefresh;
     }
 }

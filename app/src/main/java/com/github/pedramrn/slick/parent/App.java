@@ -16,6 +16,7 @@ import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+import com.tspoon.traceur.Traceur;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -50,6 +51,7 @@ public class App extends Application {
         refWatcher = RefWatcher.DISABLED;
 
         if (BuildConfig.DEBUG) {
+            Traceur.enableLogging();
             refWatcher = LeakCanary.install(this);
             // AndroidDevMetrics.initWith(this);
             StrictMode.enableDefaults();

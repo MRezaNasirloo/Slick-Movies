@@ -231,6 +231,8 @@ dependencies {
 
     implementation "android.arch.lifecycle:common-java8:1.0.0"
 
+    compile 'com.tspoon.traceur:traceur:1.0.1'
+
     configurations.all {
         resolutionStrategy.force 'com.google.guava:guava:23.0'
     }

@@ -10,7 +10,6 @@ import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
-import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteList;
@@ -38,7 +37,6 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
     private final RouterAuth routerAuth;
     private final RouterFavorite routerFavorite;
     private final MapperMovieDomainMovie mapper;
-    private final MapperMovieSmallDomainMovieSmall mapperSmall;
     private final ScanToMap<Item> scanToMap = new ScanToMap<>();
 
     @Inject
@@ -47,7 +45,6 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
             RouterAuthImpl routerAuth,
             RouterFavoriteImplSlick routerFavorite,
             MapperMovieDomainMovie mapper,
-            MapperMovieSmallDomainMovieSmall mapperSmall,
             @Named("io") Scheduler io,
             @Named("main") Scheduler main
     ) {
@@ -56,31 +53,30 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
         this.routerAuth = routerAuth;
         this.routerFavorite = routerFavorite;
         this.mapper = mapper;
-        this.mapperSmall = mapperSmall;
     }
 
     @Override
     protected void start(ViewFavorite view) {
+        Observable<Object> commandRefresh = command(ViewFavorite::triggerRefresh);
+        // flatMapping on the routerAuth in case of whenever it failed, we don't lost the whole stream
         Observable<PartialViewState<ViewStateFavorite>> favoriteList =
-                Observable.just(1).flatMap(o -> routerAuth.firebaseUserSignInStateStream()
+                commandRefresh.startWith(1).flatMap(o -> routerAuth.firebaseUserSignInStateStream())
                         .filter(signedIn -> signedIn)
-                        .map(aBoolean -> "CzMEjmrY0rSgIyCFJhWOOi5yTDp1"))
-                        .flatMap(user -> {
-                                    return routerFavorite.updateStream(user).subscribeOn(io)
-                                            .concatMap(routerMovie::movie)
-                                            .map(mapper)
-                                            .map(movie -> movie.render("FAVORITE"))
-                                            .compose(scanToMap)
-                                            .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)
-                                            .onErrorReturn(FavoriteListError::new)
-                                            .doOnComplete(() -> Log.e(TAG, "Completed1"))
-                                            ;
-                                    // .takeUntil(routerAuth.firebaseUserSignInStateStream().filter(signedIn2 -> !signedIn2));
-                                }
-                        )
+                        .flatMap(ignored -> routerAuth.currentFirebaseUser()// ^ read the comment above
+                                .flatMap(user -> routerFavorite.updateStream(user.id())
+                                        .concatMap(favorites -> routerMovie.movie(favorites).subscribeOn(io)
+                                                .map(mapper)
+                                                .map(movie -> movie.render("FAVORITE"))
+                                                .compose(scanToMap)
+                                                .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)
+                                                .onErrorReturn(FavoriteListError::new)
+                                                .doOnComplete(() -> Log.e(TAG, "Completed1"))
+                                                .takeUntil(routerAuth.firebaseUserSignInStateStream().filter(signedIn2 -> !signedIn2))
+                                        )
+
+                                ))
                         .doOnError(Throwable::printStackTrace)
-                        .doOnComplete(() -> Log.e(TAG, "Completed2"))
-                        .subscribeOn(io);
+                        .doOnComplete(() -> Log.e(TAG, "Completed2"));
 
         reduce(ViewStateFavorite.builder().favorites(Collections.emptyMap()).build(), merge(favoriteList)).subscribe(this);
     }

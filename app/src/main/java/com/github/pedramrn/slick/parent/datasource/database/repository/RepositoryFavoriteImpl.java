@@ -41,7 +41,7 @@ public class RepositoryFavoriteImpl {
             if (reference == null) {
                 FirebaseDatabase instance = FirebaseDatabase.getInstance();
                 instance.setPersistenceEnabled(true);
-                instance.setLogLevel(Logger.Level.DEBUG);
+                instance.setLogLevel(Logger.Level.INFO);
                 return instance.getReference();
             }
             return reference;
