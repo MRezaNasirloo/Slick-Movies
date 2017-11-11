@@ -98,13 +98,14 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
         @Override
         public void onError(Throwable t) {
             System.out.println("Op.onError1 " + hashCode());
-            actual.onError(t);
-            /*synchronized (actual) {//possible fix, swallows the errors after termination
-                if (!completed) {
+            // actual.onError(t);
+            synchronized (this) {//possible fix, swallows the errors after termination
+                if (!completed && !d.isDisposed()) {
                     System.out.println("Op.onError2 " + hashCode());
+                    completed = true;
                     actual.onError(t);
                 }
-            }*/
+            }
         }
 
         @Override
@@ -125,6 +126,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
         public void dispose() {
             d.dispose();
             System.out.println("Op.dispose " + hashCode());
+            completed = true;
         }
 
         @Override
