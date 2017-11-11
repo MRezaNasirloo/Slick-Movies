@@ -8,4 +8,13 @@
     <dimen name="card_list_side_margin">12dp</dimen>
     <dimen name="action_bar_size">48dp</dimen>
     <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_18sp">18sp</dimen>
+    <dimen name="text_size_20sp">20sp</dimen>
+    <dimen name="icon_size_tmdb">20dp</dimen>
+    <dimen name="item_margin_long">8dp</dimen>
+    <dimen name="item_margin_normal">4dp</dimen>
+    <dimen name="item_margin_short">2dp</dimen>
 </resources>

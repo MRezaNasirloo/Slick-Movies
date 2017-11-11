@@ -48,6 +48,8 @@ public class ImageViewLoader extends AppCompatImageView {
             return;
         }
         if (url == null) {
+            // TODO: 2017-11-11 do this for all
+            setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
         Context context = getContext();

@@ -67,7 +67,7 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                                         .concatMap(favorites -> routerMovie.movie(favorites).subscribeOn(io)
                                                 .map(mapper)
                                                 .map(movie -> movie.render("FAVORITE"))
-                                                .compose(scanToMap)
+                                                .compose(new ScanToMap<>())
                                                 .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)
                                                 .onErrorReturn(FavoriteListError::new)
                                                 .doOnComplete(() -> Log.e(TAG, "Completed1"))

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
+import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavorite;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.videos.model.Video;
@@ -74,26 +75,33 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     @Nullable
     @Override
     public String thumbnailPoster() {
-        if (backdropPath() == null) { return null; }
+        if (backdropPath() == null) {
+            return null;
+        }
         return "http://image.tmdb.org/t/p/w342" + posterPath();
     }
 
     @Nullable
     @Override
     public String thumbnailTinyPoster() {
-        if (backdropPath() == null) { return null; }
+        if (backdropPath() == null) {
+            return null;
+        }
         return "http://image.tmdb.org/t/p/w92" + posterPath();
     }
 
     @Nullable
     @Override
     public String thumbnailBackdrop() {
-        if (backdropPath() == null) { return null; }
+        if (backdropPath() == null) {
+            return null;
+        }
         return "http://image.tmdb.org/t/p/w300" + backdropPath();
     }
 
     @Override
     public Item render(String tag) {
+        if ("FAVORITE".equals(tag)) return new ItemFavorite(uniqueId(), this, tag + uniqueId());
         return new ItemCardMovie(uniqueId(), this, tag);
     }
 

@@ -2,7 +2,6 @@ package com.github.pedramrn.slick.parent.ui.favorite;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,15 +50,18 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         ControllerFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
-        binding.collapsingToolbar.setTitle("Favorites");
+        // binding.collapsingToolbar.setTitle(true);
+        // binding.collapsingToolbar.setTitleEnabled(true);
+        binding.toolbar.setTitle("Favorites");
+        setToolbar(binding.toolbar);
 
         GroupAdapter adapter = new GroupAdapter();
         updatingFavorite = new UpdatingGroup();
         adapter.add(updatingFavorite);
 
-        binding.recyclerViewFavorite.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3, LinearLayoutManager.VERTICAL, false));
+        binding.recyclerViewFavorite.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerViewFavorite.setAdapter(adapter);
-        binding.recyclerViewFavorite.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.margin_2dp)));
+        binding.recyclerViewFavorite.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_margin_long)));
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
         return binding.getRoot();
     }

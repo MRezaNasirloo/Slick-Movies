@@ -11,5 +11,6 @@
     <color name="color_gray_3">#607D8B</color>
     <color name="color_gray_4">#919191</color>
     <color name="color_blue">#439bf2</color>
-    <color name="black">#000</color>
+    <color name="color_black">#000</color>
+    <color name="color_blackish">#3a3a3a</color>
 </resources>
