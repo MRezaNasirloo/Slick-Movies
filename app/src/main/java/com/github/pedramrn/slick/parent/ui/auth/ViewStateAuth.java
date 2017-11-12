@@ -16,6 +16,9 @@ public abstract class ViewStateAuth {
 
     public abstract boolean loading();
 
+    @Nullable
+    public abstract Throwable error();
+
     /**
      * @return the logged in user, and returns null if the user has not logged in.
      */
@@ -46,6 +49,8 @@ public abstract class ViewStateAuth {
         public abstract Builder googleSignInResult(GugleSignInResult googleSignInResult);
 
         public abstract Builder loading(boolean loading);
+
+        public abstract Builder error(Throwable error);
 
         public abstract ViewStateAuth build();
     }

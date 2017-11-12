@@ -1,27 +1,24 @@
 package com.github.pedramrn.slick.parent.ui.auth.state;
 
 import com.github.pedramrn.slick.parent.ui.auth.ViewStateAuth;
-import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-10-31
  */
-public class SignedIn implements PartialViewState<ViewStateAuth> {
+public class SigningError implements PartialViewState<ViewStateAuth> {
 
-    private final UserApp user;
+    private final Throwable throwable;
 
-    public SignedIn(UserApp user) {
-        this.user = user;
+    public SigningError(Throwable throwable) {
+        this.throwable = throwable;
     }
 
     @Override
     public ViewStateAuth reduce(ViewStateAuth state) {
         return state.toBuilder()
-                .user(user)
-                .signedOut(false)
-                .loading(false)
+                .error(throwable)
                 .build();
     }
 }

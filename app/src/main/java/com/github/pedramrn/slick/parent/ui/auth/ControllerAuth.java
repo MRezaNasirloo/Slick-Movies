@@ -89,6 +89,23 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     }
 
     @Override
+    protected void onDestroyView(@NonNull View view) {
+        binding = null;
+    }
+
+    @Override
+    public void showLoading(boolean loading) {
+        binding.progressBarSignIn.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void renderError(@Nullable Throwable error) {
+        if (error != null) {
+            binding.textViewProfileInfo.setText(error.getMessage());
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {

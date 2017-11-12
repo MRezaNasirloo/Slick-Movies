@@ -9,9 +9,11 @@ import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImplSlick;
+import com.github.pedramrn.slick.parent.ui.auth.state.NoOp;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedIn;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedInLoading;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedOut;
+import com.github.pedramrn.slick.parent.ui.auth.state.SigningError;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 
 import javax.inject.Inject;
@@ -70,26 +72,24 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
 
         Observable<PartialViewState<ViewStateAuth>> signInGoogle = commandSignInGoogle
                 .flatMap(s -> routerAuth.signInGoogleAccount(s)
-                                .map((Function<Object, PartialViewState<ViewStateAuth>>) uad -> new SignedInLoading(true))
-                                .doOnError(Throwable::printStackTrace)
-                                .startWith(new SignedInLoading(true))
-                        // .onErrorReturnItem(new SignedOut())
+                        .map((Function<Object, PartialViewState<ViewStateAuth>>) o -> new NoOp())
+                        .doOnError(Throwable::printStackTrace)
+                        .onErrorReturn(SigningError::new)
                 )
                 .subscribeOn(io);
 
 
         Observable<PartialViewState<ViewStateAuth>> signOut = commandSignOut
-                .flatMap(o -> routerAuth.signOut()
-                        .map((Function<Object, PartialViewState<ViewStateAuth>>) usa -> new SignedOut())
-                        .doOnError(Throwable::printStackTrace)
-                )
-                .subscribeOn(io);
+                .flatMap(o -> routerAuth.signOut().subscribeOn(io)
+                        .map((Function<Object, PartialViewState<ViewStateAuth>>) usa -> new NoOp()));
+
 
         Observable<PartialViewState<ViewStateAuth>> firebaseSignedIn = commandResult.doOnNext(result -> Log.e(TAG, result.toString()))
                 .filter(GugleSignInResult::isSuccess)
                 .flatMap(result -> routerAuth.signInFirebaseWithGoogleAccount(result.idToken())
                         .map(UserApp::create)
                         .map((Function<UserApp, PartialViewState<ViewStateAuth>>) SignedIn::new)
+                        .startWith(new SignedInLoading(true))
                         .doOnError(Throwable::printStackTrace)
                 )
                 .subscribeOn(io);
@@ -108,5 +108,8 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
         if (signedOut != null && signedOut) {
             view.userSignedOut();
         }
+
+        view.showLoading(state.loading());
+        view.renderError(state.error());
     }
 }
