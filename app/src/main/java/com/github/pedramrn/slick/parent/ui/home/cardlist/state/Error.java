@@ -28,12 +28,13 @@ public class Error implements PartialViewState<ViewStateCardList> {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator(), null);
 
-        Item itemError = new ItemError(Long.MAX_VALUE, PresenterCardList.MOVIES_CARD, throwable.getMessage());
-        movies.put(((int) itemError.getId()), itemError);
+        Item itemError = new ItemError(Integer.MAX_VALUE, PresenterCardList.MOVIES_CARD, throwable.getMessage());
+        movies.put(movies.size(), itemError);
 
         return state.toBuilder()
                 .error(throwable)
                 .isLoading(true)
+                .itemLoadedCount(movies.size())
                 .movies(movies)
                 .build();
     }

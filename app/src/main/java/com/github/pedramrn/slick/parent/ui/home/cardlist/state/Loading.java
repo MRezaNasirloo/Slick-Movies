@@ -22,7 +22,7 @@ public class Loading implements PartialViewState<ViewStateCardList> {
     public ViewStateCardList reduce(ViewStateCardList state) {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator(), TAG);
-        movies.put(movies.size(), new ItemLoading(-1));
+        movies.put(movies.size(), new ItemLoading(Long.MAX_VALUE));
         return state.toBuilder()
                 .isLoading(true)
                 .movies(movies)
