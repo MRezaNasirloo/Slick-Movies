@@ -1,7 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
-import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
-import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterSearch;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
@@ -20,9 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 
 /**
@@ -52,60 +48,20 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
 
     @Override
     public void start(ViewSearch view) {
-        Observable<PartialViewState<ViewStateSearch>> searchMovies = command(new CommandProvider<String, ViewSearch>() {
-            @Override
-            public Observable<String> provide(ViewSearch view) {
-                return view.queryNexText();
-            }
-        })
-                .flatMap(new Function<String, ObservableSource<PartialViewState<ViewStateSearch>>>() {
-                    @Override
-                    public ObservableSource<PartialViewState<ViewStateSearch>> apply(@NonNull String queryText) throws Exception {
-                        return routerSearch.movies(queryText, 1)
-                                .flatMap(new Function<PagedDomain<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
-                                    @Override
-                                    public ObservableSource<MovieSmallDomain> apply(@NonNull PagedDomain<MovieSmallDomain> pagedDomain)
-                                            throws Exception {
-                                        return Observable.fromIterable(pagedDomain.data()).take(6);
-                                    }
-                                })
-                                .map(mapperSmall)
-                                .map(new Function<MovieSmall, Item>() {
-                                    @Override
-                                    public Item apply(@NonNull MovieSmall movieSmall) throws Exception {
-                                        return new ItemRowSuggestion(movieSmall);
-                                    }
-                                })
-                                .buffer(6)
-                                .map(new Function<List<Item>, PartialViewState<ViewStateSearch>>() {
-                                    @Override
-                                    public PartialViewState<ViewStateSearch> apply(@NonNull List<Item> items) throws Exception {
-                                        return new PartialViewStateSearch.Movies(items);
-                                    }
-                                })
-                                .onErrorResumeNext(new Function<Throwable, ObservableSource<? extends PartialViewState<ViewStateSearch>>>() {
-                                    @Override
-                                    public ObservableSource<? extends PartialViewState<ViewStateSearch>> apply(@NonNull Throwable throwable)
-                                            throws Exception {
-                                        return Observable.just(new PartialViewStateSearch.ErrorMovie(throwable));
-                                    }
-                                })
-                                .subscribeOn(io);
-                    }
-                });
+        Observable<PartialViewState<ViewStateSearch>> searchMovies = command(ViewSearch::queryNexText)
+                .flatMap(queryText -> routerSearch.movies(queryText, 1)
+                        .flatMap(pagedDomain -> Observable.fromIterable(pagedDomain.data()).take(6))
+                        .map(mapperSmall)
+                        .map((Function<MovieSmall, Item>) ItemRowSuggestion::new)
+                        .buffer(6)
+                        .map((Function<List<Item>, PartialViewState<ViewStateSearch>>) PartialViewStateSearch.Movies::new)
+                        .onErrorResumeNext(throwable -> {
+                            return Observable.just(new PartialViewStateSearch.ErrorMovie(throwable));
+                        })
+                        .subscribeOn(io));
 
-        Observable<PartialViewState<ViewStateSearch>> searchOpenClose = command(new CommandProvider<Boolean, ViewSearch>() {
-            @Override
-            public Observable<Boolean> provide(ViewSearch view) {
-                return view.searchOpenClose();
-            }
-        })
-                .map(new Function<Boolean, PartialViewState<ViewStateSearch>>() {
-                    @Override
-                    public PartialViewState<ViewStateSearch> apply(@NonNull Boolean isOpen) throws Exception {
-                        return new PartialViewStateSearch.SearchOpenClose(isOpen);
-                    }
-                });
+        Observable<PartialViewState<ViewStateSearch>> searchOpenClose = command(ViewSearch::searchOpenClose)
+                .map(PartialViewStateSearch.SearchOpenClose::new);
 
 
         ViewStateSearch initial = ViewStateSearch.builder()
