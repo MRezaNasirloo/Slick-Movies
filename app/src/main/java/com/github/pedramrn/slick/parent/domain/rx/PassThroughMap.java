@@ -100,7 +100,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
             System.out.println("Op.onError1 " + hashCode());
             // actual.onError(t);
             synchronized (this) {//possible fix, swallows the errors after termination
-                if (!completed && !d.isDisposed()) {
+                if (!completed) {
                     System.out.println("Op.onError2 " + hashCode());
                     completed = true;
                     actual.onError(t);

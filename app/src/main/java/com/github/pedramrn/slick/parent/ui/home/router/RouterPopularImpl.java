@@ -11,12 +11,9 @@ import com.github.pedramrn.slick.parent.domain.model.MovieMetadataImpl;
 import com.github.pedramrn.slick.parent.domain.router.RouterPopular;
 import com.github.pedramrn.slick.parent.domain.rx.PassThroughMap;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 
@@ -39,28 +36,22 @@ public class RouterPopularImpl implements RouterPopular {
 
     @Override
     public Observable<MovieMetadata> popular() {
-        return popular(1,10);
+        return popular(1, 10);
     }
 
     @Override
     public Observable<MovieMetadata> popular(@IntRange(from = 1, to = Short.MAX_VALUE) int page,
                                              @IntRange(from = 1, to = Short.MAX_VALUE) int size) {
-        if (page < 1) { throw new IllegalArgumentException("Page should be a positive number"); }
-        if (size < 1) { throw new IllegalArgumentException("Size should be a positive number"); }
+        if (page < 1) {
+            throw new IllegalArgumentException("Page should be a positive number");
+        }
+        if (size < 1) {
+            throw new IllegalArgumentException("Size should be a positive number");
+        }
         return apiTrakt.popular(page, size)
-                .concatMap(new Function<List<MovieTraktMetadata>, ObservableSource<MovieTraktMetadata>>() {
-                    @Override
-                    public ObservableSource<MovieTraktMetadata> apply(@NonNull List<MovieTraktMetadata> mtm)
-                            throws Exception {
-                        return Observable.fromIterable(mtm);
-                    }
-                })
-                .map(new Function<MovieTraktMetadata, MovieMetadata>() {
-                    @Override
-                    public MovieMetadata apply(@NonNull MovieTraktMetadata mtm) throws Exception {
-                        return MovieMetadataImpl.create(mtm.ids().tmdb(), mtm.ids().imdb(), mtm.title(), mtm.year());
-                    }
-                })
+                .concatMap(Observable::fromIterable)
+                .map((Function<MovieTraktMetadata, MovieMetadata>) mtm ->
+                        MovieMetadataImpl.create(mtm.ids().tmdb(), mtm.ids().imdb(), mtm.title(), mtm.year()))
                 .lift(new PassThroughMap<MovieMetadata>() {
                     @Override
                     public Observable<MovieMetadata> apply(@NonNull MovieMetadata movieMetadata) throws Exception {

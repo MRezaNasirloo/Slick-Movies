@@ -26,7 +26,6 @@ import java.util.TreeMap;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
 import io.reactivex.functions.Function;
 
@@ -62,58 +61,33 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
     @Override
     protected void start(ViewCardList view) {
         final int pageSize = view.pageSize();
-        Observable<Integer> trigger = command(new CommandProvider<Object, ViewCardList>() {
-            @Override
-            public Observable<Object> provide(ViewCardList view) {
-                return view.trigger();
-            }
-        }).map(new Function<Object, Integer>() {
-            @Override
-            public Integer apply(@NonNull Object o) throws Exception {
-                return state.page();
-            }
-        }).startWith(1);
-        final Observable<PartialViewState<ViewStateCardList>> movies = trigger.concatMap(new Function<Integer,
-                ObservableSource<PartialViewState<ViewStateCardList>>>() {
-            @Override
-            public ObservableSource<PartialViewState<ViewStateCardList>> apply(@NonNull final Integer page) throws Exception {
-                System.out.println("PresenterCardList.movies page " + page);
-                return router.page(page, pageSize).subscribeOn(io)
-                        .map(mapperMetadata)
-                        .cast(AutoBase.class)
-                        .map(mapProgressive)
-                        .cast(ItemView.class)
-                        .map(new Function<ItemView, Item>() {
-                            @Override
-                            public Item apply(@NonNull ItemView itemView) throws Exception {
-                                return itemView.render(tag);
+        Observable<Integer> trigger = command(ViewCardList::trigger).map(o -> state.page()).startWith(1);
+        final Observable<PartialViewState<ViewStateCardList>> movies = trigger.concatMap(page -> {
+            System.out.println("PresenterCardList.movies page " + page);
+            return router.page(page, pageSize).subscribeOn(io)
+                    .map(mapperMetadata)
+                    .cast(AutoBase.class)
+                    .map(mapProgressive)
+                    .cast(ItemView.class)
+                    .map(itemView -> itemView.render(tag))
+                    .compose(scanToMap)
+                    .map((Function<Map<Integer, Item>, PartialViewState<ViewStateCardList>>) items -> {
+                        System.out.println("PresenterCardList.Movies size: " + items.size());
+                        return new Movies(new TreeMap<>(items));
+                    })
+                    .lift(new OnCompleteReturn<PartialViewState<ViewStateCardList>>() {
+                        @Override
+                        public PartialViewState<ViewStateCardList> apply(@NonNull Boolean hadError) throws Exception {
+                            System.out.println("PresenterCardList.Loaded had Error: " + hadError);
+                            return new Loaded();
+                        }
+                    })
+                    .startWith(new Loading())
+                    .onErrorReturn(throwable -> {
+                                System.out.println("PresenterCardList.Error");
+                                return new Error(throwable);
                             }
-                        })
-                        .compose(scanToMap)
-                        .map(new Function<Map<Integer, Item>, PartialViewState<ViewStateCardList>>() {
-                            @Override
-                            public PartialViewState<ViewStateCardList> apply(@NonNull Map<Integer, Item> items) throws Exception {
-                                System.out.println("PresenterCardList.Movies size: " + items.size());
-                                return new Movies(new TreeMap<>(items));
-                            }
-                        })
-                        .lift(new OnCompleteReturn<PartialViewState<ViewStateCardList>>() {
-                            @Override
-                            public PartialViewState<ViewStateCardList> apply(@NonNull Boolean hadError) throws Exception {
-                                System.out.println("PresenterCardList.Loaded had Error: " + hadError);
-                                return new Loaded();
-                            }
-                        })
-                        .startWith(new Loading())
-                        .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateCardList>>() {
-                                           @Override
-                                           public PartialViewState<ViewStateCardList> apply(@NonNull Throwable throwable) throws Exception {
-                                               System.out.println("PresenterCardList.Error");
-                                               return new Error(throwable);
-                                           }
-                                       }
-                        );
-            }
+                    );
         }).startWith(new CardProgressiveMovie(pageSize, tag));
 
         ViewStateCardList initialState = ViewStateCardList.builder()

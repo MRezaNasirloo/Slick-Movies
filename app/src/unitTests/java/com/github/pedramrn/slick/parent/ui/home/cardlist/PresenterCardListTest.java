@@ -80,7 +80,7 @@ public class PresenterCardListTest {
                 .assertValueAt(0, new Predicate<ViewStateCardList>() {
                     @Override
                     public boolean test(@NonNull ViewStateCardList viewStateCardList) throws Exception {
-                        return viewStateCardList.page() == 1 && !viewStateCardList.isLoading();
+                        return viewStateCardList.page() == 1 && viewStateCardList.isLoading();
                     }
                 })
                 .assertValueAt(1, new Predicate<ViewStateCardList>() {
