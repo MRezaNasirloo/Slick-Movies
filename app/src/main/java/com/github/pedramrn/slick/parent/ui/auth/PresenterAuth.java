@@ -39,7 +39,6 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
 
     @Override
     protected void start(ViewAuth view) {
-        Observable<Object> commandSignInAnon = command(ViewAuth::signInAnonymously);
         Observable<String> commandSignInGoogle = command(ViewAuth::signInWithGoogle);
         Observable<Object> commandSignOut = command(ViewAuth::signOut);
         Observable<GugleSignInResult> commandResult = command(ViewAuth::result);
@@ -59,24 +58,24 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
                 )
                 .subscribeOn(io);
 
-        /*Observable<PartialViewState<ViewStateAuth>> signOutState = Observable.never().startWith(1)
+        Observable<PartialViewState<ViewStateAuth>> signingState = Observable.never().startWith(1)
                 .flatMap(o -> routerAuth.firebaseUserSignInStateStream()
-                        .map((Function<Boolean, PartialViewState<ViewStateAuth>>) aBoolean -> new SignedIn())
-                        .doOnError(Throwable::printStackTrace)
-                        .onErrorReturnItem(new SignedOut())
+                        .flatMap(ignored -> routerAuth.currentFirebaseUser()
+                                .map((Function<UserAppDomain, PartialViewState<ViewStateAuth>>) uad -> new SignedIn(UserApp.create(uad)))
+                                .doOnError(Throwable::printStackTrace)
+                                .onErrorReturn(throwable -> new SignedOut()))
                 )
-                .subscribeOn(io);*/
+                .subscribeOn(io);
 
 
         Observable<PartialViewState<ViewStateAuth>> signInGoogle = commandSignInGoogle
                 .flatMap(s -> routerAuth.signInGoogleAccount(s)
-                        .map((Function<Object, PartialViewState<ViewStateAuth>>) uad -> new SignedInLoading(true))
-                        .doOnError(Throwable::printStackTrace)
-                        .startWith(new SignedInLoading(true))
+                                .map((Function<Object, PartialViewState<ViewStateAuth>>) uad -> new SignedInLoading(true))
+                                .doOnError(Throwable::printStackTrace)
+                                .startWith(new SignedInLoading(true))
                         // .onErrorReturnItem(new SignedOut())
                 )
                 .subscribeOn(io);
-
 
 
         Observable<PartialViewState<ViewStateAuth>> signOut = commandSignOut
@@ -95,7 +94,8 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
                 )
                 .subscribeOn(io);
 
-        reduce(ViewStateAuth.builder().loading(false).build(), merge(signInGoogle, signOut, firebaseSignedIn, signInState)).subscribe(this);
+        reduce(ViewStateAuth.builder().loading(false).build(), merge(signInGoogle, signOut, firebaseSignedIn, signInState, signingState)).subscribe(
+                this);
     }
 
 

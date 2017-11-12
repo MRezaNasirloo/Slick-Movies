@@ -10,7 +10,6 @@ import io.reactivex.Observable;
  * A simple View interface
  */
 public interface ViewAuth {
-    Observable<Object> signInAnonymously();
     Observable<String> signInWithGoogle();
 
     Observable<Object> signOut();

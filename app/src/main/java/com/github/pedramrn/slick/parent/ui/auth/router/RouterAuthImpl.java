@@ -30,8 +30,7 @@ public class RouterAuthImpl implements RouterAuth {
 
     @Override
     public Observable<UserAppDomain> signInAnonymously() {
-        return repositoryAuth.signInAnonymously()
-                .map(fu -> UserAppDomain.create(fu.getUid(), fu.getDisplayName(), fu.getEmail(), fu.getProviderId()));
+        return repositoryAuth.signInAnonymously().map(UserAppDomain::create);
     }
 
     @Override

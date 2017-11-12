@@ -48,11 +48,6 @@ public class AuthViewMinimal extends LinearLayout implements ViewAuth, OnDestroy
     }
 
     @Override
-    public Observable<Object> signInAnonymously() {
-        return null;
-    }
-
-    @Override
     public Observable<String> signInWithGoogle() {
         return null;
     }

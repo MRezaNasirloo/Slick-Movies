@@ -15,4 +15,7 @@
     <string name="comments_empty">No one has\n commented yet…</string>
     <string name="empty_state_backdrops">Couldn\'t find any backdrops for this title…</string>
     <string name="auth_sign_in_note">You need to sign in order that we preserve your data on the cloud.</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="sign_in_help">Sign in to save and view your shows...</string>
 </resources>

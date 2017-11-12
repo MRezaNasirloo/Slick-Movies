@@ -13,17 +13,23 @@ import com.google.firebase.auth.FirebaseUser;
 @AutoValue
 public abstract class UserAppDomain {
     public abstract String id();
+
     public abstract String name();
+
     public abstract String email();
+
+    public abstract String avatar();
+
     public abstract String providerId();
+
+    public static UserAppDomain create(String id, String name, String email, String avatar, String providerId) {
+        return new AutoValue_UserAppDomain(id, name, email, avatar, providerId);
+    }
     // public abstract String avatar();
 
-    public static UserAppDomain create(String id, String name, String email, String providerId) {
-        return new AutoValue_UserAppDomain(id, name, email, providerId);
-    }
-
     public static UserAppDomain create(@NonNull FirebaseUser fbu) {
-        return new AutoValue_UserAppDomain(fbu.getUid(), fbu.getDisplayName(), fbu.getEmail(), fbu.getProviderId());
+        return new AutoValue_UserAppDomain(fbu.getUid(), fbu.getDisplayName(), fbu.getEmail(),
+                fbu.getPhotoUrl() == null ? null : fbu.getPhotoUrl().toString(), fbu.getProviderId());
     }
 
 }

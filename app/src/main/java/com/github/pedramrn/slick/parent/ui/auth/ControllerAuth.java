@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
@@ -22,7 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.jakewharton.rxbinding2.view.RxView;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -40,11 +37,10 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     Provider<PresenterAuth> provider;
     @Presenter
     PresenterAuth presenter;
-    private Button buttonSignOut;
-    private Button buttonAnonymous;
-    private Button buttonGoogle;
+
     private final int RC_SIGN_IN = 123;
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
+    private ControllerAuthBinding binding;
 
     @NonNull
     @Override
@@ -52,57 +48,20 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
         // TODO: 2017-07-22 Inject dependencies 
         App.componentMain().inject(this);
         ControllerAuth_Slick.bind(this);
-        ControllerAuthBinding binding = ControllerAuthBinding.inflate(inflater, container, false);
-        buttonAnonymous = binding.buttonAnonymous;
-        buttonGoogle = binding.buttonGoogle;
-        buttonSignOut = binding.buttonSignOut;
+        binding = ControllerAuthBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
 
     @Override
-    public Observable<Object> signInAnonymously() {
-        return RxView.clicks(buttonAnonymous).throttleFirst(1, TimeUnit.SECONDS);
-    }
-
-    @Override
     public Observable<String> signInWithGoogle() {
-        return RxView.clicks(buttonGoogle).throttleFirst(1, TimeUnit.SECONDS).map(o -> getInstanceId());
+        return RxView.clicks(binding.buttonGoogle).throttleFirst(1, TimeUnit.SECONDS).map(o -> getInstanceId());
     }
 
     @Override
     public Observable<Object> signOut() {
-        return RxView.clicks(buttonSignOut).throttleFirst(1, TimeUnit.SECONDS);
+        return RxView.clicks(binding.buttonSignOut).throttleFirst(1, TimeUnit.SECONDS);
     }
-
-    /*@Override
-    public void showSignInDialog() {
-        *//*Intent signInIntent = AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(Arrays.asList(
-                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                .build();*//*
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getResources().getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        *//* FragmentActivity *//**//* OnConnectionFailedListener *//*
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .enableAutoManage(((AppCompatActivity) getActivity()) *//* FragmentActivity *//*, null *//* OnConnectionFailedListener *//*)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-        }
-        // Auth.GoogleSignInApi.signOut(mGoogleApiClient).await();
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        // Auth.GoogleSignInApi.
-        // mGoogleApiClient.clearDefaultAccountAndReconnect();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }*/
 
     @Override
     public Observable<GugleSignInResult> result() {
@@ -111,20 +70,22 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public void userSignedIn(UserApp user) {
-        buttonGoogle.setClickable(false);
-        buttonGoogle.setText(user.name());
-        buttonGoogle.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.mipmap.ic_launcher), null, null, null);
-        Toast.makeText(getApplicationContext(), String.format(Locale.ENGLISH, "Name: %s\n id: %s", user.name(), user.id()), Toast.LENGTH_SHORT)
-                .show();
+        binding.buttonGoogle.setVisibility(View.GONE);
+        binding.buttonSignOut.setVisibility(View.VISIBLE);
+        binding.textViewProfileInfo.setText(user.name());
+        binding.textViewProfileInfo.setVisibility(View.VISIBLE);
+        binding.imageViewAvatarUser.load(user.avatar());
+        binding.imageViewAvatarUser.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void userSignedOut() {
-        buttonGoogle.setEnabled(true);
-        buttonGoogle.setClickable(true);
-        buttonGoogle.setText("Sign in");
-        buttonGoogle.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_logo), null, null, null);
-        Toast.makeText(getApplicationContext(), "You've been signed out.", Toast.LENGTH_SHORT).show();
+        binding.buttonGoogle.setVisibility(View.VISIBLE);
+        binding.buttonSignOut.setVisibility(View.GONE);
+        binding.imageViewAvatarUser.setVisibility(View.INVISIBLE);
+        binding.imageViewAvatarUser.setImageResource(R.drawable.circle);
+        binding.textViewProfileInfo.setText(R.string.sign_in_help);
     }
 
     @Override
