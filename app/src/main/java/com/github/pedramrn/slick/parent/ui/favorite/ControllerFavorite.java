@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerFavoriteBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
@@ -50,10 +53,16 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         ControllerFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
+        ViewGroup containerChild = binding.container.findViewById(R.id.container_child);
+        Router childRouter = getChildRouter(containerChild);
+        if (!childRouter.hasRootController()){
+            ControllerAuth controllerAuth = new ControllerAuth();
+            childRouter.setRoot(RouterTransaction.with(controllerAuth));
+        }
         // binding.collapsingToolbar.setTitle(true);
         // binding.collapsingToolbar.setTitleEnabled(true);
-        binding.toolbar.setTitle("Favorites");
-        setToolbar(binding.toolbar);
+        // binding.toolbar.setTitle("Favorites");
+        // setToolbar(binding.toolbar);
 
         GroupAdapter adapter = new GroupAdapter();
         updatingFavorite = new UpdatingGroup();

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerAuthBinding;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
@@ -19,7 +20,6 @@ import com.github.slick.Presenter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.SignInButton;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.Locale;
@@ -42,7 +42,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     PresenterAuth presenter;
     private Button buttonSignOut;
     private Button buttonAnonymous;
-    private SignInButton buttonGoogle;
+    private Button buttonGoogle;
     private final int RC_SIGN_IN = 123;
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
 
@@ -111,7 +111,9 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public void userSignedIn(UserApp user) {
-        buttonGoogle.setEnabled(false);
+        buttonGoogle.setClickable(false);
+        buttonGoogle.setText(user.name());
+        buttonGoogle.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.mipmap.ic_launcher), null, null, null);
         Toast.makeText(getApplicationContext(), String.format(Locale.ENGLISH, "Name: %s\n id: %s", user.name(), user.id()), Toast.LENGTH_SHORT)
                 .show();
     }
@@ -119,6 +121,9 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     @Override
     public void userSignedOut() {
         buttonGoogle.setEnabled(true);
+        buttonGoogle.setClickable(true);
+        buttonGoogle.setText("Sign in");
+        buttonGoogle.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_logo), null, null, null);
         Toast.makeText(getApplicationContext(), "You've been signed out.", Toast.LENGTH_SHORT).show();
     }
 
