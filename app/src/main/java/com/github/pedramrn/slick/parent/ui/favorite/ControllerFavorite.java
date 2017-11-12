@@ -75,10 +75,10 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         return binding.getRoot();
     }
 
-    @Override
+    /*@Override
     protected void onAttach(@NonNull View view) {
         triggerRefresh.onNext(1);
-    }
+    }*/
 
     @Override
     public void renderError(@Nullable Throwable throwable) {

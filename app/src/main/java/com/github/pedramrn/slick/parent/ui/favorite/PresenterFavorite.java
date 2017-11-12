@@ -13,6 +13,7 @@ import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteList;
+import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListEmpty;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListError;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
@@ -68,6 +69,12 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                                         .map(movie -> movie.render("FAVORITE"))
                                         .compose(new ScanToMap<>())
                                         .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)
+                                        /*.lift(new OnCompleteReturn<PartialViewState<ViewStateFavorite>>() {
+                                            @Override
+                                            public PartialViewState<ViewStateFavorite> apply(@NonNull Boolean hadError) throws Exception {
+                                                return new FavoriteListEmpty();
+                                            }
+                                        })*/
                                         .onErrorReturn(FavoriteListError::new)
                                         .doOnComplete(() -> Log.e(TAG, "Completed1"))
                                 )
@@ -76,7 +83,10 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                         )
                         .doOnComplete(() -> Log.e(TAG, "Completed2"));
 
-        reduce(ViewStateFavorite.builder().favorites(Collections.emptyMap()).build(), merge(favoriteList)).subscribe(this);
+        Observable<PartialViewState<ViewStateFavorite>> clearListOnSignOut = routerAuth.firebaseUserSignInStateStream().filter(signedIn -> !signedIn)
+                .map(aBoolean -> new FavoriteListEmpty());
+
+        reduce(ViewStateFavorite.builder().favorites(Collections.emptyMap()).build(), merge(favoriteList, clearListOnSignOut)).subscribe(this);
     }
 
     private static final String TAG = PresenterFavorite.class.getSimpleName();
