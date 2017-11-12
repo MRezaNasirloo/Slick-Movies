@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
 import com.github.pedramrn.slick.parent.domain.model.FavoriteDomain;
-import com.github.slick.middleware.BundleSlick;
 
 import java.util.List;
 
@@ -16,31 +15,30 @@ public interface RouterFavorite {
     /**
      * Adds an item into commandFavorite list
      *
-     * @param bundle params
-     * @return haven't decided
+     *
+     * @param favorite@return haven't decided
      */
-    Observable<Object> add(BundleSlick bundle);
+    Observable<Object> add(FavoriteDomain favorite);
 
     /**
      * Removes an item into commandFavorite list
      *
-     * @param bundle params
-     * @return haven't decided
+     *
+     * @param favorite@return haven't decided
      */
 
-    Observable<Object> remove(BundleSlick bundle);
+    Observable<Object> remove(FavoriteDomain favorite);
 
 
     /**
-     * @param bundle params
-     * @return updates on new Objects
+     *
+     * @param tmdbId@return updates on new Objects
      */
-    Observable<Boolean> updateStream(BundleSlick bundle);
+    Observable<Boolean> updateStream(Integer tmdbId);
 
     /**
-     * @param uid signed user id
      * @return updates on new Objects
      */
-    Observable<List<FavoriteDomain>> updateStream(String uid);
+    Observable<List<FavoriteDomain>> updateStream();
 
 }

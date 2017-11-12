@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.middleware;
 
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
@@ -51,7 +52,7 @@ public class MiddlewareLogin extends Middleware {
 
                     @Override
                     public void onError(Throwable e) {
-                        Navigator2.go(new ControllerAuth());
+                        Navigator2.go(new ControllerAuth(), new HorizontalChangeHandler(), new HorizontalChangeHandler());
                     }
 
                     @Override

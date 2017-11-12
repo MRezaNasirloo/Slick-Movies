@@ -23,7 +23,6 @@ import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
-import com.github.slick.middleware.BundleSlick;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -157,50 +156,33 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
 
         Observable<Boolean> commandFavorite = command(ViewDetails::commandFavorite);
 
-
         FavoriteDomain favoriteDomain = FavoriteDomain.create(movieBasic.imdbId(), movieBasic.id(), movieBasic.title(), "movie");
-        Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite.flatMap(addToFav -> routerAuth.currentFirebaseUser()
-                .flatMap(user -> {
-                    BundleSlick bundle = new BundleSlick().putString("uid", user.id()).putObject("fav", favoriteDomain);
-                    Observable<Object> objectObservable = addToFav ? routerFavorite.add(bundle) : routerFavorite.remove(bundle);
-                    return objectObservable.flatMap(o -> movieFull).flatMap(movie1 -> {
-                        // TODO: 2017-11-10 clean this mess
-                        FavoriteDomain favoriteDomain2 = FavoriteDomain.create(movie1.imdbId(), movie1.id(), movie1.title(), "movie");
-                        BundleSlick bundle2 = new BundleSlick().putString("uid", user.id()).putObject("fav", favoriteDomain2);
-                        return addToFav ? routerFavorite.add(bundle2) : routerFavorite.remove(bundle2);
-                    });
-                })
-                .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
-                .onErrorReturn(throwable -> {
-                    throwable.printStackTrace();
-                    return new PartialViewStateDetails.FavoriteError(throwable);
-                })
-        ).subscribeOn(io);
+
+        Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite
+                .flatMap(add -> (add ? routerFavorite.add(favoriteDomain) : routerFavorite.remove(favoriteDomain)).subscribeOn(io)
+                        .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
+                        .onErrorReturn(PartialViewStateDetails.FavoriteError::new));
+
+        Observable<PartialViewState<ViewStateDetails>> favoriteUpdate = commandFavorite
+                .filter(add -> add)
+                .flatMap(ignored -> routerAuth.firebaseUserSignInStateStream())
+                .filter(signedIn -> signedIn)
+                .take(1)
+                .flatMap(ignored -> movieFull.flatMap(imdbId -> routerFavorite.add(favoriteDomain.toBuilder().imdbId(imdbId.imdbId()).build()))
+                        .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
+                        .onErrorReturn(PartialViewStateDetails.FavoriteError::new));
+
 
         // FIXME: 2017-11-10 ahhh, do I need to now about every login change?
         Observable<Boolean> signInStream = routerAuth.firebaseUserSignInStateStream().share();
-        Observable<PartialViewState<ViewStateDetails>> favoriteStream =
-                Observable.never().startWith(1).flatMap(o -> signInStream.filter(signedIn -> signedIn)
-                        .flatMap(signedIn1 -> routerAuth.currentFirebaseUser()
-                                .flatMap(user -> routerFavorite.updateStream(
-                                        new BundleSlick().putString("uid", user.id()).putInteger("tmdb_id", favoriteDomain.tmdb())))
-                                .map((Function<Boolean, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Favorite::new)
-                                .onErrorReturn(throwable -> {
-                                    throwable.printStackTrace();
-                                    return new PartialViewStateDetails.FavoriteError(throwable);
-                                })
-                                .takeUntil(signInStream.filter(signedIn2 -> !signedIn2))
-                        )
-                        .doOnComplete(() -> Log.e(TAG, "routerFavorite.updateStream Completed"))
-                        .subscribeOn(io));
-
-/*
-        Observable<PartialViewState<ViewStateDetails>> favoriteStream =
-                Observable.never().startWith(1).flatMap(fav -> routerFavorite.updateStream(movieBasic.imdbId())
-                        .map((Function<Boolean, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Favorite::new)
-                        .onErrorReturn(PartialViewStateDetails.FavoriteError::new)
-                );
-*/
+        Observable<PartialViewState<ViewStateDetails>> favoriteStream = signInStream
+                .filter(signedIn -> signedIn)
+                .flatMap(ignored -> routerFavorite.updateStream(favoriteDomain.tmdb())
+                        .takeUntil(signInStream.filter(signedIn2 -> !signedIn2)))
+                .map((Function<Boolean, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Favorite::new)
+                .onErrorReturn(PartialViewStateDetails.FavoriteError::new)
+                .doOnComplete(() -> Log.e(TAG, "routerFavorite.updateStream Completed"))
+                .subscribeOn(io);
 
 
         ViewStateDetails initial = ViewStateDetails.builder()
@@ -211,7 +193,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .movieBasic(movieBasic)
                 .build();
 
-        reduce(initial, merge(movie, casts, backdrops, similar, comments, favorite, favoriteStream)).subscribe(this);
+        reduce(initial, merge(movie, casts, backdrops, similar, comments, favorite, favoriteStream, favoriteUpdate)).subscribe(this);
 
     }
 

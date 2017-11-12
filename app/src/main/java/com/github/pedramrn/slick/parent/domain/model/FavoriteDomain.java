@@ -21,8 +21,31 @@ public abstract class FavoriteDomain {
 
     public abstract String type();
 
+    public abstract Builder toBuilder();
+
     public static FavoriteDomain create(String imdbId, Integer tmdb, String name, String type) {
-        return new AutoValue_FavoriteDomain(imdbId, tmdb, name, type);
+        return builder()
+                .imdbId(imdbId)
+                .tmdb(tmdb)
+                .name(name)
+                .type(type)
+                .build();
     }
 
+    public static Builder builder() {
+        return new AutoValue_FavoriteDomain.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder imdbId(String imdbId);
+
+        public abstract Builder tmdb(Integer tmdb);
+
+        public abstract Builder name(String name);
+
+        public abstract Builder type(String type);
+
+        public abstract FavoriteDomain build();
+    }
 }

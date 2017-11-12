@@ -62,8 +62,7 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
         Observable<PartialViewState<ViewStateFavorite>> favoriteList =
                 commandRefresh.startWith(1).flatMap(o -> routerAuth.firebaseUserSignInStateStream())
                         .filter(signedIn -> signedIn)
-                        .flatMap(ignored -> routerAuth.currentFirebaseUser())
-                        .flatMap(user -> routerFavorite.updateStream(user.id())// ^ read the comment above
+                        .flatMap(user -> routerFavorite.updateStream()// ^ read the comment above
                                 .concatMap(favorites -> routerMovie.movie(favorites).subscribeOn(io)
                                         .map(mapper)
                                         .map(movie -> movie.render("FAVORITE"))
@@ -71,9 +70,11 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                                         .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)
                                         .onErrorReturn(FavoriteListError::new)
                                         .doOnComplete(() -> Log.e(TAG, "Completed1"))
-                                        .takeUntil(routerAuth.firebaseUserSignInStateStream().filter(signedIn2 -> !signedIn2))
-                                ).onErrorReturn(FavoriteListError::new)//Let's survive from routerFavorite possible termination.
-                        ).doOnComplete(() -> Log.e(TAG, "Completed2"));
+                                )
+                                .onErrorReturn(FavoriteListError::new)//Let's survive from routerFavorite possible termination.
+                                .takeUntil(routerAuth.firebaseUserSignInStateStream().filter(signedIn2 -> !signedIn2))
+                        )
+                        .doOnComplete(() -> Log.e(TAG, "Completed2"));
 
         reduce(ViewStateFavorite.builder().favorites(Collections.emptyMap()).build(), merge(favoriteList)).subscribe(this);
     }
