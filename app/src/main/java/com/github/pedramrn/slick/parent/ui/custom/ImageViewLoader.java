@@ -59,8 +59,43 @@ public class ImageViewLoader extends AppCompatImageView {
                 .into(this);
     }
 
+    public void load(String thumbnailUrl, String url) {
+        if (mock) {
+            setBackgroundResource(R.drawable.rectangle_no_corners);
+            return;
+        }
+        if (url == null || thumbnailUrl == null) {
+            // TODO: 2017-11-11 do this for all
+            setImageResource(R.drawable.rectangle_no_corners);
+            return;
+        }
+        setOnClickListener(null);
+        Context context = getContext();
+        Picasso.with(context)
+                .load(thumbnailUrl)
+                .transform(new BlurTransformation(context))
+                .into(this, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Picasso.with(context)
+                                .load(url)
+                                .placeholder(getDrawable())
+                                .into(ImageViewLoader.this);
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context).load(R.drawable.error_state_car)
+                                .into(ImageViewLoader.this);
+                        setOnClickListener(v -> load(thumbnailUrl, url));
+                    }
+                });
+    }
+
     public void load(String url, @DimenRes int dimen) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }
@@ -73,7 +108,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadNP(String url) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }
@@ -85,7 +122,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadNF(String url) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }
@@ -98,7 +137,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadNFNP(String url) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }
@@ -112,7 +153,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadBlur(String url) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }
@@ -125,7 +168,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadBlurNP(String url) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }
@@ -138,7 +183,9 @@ public class ImageViewLoader extends AppCompatImageView {
     }
 
     public void loadForSE(final String url, final OnCompleteGlide onCompleteGlide) {
-        if (mock) { return; }
+        if (mock) {
+            return;
+        }
         if (url == null) {
             return;
         }

@@ -19,9 +19,11 @@ public class ItemImage extends Item<RowImageBinding> implements OnItemAction {
     private final String urlMedium;
     private final String urlHigh;
     private final String urlOriginal;
+    private final String urlSmall;
 
     public ItemImage(String url) {
         this.urlTiny = "http://image.tmdb.org/t/p/w92" + url;
+        this.urlSmall = "http://image.tmdb.org/t/p/w154" + url;
         this.urlMedium = "http://image.tmdb.org/t/p/w300" + url;
         this.urlHigh = "http://image.tmdb.org/t/p/w500" + url;
         this.urlOriginal = "http://image.tmdb.org/t/p/original" + url;
@@ -36,8 +38,7 @@ public class ItemImage extends Item<RowImageBinding> implements OnItemAction {
     public void bind(RowImageBinding viewBinding, int position) {
         viewBinding.imageView.setImageDrawable(null);
         // viewBinding.imageView.loadBlurNP(urlTiny);
-        viewBinding.imageView.loadBlurNP(urlMedium);
-        viewBinding.imageView.loadNP(urlHigh);
+        viewBinding.imageView.load(urlSmall, urlHigh);
     }
 
     @Override

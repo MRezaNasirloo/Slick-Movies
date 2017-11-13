@@ -66,6 +66,18 @@ public class ModuleNetworkBase {
         return Collections.singletonList((Interceptor) new InterceptorHeaderCache(context));
     }
 
+/*
+    */
+/**
+     * @param context app context
+     * @return a List of network interceptors.
+     *//*
+
+    public List<Interceptor> baseNetworkInterceptors(Context context) {
+        return Arrays.asList(new InterceptorHeaderCache(context), new InterceptorTrafficStat(999_888));
+    }
+*/
+
     public Retrofit.Builder baseRetrofit(Gson gson) {
         return new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
