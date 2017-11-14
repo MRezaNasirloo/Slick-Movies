@@ -26,7 +26,7 @@ public class PartialViewStateSearch {
 
         @Override
         public ViewStateSearch reduce(ViewStateSearch state) {
-            return state.toBuilder().movies(movies).build();
+            return state.toBuilder().movies(movies).errorMovies(null).loadingMovies(false).build();
         }
     }
 
@@ -40,7 +40,7 @@ public class PartialViewStateSearch {
 
         @Override
         public ViewStateSearch reduce(ViewStateSearch state) {
-            return state.toBuilder().errorMovies(throwable).build();
+            return state.toBuilder().errorMovies(throwable).loadingMovies(false).build();
         }
     }
 
@@ -55,7 +55,7 @@ public class PartialViewStateSearch {
 
         @Override
         public ViewStateSearch reduce(ViewStateSearch state) {
-            return state.toBuilder().loadingMovies(isLoading).build();
+            return state.toBuilder().loadingMovies(isLoading).errorMovies(null).build();
         }
     }
 
@@ -69,7 +69,13 @@ public class PartialViewStateSearch {
 
         @Override
         public ViewStateSearch reduce(ViewStateSearch state) {
-            if (!isOpen) return state.toBuilder().movies(Collections.<Item>emptyList()).build();
+            if (!isOpen) {
+                return state.toBuilder()
+                        .movies(Collections.emptyList())
+                        .loadingMovies(false)
+                        .errorMovies(null)
+                        .build();
+            }
             return state;
         }
     }

@@ -1,6 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.domain.router.RouterSearch;
+import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
@@ -50,11 +53,18 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
     public void start(ViewSearch view) {
         Observable<PartialViewState<ViewStateSearch>> searchMovies = command(ViewSearch::queryNexText)
                 .flatMap(queryText -> routerSearch.movies(queryText, 1)
-                        .flatMap(pagedDomain -> Observable.fromIterable(pagedDomain.data()).take(6))
+                        .flatMap(pagedDomain -> Observable.fromIterable(pagedDomain.data()))
                         .map(mapperSmall)
                         .map((Function<MovieSmall, Item>) ItemRowSuggestion::new)
                         .buffer(6)
                         .map((Function<List<Item>, PartialViewState<ViewStateSearch>>) PartialViewStateSearch.Movies::new)
+                        .startWith(new PartialViewStateSearch.Loading(true))
+                        .lift(new OnCompleteReturn<PartialViewState<ViewStateSearch>>() {
+                            @Override
+                            public PartialViewState<ViewStateSearch> apply(Boolean aBoolean) throws Exception {
+                                return new PartialViewStateSearch.Loading(false);
+                            }
+                        })
                         .onErrorResumeNext(throwable -> {
                             return Observable.just(new PartialViewStateSearch.ErrorMovie(throwable));
                         })
@@ -71,5 +81,10 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
                 .build();
 
         reduce(initial, merge(searchMovies, searchOpenClose)).subscribe(this);
+    }
+
+    @Override
+    protected void render(@NonNull ViewStateSearch state, @NonNull ViewSearch view) {
+        view.showLoading(state.loadingMovies());
     }
 }

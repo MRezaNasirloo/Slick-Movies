@@ -163,4 +163,13 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     public Observable<Boolean> searchOpenClose() {
         return openClose;
     }
+
+    @Override
+    public void showLoading(boolean isLoading) {
+        if (isLoading) {
+            showProgress();
+        } else {
+            hideProgress();
+        }
+    }
 }

@@ -13,4 +13,5 @@ public interface ViewSearch {
     Observable<Boolean> searchOpenClose();
 
 
+    void showLoading(boolean isLoading);
 }
