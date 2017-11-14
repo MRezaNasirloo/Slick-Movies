@@ -6,6 +6,8 @@ import com.github.pedramrn.slick.parent.ui.home.cardlist.ViewStateCardList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
 import com.xwray.groupie.Item;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,7 +30,18 @@ public class Error implements PartialViewState<ViewStateCardList> {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator(), null);
 
-        Item itemError = new ItemError(Integer.MAX_VALUE, PresenterCardList.MOVIES_CARD, throwable.getMessage());
+        final String message;
+        if (throwable instanceof UnknownHostException || throwable instanceof SocketTimeoutException) {
+            // TODO: 2017-11-13 extract String? how
+            message = "Network Error, Are you Connected?";
+        } else {
+            message = "Internal Error";
+            throwable.printStackTrace();
+            // TODO: 2017-11-13 log to fabric
+        }
+
+
+        Item itemError = new ItemError(Integer.MAX_VALUE, PresenterCardList.MOVIES_CARD, message);
         movies.put(movies.size(), itemError);
 
         return state.toBuilder()

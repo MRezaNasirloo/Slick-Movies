@@ -1,12 +1,14 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
@@ -41,6 +44,7 @@ import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.github.slick.middleware.RequestStack;
+import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
@@ -58,7 +62,6 @@ import javax.inject.Provider;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -102,9 +105,19 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private ItemCardHeader headerComments;
     private ItemCardHeader headerCast;
     private PublishSubject<String> onRetry = PublishSubject.create();
+    private PublishSubject<Object> onErrorDismissed = PublishSubject.create();
     private FloatingActionButton fab;
     private Drawable drawableUnFav;
     private Drawable drawableFav;
+    private Snackbar snackbar;
+
+    private Snackbar.Callback callback = new Snackbar.Callback() {
+        @Override
+        public void onDismissed(Snackbar transientBottomBar, int event) {
+            onErrorDismissed.onNext(1);
+            onRetry("ALL");
+        }
+    };
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -131,6 +144,12 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     protected void onAttach(@NonNull View view) {
         Navigator2.bind(this);
         RequestStack.getInstance().processLastRequest();
+        //noinspection ConstantConditions
+        snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG)
+                .setAction("Retry?", v -> snackbar.dismiss())
+                .addCallback(callback)
+                .setDuration(60_000)
+        ;
     }
 
     @Override
@@ -152,8 +171,9 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         imageViewHeader = binding.imageViewHeader;
         fab = binding.fab;
         if (drawableFav == null) {
-            drawableUnFav = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_unlike_black_24dp, null);
-            drawableFav = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_like_red_24dp, null);
+            Resources resources = getResources();
+            drawableUnFav = ResourcesCompat.getDrawable(resources, R.drawable.ic_unlike_black_24dp, null);
+            drawableFav = ResourcesCompat.getDrawable(resources, R.drawable.ic_like_red_24dp, null);
         }
 
         final Context context = getApplicationContext();
@@ -181,26 +201,19 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         sectionSimilar.add(itemCardListSimilar);
 
         headerCast = new ItemCardHeader(101, "Casts", "See All");
-        headerCast.setOnClickListener(new Consumer<Object>() {
-            @Override
-            public void accept(Object o) throws Exception {
-                if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
-                    ArrayList<Cast> casts = (ArrayList<Cast>) ((Movie) state.movieBasic()).casts();
-                    ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts",
-                            new ArrayList<ItemViewListParcelable>(casts));
-                }
+        headerCast.setOnClickListener(o -> {
+            if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
+                ArrayList<Cast> casts = (ArrayList<Cast>) ((Movie) state.movieBasic()).casts();
+                ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts", new ArrayList<>(casts));
             }
         });
         Section sectionCasts = new Section(headerCast);
         sectionCasts.add(progressiveCast);
 
         headerComments = new ItemCardHeader(102, "Comments", "See All");
-        headerComments.setOnClickListener(new Consumer<Object>() {
-            @Override
-            public void accept(Object o) throws Exception {
-                if (!state.comments().isEmpty() && state.comments().get(0) instanceof ItemComment) {
-                    ControllerList.start(ControllerDetails.this.getRouter(), "Comments for " + movie.title(), comments());
-                }
+        headerComments.setOnClickListener(o -> {
+            if (!state.comments().isEmpty() && !(state.comments().get(0) instanceof ItemCommentProgressive)) {
+                ControllerList.start(ControllerDetails.this.getRouter(), "Comments for " + movie.title(), comments());
             }
         });
         Section sectionComments = new Section(headerComments);
@@ -229,16 +242,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         binding.recyclerViewDetails.getItemAnimator().setChangeDuration(0);
         binding.recyclerViewDetails.getItemAnimator().setMoveDuration(0);
 
-        /*binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Movie movie = Observable.fromIterable(movieTmdbs)
-                        .map(new MapperMovie(new MapperCast(), new MapperSimpleData()))
-                        .map(new MapperMovieDomainMovie())
-                        .blockingFirst();
-                ((OnItemAction) movie.render("")).action(ControllerDetails.this, null, 0);
-            }
-        });*/
 
         //        add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
@@ -270,15 +273,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         List<Item> comments = Observable.fromIterable(state.comments())
                 .take(2)
                 .buffer(2)
-                .blockingFirst(Collections.<Item>emptyList());
+                .blockingFirst(Collections.emptyList());
         //only show the first 2 items
         progressiveComments.update(comments);
 
-        renderError(state.errorSimilar());
-        renderError(state.errorComments());
-        renderError(state.errorMovie());
-        renderError(state.errorMovieBackdrop());
-        renderError(state.errorMovieCast());
         renderError(state.errorFavorite());
 
         long delay = System.currentTimeMillis() - before;
@@ -305,17 +303,16 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         render(state);
     }
 
-
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
     }
 
+
     @Override
     public void onComplete() {
         Log.d(TAG, "onComplete() called");
     }
-
 
     @Override
     protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
@@ -329,6 +326,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         itemBackdropList.onRestoreViewState(view, savedViewState);
         itemCardListSimilar.onRestoreViewState(view, savedViewState);
     }
+
 
     @Override
     protected void onDestroyView(@NonNull View view) {
@@ -359,6 +357,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         //        itemHeader = null;
 
         adapterMain = null;
+        snackbar = null;
         // fab.setOnClickListener(null);
         // fab = null;
         super.onDestroyView(view);
@@ -371,12 +370,14 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @NonNull
     protected ArrayList<ItemViewListParcelable> comments() {
+        // FIXME: 2017-11-13 store raw comments in view state with a command
         return (ArrayList<ItemViewListParcelable>) Observable.fromIterable(state.comments())
                 .cast(ItemComment.class)
                 .map(ItemComment::comment)
                 .cast(ItemViewListParcelable.class)
                 .buffer(state.comments().size())
-                .blockingFirst(Collections.<ItemViewListParcelable>emptyList());
+                .onErrorReturnItem(Collections.emptyList())
+                .blockingFirst(Collections.emptyList());
     }
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
@@ -394,6 +395,21 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public Observable<Object> onRetryComments() {
         return onRetry.filter("COMMENTS_ERROR"::equals).cast(Object.class);
+    }
+
+    @Override
+    public Observable<Object> onRetryAll() {
+        return onRetry.cast(Object.class);
+    }
+
+    @Override
+    public Observable<Object> errorDismissed() {
+        return RxSnackbar.dismisses(snackbar).cast(Object.class);
+    }
+
+    @Override
+    public void showError(String message) {
+        snackbar.setText(message).show();
     }
 
     @Override

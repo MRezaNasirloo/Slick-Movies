@@ -4,7 +4,6 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropEmpty;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentEmpty;
-import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentError;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
@@ -37,7 +36,9 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().similar(reduce(state.similar())).build();
+            List<Item> similar = state.similar();
+            removeRemovables(similar.iterator(), "Details");
+            return state.toBuilder().similar(reduce(similar)).build();
         }
 
         private static class ItemRendererProgressiveCard implements ItemRenderer {
@@ -62,17 +63,32 @@ public class PartialViewStateDetails {
         }
     }
 
-    static class ErrorSimilar extends Error {
+    static class Error extends ErrorAbs {
 
-        public ErrorSimilar(Throwable throwable) {
+        public Error(Throwable throwable) {
             super(throwable);
         }
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().errorSimilar(throwable).build();
+            if (state.error() == null) {
+                state = state.toBuilder().error(throwable).build();
+            }
+            return state;
         }
     }
+
+    static class ErrorDismissed implements PartialViewState<ViewStateDetails> {
+
+        public ErrorDismissed() {
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            return state.toBuilder().error(null).build();
+        }
+    }
+
 
     static class MovieFull implements PartialViewState<ViewStateDetails> {
 
@@ -85,18 +101,6 @@ public class PartialViewStateDetails {
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             return state.toBuilder().movieBasic(movie).build();
-        }
-    }
-
-    static class ErrorMovieFull extends Error {
-
-        public ErrorMovieFull(Throwable throwable) {
-            super(throwable);
-        }
-
-        @Override
-        public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().errorMovie(throwable).build();
         }
     }
 
@@ -131,28 +135,6 @@ public class PartialViewStateDetails {
         }
     }
 
-    static class ErrorMovieCast extends Error {
-        public ErrorMovieCast(Throwable throwable) {
-            super(throwable);
-        }
-
-        @Override
-        public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().errorMovieCast(throwable).build();
-        }
-    }
-
-    static class ErrorMovieBackdrop extends Error {
-        public ErrorMovieBackdrop(Throwable throwable) {
-            super(throwable);
-        }
-
-        @Override
-        public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().errorMovieBackdrop(throwable).build();
-        }
-    }
-
     static class MovieBackdropsProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
         public MovieBackdropsProgressive(int count, String tag) {
@@ -161,7 +143,9 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().backdrops(reduce(state.backdrops())).build();
+            List<Item> backdrops = state.backdrops();
+            removeRemovables(backdrops.iterator(), "Details");
+            return state.toBuilder().backdrops(reduce(backdrops)).build();
         }
 
         private static class ItemRendererBackdrops implements ItemRenderer {
@@ -180,7 +164,9 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().casts(reduce(state.casts())).build();
+            List<Item> casts = state.casts();
+            removeRemovables(casts.iterator(), "Details");
+            return state.toBuilder().casts(reduce(casts)).build();
         }
 
         private static class ItemRendererCasts implements ItemRenderer {
@@ -229,20 +215,6 @@ public class PartialViewStateDetails {
     }
 
 
-    static class FavoriteError implements PartialViewState<ViewStateDetails> {
-        private final Throwable throwable;
-
-        public FavoriteError(Throwable throwable) {
-            this.throwable = throwable;
-        }
-
-        @Override
-        public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().errorFavorite(throwable).build();
-        }
-    }
-
-
     static class CommentsProgressive extends PartialProgressive implements PartialViewState<ViewStateDetails> {
 
         public CommentsProgressive(int count, String tag) {
@@ -251,7 +223,9 @@ public class PartialViewStateDetails {
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
-            return state.toBuilder().comments(reduce(state.comments())).build();
+            List<Item> comments = state.comments();
+            removeRemovables(comments.iterator(), "Details");
+            return state.toBuilder().comments(reduce(comments)).build();
         }
 
         static class ItemRendererComments implements ItemRenderer {
@@ -281,7 +255,7 @@ public class PartialViewStateDetails {
         }
     }
 
-    static class CommentsError implements PartialViewState<ViewStateDetails> {
+    /*static class CommentsError implements PartialViewState<ViewStateDetails> {
         private final Throwable throwable;
 
         public CommentsError(Throwable throwable) {
@@ -295,5 +269,5 @@ public class PartialViewStateDetails {
             comments.add(new ItemCommentError(0, throwable.getMessage(), "COMMENTS_ERROR"));
             return state.toBuilder().comments(comments).errorComments(throwable).build();
         }
-    }
+    }*/
 }

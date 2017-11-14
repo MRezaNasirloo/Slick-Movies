@@ -5,10 +5,10 @@ package com.github.pedramrn.slick.parent.ui.details;
  *         Created on: 2017-07-15
  */
 
-public abstract class Error implements PartialViewState<ViewStateDetails> {
+public abstract class ErrorAbs implements PartialViewState<ViewStateDetails> {
     protected final Throwable throwable;
 
-    Error(Throwable throwable) {
+    ErrorAbs(Throwable throwable) {
         this.throwable = throwable;
     }
 }

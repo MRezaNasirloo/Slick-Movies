@@ -25,6 +25,8 @@ import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.xwray.groupie.Item;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -88,17 +90,18 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
         MovieBasic movieBasic = view.getMovie();
         final Integer movieId = movieBasic.id();
 
-        final Observable<Movie> movieFull = routerMovieDetails.get(movieId)
+        Observable<Object> triggerRetry = command(ViewDetails::onRetryAll).startWith(1);
+
+        final Observable<Movie> movieFull = triggerRetry.flatMap(o -> routerMovieDetails.get(movieId).subscribeOn(io)
                 //Maps the domains Models to View Models which have android dependency
                 .map(mapper)
-                .subscribeOn(io)
-                .share();
+        ).share();
 
-        Observable<PartialViewState<ViewStateDetails>> movie = movieFull
+        Observable<PartialViewState<ViewStateDetails>> movie = triggerRetry.flatMap(o -> movieFull
                 .map((Function<Movie, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.MovieFull::new)
-                .onErrorReturn(PartialViewStateDetails.ErrorMovieFull::new);
+                .onErrorReturn(PartialViewStateDetails.Error::new));
 
-        Observable<PartialViewState<ViewStateDetails>> backdrops = movieFull
+        Observable<PartialViewState<ViewStateDetails>> backdrops = triggerRetry.flatMap(o -> movieFull
                 .take(1)
                 .concatMap(movie1 -> Observable.fromIterable(movie1.images().backdrops()))
                 .map(new MapProgressive())
@@ -107,9 +110,9 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .buffer(100)
                 .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.MovieBackdrops::new)
                 .startWith(new PartialViewStateDetails.MovieBackdropsProgressive(5, BACKDROPS))
-                .onErrorReturn(PartialViewStateDetails.ErrorMovieBackdrop::new);
+                .onErrorReturn(PartialViewStateDetails.Error::new));
 
-        Observable<PartialViewState<ViewStateDetails>> casts = movieFull
+        Observable<PartialViewState<ViewStateDetails>> casts = triggerRetry.flatMap(o -> movieFull
                 .take(1)
                 .concatMap(movie13 -> Observable.fromIterable(movie13.casts()).take(6))
                 .map(new MapProgressive())
@@ -118,12 +121,11 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .buffer(20)
                 .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.MovieCast::new)
                 .startWith(new PartialViewStateDetails.MovieCastsProgressive(6, CASTS))
-                .onErrorReturn(PartialViewStateDetails.ErrorMovieCast::new);
+                .onErrorReturn(PartialViewStateDetails.Error::new));
 
 
-        Observable<Object> triggerRetry = command(ViewDetails::onRetryComments).startWith(1);
-
-        Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull.take(1)
+        Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull
+                .take(1)
                 .flatMap(movie12 -> routerComments.comments(movie12.imdbId(), 1, 15).subscribeOn(io))
                 .concatMap(comments1 -> Observable.fromIterable(comments1.data()))
                 .map(mapperComment)
@@ -138,11 +140,12 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                         return new PartialViewStateDetails.CommentsLoaded(hadError);
                     }
                 })
-                .onErrorReturn(PartialViewStateDetails.CommentsError::new)
+                .onErrorReturn(PartialViewStateDetails.Error::new)
                 .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS)));
 
 
-        Observable<PartialViewState<ViewStateDetails>> similar = routerSimilar.similar(movieId, 1)
+        Observable<PartialViewState<ViewStateDetails>> similar = triggerRetry.flatMap(o -> routerSimilar.similar(movieId, 1)
+                .subscribeOn(io)
                 .concatMap(Observable::fromIterable)
                 .map(mapperSmall)
                 .map(new MapProgressive())
@@ -151,8 +154,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .buffer(20)
                 .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Similar::new)
                 .startWith(new PartialViewStateDetails.SimilarProgressive(5, SIMILAR))
-                .onErrorReturn(PartialViewStateDetails.ErrorSimilar::new)
-                .subscribeOn(io);
+                .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<Boolean> commandFavorite = command(ViewDetails::commandFavorite);
 
@@ -161,7 +163,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
         Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite
                 .flatMap(add -> (add ? routerFavorite.add(favoriteDomain) : routerFavorite.remove(favoriteDomain)).subscribeOn(io)
                         .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
-                        .onErrorReturn(PartialViewStateDetails.FavoriteError::new));
+                        .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<PartialViewState<ViewStateDetails>> favoriteUpdate = commandFavorite
                 .filter(add -> add)
@@ -170,19 +172,21 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .take(1)
                 .flatMap(ignored -> movieFull.flatMap(imdbId -> routerFavorite.add(favoriteDomain.toBuilder().imdbId(imdbId.imdbId()).build()))
                         .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
-                        .onErrorReturn(PartialViewStateDetails.FavoriteError::new));
+                        .onErrorReturn(PartialViewStateDetails.Error::new));
 
 
-        // FIXME: 2017-11-10 ahhh, do I need to now about every login change?
         Observable<Boolean> signInStream = routerAuth.firebaseUserSignInStateStream().share();
         Observable<PartialViewState<ViewStateDetails>> favoriteStream = signInStream
                 .filter(signedIn -> signedIn)
                 .flatMap(ignored -> routerFavorite.updateStream(favoriteDomain.tmdb())
                         .takeUntil(signInStream.filter(signedIn2 -> !signedIn2)))
                 .map((Function<Boolean, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Favorite::new)
-                .onErrorReturn(PartialViewStateDetails.FavoriteError::new)
+                .onErrorReturn(PartialViewStateDetails.Error::new)
                 .doOnComplete(() -> Log.e(TAG, "routerFavorite.updateStream Completed"))
                 .subscribeOn(io);
+
+        Observable<PartialViewState<ViewStateDetails>> errorDismissed =
+                command(ViewDetails::errorDismissed).map(o -> new PartialViewStateDetails.ErrorDismissed());
 
 
         ViewStateDetails initial = ViewStateDetails.builder()
@@ -193,7 +197,17 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .movieBasic(movieBasic)
                 .build();
 
-        reduce(initial, merge(movie, casts, backdrops, similar, comments, favorite, favoriteStream, favoriteUpdate)).subscribe(this);
+        reduce(initial, merge(
+                movie,
+                casts,
+                backdrops,
+                similar,
+                comments,
+                favorite,
+                favoriteStream,
+                favoriteUpdate,
+                errorDismissed
+        )).subscribe(this);
 
     }
 
@@ -206,6 +220,16 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
             view.notFavorite();
 
         }
-    }
 
+        Throwable error = state.error();
+        if (error != null) {
+            if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
+                view.showError("Network Error, Are you Connected?");
+            } else {
+                view.showError("Internal Error");
+                error.printStackTrace();
+                // TODO: 2017-11-13 log to fabric
+            }
+        }
+    }
 }

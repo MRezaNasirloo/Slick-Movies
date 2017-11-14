@@ -28,6 +28,8 @@ public class ItemCast extends ItemCastProgressive implements OnItemAction {
 
     @Override
     public void bind(RowCastHorizontalBinding viewBinding, int position) {
+        viewBinding.textViewCharacter.setBackground(null);
+        viewBinding.textViewName.setBackground(null);
         viewBinding.imageViewProfile.load(cast.profileIcon());
         viewBinding.textViewName.setText(cast.name());
         viewBinding.textViewCharacter.setText(cast.character());

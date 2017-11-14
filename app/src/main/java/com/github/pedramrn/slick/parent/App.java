@@ -2,7 +2,6 @@ package com.github.pedramrn.slick.parent;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -17,6 +16,12 @@ import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.tspoon.traceur.Traceur;
+
+import java.io.IOException;
+import java.net.SocketException;
+
+import io.reactivex.exceptions.UndeliverableException;
+import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -36,7 +41,7 @@ public class App extends Application {
     public void onCreate() {
         final long before = System.currentTimeMillis();
         super.onCreate();
-//        IMMLeaks.fixFocusedViewLeak(this);
+        // IMMLeaks.fixFocusedViewLeak(this);
         app = ((App) getApplicationContext());
         componentApp = prepareDi().build();
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -54,8 +59,34 @@ public class App extends Application {
             Traceur.enableLogging();
             refWatcher = LeakCanary.install(this);
             // AndroidDevMetrics.initWith(this);
-            StrictMode.enableDefaults();
+            // StrictMode.enableDefaults();
         }
+        RxJavaPlugins.setErrorHandler(e -> {
+            if (e instanceof UndeliverableException) {
+                e = e.getCause();
+            }
+            if ((e instanceof IOException) || (e instanceof SocketException)) {
+                // fine, irrelevant network problem or API that throws on cancellation
+                return;
+            }
+            if (e instanceof InterruptedException) {
+                // fine, some blocking code was interrupted by a dispose call
+                return;
+            }
+            if ((e instanceof NullPointerException) || (e instanceof IllegalArgumentException)) {
+                // that's likely a bug in the application
+                Thread.currentThread().getUncaughtExceptionHandler()
+                        .uncaughtException(Thread.currentThread(), e);
+                return;
+            }
+            if (e instanceof IllegalStateException) {
+                // that's a bug in RxJava or in a custom operator
+                Thread.currentThread().getUncaughtExceptionHandler()
+                        .uncaughtException(Thread.currentThread(), e);
+                return;
+            }
+            Log.w(TAG, "Undeliverable exception received, not sure what to do", e);
+        });
         Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
     }
 
@@ -85,7 +116,9 @@ public class App extends Application {
     }
 
     protected ComponentMain.Builder componentMainBuilder() {
-        if (componentApp == null) { componentApp = prepareDi().build(); }
+        if (componentApp == null) {
+            componentApp = prepareDi().build();
+        }
         return componentApp.plus().mainModule(new MainModule());
     }
 

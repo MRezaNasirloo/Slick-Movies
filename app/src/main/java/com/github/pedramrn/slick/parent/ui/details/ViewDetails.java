@@ -11,6 +11,7 @@ import io.reactivex.Observable;
  */
 
 public interface ViewDetails extends Retryable {
+
     void render(ViewStateDetails viewStateDetails);
 
     MovieBasic getMovie();
@@ -18,6 +19,12 @@ public interface ViewDetails extends Retryable {
     Observable<Boolean> commandFavorite();
 
     Observable<Object> onRetryComments();
+
+    Observable<Object> onRetryAll();
+
+    Observable<Object> errorDismissed();
+
+    void showError(String message);
 
     void notFavorite();
 

@@ -30,69 +30,12 @@ abstract class ViewStateDetails {
     public abstract Boolean isFavorite();
 
     @Nullable
-    public abstract Throwable errorSimilar();
-
-    @Nullable
-    public abstract Throwable errorMovieCast();
-
-    @Nullable
-    public abstract Throwable errorMovieBackdrop();
-
-    @Nullable
-    public abstract Throwable errorMovie();
-
-    @Nullable
-    public abstract Throwable errorComments();
+    public abstract Throwable error();
 
     @Nullable
     public abstract Throwable errorFavorite();
 
-
-    /*@Nullable
-    public Throwable errorSimilarConsume(){
-        Throwable throwable = errorSimilar();
-    }
-
-    @Nullable
-    public Throwable errorMovieCastConsume(){
-        Throwable throwable = errorMovieCast();
-    }
-
-    @Nullable
-    public Throwable errorMovieBackdropConsume(){
-        Throwable throwable = errorMovieBackdrop();
-    }
-
-    @Nullable
-    public Throwable errorMovieConsume(){
-        Throwable throwable = errorMovie();
-    }
-
-    @Nullable
-    public Throwable errorCommentsConsume(){
-        Throwable throwable = errorComments();
-    }*/
-
     public abstract Builder toBuilder();
-
-    public static ViewStateDetails create(List<Item> similar, List<Item> casts, List<Item> backdrops, List<Item> comments, MovieBasic movieBasic,
-                                          Boolean isFavorite, Throwable errorSimilar, Throwable errorMovieCast, Throwable errorMovieBackdrop,
-                                          Throwable errorMovie, Throwable errorComments, Throwable errorFavorite) {
-        return builder()
-                .similar(similar)
-                .casts(casts)
-                .backdrops(backdrops)
-                .comments(comments)
-                .movieBasic(movieBasic)
-                .isFavorite(isFavorite)
-                .errorSimilar(errorSimilar)
-                .errorMovieCast(errorMovieCast)
-                .errorMovieBackdrop(errorMovieBackdrop)
-                .errorMovie(errorMovie)
-                .errorComments(errorComments)
-                .errorFavorite(errorFavorite)
-                .build();
-    }
 
     public static Builder builder() {
         return new AutoValue_ViewStateDetails.Builder();
@@ -102,27 +45,19 @@ abstract class ViewStateDetails {
     public abstract static class Builder {
         public abstract Builder similar(List<Item> similar);
 
-        public abstract Builder errorSimilar(Throwable errorSimilar);
-
-        public abstract Builder errorMovie(Throwable errorMovie);
-
         public abstract Builder movieBasic(MovieBasic movieBasic);
 
         public abstract Builder casts(List<Item> cast);
 
         public abstract Builder backdrops(List<Item> backdrops);
 
-        public abstract Builder errorMovieCast(Throwable errorMovieCast);
-
-        public abstract Builder errorMovieBackdrop(Throwable errorMovieBackdrop);
-
         public abstract Builder comments(List<Item> comments);
-
-        public abstract Builder errorComments(Throwable errorComments);
 
         public abstract Builder isFavorite(Boolean isFavorite);
 
         public abstract Builder errorFavorite(Throwable errorFavorite);
+
+        public abstract Builder error(Throwable error);
 
         public abstract ViewStateDetails build();
     }

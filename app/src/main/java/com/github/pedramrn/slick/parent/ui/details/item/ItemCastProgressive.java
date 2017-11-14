@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
@@ -20,7 +21,7 @@ import com.xwray.groupie.ViewHolder;
  *         Created on: 2017-06-16
  */
 
-public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implements OnItemAction {
+public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implements OnItemAction, RemovableOnError {
 
     public ItemCastProgressive(long id) {
         super(id);
@@ -62,5 +63,10 @@ public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implemen
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
+    }
+
+    @Override
+    public boolean removableByTag(String tag) {
+        return true;
     }
 }

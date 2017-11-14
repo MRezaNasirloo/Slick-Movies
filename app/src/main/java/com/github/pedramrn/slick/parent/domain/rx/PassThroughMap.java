@@ -1,14 +1,12 @@
 package com.github.pedramrn.slick.parent.domain.rx;
 
-import com.github.pedramrn.slick.parent.util.UtilsRx;
-
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOperator;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 
@@ -29,6 +27,9 @@ import io.reactivex.functions.Function;
  * @param <T>
  */
 public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Function<T, Observable<T>> {
+
+    private boolean alreadyDisposed;
+
     @Override
     public Observer<? super T> apply(@NonNull Observer<? super T> observer) throws Exception {
         return new Op(observer);
@@ -37,7 +38,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
     private final class Op implements Observer<T>, Disposable {
         final private Observer<? super T> actual;
         private Disposable d;
-        private List<Disposable> disposables;
+        private CompositeDisposable disposables = new CompositeDisposable();
         private AtomicInteger wip = new AtomicInteger(0);
         private boolean completed;
         private boolean done;
@@ -50,6 +51,7 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
         public void onSubscribe(@NonNull Disposable d) {
             this.d = d;
             actual.onSubscribe(d);
+            alreadyDisposed = isDisposed();
         }
 
         @Override
@@ -59,11 +61,10 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
                 wip.incrementAndGet();
                 actual.onNext(downStream);
                 apply(downStream).subscribe(new Observer<T>() {
-                    private Disposable dis;
 
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
-                        this.dis = d;
+                        disposables.add(d);
                     }
 
                     @Override
@@ -82,7 +83,6 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
                     public void onComplete() {
                         System.out.println("Op.onComplete.anonymous1 " + hashCode());
                         wip.decrementAndGet();
-                        UtilsRx.dispose(this.dis);
                         if (done && !completed && wip.intValue() == 0) {
                             System.out.println("Op.onComplete.anonymous2 " + hashCode());
                             Op.this.onComplete();
@@ -111,11 +111,11 @@ public abstract class PassThroughMap<T> implements ObservableOperator<T, T>, Fun
         @Override
         public void onComplete() {
             System.out.println("Op.onComplete1 " + hashCode());
-            synchronized (actual) {
+            synchronized (this) {
                 if (!completed && wip.intValue() == 0) {
                     System.out.println("Op.onComplete2 " + hashCode());
                     actual.onComplete();
-                    UtilsRx.dispose(d);
+                    disposables.dispose();
                     completed = true;
                 }
             }
