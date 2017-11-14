@@ -21,9 +21,9 @@
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_google"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_google"
+            app:layout_constraintStart_toEndOf="@+id/textView_profile_info"
             app:layout_constraintTop_toTopOf="parent"
             />
 
@@ -38,9 +38,9 @@
             android:text="@string/sign_in"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_sign_out"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView_profile_info"
+            app:layout_constraintStart_toEndOf="@+id/button_sign_out"
             app:layout_constraintTop_toTopOf="parent"
             />
 
@@ -52,7 +52,7 @@
             android:gravity="center|start"
             android:textColor="@color/color_blackish"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_google"
+            app:layout_constraintEnd_toStartOf="@+id/button_sign_out"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/imageView_avatar_user"
             app:layout_constraintTop_toTopOf="parent"
