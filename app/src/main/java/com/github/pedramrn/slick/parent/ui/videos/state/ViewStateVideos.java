@@ -18,7 +18,7 @@ public abstract class ViewStateVideos {
     public abstract List<Item> videos();
 
     @Nullable
-    public abstract Throwable errorVideos();
+    public abstract Throwable error();
 
     public abstract Builder toBuilder();
 
@@ -30,7 +30,7 @@ public abstract class ViewStateVideos {
     public abstract static class Builder {
         public abstract Builder videos(List<Item> videos);
 
-        public abstract Builder errorVideos(Throwable errorVideos);
+        public abstract Builder error(Throwable errorVideos);
 
         public abstract ViewStateVideos build();
     }

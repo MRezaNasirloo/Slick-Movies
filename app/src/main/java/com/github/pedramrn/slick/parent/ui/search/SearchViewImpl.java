@@ -15,6 +15,8 @@ import com.github.slick.Presenter;
 import com.lapism.searchview.SearchView;
 import com.xwray.groupie.GroupAdapter;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -22,10 +24,7 @@ import javax.inject.Provider;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -59,18 +58,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     }
 
     private void init() {
-        queryNewText1 = queryNewText.filter(new Predicate<String>() {
-            @Override
-            public boolean test(@NonNull String s) throws Exception {
-                return s.length() > 2;
-            }
-        }).debounce(500, TimeUnit.MILLISECONDS)
-                .doOnNext(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        Log.d(TAG, "accept() called with: s = [" + s + "]");
-                    }
-                });
+        queryNewText1 = queryNewText.filter(s -> s.length() > 2).debounce(500, TimeUnit.MILLISECONDS);
         adapter.setHasStableIds(true);
         setAdapter(adapter);
         setOnQueryTextListener(this);
@@ -142,9 +130,15 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     private static final String TAG = SearchViewImpl.class.getSimpleName();
 
     protected void renderError(@Nullable Throwable throwable) {
+        // TODO: 2017-11-15 show error as a list item
         if (throwable != null) {
-            throwable.printStackTrace();
-            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            if (throwable instanceof UnknownHostException || throwable instanceof SocketTimeoutException) {
+                Toast.makeText(getContext().getApplicationContext(), "Network Error, Are you Connected?", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext().getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT).show();
+                throwable.printStackTrace();
+                // TODO: 2017-11-13 log to fabric
+            }
         }
     }
 

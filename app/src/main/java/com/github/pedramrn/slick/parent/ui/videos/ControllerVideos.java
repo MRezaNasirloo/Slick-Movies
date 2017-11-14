@@ -3,8 +3,8 @@ package com.github.pedramrn.slick.parent.ui.videos;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,27 +18,27 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerVideosBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.details.ErrorHandlerSnackbar;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.pedramrn.slick.parent.ui.videos.state.ViewStateVideos;
-import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerVideos extends ControllerBase implements ViewVideos, Observer<ViewStateVideos> {
+public class ControllerVideos extends ControllerBase implements ViewVideos {
 
     @Inject
     Provider<PresenterVideos> provider;
@@ -47,8 +47,11 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
 
     private final String transitionName;
     private final MovieBasic movie;
-    private Disposable disposable;
     private UpdatingGroup adapterProgressive;
+    private ErrorHandlerSnackbar snackbar;
+
+    private PublishSubject<Object> errorDismissed = PublishSubject.create();
+    private PublishSubject<Object> retry = PublishSubject.create();
 
     public ControllerVideos(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -80,48 +83,61 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, Obse
         binding.recyclerView.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
         binding.recyclerView.getItemAnimator().setChangeDuration(0);
         binding.recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item));
-            }
-        });
-        presenter.updateStream().subscribe(this);
-        presenter.get(movie.id());
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item)));
         return binding.getRoot();
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        UtilsRx.dispose(disposable);
-    }
+    protected void onAttach(@NonNull View view) {
+        snackbar = new ErrorHandlerSnackbar(view, "Retry?") {
 
-    @Override
-    public void onSubscribe(Disposable d) {
-        disposable = d;
+            @Override
+            public void onDismissed(int event) {
+                errorDismissed.onNext(1);
+                if (Snackbar.Callback.DISMISS_EVENT_ACTION == event) {
+                    // errorDismissed.onNext(1);
+                    retry.onNext(1);
+                }
+            }
+
+            /*@Override
+            public void onAction() {
+                *//*errorDismissed.onNext(1);
+                retry.onNext(1);*//*
+            }*/
+        };
     }
 
     private static final String TAG = ControllerVideos.class.getSimpleName();
-    @Override
-    public void onNext(ViewStateVideos state) {
-//        Log.d(TAG, "onNext() called with: state = [" + state + "]");
-        adapterProgressive.update(state.videos());
-        renderError(state.errorVideos());
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.d(TAG, "onComplete");
-    }
 
     public static void start(Router router, MovieBasic movie, String transitionName, int position) {
         router.pushController(RouterTransaction.with(new ControllerVideos(movie, transitionName))
-                                      .pushChangeHandler(new HorizontalChangeHandler())
-                                      .popChangeHandler(new HorizontalChangeHandler()));
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler()));
+    }
+
+    @Override
+    public MovieBasic movie() {
+        return movie;
+    }
+
+    @Override
+    public void update(List<Item> videos) {
+        adapterProgressive.update(videos);
+    }
+
+    @Override
+    public void showError(String message) {
+        snackbar.show(message);
+    }
+
+    @Override
+    public Observable<Object> onErrorDismissed() {
+        return errorDismissed;
+    }
+
+    @Override
+    public Observable<Object> onRetry() {
+        return retry;
     }
 }

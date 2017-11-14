@@ -6,13 +6,14 @@ import android.support.annotation.Nullable;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowVideoBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-22
  */
 
-public class ItemVideoProgressive extends ItemVideo {
+public class ItemVideoProgressive extends ItemVideo implements RemovableOnError {
     public ItemVideoProgressive(long id, String tag) {
         super(id, null);
     }
@@ -29,5 +30,10 @@ public class ItemVideoProgressive extends ItemVideo {
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
         //no-op
+    }
+
+    @Override
+    public boolean removableByTag(String tag) {
+        return true;
     }
 }

@@ -4,12 +4,12 @@ import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideoProgressive;
+import com.github.pedramrn.slick.parent.util.Utils;
 import com.xwray.groupie.Item;
 
 import java.util.List;
 
 /**
-
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-07-22
  */
@@ -41,7 +41,8 @@ public final class PartialViewStateVideos {
 
         @Override
         public ViewStateVideos reduce(ViewStateVideos state) {
-            return state.toBuilder().videos(state.videos()).build();
+            Utils.removeRemovables(state.videos().iterator(), "Videos");
+            return state.toBuilder().videos(reduce(state.videos())).build();
         }
 
         private static class ProgressiveVideosRenderer implements ItemRenderer {
@@ -53,17 +54,28 @@ public final class PartialViewStateVideos {
         }
     }
 
-    public static class VideosError implements PartialViewState<ViewStateVideos> {
+    public static class Error implements PartialViewState<ViewStateVideos> {
 
         private final Throwable throwable;
 
-        public VideosError(Throwable throwable) {
+        public Error(Throwable throwable) {
             this.throwable = throwable;
         }
 
         @Override
         public ViewStateVideos reduce(ViewStateVideos state) {
-            return state.toBuilder().errorVideos(throwable).build();
+            if (state.error() == null) {
+                state = state.toBuilder().error(throwable).build();
+            }
+            return state;
+        }
+    }
+
+    public static class ErrorDismissed implements PartialViewState<ViewStateVideos> {
+
+        @Override
+        public ViewStateVideos reduce(ViewStateVideos state) {
+            return state.toBuilder().error(null).build();
         }
     }
 
