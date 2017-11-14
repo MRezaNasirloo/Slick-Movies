@@ -86,23 +86,6 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
         binding.viewPager.setOffscreenPageLimit(2);
-        /*AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(getActivity(), R.menu.navigation);
-        navigationAdapter.setupWithBottomNavigation(binding.bottomNavigation, new int[]{Color.CYAN,Color.GRAY,Color.DKGRAY});
-        binding.bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                binding.viewPager.setCurrentItem(position, false);
-                switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                }
-                return true;
-            }
-        });*/
         return binding.getRoot();
     }
 
@@ -122,7 +105,9 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     @Override
     public void onMenuItemSelect(@IdRes int itemId, int position, boolean fromUser) {
         if (fromUser) {
-            resetStack(position);
+            resetStack(0);
+            resetStack(1);
+            resetStack(2);
             binding.viewPager.setCurrentItem(position, false);
             switch (itemId) {
                 case R.id.navigation_box_office:
