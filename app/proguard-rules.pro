@@ -59,3 +59,8 @@
 -keepclassmembers class com.github.pedramrn.slick.parent.datasource.database.model.** {
   *;
 }
+
+#Fabric
+-keepattributes SourceFile,LineNumberTable
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
