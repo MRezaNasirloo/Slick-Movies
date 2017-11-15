@@ -15,6 +15,7 @@ import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.slick.Presenter;
+import com.github.slick.middleware.RequestStack;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -41,6 +42,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     private final int RC_SIGN_IN = 123;
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
     private ControllerAuthBinding binding;
+    private boolean status;
 
     @NonNull
     @Override
@@ -70,6 +72,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public void userSignedIn(UserApp user) {
+        status = true;
         binding.buttonGoogle.setVisibility(View.GONE);
         binding.buttonSignOut.setVisibility(View.VISIBLE);
         binding.textViewProfileInfo.setText(user.name());
@@ -81,6 +84,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public void userSignedOut() {
+        status = false;
         binding.buttonGoogle.setVisibility(View.VISIBLE);
         binding.buttonSignOut.setVisibility(View.GONE);
         binding.imageViewAvatarUser.setVisibility(View.INVISIBLE);
@@ -117,6 +121,16 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
             } else {
                 streamResult.onNext(GugleSignInResult.builder().isSuccess(false).build());
             }
+        }
+    }
+
+    @Override
+    public boolean handleBack() {
+        if (status) {
+            return getRouter().popController(this);
+        } else {
+            RequestStack.getInstance().handleBack();
+            return super.handleBack();
         }
     }
 
