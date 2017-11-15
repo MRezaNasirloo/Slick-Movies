@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
 
+import com.github.pedramrn.slick.parent.ui.error.ErrorMessageHandler;
 import com.xwray.groupie.Item;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import io.reactivex.Observable;
 /**
  * A simple View interface
  */
-public interface ViewSearch {
+public interface ViewSearch extends ErrorMessageHandler {
 
     Observable<String> queryNexText();
 
@@ -21,5 +22,6 @@ public interface ViewSearch {
 
     void showLoading(boolean isLoading);
 
-    void showError(String message);
+    @Override
+    void error(String message);
 }

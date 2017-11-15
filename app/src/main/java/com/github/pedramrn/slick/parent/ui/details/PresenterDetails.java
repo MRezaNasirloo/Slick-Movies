@@ -3,8 +3,6 @@ package com.github.pedramrn.slick.parent.ui.details;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.domain.model.FavoriteDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
 import com.github.pedramrn.slick.parent.domain.router.RouterComments;
@@ -22,13 +20,12 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterCommentsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.xwray.groupie.Item;
 
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -222,17 +219,6 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
             view.notFavorite();
 
         }
-
-        Throwable error = state.error();
-        if (error != null) {
-            if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
-                view.showError("Network Error, Are you Connected?");
-                Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
-            } else {
-                view.showError("Internal Error");
-                if (BuildConfig.DEBUG) error.printStackTrace();
-                Crashlytics.logException(error);
-            }
-        }
+        ErrorHandler.handle(state.error(), view);
     }
 }

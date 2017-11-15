@@ -408,11 +408,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
-    public void showError(String message) {
-        snackbar.setText(message).show();
-    }
-
-    @Override
     public void notFavorite() {
         fab.setImageDrawable(drawableUnFav);
     }
@@ -425,5 +420,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public void onRetry(String tag) {
         onRetry.onNext(tag);
+    }
+
+    @Override
+    public void error(String message) {
+        snackbar.setText(message).show();
     }
 }

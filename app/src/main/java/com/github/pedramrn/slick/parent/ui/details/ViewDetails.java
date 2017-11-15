@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.error.ErrorMessageHandler;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 
 import io.reactivex.Observable;
@@ -10,7 +11,7 @@ import io.reactivex.Observable;
  *         Created on: 2017-06-15
  */
 
-public interface ViewDetails extends Retryable {
+public interface ViewDetails extends Retryable, ErrorMessageHandler {
 
     void render(ViewStateDetails viewStateDetails);
 
@@ -23,8 +24,6 @@ public interface ViewDetails extends Retryable {
     Observable<Object> onRetryAll();
 
     Observable<Object> errorDismissed();
-
-    void showError(String message);
 
     void notFavorite();
 

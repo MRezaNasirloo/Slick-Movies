@@ -126,7 +126,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
     }
 
     @Override
-    public void showError(String message) {
+    public void error(String message) {
         snackbar.show(message);
     }
 

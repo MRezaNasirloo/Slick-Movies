@@ -137,7 +137,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     }
 
     @Override
-    public void showError(String message) {
+    public void error(String message) {
         Toast.makeText(getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

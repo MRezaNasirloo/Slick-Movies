@@ -15,12 +15,12 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
  */
 public class ItemBannerError extends ItemBanner implements OnItemAction, RemovableOnError {
     public static final String TAG = ItemBannerError.class.getSimpleName();
-    private final Throwable error;
+    private final String message;
     private final String tag;
 
-    public ItemBannerError(long id, String tag, Throwable error) {
+    public ItemBannerError(long id, String tag, String message) {
         super(id, null);
-        this.error = error;
+        this.message = message;
         this.tag = tag;
     }
 
@@ -28,7 +28,7 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
     public void bind(RowBannerBinding viewBinding, int position) {
         viewBinding.imageViewPlay.setImageResource(R.drawable.ic_refresh_black_24dp);
         viewBinding.imageViewThumbnail.setImageResource(R.drawable.rectangle_no_corners);
-        viewBinding.textViewTitleAnticipated.setText(error.getMessage());
+        viewBinding.textViewTitleAnticipated.setText(message);
         viewBinding.textViewTitleAnticipated.setBackground(null);
     }
 

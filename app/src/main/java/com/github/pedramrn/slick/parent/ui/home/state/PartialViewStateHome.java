@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.home.state;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
+import com.github.pedramrn.slick.parent.ui.error.ErrorMessageHandler;
 import com.github.pedramrn.slick.parent.ui.home.PresenterHome;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerError;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
@@ -38,9 +40,10 @@ public final class PartialViewStateHome {
         }
     }
 
-    public static class UpcomingError implements PartialViewState<ViewStateHome> {
+    public static class UpcomingError implements PartialViewState<ViewStateHome>,ErrorMessageHandler {
 
         private final Throwable throwable;
+        private String message;
 
         public UpcomingError(Throwable throwable) {
             this.throwable = throwable;
@@ -51,13 +54,19 @@ public final class PartialViewStateHome {
             List<Item> upcoming = state.upcoming();
             Iterator<Item> iterator = upcoming.iterator();
             removeRemovables(iterator, null);
-            Item itemError = new ItemBannerError(-1, PresenterHome.UPCOMING, throwable);
+            ErrorHandler.handle(throwable, this);
+            Item itemError = new ItemBannerError(-1, PresenterHome.UPCOMING, message);
             upcoming.add(itemError);
 
             return state.toBuilder()
                     .upcoming(new ArrayList<>(upcoming))
                     .errorUpcoming(throwable)
                     .build();
+        }
+
+        @Override
+        public void error(String message) {
+            this.message = message;
         }
     }
 

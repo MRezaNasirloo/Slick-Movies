@@ -2,8 +2,6 @@ package com.github.pedramrn.slick.parent.ui.home;
 
 import android.support.annotation.NonNull;
 
-import com.github.pedramrn.slick.parent.domain.model.MovieSmallDomain;
-import com.github.pedramrn.slick.parent.domain.model.PagedDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterUpcoming;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
@@ -22,7 +20,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
 import io.reactivex.functions.Function;
 
@@ -53,58 +50,22 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
     @Override
     public void start(ViewHome view) {
-        System.out.println("PresenterHome.start");
-
-        Observable<PartialViewState<ViewStateHome>> upcoming = command(new CommandProvider<Object, ViewHome>() {
-            @Override
-            public Observable<Object> provide(ViewHome view) {
-                return view.retryUpcoming();
-            }
-        }).startWith(this).flatMap(new Function<Object, ObservableSource<PartialViewState<ViewStateHome>>>() {
-            @Override
-            public ObservableSource<PartialViewState<ViewStateHome>> apply(@NonNull Object o) throws Exception {
-                System.out.println("PresenterHome.routerUpcoming(1)");
-                return routerUpcoming.upcoming(1)
-                        .concatMap(new Function<PagedDomain<MovieSmallDomain>, ObservableSource<MovieSmallDomain>>() {
-                            @Override
-                            public ObservableSource<MovieSmallDomain> apply(@NonNull PagedDomain<MovieSmallDomain> pagedData)
-                                    throws Exception {
-                                return Observable.fromIterable(pagedData.data());
-                            }
-                        })
+        Observable<PartialViewState<ViewStateHome>> upcoming = command(ViewHome::retryUpcoming)
+                .startWith(this).flatMap(o -> routerUpcoming.upcoming(1)
+                        .concatMap(pagedData -> Observable.fromIterable(pagedData.data()))
                         .map(mapperMovieSmall)
                         .map(new MapProgressive())
                         .cast(MovieSmall.class)
-                        .map(new Function<MovieSmall, Item>() {
-                            @Override
-                            public Item apply(@NonNull MovieSmall movieSmall)
-                                    throws Exception {
-                                return movieSmall.render(UPCOMING);
-                            }
-                        })
+                        .map(movieSmall -> movieSmall.render(UPCOMING))
                         .buffer(20)
-                        .map(new Function<List<Item>, PartialViewState<ViewStateHome>>() {
-                            @Override
-                            public PartialViewState<ViewStateHome> apply(@NonNull List<Item> items) throws Exception {
-                                System.out.println("PresenterHome.Upcoming");
-                                return new PartialViewStateHome.Upcoming(items);
-                            }
-                        })
-                        .onErrorReturn(new Function<Throwable, PartialViewState<ViewStateHome>>() {
-                            @Override
-                            public PartialViewState<ViewStateHome> apply(@NonNull Throwable throwable) throws Exception {
-                                System.out.println("PresenterHome.UpcomingError");
-                                return new PartialViewStateHome.UpcomingError(throwable);
-                            }
-                        })
+                        .map((Function<List<Item>, PartialViewState<ViewStateHome>>) PartialViewStateHome.Upcoming::new)
+                        .onErrorReturn(PartialViewStateHome.UpcomingError::new)
                         .startWith(new PartialViewStateHome.ProgressiveBannerImpl(2, UPCOMING))
-                        .subscribeOn(io);
-            }
-        });
+                        .subscribeOn(io));
 
 
         ViewStateHome initialState = ViewStateHome.builder()
-                .upcoming(Collections.<Item>emptyList())
+                .upcoming(Collections.emptyList())
                 .build();
 
         reduce(initialState, merge(upcoming))
@@ -113,6 +74,6 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
 
     @Override
     public void render(@NonNull ViewStateHome state, @NonNull ViewHome view) {
-        System.out.println("PresenterHome.render");
+
     }
 }
