@@ -17,4 +17,6 @@
     <dimen name="item_margin_long">8dp</dimen>
     <dimen name="item_margin_normal">4dp</dimen>
     <dimen name="item_margin_short">2dp</dimen>
+    <dimen name="dialog_elevation">6dp</dimen>
+    <dimen name="dialog_corners">2dp</dimen>
 </resources>
