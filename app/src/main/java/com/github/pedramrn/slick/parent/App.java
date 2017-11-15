@@ -57,11 +57,16 @@ public class App extends Application {
         }*/
 
         Crashlytics crashlytics = new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .core(new CrashlyticsCore.Builder().disabled(false).build())
+                .build();
+
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(crashlytics)
+                .debuggable(true)
                 .build();
 
         // Initialize Fabric with the debug-disabled crashlytics.
-        Fabric.with(this, crashlytics);
+        Fabric.with(fabric);
 
         refWatcher = RefWatcher.DISABLED;
 
