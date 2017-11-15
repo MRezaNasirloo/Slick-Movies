@@ -52,7 +52,7 @@ public class MiddlewareLogin extends Middleware {
 
                     @Override
                     public void onError(Throwable e) {
-                        Navigator2.go(new ControllerAuth(), new HorizontalChangeHandler(), new HorizontalChangeHandler());
+                        Navigator2.go(new ControllerAuth(true), new HorizontalChangeHandler(), new HorizontalChangeHandler());
                     }
 
                     @Override

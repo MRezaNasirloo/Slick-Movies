@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.auth;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerAuthBinding;
+import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
@@ -43,6 +45,16 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
     private ControllerAuthBinding binding;
     private boolean status;
+    private boolean managed;
+
+    public ControllerAuth(boolean managed) {
+        this(new BundleBuilder(new Bundle()).putBoolean("MANAGED", managed).build());
+    }
+
+    public ControllerAuth(@Nullable Bundle args) {
+        super(args);
+        managed = args != null && args.getBoolean("MANAGED", false);
+    }
 
     @NonNull
     @Override
@@ -125,11 +137,17 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public boolean handleBack() {
-        if (status) {
-            return getRouter().popController(this);
+        if (managed) {
+            if (status) {
+                getRouter().popController(this);
+                return true;
+            } else {
+                RequestStack.getInstance().handleBack();
+                return super.handleBack();
+            }
+
         } else {
-            RequestStack.getInstance().handleBack();
-            return super.handleBack();
+            return false;
         }
     }
 

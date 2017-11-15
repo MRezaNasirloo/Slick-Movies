@@ -53,9 +53,9 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
         ViewGroup containerChild = binding.container.findViewById(R.id.container_child);
-        Router childRouter = getChildRouter(containerChild);
-        if (!childRouter.hasRootController()){
-            ControllerAuth controllerAuth = new ControllerAuth();
+        Router childRouter = getChildRouter(containerChild).setPopsLastView(false);
+        if (!childRouter.hasRootController()) {
+            ControllerAuth controllerAuth = new ControllerAuth(false);
             childRouter.setRoot(RouterTransaction.with(controllerAuth));
         }
         // binding.collapsingToolbar.setTitle(true);
@@ -73,11 +73,6 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
         return binding.getRoot();
     }
-
-    /*@Override
-    protected void onAttach(@NonNull View view) {
-        triggerRefresh.onNext(1);
-    }*/
 
     @Override
     public void renderError(@Nullable Throwable throwable) {
