@@ -19,6 +19,7 @@ public class SigningError implements PartialViewState<ViewStateAuth> {
     public ViewStateAuth reduce(ViewStateAuth state) {
         return state.toBuilder()
                 .error(throwable)
+                .loading(false)
                 .build();
     }
 }

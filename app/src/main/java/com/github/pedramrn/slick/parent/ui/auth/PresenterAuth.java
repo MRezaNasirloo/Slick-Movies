@@ -90,7 +90,7 @@ public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
                         .map(UserApp::create)
                         .map((Function<UserApp, PartialViewState<ViewStateAuth>>) SignedIn::new)
                         .startWith(new SignedInLoading(true))
-                        .doOnError(Throwable::printStackTrace)
+                        .onErrorReturn(SigningError::new)
                 )
                 .subscribeOn(io);
 
