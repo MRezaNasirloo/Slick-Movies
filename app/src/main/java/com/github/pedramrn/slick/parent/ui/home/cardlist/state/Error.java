@@ -1,5 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist.state;
 
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
+import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.ViewStateCardList;
@@ -19,10 +23,10 @@ import static com.github.pedramrn.slick.parent.util.Utils.removeRemovables;
  */
 public class Error implements PartialViewState<ViewStateCardList> {
 
-    protected final Throwable throwable;
+    protected final Throwable error;
 
     public Error(Throwable throwable) {
-        this.throwable = throwable;
+        this.error = throwable;
     }
 
     @Override
@@ -31,13 +35,14 @@ public class Error implements PartialViewState<ViewStateCardList> {
         removeRemovables(movies.values().iterator(), null);
 
         final String message;
-        if (throwable instanceof UnknownHostException || throwable instanceof SocketTimeoutException) {
+        if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
             // TODO: 2017-11-13 extract String? how
             message = "Network Error, Are you Connected?";
+            Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
         } else {
             message = "Internal Error";
-            throwable.printStackTrace();
-            // TODO: 2017-11-13 log to fabric
+            if (BuildConfig.DEBUG) error.printStackTrace();
+            Crashlytics.logException(error);
         }
 
 
@@ -45,7 +50,7 @@ public class Error implements PartialViewState<ViewStateCardList> {
         movies.put(movies.size(), itemError);
 
         return state.toBuilder()
-                .error(throwable)
+                .error(error)
                 .isLoading(true)
                 .itemLoadedCount(movies.size())
                 .movies(movies)

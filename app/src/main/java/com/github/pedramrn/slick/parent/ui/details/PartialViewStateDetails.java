@@ -256,18 +256,18 @@ public class PartialViewStateDetails {
     }
 
     /*static class CommentsError implements PartialViewState<ViewStateDetails> {
-        private final Throwable throwable;
+        private final Throwable error;
 
-        public CommentsError(Throwable throwable) {
-            this.throwable = throwable;
+        public CommentsError(Throwable error) {
+            this.error = error;
         }
 
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             List<Item> comments = state.comments();
             removeRemovables(comments.iterator(), null);
-            comments.add(new ItemCommentError(0, throwable.getMessage(), "COMMENTS_ERROR"));
-            return state.toBuilder().comments(comments).errorComments(throwable).build();
+            comments.add(new ItemCommentError(0, error.getMessage(), "COMMENTS_ERROR"));
+            return state.toBuilder().comments(comments).errorComments(error).build();
         }
     }*/
 }

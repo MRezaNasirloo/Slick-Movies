@@ -47,7 +47,6 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        // TODO: 2017-07-22 Inject dependencies 
         App.componentMain().inject(this);
         ControllerAuth_Slick.bind(this);
         binding = ControllerAuthBinding.inflate(inflater, container, false);

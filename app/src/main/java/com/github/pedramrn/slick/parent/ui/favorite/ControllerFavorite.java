@@ -48,7 +48,6 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        // TODO: 2017-07-22 Inject dependencies
         App.componentMain().inject(this);
         ControllerFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);

@@ -1,7 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.videos;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
@@ -82,10 +85,11 @@ class PresenterVideos extends PresenterBase<ViewVideos, ViewStateVideos> {
         if (error != null) {
             if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
                 view.showError("Network Error, Are you Connected?");
+                Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
             } else {
                 view.showError("Internal Error");
-                error.printStackTrace();
-                // TODO: 2017-11-13 log to fabric
+                if (BuildConfig.DEBUG) error.printStackTrace();
+                Crashlytics.logException(error);
             }
         }
     }

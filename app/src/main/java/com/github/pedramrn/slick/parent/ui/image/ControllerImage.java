@@ -103,8 +103,6 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        Log.d(TAG, "onCreateView() called");
-        // TODO: 2017-07-22 Inject dependencies 
         App.componentMain().inject(this);
         ControllerImage_Slick.bind(this);
         ControllerImageBinding binding = ControllerImageBinding.inflate(inflater, container, false);
@@ -184,7 +182,7 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
 
     @Override
     public void onNext(ViewStateImage state) {
-        // TODO: 2017-09-06
+        //no-op
     }
 
     @Override

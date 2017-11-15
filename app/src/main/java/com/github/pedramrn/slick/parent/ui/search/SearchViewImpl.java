@@ -7,7 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.ui.search.state.ViewStateSearch;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.github.slick.OnDestroyListener;
@@ -129,15 +131,16 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
 
     private static final String TAG = SearchViewImpl.class.getSimpleName();
 
-    protected void renderError(@Nullable Throwable throwable) {
+    protected void renderError(@Nullable Throwable error) {
         // TODO: 2017-11-15 show error as a list item
-        if (throwable != null) {
-            if (throwable instanceof UnknownHostException || throwable instanceof SocketTimeoutException) {
+        if (error != null) {
+            if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
                 Toast.makeText(getContext().getApplicationContext(), "Network Error, Are you Connected?", Toast.LENGTH_SHORT).show();
+                Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT).show();
-                throwable.printStackTrace();
-                // TODO: 2017-11-13 log to fabric
+                if (BuildConfig.DEBUG) error.printStackTrace();
+                Crashlytics.logException(error);
             }
         }
     }

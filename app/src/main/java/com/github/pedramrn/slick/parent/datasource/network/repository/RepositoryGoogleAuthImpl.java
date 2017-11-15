@@ -67,7 +67,6 @@ public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, Googl
 
     public Observable<Object> signIn(String id) {
         return Observable.create(e -> {
-            // TODO: 2017-11-08 catch has
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
             Controller controller = ((ActivityMain) ownerWeakReference.get()).getRouter().getControllerWithInstanceId(id);
             if (controller != null) {
