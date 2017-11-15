@@ -1,31 +1,25 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.BuildConfig;
-import com.github.pedramrn.slick.parent.ui.search.state.ViewStateSearch;
-import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.github.slick.OnDestroyListener;
 import com.github.slick.Presenter;
 import com.lapism.searchview.SearchView;
 import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Item;
 
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
@@ -34,7 +28,7 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-08-11
  */
 
-public class SearchViewImpl extends SearchView implements ViewSearch, Observer<ViewStateSearch>, SearchView.OnQueryTextListener,
+public class SearchViewImpl extends SearchView implements ViewSearch, SearchView.OnQueryTextListener,
         SearchView.OnOpenCloseListener, OnDestroyListener {
 
     @Inject
@@ -74,9 +68,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         App.componentMain().inject(this);
         SearchViewImpl_Slick.bind(this);
         SearchViewImpl_Slick.onAttach(this);
-        if (!isInEditMode()) {
-            presenter.updateStream().subscribe(this);
-        }
     }
 
     @Override
@@ -85,7 +76,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         adapter.setOnItemClickListener(null);
         adapter = null;
         SearchViewImpl_Slick.onDetach(this);
-        UtilsRx.dispose(disposable);
     }
 
     @Override
@@ -107,43 +97,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
         return false;
     }
 
-    @Override
-    public void onSubscribe(Disposable d) {
-        disposable = d;
-    }
-
-    @Override
-    public void onNext(ViewStateSearch state) {
-        adapter.clear();
-        adapter.addAll(state.movies());
-        renderError(state.errorMovies());
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.d(TAG, "onComplete() called");
-    }
-
     private static final String TAG = SearchViewImpl.class.getSimpleName();
-
-    protected void renderError(@Nullable Throwable error) {
-        // TODO: 2017-11-15 show error as a list item
-        if (error != null) {
-            if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
-                Toast.makeText(getContext().getApplicationContext(), "Network Error, Are you Connected?", Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
-            } else {
-                Toast.makeText(getContext().getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT).show();
-                if (BuildConfig.DEBUG) error.printStackTrace();
-                Crashlytics.logException(error);
-            }
-        }
-    }
 
     @Override
     public boolean onClose() {
@@ -168,11 +122,22 @@ public class SearchViewImpl extends SearchView implements ViewSearch, Observer<V
     }
 
     @Override
+    public void update(List<Item> items) {
+        adapter.clear();
+        adapter.addAll(items);
+    }
+
+    @Override
     public void showLoading(boolean isLoading) {
         if (isLoading) {
             showProgress();
         } else {
             hideProgress();
         }
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

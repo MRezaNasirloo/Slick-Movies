@@ -1,6 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
 
+import com.xwray.groupie.Item;
+
+import java.util.List;
+
 import io.reactivex.Observable;
 
 /**
@@ -12,6 +16,10 @@ public interface ViewSearch {
 
     Observable<Boolean> searchOpenClose();
 
+    void update(List<Item> items);
+
 
     void showLoading(boolean isLoading);
+
+    void showError(String message);
 }

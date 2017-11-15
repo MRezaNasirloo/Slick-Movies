@@ -1,7 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.github.pedramrn.slick.parent.BuildConfig;
 import com.github.pedramrn.slick.parent.domain.router.RouterSearch;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
@@ -14,6 +17,8 @@ import com.github.pedramrn.slick.parent.ui.search.state.PartialViewStateSearch;
 import com.github.pedramrn.slick.parent.ui.search.state.ViewStateSearch;
 import com.xwray.groupie.Item;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,8 +61,14 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
                         .flatMap(pagedDomain -> Observable.fromIterable(pagedDomain.data()))
                         .map(mapperSmall)
                         .map((Function<MovieSmall, Item>) ItemRowSuggestion::new)
-                        .buffer(6)
-                        .map((Function<List<Item>, PartialViewState<ViewStateSearch>>) PartialViewStateSearch.Movies::new)
+                        .toList(20)
+                        .toObservable()
+                        .map(new Function<List<Item>, PartialViewState<ViewStateSearch>>() {
+                            @Override
+                            public PartialViewState<ViewStateSearch> apply(List<Item> movies) throws Exception {
+                                return new PartialViewStateSearch.Movies(movies);
+                            }
+                        })
                         .startWith(new PartialViewStateSearch.Loading(true))
                         .lift(new OnCompleteReturn<PartialViewState<ViewStateSearch>>() {
                             @Override
@@ -86,5 +97,18 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
     @Override
     protected void render(@NonNull ViewStateSearch state, @NonNull ViewSearch view) {
         view.showLoading(state.loadingMovies());
+        view.update(state.movies());
+        // TODO: 2017-11-15 show error as a list item
+        Throwable error = state.errorMovies();
+        if (error != null) {
+            if (error instanceof UnknownHostException || error instanceof SocketTimeoutException) {
+                view.showError("Network Error, Are you Connected?");
+                Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
+            } else {
+                view.showError("Internal Error");
+                if (BuildConfig.DEBUG) error.printStackTrace();
+                Crashlytics.logException(error);
+            }
+        }
     }
 }
