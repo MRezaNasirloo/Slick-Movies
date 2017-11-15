@@ -10,11 +10,13 @@ import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
+import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteList;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListEmpty;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListError;
+import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
 
@@ -66,6 +68,8 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                         .flatMap(user -> routerFavorite.updateStream()// ^ read the comment above
                                 .concatMap(favorites -> routerMovie.movie(favorites).subscribeOn(io)
                                         .map(mapper)
+                                        .map(new MapProgressive())
+                                        .cast(Movie.class)
                                         .map(movie -> movie.render("FAVORITE"))
                                         .compose(new ScanToMap<>())
                                         .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)

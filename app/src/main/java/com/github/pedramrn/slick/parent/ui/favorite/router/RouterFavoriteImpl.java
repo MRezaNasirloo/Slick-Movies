@@ -61,7 +61,8 @@ public class RouterFavoriteImpl implements RouterFavorite {
     @Middleware(MiddlewareLogin.class)
     public Observable<List<FavoriteDomain>> updateStream() {
         return repositoryAuth.currentUser().flatMap(firebaseUser -> repositoryFavorite.updateStream(firebaseUser.getUid())
-                .map(source -> Observable.fromIterable(source).map(new MapperFavoriteModelToDomain())
+                .map(source -> Observable.fromIterable(source)
+                        .sorted((o1, o2) -> o2.dateAdded.compareTo(o1.dateAdded)).map(new MapperFavoriteModelToDomain())
                         .toList(source.size() > 0 ? source.size() : 1).blockingGet()).distinctUntilChanged());
     }
 
