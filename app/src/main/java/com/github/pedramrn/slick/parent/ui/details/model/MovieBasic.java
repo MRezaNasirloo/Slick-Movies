@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.github.pedramrn.slick.parent.domain.model.MovieMetadata;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -58,4 +59,8 @@ public interface MovieBasic extends Parcelable, MovieMetadata {
     String thumbnailBackdrop();
 
     String runtimePretty();
+
+    default String rank(int position) {
+        return String.format(Locale.getDefault(), "#%s", position + 1);
+    }
 }

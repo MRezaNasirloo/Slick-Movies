@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeImplBaseTest;
+import com.github.pedramrn.slick.parent.ui.boxoffice.state.ViewStateBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class PresenterBoxOfficeTest extends RouterBoxOfficeImplBaseTest {
     public void updateStream() throws Exception {
         TestObserver<ViewStateBoxOffice> test = presenter.updateStream().test();
         PublishSubject<Integer> subject = PublishSubject.create();
-        presenter.getBoxOffice(subject, 2);
+        // presenter.getBoxOffice(subject, 2);
         subject.onNext(1);
 
         test.assertValueCount(2).assertNotComplete();

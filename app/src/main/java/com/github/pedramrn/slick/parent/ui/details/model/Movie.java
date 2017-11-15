@@ -15,7 +15,6 @@ import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
 import java.util.List;
-import java.util.Locale;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
@@ -108,10 +107,6 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     @Override
     public long itemId() {
         return uniqueId().longValue();
-    }
-
-    public String rank(int position) {
-        return String.format(Locale.getDefault(), "#%s", position + 1);
     }
 
     @Nullable

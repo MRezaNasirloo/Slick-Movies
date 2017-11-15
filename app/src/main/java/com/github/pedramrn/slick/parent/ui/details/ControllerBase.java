@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
@@ -15,12 +16,19 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 
+import io.reactivex.subjects.PublishSubject;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-18
  */
 
 public abstract class ControllerBase extends Controller implements ToolbarHost, Navigator {
+
+    protected final PublishSubject<Object> retry = PublishSubject.create();
+    protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
+    private ErrorHandlerSnackbar snackbar;
+
     protected ControllerBase(@Nullable Bundle args) {
         super(args);
     }
@@ -70,7 +78,24 @@ public abstract class ControllerBase extends Controller implements ToolbarHost, 
     @Override
     public void navigateTo(Controller controller) {
         getRouter().pushController(RouterTransaction.with(controller)
-                                           .popChangeHandler(new HorizontalChangeHandler())
-                                           .pushChangeHandler(new HorizontalChangeHandler()));
+                .popChangeHandler(new HorizontalChangeHandler())
+                .pushChangeHandler(new HorizontalChangeHandler()));
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        snackbar = new ErrorHandlerSnackbar(view, "Retry") {
+            @Override
+            public void onDismissed(int event) {
+                errorDismissed.onNext(1);
+                if (Snackbar.Callback.DISMISS_EVENT_ACTION == event) {
+                    retry.onNext(1);
+                }
+            }
+        };
+    }
+
+    protected void showSnakbar(String message) {
+        snackbar.show(message);
     }
 }

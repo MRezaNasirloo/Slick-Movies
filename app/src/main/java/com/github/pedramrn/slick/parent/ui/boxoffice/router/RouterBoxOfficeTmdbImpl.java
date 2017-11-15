@@ -2,25 +2,15 @@ package com.github.pedramrn.slick.parent.ui.boxoffice.router;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
-import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
-import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
-import com.github.pedramrn.slick.parent.domain.mapper.MapperSimpleData;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
-import com.github.pedramrn.slick.parent.domain.model.MovieItem;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -46,33 +36,12 @@ public class RouterBoxOfficeTmdbImpl implements RouterBoxOffice {
     @Override
     public Observable<MovieDomain> boxOffice(Observable<Integer> trigger, int buffer) {
         return apiTrakt.get()
-                .flatMap(new Function<List<BoxOfficeItem>, ObservableSource<BoxOfficeItem>>() {
-                    @Override
-                    public ObservableSource<BoxOfficeItem> apply(@NonNull List<BoxOfficeItem> boxOfficeItems) throws Exception {
-                        return Observable.fromIterable(boxOfficeItems);
-                    }
-                })
+                .flatMap(Observable::fromIterable)
                 .buffer(buffer)
-                .zipWith(trigger, new BiFunction<List<BoxOfficeItem>, Integer, List<BoxOfficeItem>>() {
-                    @Override
-                    public List<BoxOfficeItem> apply(@NonNull List<BoxOfficeItem> boxOfficeItem, @NonNull Integer ignored) throws Exception {
-                        return boxOfficeItem;
-                    }
-                })
-                .concatMap(new Function<List<BoxOfficeItem>, ObservableSource<MovieDomain>>() {
-                    @Override
-                    public ObservableSource<MovieDomain> apply(@NonNull final List<BoxOfficeItem> boxOfficeItem) throws Exception {
-                        return Observable.fromIterable(boxOfficeItem)
-                                .concatMap(new Function<BoxOfficeItem, ObservableSource<MovieDomain>>() {
-                                    @Override
-                                    public ObservableSource<MovieDomain> apply(@NonNull final BoxOfficeItem boxOfficeItem) throws Exception {
-                                        return apiTmdb.movie(boxOfficeItem.movie().ids().tmdb())
-                                                .subscribeOn(io)
-                                                .map(mapper);
-                                    }
-                                });
-
-                    }
-                });
+                .zipWith(trigger, (boxOfficeItem, ignored) -> boxOfficeItem)
+                .concatMap(boxOfficeItem -> Observable.fromIterable(boxOfficeItem)
+                        .concatMap(boxOfficeItem1 -> apiTmdb.movie(boxOfficeItem1.movie().ids().tmdb())
+                                .subscribeOn(io)
+                                .map(mapper)));
     }
 }
