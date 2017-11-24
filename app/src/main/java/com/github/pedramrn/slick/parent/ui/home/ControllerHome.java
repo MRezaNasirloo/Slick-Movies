@@ -29,8 +29,6 @@ import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.concurrent.TimeUnit;
@@ -41,7 +39,6 @@ import javax.inject.Provider;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -201,12 +198,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
 
     @Override
     public Observable<Object> retryUpcoming() {
-        return onRetry.filter(new Predicate<String>() {
-            @Override
-            public boolean test(@NonNull String s) throws Exception {
-                return PresenterHome.UPCOMING.equals(s);
-            }
-        }).cast(Object.class);
+        return onRetry.filter(PresenterHome.UPCOMING::equals).cast(Object.class);
     }
 
     @Override
@@ -215,11 +207,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     }
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                ((OnItemAction) item).action(ControllerHome.this, null, adapter.getAdapterPosition(item));
-            }
-        });
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerHome.this, null, adapter.getAdapterPosition(item)));
     }
 }
