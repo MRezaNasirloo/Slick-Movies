@@ -4,104 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <data>
-
-        <variable
-            name="vm"
-            type="com.github.pedramrn.slick.parent.ui.details.model.Movie"
-            />
-
-        <variable
-            name="rank"
-            type="String"
-            />
-    </data>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/container_box_office"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         >
 
         <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
-            android:id="@+id/imageView"
+            android:id="@+id/poster"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:contentDescription="@string/movie_cover_image"
-            android:minHeight="200dp"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/footer"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:background="@color/box_office"
             tools:src="@mipmap/ic_launcher"
             />
 
-        <View
-            android:id="@+id/footer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/gradient_shadow"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
-            />
-
         <TextView
-            android:id="@+id/textView_title"
+            android:id="@+id/title"
             style="@style/BoxOffice"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="bottom|center"
-            android:padding="4dp"
-            android:text="@{vm.title()}"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_shadow"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:padding="8dp"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="@+id/footer"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
-            tools:text="Zeluss accelerare in azureus amivadum!"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:text="Mensas velum in ostravia!"
             />
 
-
         <TextView
-            android:id="@+id/textView_rank"
+            android:id="@+id/rank"
             style="@style/BoxOffice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{rank}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
+            android:textSize="35sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="#1"
             />
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"
-            />
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline_footer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.3"
-            />
-
     </android.support.constraint.ConstraintLayout>
-
 </layout>

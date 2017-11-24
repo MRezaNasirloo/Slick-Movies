@@ -11,6 +11,8 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktMetadata;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.MovieTraktPageMetadata;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
+import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.util.FileUtils;
 import com.google.gson.Gson;
@@ -29,6 +31,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Scheduler;
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -153,6 +156,12 @@ public class ModuleNetwork extends ModuleNetworkBase {
         networkBehavior.setFailurePercent(0);
         networkBehavior.setErrorPercent(0);
         return networkBehavior;
+    }
+
+    @Provides
+    @Singleton
+    public RouterBoxOffice routerBoxOffice(ApiTmdb apiTmdb, ApiTrakt apiTrakt, MapperMovie mapper, @Named("io") Scheduler io) {
+        return baseRouterBoxOffice(apiTmdb, apiTrakt, mapper, io);
     }
 
     /*Mock Data*/

@@ -217,8 +217,7 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
             view.favorite();
         } else {
             view.notFavorite();
-
         }
-        ErrorHandler.handle(state.error(), view);
+        if (state.error() != null) view.error(ErrorHandler.handle(state.error()));
     }
 }

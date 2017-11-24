@@ -62,7 +62,7 @@ public class RouterAuthImpl implements RouterAuth {
 
     @Override
     public Observable<Object> signOut() {
-        //if we get an emission it means the sign out has occurred
+        //if we boxOffice an emission it means the sign out has occurred
         return repositoryAuth.signOut().zipWith(repositoryGoogleAuth.signOut(), (o, o2) -> o);
     }
 }

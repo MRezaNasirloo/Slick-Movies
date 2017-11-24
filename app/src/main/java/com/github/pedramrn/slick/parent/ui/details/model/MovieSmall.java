@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details.model;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOffice;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
@@ -21,6 +22,9 @@ import java.util.List;
 
 @AutoValue
 public abstract class MovieSmall extends AutoBase implements Parcelable, ItemView, MovieBasic {
+
+    public static final String BOX_OFFICE = "BOX_OFFICE";
+    public static final String UPCOMING = "UPCOMING";
 
     @Nullable
     public abstract String originalTitle();
@@ -73,8 +77,10 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
 
     @Override
     public Item render(String tag) {
-        if ("UPCOMING".equals(tag)) {
+        if (UPCOMING.equals(tag)) {
             return new ItemBanner(uniqueId(), this);
+        } else if (BOX_OFFICE.equals(tag)) {
+            return new ItemBoxOffice(uniqueId(), this, tag + uniqueId());
         } else {
             return new ItemCardMovie(uniqueId(), this, tag);
 

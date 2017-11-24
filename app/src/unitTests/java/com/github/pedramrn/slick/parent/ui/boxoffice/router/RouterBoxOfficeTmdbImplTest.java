@@ -12,7 +12,7 @@ public class RouterBoxOfficeTmdbImplTest extends RouterBoxOfficeImplBaseTest {
 
     @Test
     public void boxOffice() throws Exception {
-        routerBoxOffice.boxOffice(Observable.just(1, 2), 2).test()
+        routerBoxOffice.boxOfficePagination(Observable.just(1, 2), 2).test()
                 .assertSubscribed()
                 .assertValueCount(4)
                 .assertComplete();

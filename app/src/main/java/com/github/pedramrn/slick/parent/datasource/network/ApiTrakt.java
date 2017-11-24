@@ -24,7 +24,7 @@ import retrofit2.http.Query;
 public interface ApiTrakt {
 
     @GET("/movies/boxoffice")
-    Observable<List<BoxOfficeItem>> get();
+    Observable<List<BoxOfficeItem>> boxOffice();
 
     @GET("/movies/anticipated?extended=full")
     Observable<AnticipatedTrakt> anticipated();

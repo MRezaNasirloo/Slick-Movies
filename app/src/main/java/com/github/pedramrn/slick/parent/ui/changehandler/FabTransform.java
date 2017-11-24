@@ -190,7 +190,7 @@ public class FabTransform extends Transition {
                                 hasRun = true;
                                 view.setClipToOutline(true);
 
-                                // We have to remove this as soon as it's laid out so we can get the shadow back
+                                // We have to remove this as soon as it's laid out so we can boxOffice the shadow back
                                 view.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
                                     @Override
                                     public boolean onPreDraw() {

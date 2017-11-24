@@ -224,7 +224,7 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         // all three flags are being toggled together.
         // Note that there are two immersive mode UI flags, one of which is referred to as "sticky".
         // Sticky immersive mode differs in that it makes the navigation and status bars
-        // semi-transparent, and the UI flag does not get cleared when the user interacts with
+        // semi-transparent, and the UI flag does not boxOffice cleared when the user interacts with
         // the screen.
         if (Build.VERSION.SDK_INT >= 18) {
             newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;

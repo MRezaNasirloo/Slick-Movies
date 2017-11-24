@@ -77,7 +77,7 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
 
 
         ViewStateSearch initial = ViewStateSearch.builder()
-                .movies(Collections.<Item>emptyList())
+                .movies(Collections.emptyList())
                 .loadingMovies(false)
                 .errorMovies(null)
                 .build();
@@ -90,7 +90,8 @@ public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> 
         view.showLoading(state.loadingMovies());
         view.update(state.movies());
         // TODO: 2017-11-15 show error as a list item
-        ErrorHandler.handle(state.errorMovies(), view);
+        if (state.errorMovies() != null) view.error(ErrorHandler.handle(state.errorMovies()));
+
 
     }
 }

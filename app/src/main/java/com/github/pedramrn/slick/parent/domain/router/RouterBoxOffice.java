@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.domain.router;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.MovieMetadata;
 
 import io.reactivex.Observable;
 
@@ -10,5 +11,7 @@ import io.reactivex.Observable;
  */
 
 public interface RouterBoxOffice {
-    Observable<MovieDomain> boxOffice(Observable<Integer> trigger, int buffer);
+    Observable<MovieDomain> boxOfficePagination(Observable<Integer> trigger, int buffer);
+
+    Observable<MovieMetadata> boxOffice();
 }

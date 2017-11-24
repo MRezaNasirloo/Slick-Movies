@@ -55,7 +55,7 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
 
 
     @Override
-    public Observable<List<BoxOfficeItem>> get() {
+    public Observable<List<BoxOfficeItem>> boxOffice() {
         return Observable.never();
     }
 

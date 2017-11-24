@@ -26,7 +26,7 @@ public class ModuleDatabase {
         final ReactiveEntityStore<Persistable> entityStore =
                 ReactiveSupport.toReactiveStore(new EntityDataStore<Persistable>(configuration));
 
-        if (entityStore.select(UserEntity.class).get().firstOrNull() == null) {
+        if (entityStore.select(UserEntity.class).boxOffice().firstOrNull() == null) {
             final UserEntity userEntity = new UserEntity();
             userEntity.setBio("You're awesome");
             userEntity.setAwesome(true);

@@ -41,7 +41,7 @@ public class RouterCommentsImpl implements RouterComments {
                     @Override
                     public ObservableSource<CommentTrakt> apply(@NonNull Response<List<CommentTrakt>> listResponse) throws Exception {
                         Headers headers = listResponse.headers();
-                        // builder.headers.get("x-pagination-limit");
+                        // builder.headers.boxOffice("x-pagination-limit");
                         builder.count(Integer.valueOf(headers.get("x-pagination-item-count")));
                         builder.pages(Integer.valueOf(headers.get("x-pagination-page-count")));
                         builder.page(Integer.valueOf(headers.get("x-pagination-page")));

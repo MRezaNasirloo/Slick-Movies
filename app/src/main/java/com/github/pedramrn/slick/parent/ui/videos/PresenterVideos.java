@@ -77,6 +77,6 @@ class PresenterVideos extends PresenterBase<ViewVideos, ViewStateVideos> {
     protected void render(@NonNull ViewStateVideos state, @NonNull ViewVideos view) {
         view.update(state.videos());
 
-        ErrorHandler.handle(state.error(), view);
+        if (state.error() != null) view.error(ErrorHandler.handle(state.error()));
     }
 }

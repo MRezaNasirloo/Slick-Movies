@@ -4,14 +4,25 @@ import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeTmdbImpl;
+import com.github.pedramrn.slick.parent.ui.boxoffice.state.ErrorBoxOffice;
+import com.github.pedramrn.slick.parent.ui.boxoffice.state.MoviesBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.state.ViewStateBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
+import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
+import com.github.pedramrn.slick.parent.ui.home.MapperMovieMetadataToMovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
+import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.github.pedramrn.slick.parent.util.ScanToMap;
+import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,26 +40,29 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
 
     private final RouterBoxOffice routerBoxOffice;
     private final MapperMovieDomainMovie mapper;
+    private final MapperMovieMetadataToMovieBasic mapperMetadata;
     private final Scheduler main;
     private final Scheduler io;
 
 
     @Inject
     public PresenterBoxOffice(
-            RouterBoxOfficeTmdbImpl routerBoxOffice,
+            RouterBoxOffice routerBoxOffice,
+            MapperMovieMetadataToMovieBasic mapperMetadata,
             MapperMovieDomainMovie mapper,
             @Named("main") Scheduler main,
             @Named("io") Scheduler io
     ) {
         super(main, io);
         this.routerBoxOffice = routerBoxOffice;
+        this.mapperMetadata = mapperMetadata;
         this.mapper = mapper;
         this.main = main;
         this.io = io;
     }
 
     private Observable<List<Movie>> boxOffice(Observable<Integer> trigger, int pageSize) {
-        return routerBoxOffice.boxOffice(trigger, pageSize)
+        return routerBoxOffice.boxOfficePagination(trigger, pageSize)
                 .map(mapper)
                 .map(new Function<Movie, List<Movie>>() {
                     @Override
@@ -70,22 +84,26 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
 
     @Override
     protected void start(ViewBoxOffice view) {
-        view.pageSize();
-        Observable<Integer> commandLoadMore = command(ViewBoxOffice::onLoadMore);
         Observable<Object> commandRetry = command(ViewBoxOffice::onRetry);
 
-        commandRetry.flatMap(o -> routerBoxOffice.boxOffice(Observable.just(1), 10)
-                        .map(mapper)
-                        .map(movie -> movie.render("BOX_OFFICE"))
-                // TODO: 2017-11-16 Use PassTroughMap for speeding things up
-        );
+        Observable<PartialViewState<ViewStateBoxOffice>> boxOffice =
+                commandRetry.startWith(1).flatMap(o -> routerBoxOffice.boxOffice().subscribeOn(io)
+                        .map(mapperMetadata)
+                        .cast(AutoBase.class)
+                        .map(new MapProgressive())
+                        .cast(ItemView.class)
+                        .map(itemView -> itemView.render(MovieSmall.BOX_OFFICE))
+                        .compose(new ScanToMap<>())
+                        .map((Function<Map<Integer, Item>, PartialViewState<ViewStateBoxOffice>>) MoviesBoxOffice::new)
+                        .startWith(new MoviesBoxOffice(Collections.emptyMap()))
+                        .onErrorReturn(ErrorBoxOffice::new)
+                );
 
-        reduce(ViewStateBoxOffice.builder().movieItems(Collections.emptyList()).build(),
-                Observable.never()).subscribe(this);
+        reduce(ViewStateBoxOffice.builder().movies(Collections.emptyMap()).build(), boxOffice).subscribe(this);
     }
 
     @Override
     protected void render(@NonNull ViewStateBoxOffice state, @NonNull ViewBoxOffice view) {
-        super.render(state, view);
+        view.update(Arrays.asList(state.movies().values().toArray(new Item[state.movies().size()])));
     }
 }

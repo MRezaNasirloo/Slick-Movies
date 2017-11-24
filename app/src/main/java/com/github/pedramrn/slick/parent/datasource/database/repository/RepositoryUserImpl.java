@@ -27,7 +27,7 @@ public class RepositoryUserImpl implements RepositoryUser {
     public Observable<User> get(String name) {
         return Observable.empty();/*entityStore.select(UserEntity.class, )
                 .where(UserEntity.NAME.equal(name))
-                .get()
+                .boxOffice()
                 .observableResult()
                 .flatMap(new Function<ReactiveResult<UserEntity>, ObservableSource<UserEntity>>() {
                     @Override

@@ -5,6 +5,8 @@ import android.content.Context;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
+import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.google.gson.Gson;
 
@@ -15,6 +17,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Scheduler;
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -102,4 +105,9 @@ public class ModuleNetwork extends ModuleNetworkBase {
         return baseApiUrlTmdb();
     }
 
+    @Provides
+    @Singleton
+    public RouterBoxOffice routerBoxOffice(ApiTmdb apiTmdb, ApiTrakt apiTrakt, MapperMovie mapper, @Named("io") Scheduler io) {
+        return baseRouterBoxOffice(apiTmdb, apiTrakt, mapper, io);
+    }
 }

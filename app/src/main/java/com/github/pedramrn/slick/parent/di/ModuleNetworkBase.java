@@ -8,6 +8,9 @@ import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.TypeAdapterFactoryGson;
 import com.github.pedramrn.slick.parent.datasource.network.interceptor.InterceptorAuthToken;
 import com.github.pedramrn.slick.parent.datasource.network.interceptor.InterceptorHeaderCache;
+import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
+import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
+import com.github.pedramrn.slick.parent.ui.boxoffice.router.RouterBoxOfficeTmdbImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 
+import io.reactivex.Scheduler;
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -117,6 +121,10 @@ public class ModuleNetworkBase {
 
     public HttpUrl baseApiUrlTmdb() {
         return HttpUrl.parse("https://api.themoviedb.org/3/");
+    }
+
+    public RouterBoxOffice baseRouterBoxOffice(ApiTmdb apiTmdb, ApiTrakt apiTrakt, MapperMovie mapper, @Named("io") Scheduler io) {
+        return new RouterBoxOfficeTmdbImpl(apiTrakt, apiTmdb, mapper, io);
     }
 
 }

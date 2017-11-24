@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
@@ -29,7 +32,7 @@ import static com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBi
  *         Created on: 2017-04-13
  */
 
-public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice {
+public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice, Retryable {
     private static final String TAG = ControllerBoxOffice.class.getSimpleName();
 
     @Inject
@@ -38,6 +41,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     PresenterBoxOffice presenter;
 
     private UpdatingGroup updatingGroup;
+    private GroupAdapter adapter;
 
     @NonNull
     @Override
@@ -49,7 +53,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         binding.toolbar.setTitle("Box Office");
         setToolbar(binding.toolbar);
 
-        GroupAdapter adapter = new GroupAdapter();
+        adapter = new GroupAdapter();
         updatingGroup = new UpdatingGroup();
         adapter.add(updatingGroup);
 
@@ -57,11 +61,22 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
 
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, View view) {
+                System.out.println("ControllerBoxOffice.onItemClick");
+                ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item));
+            }
+        });
+
         return binding.getRoot();
     }
 
-    private boolean isLoadingNext() {
-        return false;
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        adapter.setOnItemClickListener(null);
+        adapter = null;
     }
 
     @Override
@@ -70,28 +85,12 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     }
 
     @Override
-    public Observable<Integer> onLoadMore() {
-        return Observable.never();
-    }
-
-    @Override
     public Observable<Object> onRetry() {
         return retry;
     }
 
     @Override
-    public Observable<Object> onErrorDismissed() {
-        return errorDismissed;
-    }
-
-    @Override
-    public int pageSize() {
-        return 5;
-    }
-
-
-    @Override
-    public void error(String message) {
-
+    public void onRetry(String tag) {
+        retry.onNext(tag);
     }
 }

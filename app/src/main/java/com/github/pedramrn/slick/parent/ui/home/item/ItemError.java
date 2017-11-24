@@ -39,8 +39,7 @@ public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        if (navigator instanceof Retryable)
-            ((Retryable) navigator).onRetry(tag);
+        if (navigator instanceof Retryable) ((Retryable) navigator).onRetry(tag);
     }
 
     public Throwable throwable() {
