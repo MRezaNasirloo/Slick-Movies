@@ -13,7 +13,6 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
@@ -61,13 +60,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                System.out.println("ControllerBoxOffice.onItemClick");
-                ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item));
-            }
-        });
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item)));
 
         return binding.getRoot();
     }

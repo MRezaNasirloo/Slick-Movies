@@ -69,7 +69,6 @@ public class ImageViewLoader extends AppCompatImageView {
             setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
-        setOnClickListener(null);
         Context context = getContext();
         Picasso.with(context)
                 .load(thumbnailUrl)
@@ -87,7 +86,7 @@ public class ImageViewLoader extends AppCompatImageView {
                     public void onError() {
                         Picasso.with(context).load(R.drawable.error_state_car)
                                 .into(ImageViewLoader.this);
-                        setOnClickListener(v -> load(thumbnailUrl, url));
+                        // setOnClickListener(v -> load(thumbnailUrl, url));
                     }
                 });
     }
