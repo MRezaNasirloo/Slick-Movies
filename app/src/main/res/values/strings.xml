@@ -17,5 +17,7 @@
     <string name="auth_sign_in_note">You need to sign in order that we preserve your data on the cloud.</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
-    <string name="sign_in_help">Sign in to save and view your shows...</string>
+    <string name="sign_in_help">Sign in to save and view your shows…</string>
+    <string name="fab_dialog_transition_name">transition.fab</string>
+
 </resources>

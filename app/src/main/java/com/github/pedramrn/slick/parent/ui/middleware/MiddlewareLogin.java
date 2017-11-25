@@ -1,10 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.middleware;
 
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
-import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
+import com.github.pedramrn.slick.parent.ui.dialog.ControllerDialog;
 import com.github.slick.middleware.BundleSlick;
 import com.github.slick.middleware.Middleware;
 import com.github.slick.middleware.Request;
@@ -52,7 +52,7 @@ public class MiddlewareLogin extends Middleware {
 
                     @Override
                     public void onError(Throwable e) {
-                        Navigator2.go(new ControllerAuth(true), new HorizontalChangeHandler(), new HorizontalChangeHandler());
+                        Navigator2.go(new ControllerDialog(), new FadeChangeHandler(false), new FadeChangeHandler(false));
                     }
 
                     @Override

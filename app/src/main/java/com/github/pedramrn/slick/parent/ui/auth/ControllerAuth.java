@@ -98,7 +98,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
         status = false;
         binding.buttonGoogle.setVisibility(View.VISIBLE);
         binding.buttonSignOut.setVisibility(View.GONE);
-        binding.imageViewAvatarUser.setVisibility(View.INVISIBLE);
+        binding.imageViewAvatarUser.setVisibility(View.GONE);
         binding.imageViewAvatarUser.setImageResource(R.drawable.circle);
         binding.textViewProfileInfo.setText(R.string.sign_in_help);
     }
