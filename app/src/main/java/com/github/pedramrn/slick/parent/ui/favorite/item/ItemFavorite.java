@@ -21,6 +21,7 @@ import com.github.pedramrn.slick.parent.databinding.RowFavoriteMovieTvBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.xwray.groupie.Item;
@@ -34,8 +35,9 @@ import io.reactivex.Observable;
  *         Created on: 2017-06-16
  */
 
-public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnItemAction {
+public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnItemAction, RemovableOnError {
     private static final String TAG = ItemFavorite.class.getSimpleName();
+    public static final String FORCE = "Force";
 
     //static members
     private static ImageSpan imageSpan;
@@ -143,5 +145,10 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler())
         );
+    }
+
+    @Override
+    public boolean removableByTag(String tag) {
+        return FORCE.equals(tag);
     }
 }

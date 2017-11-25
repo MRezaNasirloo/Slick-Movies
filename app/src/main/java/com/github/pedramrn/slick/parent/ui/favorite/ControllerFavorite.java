@@ -18,6 +18,7 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
@@ -35,7 +36,7 @@ import io.reactivex.subjects.PublishSubject;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerFavorite extends ControllerBase implements ViewFavorite, Navigator {
+public class ControllerFavorite extends ControllerBase implements ViewFavorite, Navigator, Retryable {
 
     @Inject
     Provider<PresenterFavorite> provider;
@@ -90,5 +91,10 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     @Override
     public Observable<Object> triggerRefresh() {
         return triggerRefresh;
+    }
+
+    @Override
+    public void onRetry(String tag) {
+        triggerRefresh.onNext(tag);
     }
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
 import com.github.pedramrn.slick.parent.domain.router.RouterFavorite;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovie;
+import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
 import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
@@ -73,12 +74,12 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                                         .map(movie -> movie.render("FAVORITE"))
                                         .compose(new ScanToMap<>())
                                         .map((Function<Map<Integer, Item>, PartialViewState<ViewStateFavorite>>) FavoriteList::new)
-                                        /*.lift(new OnCompleteReturn<PartialViewState<ViewStateFavorite>>() {
+                                        .lift(new OnCompleteReturn<PartialViewState<ViewStateFavorite>>() {
                                             @Override
                                             public PartialViewState<ViewStateFavorite> apply(@NonNull Boolean hadError) throws Exception {
-                                                return new FavoriteListEmpty();
+                                                return new FavoriteListEmpty(hadError, false);
                                             }
-                                        })*/
+                                        })
                                         .onErrorReturn(FavoriteListError::new)
                                         .doOnComplete(() -> Log.e(TAG, "Completed1"))
                                 )
@@ -88,7 +89,7 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                         .doOnComplete(() -> Log.e(TAG, "Completed2"));
 
         Observable<PartialViewState<ViewStateFavorite>> clearListOnSignOut = routerAuth.firebaseUserSignInStateStream().filter(signedIn -> !signedIn)
-                .map(aBoolean -> new FavoriteListEmpty());
+                .map(aBoolean -> new FavoriteListEmpty(false, true));
 
         reduce(ViewStateFavorite.builder().favorites(Collections.emptyMap()).build(), merge(favoriteList, clearListOnSignOut)).subscribe(this);
     }
@@ -97,7 +98,6 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
 
     @Override
     protected void render(@NonNull ViewStateFavorite state, @NonNull ViewFavorite view) {
-        view.renderError(state.errorFavorites());
         view.updateFavorites(Arrays.asList(state.favorites().values().toArray(new Item[state.favorites().size()])));
     }
 }
