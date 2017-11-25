@@ -29,7 +29,7 @@ public class InterceptorHeaderCache implements Interceptor {
         if (isNetworkAvailable(cm)) {
             int maxAge = 60 * 60; // read from cache for 1 minute
             return originalResponse.newBuilder()
-                    // .header("Cache-Control", "public, max-age=" + maxAge)
+                    .header("Cache-Control", "public, max-age=" + maxAge)
                     .build();
         } else {
             int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
