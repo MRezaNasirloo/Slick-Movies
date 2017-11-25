@@ -17,6 +17,7 @@ import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteList;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListEmpty;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListError;
+import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListProgressive;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
 import com.xwray.groupie.Item;
@@ -80,7 +81,9 @@ public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavo
                                                 return new FavoriteListEmpty(hadError, false);
                                             }
                                         })
+                                        .startWith(new FavoriteListProgressive())
                                         .onErrorReturn(FavoriteListError::new)
+                                        .takeUntil(commandRefresh)
                                         .doOnComplete(() -> Log.e(TAG, "Completed1"))
                                 )
                                 .onErrorReturn(FavoriteListError::new)//Let's survive from routerFavorite possible termination.

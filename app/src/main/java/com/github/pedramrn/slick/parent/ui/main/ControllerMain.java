@@ -19,6 +19,7 @@ import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.github.slick.Presenter;
+import com.github.slick.middleware.RequestStack;
 
 import java.util.List;
 
@@ -108,6 +109,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
             resetStack(0);
             resetStack(1);
             resetStack(2);
+            RequestStack.getInstance().clear();
             binding.viewPager.setCurrentItem(position, false);
             switch (itemId) {
                 case R.id.navigation_box_office:

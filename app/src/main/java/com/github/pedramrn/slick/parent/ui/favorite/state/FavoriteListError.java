@@ -29,6 +29,6 @@ public class FavoriteListError implements PartialViewState<ViewStateFavorite> {
         Iterator<Item> iterator = favorites.values().iterator();
         Utils.removeRemovables(iterator, "Favorites");
         favorites.put(favorites.size(), new ItemBoxOfficeError(favorites.size()));
-        return state.toBuilder().errorFavorites(throwable).build();
+        return state.toBuilder().errorFavorites(throwable).favorites(favorites).build();
     }
 }

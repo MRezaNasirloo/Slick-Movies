@@ -63,7 +63,7 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
     private SpannableStringBuilder info;
 
 
-    public ItemFavorite(Integer uniqueId, MovieBasic movie, String transitionName) {
+    public ItemFavorite(long uniqueId, MovieBasic movie, String transitionName) {
         super(uniqueId);
         this.movie = movie;
         this.transitionName = transitionName;
@@ -79,6 +79,7 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
     public void bind(final RowFavoriteMovieTvBinding viewBinding, int position) {
         long before = System.currentTimeMillis();
         init(viewBinding.getRoot().getContext());
+        viewBinding.textViewFavoriteInfo.setBackground(null);
         viewBinding.textViewFavoriteInfo.setText(info);
         viewBinding.imageViewFavoritePoster.load(movie.thumbnailTinyPoster());
         long took = System.currentTimeMillis() - before;
