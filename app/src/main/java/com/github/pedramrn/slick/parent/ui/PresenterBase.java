@@ -3,8 +3,10 @@ package com.github.pedramrn.slick.parent.ui;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.slick.SlickPresenter;
 
 import java.util.Arrays;
@@ -46,8 +48,9 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
     @Override
     public void onViewUp(V view) {
         super.onViewUp(view);
-        if (!hasSubscribed())
+        if (!hasSubscribed()) {
             start(view);
+        }
         subscribeIntents(view);
         disposableCommands.add(updateStream().subscribe(new Consumer<S>() {
             @Override
@@ -74,6 +77,7 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
 
     /**
      * Only called once during the presenter's lifecycle
+     *
      * @param view
      */
     protected abstract void start(V view);
@@ -95,7 +99,11 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
 
     @Override
     public void onError(Throwable e) {
+        //fail early
+        Log.e(TAG, "onError: Called");
         e.printStackTrace();
+        ErrorHandler.handle(e);
+        throw new RuntimeException(e);
     }
 
     @Override
@@ -154,7 +162,8 @@ public abstract class PresenterBase<V, S> extends SlickPresenter<V> implements O
         }
     }
 
-    protected void render(@NonNull S state, @NonNull V view) {}
+    protected void render(@NonNull S state, @NonNull V view) {
+    }
 
     protected interface CommandProvider<T, V> {
         Observable<T> provide(V view);
