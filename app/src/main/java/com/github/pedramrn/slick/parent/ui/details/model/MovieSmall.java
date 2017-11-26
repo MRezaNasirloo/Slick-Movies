@@ -96,26 +96,11 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
         return uniqueId().longValue();
     }
 
-    public static MovieSmall create(
-            Integer id,
-            String imdbId,
-            String title,
-            Integer year,
-            String overview,
-            String posterPath,
-            String backdropPath,
-            String releaseDate,
-            Float voteAverageTmdb,
-            Integer voteCountTmdb,
-            Float voteAverageTrakt,
-            Integer voteCountTrakt,
-            String certification,
-            String originalTitle,
-            String originalLanguage,
-            Boolean adult,
-            Float popularity,
-            Boolean video
-    ) {
+    public static MovieSmall create(Integer id, String imdbId, String title, Integer year, String overview, String posterPath, String backdropPath,
+                                    String releaseDate, Float voteAverageTmdb, Integer voteCountTmdb, Float voteAverageTrakt, Integer voteCountTrakt,
+                                    String certification, Long revenue, String originalTitle, String originalLanguage, Boolean adult,
+                                    Float popularity,
+                                    Boolean video) {
         return builder()
                 .id(id)
                 .uniqueId(id)
@@ -131,6 +116,7 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
                 .voteAverageTrakt(voteAverageTrakt)
                 .voteCountTrakt(voteCountTrakt)
                 .certification(certification)
+                .revenue(revenue)
                 .originalTitle(originalTitle)
                 .originalLanguage(originalLanguage)
                 .adult(adult)
@@ -151,6 +137,7 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
                 coc.releaseDate(),
                 coc.voteAverage(),
                 coc.voteCount(),
+                null,
                 null,
                 null,
                 null,
@@ -207,6 +194,8 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
         public abstract Builder imdbId(String imdbId);
 
         public abstract Builder year(Integer year);
+
+        public abstract Builder revenue(Long revenue);
 
         public abstract MovieSmall build();
     }

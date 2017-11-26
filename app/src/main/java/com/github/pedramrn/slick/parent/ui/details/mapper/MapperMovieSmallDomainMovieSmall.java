@@ -36,6 +36,7 @@ public class MapperMovieSmallDomainMovieSmall implements Function<MovieSmallDoma
                 null,
                 null,
                 null,
+                null,
                 msd.originalTitle(),
                 msd.originalLanguage(),
                 msd.adult(),

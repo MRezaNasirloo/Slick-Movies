@@ -55,9 +55,6 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     public abstract List<String> productionCountries();
 
     @Nullable
-    public abstract Long revenue();
-
-    @Nullable
     public abstract Integer runtime();
 
     public abstract List<String> spokenLanguages();

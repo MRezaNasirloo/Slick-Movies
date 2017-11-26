@@ -60,6 +60,9 @@ public interface MovieBasic extends Parcelable, MovieMetadata {
 
     String runtimePretty();
 
+    @Nullable
+    Long revenue();
+
     default String rank(int position) {
         return String.format(Locale.getDefault(), "#%s", position + 1);
     }

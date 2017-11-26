@@ -35,6 +35,7 @@ public class ItemBoxOffice extends Item<RowBoxOfficeBinding> implements Removabl
 
     @Override
     public void bind(RowBoxOfficeBinding holder, int position) {
+        if (movie.revenue() != null) holder.revenue.setText(String.format("%s $", movie.revenue()));
         holder.title.setText(movie.title());
         holder.rank.setText(movie.rank(position));
         holder.poster.load(movie.thumbnailTinyPoster(), movie.thumbnailPoster());
