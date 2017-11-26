@@ -11,7 +11,6 @@ import com.github.pedramrn.slick.parent.ui.home.MapperMovieMetadataToMovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.CardProgressiveMovie;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Error;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Loaded;
-import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Loading;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Movies;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
@@ -82,13 +81,13 @@ public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCard
                             return new Loaded();
                         }
                     })
-                    .startWith(new Loading())
+                    .startWith(new CardProgressiveMovie(pageSize / 2, tag))
                     .onErrorReturn(throwable -> {
                                 System.out.println("PresenterCardList.Error");
                                 return new Error(throwable);
                             }
                     );
-        }).startWith(new CardProgressiveMovie(pageSize, tag));
+        });
 
         ViewStateCardList initialState = ViewStateCardList.builder()
                 .page(1)

@@ -112,7 +112,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     public int pageSize() {
-        return 3;
+        return 6;
     }
 
     @Override

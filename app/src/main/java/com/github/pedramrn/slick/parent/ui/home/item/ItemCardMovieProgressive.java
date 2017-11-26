@@ -33,6 +33,7 @@ public class ItemCardMovieProgressive extends ItemCardMovie {
             super.bind(viewBinding, position);
             return;
         }
+        viewBinding.layoutShimmer.startShimmerAnimation();
         viewBinding.textViewTitle.setText("         ");
         viewBinding.textViewTitle.setBackgroundResource(R.drawable.line);
         viewBinding.imageViewPoster.setImageResource(R.drawable.rectangle_no_corners);

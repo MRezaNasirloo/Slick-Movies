@@ -14,6 +14,8 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
+import java.util.Locale;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-20
@@ -37,8 +39,9 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
 
     @Override
     public void bind(RowCardBinding viewBinding, int position) {
+        viewBinding.layoutShimmer.stopShimmerAnimation();
         viewBinding.imageViewPoster.setImageResource(R.drawable.rectangle_no_corners);
-        viewBinding.textViewTitle.setText(movie.title() + "  (" + movie.year() + ")");
+        viewBinding.textViewTitle.setText(String.format(Locale.getDefault(),"%s  (%d)", movie.title(), movie.year()));
         viewBinding.textViewTitle.setBackground(null);
         viewBinding.imageViewPoster.setBackground(null);
         viewBinding.imageViewPoster.setTransitionName(transitionName);
