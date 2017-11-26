@@ -21,11 +21,13 @@ public class MoviesBoxOffice implements PartialViewState<ViewStateBoxOffice> {
         this.movies = movies;
     }
 
+    private static final String TAG = MoviesBoxOffice.class.getSimpleName();
+
     @Override
     public ViewStateBoxOffice reduce(ViewStateBoxOffice state) {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator(), null);
-        movies.putAll(this.movies);
+        movies.putAll(new TreeMap<>(this.movies));
         return state.toBuilder().movies(movies).error(null).build();
     }
 }

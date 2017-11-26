@@ -27,7 +27,6 @@ public class ErrorBoxOffice implements PartialViewState<ViewStateBoxOffice> {
     public ViewStateBoxOffice reduce(ViewStateBoxOffice state) {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator(), null);
-
         String message = ErrorHandler.handle(error);
         Item itemError = new ItemBoxOfficeError(Integer.MAX_VALUE);
         movies.put(movies.size(), itemError);
