@@ -52,7 +52,7 @@ public class MapperPersonDetailsDomainPersonDetails implements Function<PersonDe
     }
 
     protected List<CastOrCrewPersonDetails> map(@NonNull List<CastOrCrewPersonDetailsDomain> pdd) {
-        return Observable.fromIterable(pdd).map(mapper).toList().blockingGet();
+        return Observable.fromIterable(pdd).map(mapper).sorted().toList().blockingGet();
     }
 
     private static class CastOrCrewPersonDetailsDomainToPresentation implements Function<CastOrCrewPersonDetailsDomain, CastOrCrewPersonDetails> {

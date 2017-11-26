@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.domain.model;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class CastOrCrewPersonDetailsDomain {
+public abstract class CastOrCrewPersonDetailsDomain implements Comparable<CastOrCrewPersonDetailsDomain> {
 
     //crew/cast data
 
@@ -108,6 +109,15 @@ public abstract class CastOrCrewPersonDetailsDomain {
     public abstract Integer voteCount();
 
     public abstract Float voteAverage();
+
+    @Override
+    public int compareTo(@NonNull CastOrCrewPersonDetailsDomain o) {
+        String releaseDate = releaseDate();
+        if (releaseDate == null) return -1;
+        String releaseDate1 = o.releaseDate();
+        if (releaseDate1 == null) return 1;
+        return releaseDate1.compareTo(releaseDate);
+    }
 
     public static CastOrCrewPersonDetailsDomain create(Integer id, String creditId, String character, String job, String department,
                                                        Integer episodeCount,

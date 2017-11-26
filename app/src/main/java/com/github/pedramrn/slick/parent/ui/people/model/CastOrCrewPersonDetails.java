@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.people.model;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 
 @AutoValue
-public abstract class CastOrCrewPersonDetails {
+public abstract class CastOrCrewPersonDetails implements Comparable<CastOrCrewPersonDetails> {
 
     //crew/cast data
 
@@ -125,6 +126,15 @@ public abstract class CastOrCrewPersonDetails {
     public String thumbnailBackdrop() {
         if (backdropPath() == null) return null;
         return "http://image.tmdb.org/t/p/w300" + backdropPath();
+    }
+
+    @Override
+    public int compareTo(@NonNull CastOrCrewPersonDetails o) {
+        String releaseDate = releaseDate();
+        if (releaseDate == null) return -1;
+        String releaseDate1 = o.releaseDate();
+        if (releaseDate1 == null) return 1;
+        return releaseDate1.compareTo(releaseDate);
     }
 
     public static CastOrCrewPersonDetails create(Integer id, String creditId, String character, String job, String department, Integer episodeCount,

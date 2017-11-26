@@ -6,7 +6,6 @@ import com.github.pedramrn.slick.parent.ui.people.mapper.MapperPersonDetailsDoma
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.router.RouterPersonImpl;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
-import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeoplePartials;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -16,8 +15,11 @@ import javax.inject.Named;
 
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
+
+import static com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeoplePartials.ErrorPerson;
+import static com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeoplePartials.Person;
+import static com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeoplePartials.PersonCredits;
 
 /**
  * A simple Presenter
@@ -44,34 +46,14 @@ public class PresenterPeople extends PresenterBase<ViewPeople, ViewStatePeople> 
 
         Observable<PartialViewState<ViewStatePeople>> person = routerPerson.person(view.personId())
                 .map(mapper)
-                .map(new Function<PersonDetails, PartialViewState<ViewStatePeople>>() {
-                    @Override
-                    public PartialViewState<ViewStatePeople> apply(@NonNull PersonDetails personDetails) throws Exception {
-                        return new ViewStatePeoplePartials.Person(personDetails);
-                    }
-                })
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStatePeople>>() {
-                    @Override
-                    public PartialViewState<ViewStatePeople> apply(@NonNull Throwable throwable) throws Exception {
-                        return new ViewStatePeoplePartials.ErrorPerson(throwable);
-                    }
-                })
+                .map((Function<PersonDetails, PartialViewState<ViewStatePeople>>) Person::new)
+                .onErrorReturn(ErrorPerson::new)
                 .subscribeOn(io);
 
         Observable<PartialViewState<ViewStatePeople>> personCredits = routerPerson.works(view.personId())
                 .map(mapper)
-                .map(new Function<PersonDetails, PartialViewState<ViewStatePeople>>() {
-                    @Override
-                    public PartialViewState<ViewStatePeople> apply(@NonNull PersonDetails personDetails) throws Exception {
-                        return new ViewStatePeoplePartials.PersonCredits(personDetails);
-                    }
-                })
-                .onErrorReturn(new Function<Throwable, PartialViewState<ViewStatePeople>>() {
-                    @Override
-                    public PartialViewState<ViewStatePeople> apply(@NonNull Throwable throwable) throws Exception {
-                        return new ViewStatePeoplePartials.ErrorPerson(throwable);
-                    }
-                })
+                .map((Function<PersonDetails, PartialViewState<ViewStatePeople>>) PersonCredits::new)
+                .onErrorReturn(ErrorPerson::new)
                 .subscribeOn(io);
 
 
