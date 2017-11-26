@@ -23,7 +23,7 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                app:layout_scrollFlags="scroll|snap"
+                app:layout_scrollFlags="scroll"
                 >
 
                 <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll"
+                app:layout_scrollFlags="scroll|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
                 />

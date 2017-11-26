@@ -3,9 +3,12 @@ package com.github.pedramrn.slick.parent.ui.home.cardlist.state;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.ViewStateCardList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
+import com.github.pedramrn.slick.parent.ui.home.item.ItemLoading;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.xwray.groupie.Item;
+
+import java.util.Map;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -19,7 +22,9 @@ public class CardProgressiveMovie extends PartialProgressive implements PartialV
 
     @Override
     public ViewStateCardList reduce(ViewStateCardList state) {
-        return state.toBuilder().movies(reduce(state.movies())).isLoading(true).build();
+        Map<Integer, Item> movies = reduce(state.movies());
+        movies.put(movies.size(), new ItemLoading(movies.size()));
+        return state.toBuilder().movies(movies).isLoading(true).build();
     }
 
     private static class ItemRendererProgressiveCard implements ItemRenderer {
