@@ -26,6 +26,7 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
 
     @Override
     public void bind(RowBannerBinding viewBinding, int position) {
+        viewBinding.layoutShimmer.stopShimmerAnimation();
         viewBinding.imageViewPlay.setImageResource(R.drawable.ic_refresh_black_24dp);
         viewBinding.imageViewThumbnail.setImageResource(R.drawable.rectangle_no_corners);
         viewBinding.textViewTitleAnticipated.setText(message);

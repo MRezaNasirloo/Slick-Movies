@@ -26,6 +26,7 @@ public class ItemBannerProgressive extends ItemBanner {
     @Override
     public void bind(RowBannerBinding viewBinding, int position) {
         Context context = viewBinding.getRoot().getContext();
+        viewBinding.layoutShimmer.startShimmerAnimation();
         viewBinding.textViewTitleAnticipated.setText("                         ");
         viewBinding.textViewTitleAnticipated.setBackgroundResource(R.drawable.line);
         viewBinding.imageViewPlay.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);

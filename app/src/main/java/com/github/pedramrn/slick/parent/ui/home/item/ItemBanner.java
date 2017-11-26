@@ -32,6 +32,7 @@ public class ItemBanner extends Item<RowBannerBinding> implements OnItemAction, 
 
     @Override
     public void bind(RowBannerBinding viewBinding, int position) {
+        viewBinding.layoutShimmer.stopShimmerAnimation();
         viewBinding.imageViewPlay.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
         viewBinding.imageViewThumbnail.load(movie.thumbnailBackdrop());
         viewBinding.textViewTitleAnticipated.setBackground(null);
