@@ -35,6 +35,7 @@ public class ItemVideo extends Item<RowVideoBinding> implements OnItemAction {
 
     @Override
     public void bind(RowVideoBinding viewBinding, int position) {
+        viewBinding.layoutShimmer.stopShimmerAnimation();
         viewBinding.imageViewThumbnail.load(video.thumbnail());
         viewBinding.textViewName.setBackground(null);
         viewBinding.textViewChannelDateViews.setBackground(null);

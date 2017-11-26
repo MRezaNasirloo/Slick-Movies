@@ -7,6 +7,7 @@ import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideoProgressive;
 import com.github.pedramrn.slick.parent.util.Utils;
 import com.xwray.groupie.Item;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,6 +16,9 @@ import java.util.List;
  */
 
 public final class PartialViewStateVideos {
+
+    public static final String VIDEOS = "VIDEOS";
+
     private PartialViewStateVideos() {
         //no instance
     }
@@ -65,6 +69,8 @@ public final class PartialViewStateVideos {
         @Override
         public ViewStateVideos reduce(ViewStateVideos state) {
             if (state.error() == null) {
+                Iterator<Item> iterator = state.videos().iterator();
+                Utils.removeRemovables(iterator, VIDEOS);
                 state = state.toBuilder().error(throwable).build();
             }
             return state;

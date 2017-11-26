@@ -20,6 +20,7 @@ public class ItemVideoProgressive extends ItemVideo implements RemovableOnError 
 
     @Override
     public void bind(RowVideoBinding viewBinding, int position) {
+        viewBinding.layoutShimmer.startShimmerAnimation();
         viewBinding.textViewName.setText("      ");
         viewBinding.textViewName.setBackgroundResource(R.drawable.line);
         viewBinding.textViewChannelDateViews.setText("                   ");
