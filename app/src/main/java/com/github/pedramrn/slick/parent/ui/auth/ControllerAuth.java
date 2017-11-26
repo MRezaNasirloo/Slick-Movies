@@ -29,6 +29,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -36,24 +38,32 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class ControllerAuth extends ControllerBase implements ViewAuth {
 
+    private static final String MANAGED = "MANAGED";
+    private static final String PARENT_ID = "PARENT_ID";
+    private static final int RC_SIGN_IN = 123;
+
     @Inject
     Provider<PresenterAuth> provider;
     @Presenter
     PresenterAuth presenter;
 
-    private final int RC_SIGN_IN = 123;
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
     private ControllerAuthBinding binding;
     private boolean status;
-    private boolean managed;
+    private final boolean managed;
+    private final String parentId;
 
-    public ControllerAuth(boolean managed) {
-        this(new BundleBuilder(new Bundle()).putBoolean("MANAGED", managed).build());
+    public ControllerAuth(boolean managed, String parentId) {
+        this(new BundleBuilder(new Bundle())
+                .putBoolean(MANAGED, managed)
+                .putString(PARENT_ID, parentId)
+                .build());
     }
 
-    public ControllerAuth(@Nullable Bundle args) {
+    public ControllerAuth(@NonNull Bundle args) {
         super(args);
-        managed = args != null && args.getBoolean("MANAGED", false);
+        managed = args.getBoolean("MANAGED", false);
+        parentId = args.getString(PARENT_ID);
     }
 
     @NonNull
@@ -90,7 +100,18 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
         binding.textViewProfileInfo.setVisibility(View.VISIBLE);
         binding.imageViewAvatarUser.load(user.avatar());
         binding.imageViewAvatarUser.setVisibility(View.VISIBLE);
-
+        if (managed) {
+            Observable.just(1).delay(700, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(integer -> {
+                        RequestStack.getInstance().processLastRequest();
+                        Controller parentController = getParentController();
+                        if (parentController != null) {
+                            parentController.getRouter().handleBack();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -132,22 +153,6 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
             } else {
                 streamResult.onNext(GugleSignInResult.builder().isSuccess(false).build());
             }
-        }
-    }
-
-    @Override
-    public boolean handleBack() {
-        if (managed) {
-            if (status) {
-                getRouter().popController(this);
-                return true;
-            } else {
-                RequestStack.getInstance().handleBack();
-                return super.handleBack();
-            }
-
-        } else {
-            return false;
         }
     }
 

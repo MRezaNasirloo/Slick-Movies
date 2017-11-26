@@ -56,7 +56,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         ViewGroup containerChild = binding.container.findViewById(R.id.container_child);
         Router childRouter = getChildRouter(containerChild).setPopsLastView(false);
         if (!childRouter.hasRootController()) {
-            ControllerAuth controllerAuth = new ControllerAuth(false);
+            ControllerAuth controllerAuth = new ControllerAuth(false, getInstanceId());
             childRouter.setRoot(RouterTransaction.with(controllerAuth));
         }
         // binding.collapsingToolbar.setTitle(true);

@@ -27,7 +27,7 @@ public class ControllerDialog extends Controller {
         View view = inflater.inflate(R.layout.controller_dialog, container, false);
         ViewGroup dialogContainer = view.findViewById(R.id.container_dialog);
         childRouter = getChildRouter(dialogContainer);
-        childRouter.pushController(RouterTransaction.with(new ControllerAuth(false)));
+        childRouter.pushController(RouterTransaction.with(new ControllerAuth(true, getInstanceId())));
         return view;
     }
 
