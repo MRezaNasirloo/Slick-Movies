@@ -165,7 +165,6 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         }
         recyclerViewCardListPopular = null;
         recyclerViewCardListTrending = null;
-        adapterUpcoming.clear();
         adapterUpcoming.setOnItemClickListener(null);
         adapterUpcoming = null;
         searchView = null;

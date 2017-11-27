@@ -33,6 +33,7 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemSpace;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
@@ -241,6 +242,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapterMain.add(sectionComments);
         adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionSimilar);
+        adapterMain.add(new ItemSpace());
 
         GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
         lm.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
