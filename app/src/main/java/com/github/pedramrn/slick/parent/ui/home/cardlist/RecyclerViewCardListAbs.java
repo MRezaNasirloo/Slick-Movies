@@ -2,7 +2,6 @@ package com.github.pedramrn.slick.parent.ui.home.cardlist;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +19,6 @@ import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMarginSide;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.OnDestroyListener;
-import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
@@ -28,8 +26,6 @@ import com.xwray.groupie.OnItemClickListener;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -89,9 +85,19 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
         Log.d(TAG, "onDetachedFromWindow: X: Y: " + layoutManager.findFirstVisibleItemPosition());
         Log.d(TAG, "onDetachedFromWindow");
-        adapter.setOnItemClickListener(null);
+        if (adapter != null) {
+            adapter.setOnItemClickListener(null);
+            adapter = null;
+        }
         removeItemDecoration(margin);
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adapter == null) return;
+        adapter.setOnItemClickListener(null);
+        adapter = null;
     }
 
     @Override
@@ -118,26 +124,13 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     @Override
     public Observable<Object> trigger() {
         return RxRecyclerView.scrollEvents(this)
-                .filter(new Predicate<RecyclerViewScrollEvent>() {
-                    @Override
-                    public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return !isLoading;
-                    }
-                })
-                .filter(new Predicate<RecyclerViewScrollEvent>() {
-                    @Override
-                    public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-                        return layoutManager.getItemCount() < layoutManager.findLastVisibleItemPosition() + 2;
-                    }
+                .filter(event -> !isLoading)
+                .filter(event -> {
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
+                    return layoutManager.getItemCount() < layoutManager.findLastVisibleItemPosition() + 2;
                 })
                 .cast(Object.class)
-                .doOnNext(new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        isLoading = true;
-                    }
-                }).mergeWith(retry());
+                .doOnNext(o -> isLoading = true).mergeWith(retry());
     }
 
     public Observable<String> retry() {

@@ -44,13 +44,11 @@ public class ItemBoxOffice extends Item<RowBoxOfficeBinding> implements Removabl
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        System.out.println("ItemBoxOffice.action");
         ControllerDetails.start(navigator.getRouter(), movie, transitionName);
     }
 
     @Override
     public boolean isClickable() {
-        System.out.println("ItemBoxOffice.isClickable");
         return true;
     }
 

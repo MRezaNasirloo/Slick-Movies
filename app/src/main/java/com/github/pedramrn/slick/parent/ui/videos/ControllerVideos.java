@@ -108,6 +108,13 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
         };
     }
 
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        snackbar = null;
+        adapterProgressive = null;
+    }
+
     private static final String TAG = ControllerVideos.class.getSimpleName();
 
     public static void start(Router router, MovieBasic movie, String transitionName, int position) {

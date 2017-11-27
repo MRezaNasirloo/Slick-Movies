@@ -126,6 +126,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
         binding = null;
     }
 

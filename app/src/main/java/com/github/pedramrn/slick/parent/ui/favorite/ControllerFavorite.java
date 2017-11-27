@@ -1,12 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.favorite;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
@@ -44,6 +43,8 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     PresenterFavorite presenter;
     private UpdatingGroup updatingFavorite;
     private PublishSubject<Object> triggerRefresh = PublishSubject.create();
+    private GroupAdapter adapter;
+    private RecyclerView recyclerViewFavorite;
 
 
     @NonNull
@@ -64,23 +65,26 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         // binding.toolbar.setTitle("Favorites");
         // setToolbar(binding.toolbar);
 
-        GroupAdapter adapter = new GroupAdapter();
+        adapter = new GroupAdapter();
         updatingFavorite = new UpdatingGroup();
         adapter.add(updatingFavorite);
 
+        recyclerViewFavorite = binding.recyclerViewFavorite;
         binding.recyclerViewFavorite.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        binding.recyclerViewFavorite.setAdapter(adapter);
+        recyclerViewFavorite.setAdapter(adapter);
         binding.recyclerViewFavorite.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_margin_long)));
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
         return binding.getRoot();
     }
 
     @Override
-    public void renderError(@Nullable Throwable throwable) {
-        if (throwable != null) {
-            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-            throwable.printStackTrace();
-        }
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        recyclerViewFavorite.setAdapter(null);
+        adapter.setOnItemClickListener(null);
+        recyclerViewFavorite = null;
+        adapter.clear();
+        adapter = null;
     }
 
     @Override

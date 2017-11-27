@@ -41,8 +41,6 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
     private final RouterBoxOffice routerBoxOffice;
     private final MapperMovieDomainMovie mapper;
     private final MapperMovieMetadataToMovieBasic mapperMetadata;
-    private final Scheduler main;
-    private final Scheduler io;
 
 
     @Inject
@@ -57,8 +55,6 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
         this.routerBoxOffice = routerBoxOffice;
         this.mapperMetadata = mapperMetadata;
         this.mapper = mapper;
-        this.main = main;
-        this.io = io;
     }
 
     private Observable<List<Movie>> boxOffice(Observable<Integer> trigger, int pageSize) {

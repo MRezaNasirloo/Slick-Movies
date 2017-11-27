@@ -338,7 +338,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        Log.d(TAG, "onDestroyView");
+        super.onDestroyView(view);
         adapterBackdrops.setOnItemClickListener(null);
         adapterSimilar.setOnItemClickListener(null);
         adapterMain.setOnItemClickListener(null);

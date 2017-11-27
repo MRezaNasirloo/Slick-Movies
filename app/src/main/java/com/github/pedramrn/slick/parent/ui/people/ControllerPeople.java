@@ -24,6 +24,7 @@ import com.github.pedramrn.slick.parent.ui.people.item.ItemCreditsProgressive;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
+import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.GroupAdapter;
@@ -39,7 +40,6 @@ import javax.inject.Provider;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  *
@@ -66,6 +66,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     private int maxScroll;
     private int deltaHeight;
     private ViewStatePeople state;
+    private Disposable disposable;
 
     public ControllerPeople(Person person, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -90,18 +91,15 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle("");
 
-        RxView.clicks(binding.imageViewProfile)
+        disposable = RxView.clicks(binding.imageViewProfile)
                 .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull Object o) throws Exception {
-                        PersonDetails ps = state.personDetails();
-                        if (ps != null) {
-                            ArrayList<String> images = new ArrayList<>(ps.images());
-                            images.remove(ps.profilePicId());
-                            images.add(0, ps.profilePicId());
-                            ControllerImage.start(getRouter(), ps.name(), images);
-                        }
+                .subscribe(o -> {
+                    PersonDetails ps = state.personDetails();
+                    if (ps != null) {
+                        ArrayList<String> images = new ArrayList<>(ps.images());
+                        images.remove(ps.profilePicId());
+                        images.add(0, ps.profilePicId());
+                        ControllerImage.start(getRouter(), ps.name(), images);
                     }
                 });
 
@@ -144,6 +142,22 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
         binding.appbar.addOnOffsetChangedListener(this);
         presenter.updateStream().subscribe(this);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        UtilsRx.dispose(disposable);
+        adapter.clear();
+        adapterMovies.clear();
+        adapterTvShows.clear();
+        adapter.setOnItemClickListener(null);
+        adapterMovies.setOnItemClickListener(null);
+        adapterTvShows.setOnItemClickListener(null);
+        adapter = null;
+        adapterMovies = null;
+        adapterTvShows = null;
+        binding = null;
     }
 
     @Override

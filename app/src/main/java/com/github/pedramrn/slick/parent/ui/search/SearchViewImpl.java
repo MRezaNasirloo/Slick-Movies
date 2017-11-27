@@ -81,6 +81,9 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
 
     @Override
     public void onDestroy() {
+        if (adapter == null) return;
+        adapter.setOnItemClickListener(null);
+        adapter = null;
         SearchViewImpl_Slick.onDestroy(this);
     }
 

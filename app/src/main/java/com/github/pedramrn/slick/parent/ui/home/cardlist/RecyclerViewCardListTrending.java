@@ -57,6 +57,7 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         RecyclerViewCardListTrending_Slick.onDestroy(this);
     }
 }

@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
 
     private UpdatingGroup updatingGroup;
     private GroupAdapter adapter;
+    private RecyclerView recyclerView;
 
     @NonNull
     @Override
@@ -58,7 +60,8 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, false);
         binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setAdapter(adapter);
+        recyclerView = binding.recyclerView;
+        recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item)));
 
@@ -69,6 +72,9 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
         adapter.setOnItemClickListener(null);
+        recyclerView.setAdapter(null);
+        recyclerView = null;
+        updatingGroup = null;
         adapter = null;
     }
 

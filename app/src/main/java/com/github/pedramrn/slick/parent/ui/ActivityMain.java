@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
@@ -77,12 +76,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     public ToolbarHost setupButton(Toolbar toolbar, boolean enable) {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(enable);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        // toolbar.setNavigationOnClickListener(v -> onBackPressed());
         return this;
     }
 

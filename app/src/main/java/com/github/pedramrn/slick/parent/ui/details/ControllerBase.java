@@ -59,6 +59,7 @@ public abstract class ControllerBase extends Controller implements ToolbarHost, 
     @Override
     protected void onDestroyView(@NonNull View view) {
         setToolbar(null);
+        snackbar = null;
         super.onDestroyView(view);
     }
 

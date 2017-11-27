@@ -39,8 +39,7 @@ public class RecyclerViewCardListPopular extends RecyclerViewCardListAbs {
 
     @Override
     protected void onAttachedToWindow() {
-        System.out.println("RecyclerViewCardListPopular.onAttachedToWindow");
-        if (isInEditMode()) { return; }
+        if (isInEditMode()) return;
         super.onAttachedToWindow();
         App.componentMain().inject(this);
         RecyclerViewCardListPopular_Slick.bind(this);
@@ -50,15 +49,14 @@ public class RecyclerViewCardListPopular extends RecyclerViewCardListAbs {
 
     @Override
     protected void onDetachedFromWindow() {
-        System.out.println("RecyclerViewCardListPopular.onDetachedFromWindow");
-        if (isInEditMode()) { return; }
+        if (isInEditMode()) return;
         super.onDetachedFromWindow();
         RecyclerViewCardListPopular_Slick.onDetach(this);
     }
 
     @Override
     public void onDestroy() {
-        System.out.println("RecyclerViewCardListPopular.onDestroy");
+        super.onDestroy();
         RecyclerViewCardListPopular_Slick.onDestroy(this);
     }
 }

@@ -66,6 +66,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private static final String upcoming = "Upcoming";
     private RecyclerViewCardListTrending recyclerViewCardListTrending;
     private RecyclerViewCardListPopular recyclerViewCardListPopular;
+    private GroupAdapter adapterUpcoming;
 
     @NonNull
     @Override
@@ -75,7 +76,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         ControllerHome_Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
-        GroupAdapter adapterUpcoming = new GroupAdapter();
+        adapterUpcoming = new GroupAdapter();
         progressiveUpcoming = new UpdatingGroup();
 
         final Context context = getApplicationContext();
@@ -162,6 +163,11 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
             recyclerViewCardListTrending.onDestroy();
             searchView.onDestroy();
         }
+        recyclerViewCardListPopular = null;
+        recyclerViewCardListTrending = null;
+        adapterUpcoming.clear();
+        adapterUpcoming.setOnItemClickListener(null);
+        adapterUpcoming = null;
         searchView = null;
     }
 
