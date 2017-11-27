@@ -21,5 +21,7 @@
     <string name="fab_dialog_transition_name">transition.fab</string>
     <string name="error_state_disconnected">Network Error, Are you Connected?</string>
     <string name="error_state_internal">Internal Error!</string>
+    <string name="empty_similar">No Similar Movies</string>
+    <string name="error_state_no_info">Could not find any info for this Item!</string>
 
 </resources>

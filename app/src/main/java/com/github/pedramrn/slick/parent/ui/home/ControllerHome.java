@@ -71,6 +71,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        super.onCreateView(inflater, container);
         Log.d(TAG, "onCreateView");
         App.componentMain().inject(this);
         ControllerHome_Slick.bind(this);

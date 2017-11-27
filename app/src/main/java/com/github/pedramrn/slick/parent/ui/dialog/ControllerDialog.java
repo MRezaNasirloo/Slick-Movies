@@ -24,6 +24,7 @@ public class ControllerDialog extends Controller {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        super.onCreateView(inflater, container);
         View view = inflater.inflate(R.layout.controller_dialog, container, false);
         ViewGroup dialogContainer = view.findViewById(R.id.container_dialog);
         childRouter = getChildRouter(dialogContainer);

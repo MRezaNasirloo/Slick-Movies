@@ -25,7 +25,6 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
-import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
@@ -145,7 +144,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @Override
     protected void onAttach(@NonNull View view) {
-        Navigator2.bind(this);
         RequestStack.getInstance().processLastRequest();
         //noinspection ConstantConditions
         snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG)
@@ -156,13 +154,18 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onDetach(@NonNull View view) {
-        Navigator2.unbindController();
     }
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        super.onCreateView(inflater, container);
         App.componentMain().inject(this);
         ControllerDetails_Slick.bind(this);
         ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);

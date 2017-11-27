@@ -8,4 +8,5 @@ package com.github.pedramrn.slick.parent.ui;
 public class Constants {
     public static final short ERROR_CODE_NETWORK = 0;
     public static final short ERROR_CODE_INTERNAL = 1;
+    public static final short ERROR_CODE_NO_INFO = 2;
 }

@@ -68,6 +68,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        super.onCreateView(inflater, container);
         App.componentMain().inject(this);
         ControllerList_Slick.bind(this);
         ControllerListBinding binding = ControllerListBinding.inflate(inflater, container, false);

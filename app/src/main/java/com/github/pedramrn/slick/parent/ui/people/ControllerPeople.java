@@ -86,9 +86,9 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        super.onCreateView(inflater, container);
         App.componentMain().inject(this);
         ControllerPeople_Slick.bind(this);
-        Navigator2.bind(this);
         binding = ControllerPeopleBinding.inflate(inflater, container, false);
 
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
@@ -168,7 +168,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Navigator2.unbindController();
+
     }
 
     @Override

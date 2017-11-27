@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
 import com.github.pedramrn.slick.parent.datasource.network.models.BoxOfficeItem;
 import com.github.pedramrn.slick.parent.datasource.network.models.trakt.AnticipatedTrakt;
@@ -109,7 +111,7 @@ public class ApiTraktMock extends ApiMockBase<ApiTrakt> implements ApiTrakt {
     }
 
     @Override
-    public Observable<MovieTraktFull> movie(@Path("id") String imdb) {
+    public Observable<MovieTraktFull> movie(@NonNull @Path("id") String imdb) {
         return Observable.never();
     }
 

@@ -76,7 +76,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     public ToolbarHost setupButton(Toolbar toolbar, boolean enable) {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(enable);
-        // toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         return this;
     }
 

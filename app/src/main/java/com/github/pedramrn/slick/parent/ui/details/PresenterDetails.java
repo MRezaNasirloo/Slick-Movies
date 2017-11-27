@@ -152,6 +152,12 @@ public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetail
                 .map(itemCard -> itemCard.render(SIMILAR))
                 .buffer(20)
                 .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Similar::new)
+                .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
+                    @Override
+                    public PartialViewState<ViewStateDetails> apply(Boolean hadError) throws Exception {
+                        return new PartialViewStateDetails.SimilarLoaded(hadError);
+                    }
+                })
                 .startWith(new PartialViewStateDetails.SimilarProgressive(5, SIMILAR))
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 

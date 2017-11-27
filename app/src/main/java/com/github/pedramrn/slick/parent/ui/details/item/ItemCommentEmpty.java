@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCommentEmptyBinding;
@@ -17,10 +18,12 @@ import com.xwray.groupie.Item;
 public class ItemCommentEmpty extends Item<RowCommentEmptyBinding> implements OnItemAction, RemovableOnError {
 
     private final String tag;
+    private final int message;
 
-    public ItemCommentEmpty(long id, String tag) {
+    public ItemCommentEmpty(long id, String tag, @StringRes int message) {
         super(id);
         this.tag = tag;
+        this.message = message;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class ItemCommentEmpty extends Item<RowCommentEmptyBinding> implements On
 
     @Override
     public void bind(RowCommentEmptyBinding viewBinding, int position) {
-
+        viewBinding.textView.setText(viewBinding.textView.getContext().getResources().getString(message));
     }
 
 

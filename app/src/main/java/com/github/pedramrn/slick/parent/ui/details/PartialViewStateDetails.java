@@ -1,14 +1,18 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import com.github.pedramrn.slick.parent.R;
+import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOfficeError;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropEmpty;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentEmpty;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
+import com.github.pedramrn.slick.parent.util.Utils;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -22,6 +26,8 @@ import static com.github.pedramrn.slick.parent.util.Utils.removeRemovables;
  */
 
 public class PartialViewStateDetails {
+
+    public static final String DETAILS = "DETAILS";
 
     private PartialViewStateDetails() {
         //no instance
@@ -63,6 +69,23 @@ public class PartialViewStateDetails {
         }
     }
 
+    static class SimilarLoaded implements PartialViewState<ViewStateDetails> {
+
+        private final boolean hadError;
+
+        public SimilarLoaded(boolean hadError) {
+            this.hadError = hadError;
+        }
+
+        @Override
+        public ViewStateDetails reduce(ViewStateDetails state) {
+            ArrayList<Item> items = new ArrayList<>(state.similar());
+            Utils.removeRemovables(items.iterator(), DETAILS);
+            if (items.isEmpty()) items.add(0, new ItemCommentEmpty(0, DETAILS, R.string.empty_similar));
+            return state.toBuilder().similar(items).build();
+        }
+    }
+
     static class Error extends ErrorAbs {
 
         public Error(Throwable throwable) {
@@ -74,6 +97,9 @@ public class PartialViewStateDetails {
             if (state.error() == null) {
                 state = state.toBuilder().error(throwable).build();
             }
+            ArrayList<Item> items = new ArrayList<>(state.similar());
+            Utils.removeRemovables(items.iterator(), DETAILS);
+            items.add(new ItemBoxOfficeError(0, ErrorHandler.handle(throwable)));
             return state;
         }
     }
@@ -249,7 +275,7 @@ public class PartialViewStateDetails {
             List<Item> comments = state.comments();
             removeRemovables(comments.iterator(), null);
             if (comments.isEmpty()) {
-                comments.add(new ItemCommentEmpty(0, "EMPTY"));
+                comments.add(new ItemCommentEmpty(0, "EMPTY", R.string.comments_empty));
             }
             return state.toBuilder().comments(comments).build();
         }
