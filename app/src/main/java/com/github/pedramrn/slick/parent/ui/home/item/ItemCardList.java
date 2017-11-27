@@ -12,7 +12,6 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardListBinding;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
-import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewScrollEvent;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
@@ -20,9 +19,6 @@ import com.xwray.groupie.ViewHolder;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -99,30 +95,11 @@ public class ItemCardList extends Item<RowCardListBinding> {
     protected Observable<Integer> registerLoadMoreTrigger(RecyclerView recyclerView) {
         Log.d(TAG + tag, "registerLoadMoreTrigger called");
         return RxRecyclerView.scrollEvents(recyclerView)
-                .filter(new Predicate<RecyclerViewScrollEvent>() {
-                    @Override
-                    public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return !isLoading;
-                    }
-                })
-                .filter(new Predicate<RecyclerViewScrollEvent>() {
-                    @Override
-                    public boolean test(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return layoutManager.getItemCount() < layoutManager.findLastVisibleItemPosition() + 2;
-                    }
-                })
-                .map(new Function<RecyclerViewScrollEvent, Integer>() {
-                    @Override
-                    public Integer apply(@NonNull RecyclerViewScrollEvent event) throws Exception {
-                        return page;
-                    }
-                })
-                .doOnNext(new Consumer<Integer>() {
-
-                    @Override
-                    public void accept(@NonNull Integer page) throws Exception {
-                        isLoading = true; observer.onNext(page);
-                    }
+                .filter(event -> !isLoading)
+                .filter(event -> layoutManager.getItemCount() < layoutManager.findLastVisibleItemPosition() + 2)
+                .map(event -> page)
+                .doOnNext(page -> {
+                    isLoading = true; observer.onNext(page);
                 });
     }
 

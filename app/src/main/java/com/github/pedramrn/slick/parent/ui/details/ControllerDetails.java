@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.crashlytics.android.Crashlytics;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
@@ -120,6 +119,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
             onRetry("ALL");
         }
     };
+    private GroupAdapter adapterSimilar;
+    private GroupAdapter adapterBackdrops;
 
     public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -181,8 +182,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         final Context context = getApplicationContext();
 
         adapterMain = new GroupAdapter();
-        GroupAdapter adapterSimilar = new GroupAdapter();
-        GroupAdapter adapterBackdrops = new GroupAdapter();
+        adapterSimilar = new GroupAdapter();
+        adapterBackdrops = new GroupAdapter();
 
         setOnItemClickListener(adapterMain);
         setOnItemClickListener(adapterSimilar);
@@ -249,10 +250,10 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         presenter.updateStream().subscribe(this);
 
-        fab.setOnLongClickListener(v -> {
+        /*fab.setOnLongClickListener(v -> {
             Crashlytics.getInstance().crash();
             return false;
-        });
+        });*/
 
         return binding.getRoot();
     }
@@ -338,13 +339,13 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     protected void onDestroyView(@NonNull View view) {
         Log.d(TAG, "onDestroyView");
-        adapterMain.clear();
+        adapterBackdrops.setOnItemClickListener(null);
+        adapterSimilar.setOnItemClickListener(null);
+        adapterMain.setOnItemClickListener(null);
         itemCardListSimilar.onDestroyView();
         itemBackdropList.onDestroyView();
-        //        itemHeader.onDestroyView();
         headerCast.onDestroyView();
         headerComments.onDestroyView();
-        //        headerMovie.onDestroyView();
 
         updatingHeader = null;
         progressiveCast = null;
@@ -361,12 +362,17 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         headerComments = null;
         headerCast = null;
-        //        itemHeader = null;
-
-        adapterMain = null;
         snackbar = null;
-        // fab.setOnClickListener(null);
-        // fab = null;
+
+        adapterBackdrops = null;
+        adapterSimilar = null;
+
+        adapterMain.clear();
+        adapterMain = null;
+
+        fab.setOnClickListener(null);
+        fab = null;
+
         super.onDestroyView(view);
     }
 
