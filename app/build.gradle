@@ -52,7 +52,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 4
-        versionName "0.8 beta ${SHA}"
+        versionName "0.9 beta ${SHA}"
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true

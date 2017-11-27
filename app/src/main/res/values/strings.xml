@@ -23,5 +23,6 @@
     <string name="error_state_internal">Internal Error!</string>
     <string name="empty_similar">No Similar Movies</string>
     <string name="error_state_no_info">Could not find any info for this Item!</string>
+    <string name="text_powered"><![CDATA[Slick Movies powered by\n themoviedb.com & trakt.com]]></string>
 
 </resources>
