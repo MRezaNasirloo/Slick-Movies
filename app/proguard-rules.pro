@@ -16,10 +16,10 @@
 #   public *;
 #}
 #-dontobfuscate
--keep class com.github.slick.*
--keep public class * implements com.github.slick.OnDestroyListener { *; }
--keepclasseswithmembernames class * { @com.github.slick.* <methods>; }
--keepclasseswithmembernames class * { @com.github.slick.* <fields>; }
+#-keep class com.github.slick.*
+#-keep public class * implements com.github.slick.OnDestroyListener { *; }
+#-keepclasseswithmembernames class * { @com.github.slick.* <methods>; }
+#-keepclasseswithmembernames class * { @com.github.slick.* <fields>; }
 
 #-dontwarn javax.**
 -dontwarn net.bytebuddy.**

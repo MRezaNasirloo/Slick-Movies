@@ -56,7 +56,6 @@ android {
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
-        multiDexEnabled true
         resConfigs "auto"
 
         archivesBaseName = "slick-movies-${versionCode}-${versionName}-${SHA}".replace(" ${SHA}", "")
@@ -74,12 +73,14 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+            multiDexEnabled false
         }
         debug {
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            multiDexEnabled true
         }
     }
     sourceSets {
@@ -237,9 +238,9 @@ dependencies {
 
     //views
     implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.1-rc1'
-    implementation 'com.aurelhubert:ahbottomnavigation:2.0.6'
-    implementation 'com.github.varunest:sparkbutton:1.0.5'
-    implementation 'com.gjiazhe:scrollparallaximageview:1.0'
+//    implementation 'com.aurelhubert:ahbottomnavigation:2.0.6'
+//    implementation 'com.github.varunest:sparkbutton:1.0.5'
+//    implementation 'com.gjiazhe:scrollparallaximageview:1.0'
 //    implementation 'com.fmsirvent:parallaxeverywhere:1.0.4'
     implementation 'com.xwray:groupie:1.1.1'
 
