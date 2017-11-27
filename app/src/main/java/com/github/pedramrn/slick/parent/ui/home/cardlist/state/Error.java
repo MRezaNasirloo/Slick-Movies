@@ -30,9 +30,9 @@ public class Error implements PartialViewState<ViewStateCardList> {
         removeRemovables(movies.values().iterator(), null);
 
 
-        String message = ErrorHandler.handle(error);
+        short code = ErrorHandler.handle(error);
 
-        Item itemError = new ItemError(Integer.MAX_VALUE, PresenterCardList.MOVIES_CARD, message);
+        Item itemError = new ItemError(Integer.MAX_VALUE, PresenterCardList.MOVIES_CARD, code);
         movies.put(movies.size(), itemError);
 
         return state.toBuilder()

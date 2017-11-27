@@ -21,6 +21,7 @@ import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ErrorHandlerSnackbar;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
@@ -126,8 +127,8 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
     }
 
     @Override
-    public void error(String message) {
-        snackbar.show(message);
+    public void error(short code) {
+        snackbar.show(ErrorHandler.message(getApplicationContext(), code));
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardErrorBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
@@ -17,13 +18,13 @@ import com.xwray.groupie.Item;
 public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction, RemovableOnError {
 
     private final String tag;
-    private final String message;
+    private final short code;
     private final Throwable throwable;
 
-    public ItemError(long id, String tag, String message) {
+    public ItemError(long id, String tag, short code) {
         super(id);
         this.tag = tag;
-        this.message = message;
+        this.code = code;
         throwable = null;
     }
 
@@ -34,7 +35,8 @@ public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction
 
     @Override
     public void bind(RowCardErrorBinding viewBinding, int position) {
-        viewBinding.textViewTitle.setText(message);
+        viewBinding.imageViewPoster.load(ErrorHandler.resDrawable(code));
+        viewBinding.textViewTitle.setText(ErrorHandler.message(viewBinding.getRoot().getContext(), code));
     }
 
     @Override

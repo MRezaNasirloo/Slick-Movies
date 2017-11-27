@@ -28,5 +28,5 @@ public interface ViewDetails extends Retryable {
 
     void favorite();
 
-    void error(String message);
+    void error(short message);
 }

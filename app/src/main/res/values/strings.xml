@@ -19,5 +19,7 @@
     <string name="sign_out">Sign Out</string>
     <string name="sign_in_help">Sign in to save and view your shows…</string>
     <string name="fab_dialog_transition_name">transition.fab</string>
+    <string name="error_state_disconnected">Network Error, Are you Connected</string>
+    <string name="error_state_internal">Internal Error</string>
 
 </resources>

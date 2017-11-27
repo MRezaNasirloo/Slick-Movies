@@ -7,6 +7,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeErrorBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
@@ -20,8 +21,11 @@ import com.xwray.groupie.Item;
 public class ItemBoxOfficeError extends Item<RowBoxOfficeErrorBinding> implements RemovableOnError, OnItemAction {
 
 
-    public ItemBoxOfficeError(long id) {
+    private final short code;
+
+    public ItemBoxOfficeError(long id, short code) {
         super(id);
+        this.code = code;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class ItemBoxOfficeError extends Item<RowBoxOfficeErrorBinding> implement
 
     @Override
     public void bind(RowBoxOfficeErrorBinding holder, int position) {
-        holder.imageView.load(R.drawable.error_state_car);
+        holder.imageView.load(ErrorHandler.resDrawable(code));
     }
 
 

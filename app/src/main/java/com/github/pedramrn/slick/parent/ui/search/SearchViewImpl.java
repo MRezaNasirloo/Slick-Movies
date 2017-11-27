@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.slick.OnDestroyListener;
 import com.github.slick.Presenter;
 import com.lapism.searchview.SearchView;
@@ -137,7 +138,8 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     }
 
     @Override
-    public void error(String message) {
-        Toast.makeText(getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    public void error(short code) {
+        Context context = getContext().getApplicationContext();
+        Toast.makeText(context, ErrorHandler.message(context, code), Toast.LENGTH_SHORT).show();
     }
 }

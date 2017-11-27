@@ -36,6 +36,7 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
@@ -423,7 +424,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
-    public void error(String message) {
-        snackbar.setText(message).show();
+    public void error(short code) {
+        snackbar.setText(ErrorHandler.message(getApplicationContext(), code)).show();
     }
 }

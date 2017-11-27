@@ -17,7 +17,7 @@ public interface ViewVideos {
 
     void update(List<Item> videos);
 
-    void error(String message);
+    void error(short message);
 
     Observable<Object> onErrorDismissed();
 

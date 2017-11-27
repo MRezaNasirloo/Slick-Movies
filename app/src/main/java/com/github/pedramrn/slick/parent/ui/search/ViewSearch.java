@@ -21,5 +21,5 @@ public interface ViewSearch {
 
     void showLoading(boolean isLoading);
 
-    void error(String message);
+    void error(short message);
 }

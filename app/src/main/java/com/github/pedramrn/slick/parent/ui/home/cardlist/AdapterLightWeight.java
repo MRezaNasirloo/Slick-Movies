@@ -138,7 +138,7 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public void showLoading() {
-        items.add(new ItemError(-1, "Loading", "Scroll for more"));
+        items.add(new ItemError(-1, "Loading", (short) -1));
     }
 
     private class MyCallback extends DiffUtil.Callback {

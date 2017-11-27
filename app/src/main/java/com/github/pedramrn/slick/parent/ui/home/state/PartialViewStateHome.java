@@ -52,8 +52,8 @@ public final class PartialViewStateHome {
             List<Item> upcoming = state.upcoming();
             Iterator<Item> iterator = upcoming.iterator();
             removeRemovables(iterator, null);
-            String message = ErrorHandler.handle(throwable);
-            Item itemError = new ItemBannerError(-1, PresenterHome.UPCOMING, message);
+            short code = ErrorHandler.handle(throwable);
+            Item itemError = new ItemBannerError(-1, PresenterHome.UPCOMING, code);
             upcoming.add(itemError);
 
             return state.toBuilder()
