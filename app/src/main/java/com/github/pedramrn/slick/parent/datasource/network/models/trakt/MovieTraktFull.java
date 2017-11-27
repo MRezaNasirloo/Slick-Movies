@@ -19,21 +19,26 @@ public abstract class MovieTraktFull {
     @SerializedName("title")
     public abstract String title();
 
+    @Nullable
     @SerializedName("year")
     public abstract Integer year();
 
     @SerializedName("ids")
     public abstract Ids ids();
 
+    @Nullable
     @SerializedName("tagline")
     public abstract String tagline();
 
+    @Nullable
     @SerializedName("overview")
     public abstract String overview();
 
+    @Nullable
     @SerializedName("released")
     public abstract String released();
 
+    @Nullable
     @SerializedName("runtime")
     public abstract Integer runtime();
 
@@ -51,9 +56,11 @@ public abstract class MovieTraktFull {
     @SerializedName("votes")
     public abstract Integer votes();
 
+    @Nullable
     @SerializedName("updated_at")
     public abstract String updatedAt();
 
+    @Nullable
     @SerializedName("language")
     public abstract String language();
 

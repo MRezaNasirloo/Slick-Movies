@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.crashlytics.android.Crashlytics;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
@@ -247,6 +248,11 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         //        add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
         presenter.updateStream().subscribe(this);
+
+        fab.setOnLongClickListener(v -> {
+            Crashlytics.getInstance().crash();
+            return false;
+        });
 
         return binding.getRoot();
     }

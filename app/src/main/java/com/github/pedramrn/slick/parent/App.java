@@ -10,7 +10,6 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.github.pedramrn.slick.parent.di.ComponentApp;
 import com.github.pedramrn.slick.parent.di.DaggerComponentApp;
 import com.github.pedramrn.slick.parent.di.ModuleApp;
-import com.github.pedramrn.slick.parent.di.ModuleDatabase;
 import com.github.pedramrn.slick.parent.di.ModuleNetwork;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
@@ -56,26 +55,6 @@ public class App extends Application {
             BlockCanaryEx.install(new Config(this));
         }*/
 
-        Crashlytics crashlytics = new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build();
-
-        final Fabric fabric = new Fabric.Builder(this)
-                .kits(crashlytics)
-                .debuggable(BuildConfig.DEBUG)
-                .build();
-
-        // Initialize Fabric with the debug-disabled crashlytics.
-        Fabric.with(fabric);
-
-        refWatcher = RefWatcher.DISABLED;
-
-        if (BuildConfig.DEBUG) {
-            Traceur.enableLogging();
-            refWatcher = LeakCanary.install(this);
-            // AndroidDevMetrics.initWith(this);
-            // StrictMode.enableDefaults();
-        }
         RxJavaPlugins.setErrorHandler(e -> {
             if (e instanceof UndeliverableException) {
                 e = e.getCause();
@@ -102,6 +81,29 @@ public class App extends Application {
             }
             Log.w(TAG, "Undeliverable exception received, not sure what to do", e);
         });
+
+        refWatcher = RefWatcher.DISABLED;
+
+        if (BuildConfig.BUILD_TYPE_DEBUG) {
+            Traceur.enableLogging();
+            refWatcher = LeakCanary.install(this);
+            // AndroidDevMetrics.initWith(this);
+            // StrictMode.enableDefaults();
+        }
+
+        Crashlytics crashlytics = new Crashlytics.Builder()
+                // disable crash reporting in debug build types with custom build type variable
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.BUILD_TYPE_DEBUG).build())
+                .build();
+
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(crashlytics)
+                //enable debugging with debuggable flag in build type
+                .debuggable(BuildConfig.DEBUG)
+                .build();
+
+        Fabric.with(fabric);
+
         Log.e(TAG, "It took for application:" + (System.currentTimeMillis() - before));
     }
 
@@ -118,7 +120,7 @@ public class App extends Application {
     protected DaggerComponentApp.Builder prepareDi() {
         return DaggerComponentApp.builder()
                 .moduleApp(new ModuleApp(this))
-                .moduleDatabase(new ModuleDatabase())
+                // .moduleDatabase(new ModuleDatabase())
                 .moduleNetwork(new ModuleNetwork())
                 .moduleScheduler(new ModuleScheduler());
     }
