@@ -5,9 +5,9 @@ import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
+import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
@@ -24,10 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -37,7 +35,6 @@ import io.reactivex.functions.Consumer;
 
 public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Object> {
 
-    private Controller controller;
     private final MovieBasic movie;
     private final String transitionName;
     private final RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
@@ -48,9 +45,8 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     private final SpannableStringBuilder voteAveSpannedTmdb;
     private final SpannableStringBuilder voteAveSpanned;
 
-    public ItemHeader(Controller controller, MovieBasic movie, String transitionName) {
+    public ItemHeader(MovieBasic movie, String transitionName) {
         super(1000);
-        this.controller = controller;
         this.movie = movie;
         this.transitionName = transitionName;
 
@@ -59,17 +55,11 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
 
         Float voteAverageTrakt = movie.voteAverageTrakt();
         String voteAve = String.format(Locale.ENGLISH, "%.1f", voteAverageTrakt == null ? 0.0f : voteAverageTrakt);
-            voteAveSpanned = new SpannableStringBuilder(voteAve).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        voteAveSpanned = new SpannableStringBuilder(voteAve).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         genres = Observable.fromIterable(movie.genres())
                 .take(4)
-                .reduce(new BiFunction<String, String, String>() {
-                    @Override
-                    public String apply(@NonNull String s, @NonNull String s2)
-                            throws Exception {
-                        return s + " | " + s2;
-                    }
-                }).blockingGet();
+                .reduce((s, s2) -> s + " | " + s2).blockingGet();
         try {
             releaseDate = DateUtils.format_MMM_dd_yyyy(DateUtils.toDate(movie.releaseDate()));
         } catch (ParseException | NullPointerException e) {
@@ -87,7 +77,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     @Override
     public void bind(final RowHeaderBinding viewBinding, int position) {
         long before = System.currentTimeMillis();
-        Log.d(TAG, "bind: called " );
+        Log.d(TAG, "bind: called ");
         viewBinding.textViewTitle.setText(movie.title());
         // TODO: 2017-06-18 use recycler view for this
         viewBinding.textViewGenre.setText(genres);
@@ -129,15 +119,13 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
 
     public void onDestroyView() {
         UtilsRx.dispose(compositeDisposable);
-        controller = null;
     }
 
     @Override
     public void accept(Object o) throws Exception {
         if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty()) {
-            ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
-                                  ((ArrayList<String>) ((Movie) movie).images().posters())
-            );
+            Navigator2.go(new ControllerImage(ItemHeader.this.movie.title(),
+                    ((ArrayList<String>) ((Movie) movie).images().posters())));
         }
     }
 }

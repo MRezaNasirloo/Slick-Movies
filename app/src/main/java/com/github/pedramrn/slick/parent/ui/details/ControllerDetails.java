@@ -268,7 +268,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         collapsingToolbar.setTitle(movie.title());
         imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
+        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));

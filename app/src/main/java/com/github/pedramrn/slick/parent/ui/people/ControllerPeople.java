@@ -11,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
@@ -86,6 +88,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
         ControllerPeople_Slick.bind(this);
+        Navigator2.bind(this);
         binding = ControllerPeopleBinding.inflate(inflater, container, false);
 
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
@@ -99,7 +102,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
                         ArrayList<String> images = new ArrayList<>(ps.images());
                         images.remove(ps.profilePicId());
                         images.add(0, ps.profilePicId());
-                        ControllerImage.start(getRouter(), ps.name(), images);
+                        Navigator2.go(new ControllerImage(ps.name(), images), new FadeChangeHandler(), new FadeChangeHandler());
                     }
                 });
 
@@ -148,6 +151,8 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
         UtilsRx.dispose(disposable);
+        disposable = null;
+        state = null;
         adapter.clear();
         adapterMovies.clear();
         adapterTvShows.clear();
@@ -158,6 +163,12 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
         adapterMovies = null;
         adapterTvShows = null;
         binding = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Navigator2.unbindController();
     }
 
     @Override
