@@ -16,6 +16,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerListBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
@@ -68,7 +69,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        super.onCreateView(inflater, container);
+        Navigator2.bind(this);
         App.componentMain().inject(this);
         ControllerList_Slick.bind(this);
         ControllerListBinding binding = ControllerListBinding.inflate(inflater, container, false);

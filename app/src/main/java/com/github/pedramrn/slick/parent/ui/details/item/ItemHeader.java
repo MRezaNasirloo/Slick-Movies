@@ -9,9 +9,9 @@ import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 
+import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
-import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
@@ -21,6 +21,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -39,6 +40,7 @@ import io.reactivex.functions.Consumer;
 
 public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Object> {
 
+    private final WeakReference<Controller> controller;
     private final MovieBasic movie;
     private final String transitionName;
     private final RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
@@ -49,8 +51,9 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     private final SpannableStringBuilder voteAveSpannedTmdb;
     private final SpannableStringBuilder voteAveSpanned;
 
-    public ItemHeader(MovieBasic movie, String transitionName) {
+    public ItemHeader(Controller controller, MovieBasic movie, String transitionName) {
         super(1000);
+        this.controller = new WeakReference<>(controller);
         this.movie = movie;
         this.transitionName = transitionName;
 
@@ -137,8 +140,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     @Override
     public void accept(Object o) throws Exception {
         if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty()) {
-            Navigator2.go(new ControllerImage(ItemHeader.this.movie.title(),
-                    ((ArrayList<String>) ((Movie) movie).images().posters())));
+            Controller controller = this.controller.get();
+            if (controller == null) return;
+            ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
+                    ((ArrayList<String>) ((Movie) movie).images().posters()));
         }
     }
 }

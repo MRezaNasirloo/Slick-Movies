@@ -22,6 +22,7 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerImageBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.pedramrn.slick.parent.ui.main.ViewPager;
@@ -103,7 +104,7 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        super.onCreateView(inflater, container);
+        Navigator2.bind(this);
         App.componentMain().inject(this);
         ControllerImage_Slick.bind(this);
         ControllerImageBinding binding = ControllerImageBinding.inflate(inflater, container, false);

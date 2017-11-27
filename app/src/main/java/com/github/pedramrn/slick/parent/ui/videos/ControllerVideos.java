@@ -70,7 +70,6 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        super.onCreateView(inflater, container);
         App.componentMain().inject(this);
         ControllerVideos_Slick.bind(this);
         ControllerVideosBinding binding = ControllerVideosBinding.inflate(inflater, container, false);

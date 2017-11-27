@@ -25,6 +25,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
@@ -165,7 +166,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        super.onCreateView(inflater, container);
+        Navigator2.bind(this);
         App.componentMain().inject(this);
         ControllerDetails_Slick.bind(this);
         ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
@@ -271,7 +272,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         collapsingToolbar.setTitle(movie.title());
         imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
+        updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));

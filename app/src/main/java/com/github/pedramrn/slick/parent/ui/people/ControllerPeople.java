@@ -86,13 +86,14 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        super.onCreateView(inflater, container);
+        Navigator2.bind(this);
         App.componentMain().inject(this);
         ControllerPeople_Slick.bind(this);
         binding = ControllerPeopleBinding.inflate(inflater, container, false);
 
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle("");
+        binding.collapsingToolbar.setTitle("");
 
         disposable = RxView.clicks(binding.imageViewProfile)
                 .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
