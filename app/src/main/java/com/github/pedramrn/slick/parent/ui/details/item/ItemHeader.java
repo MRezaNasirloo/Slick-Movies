@@ -1,5 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
@@ -76,6 +80,9 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
 
     @Override
     public void bind(final RowHeaderBinding viewBinding, int position) {
+        Context context = viewBinding.getRoot().getContext();
+        Resources resources = context.getResources();
+        int size = resources.getDimensionPixelSize(R.dimen.size_logo_details);
         long before = System.currentTimeMillis();
         Log.d(TAG, "bind: called ");
         viewBinding.textViewTitle.setText(movie.title());
@@ -83,6 +90,12 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         viewBinding.textViewGenre.setText(genres);
         viewBinding.textViewRelease.setText(releaseDate);
 
+        Drawable logoTmdb = ResourcesCompat.getDrawable(resources, R.drawable.ic_tmdb_logo_stacked_black, null);
+        Drawable logoTrakt = ResourcesCompat.getDrawable(resources, R.drawable.ic_trakt_logo, null);
+        logoTmdb.setBounds(0, 0, size, size);
+        logoTrakt.setBounds(0, 0, size, size);
+        viewBinding.textViewScoreTmdb.setCompoundDrawablesRelative(logoTmdb, null, null, null);
+        viewBinding.textViewScoreTrakt.setCompoundDrawablesRelative(logoTrakt, null, null, null);
         viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
         viewBinding.imageViewIcon.load(movie.thumbnailPoster());
