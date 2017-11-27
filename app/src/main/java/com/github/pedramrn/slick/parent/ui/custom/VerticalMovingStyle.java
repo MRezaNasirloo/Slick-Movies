@@ -1,14 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.custom;
 
-import android.graphics.Canvas;
-import android.widget.ImageView;
-
-import com.gjiazhe.scrollparallaximageview.ScrollParallaxImageView;
+// import com.gjiazhe.scrollparallaximageview.ScrollParallaxImageView;
 
 /**
  * Copied from {@link com.gjiazhe.scrollparallaximageview.parallaxstyle.VerticalMovingStyle}
  */
-public class VerticalMovingStyle implements ScrollParallaxImageView.ParallaxStyle {
+public class VerticalMovingStyle {/*implements ScrollParallaxImageView.ParallaxStyle {
 
     private final float scale;
 
@@ -65,4 +62,6 @@ public class VerticalMovingStyle implements ScrollParallaxImageView.ParallaxStyl
             canvas.translate(0, translateY);
         }
     }
+*/
 }
+
