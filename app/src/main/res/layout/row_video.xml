@@ -4,66 +4,103 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <io.supercharge.shimmerlayout.ShimmerLayout
-        android:id="@+id/layout_shimmer"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:shimmer_animation_duration="1200"
-        app:shimmer_color="@color/color_gray_1"
         >
 
-        <android.support.constraint.ConstraintLayout
+        <io.supercharge.shimmerlayout.ShimmerLayout
+            android:id="@+id/layout_shimmer"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:shimmer_animation_duration="1200"
+            app:shimmer_color="@color/color_gray_1"
             >
 
-            <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
-                android:id="@+id/imageView_thumbnail"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textView_name"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:background="#CCC"
-                />
 
-            <TextView
-                android:id="@+id/textView_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ellipsize="end"
-                android:gravity="start"
-                android:maxLines="3"
-                android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView_thumbnail"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Trailer #1"
-                />
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                >
 
-            <TextView
-                android:id="@+id/textView_channel_date_views"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="start"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imageView_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/textView_name"
-                app:layout_constraintVertical_bias="0.0"
-                tools:text="Channel name \n2 month age - 320K views"
-                />
-        </android.support.constraint.ConstraintLayout>
-    </io.supercharge.shimmerlayout.ShimmerLayout>
+                <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
+                    android:id="@+id/imageView_thumbnail"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:minHeight="100dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:background="#CCC"
+                    />
+
+                <TextView
+                    android:id="@+id/textView_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="3"
+                    android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_thumbnail"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Trailer #1"
+                    />
+
+                <TextView
+                    android:id="@+id/textView_channel_date_views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="start"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_thumbnail"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_name"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:text="Channel name \n2 month age - 320K views"
+                    />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:tint="@color/color_gray_1"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView_thumbnail"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView_thumbnail"
+                    app:layout_constraintStart_toStartOf="@+id/imageView_thumbnail"
+                    app:layout_constraintTop_toTopOf="@+id/imageView_thumbnail"
+                    app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"
+                    tools:ignore="ContentDescription"
+                    />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.45"
+                    app:layout_constraintGuide_begin="20dp"
+                    />
+            </android.support.constraint.ConstraintLayout>
+        </io.supercharge.shimmerlayout.ShimmerLayout>
+    </android.support.v7.widget.CardView>
 </layout>
