@@ -41,7 +41,9 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
     private final RouterBoxOffice routerBoxOffice;
     private final MapperMovieDomainMovie mapper;
     private final MapperMovieMetadataToMovieBasic mapperMetadata;
-
+    private final MapProgressive mapProgressive = new MapProgressive();
+    private final ScanToMap<Item> scanToMap = new ScanToMap<>();
+    //for fixing concurrent modification.
 
     @Inject
     public PresenterBoxOffice(
@@ -86,14 +88,14 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
                 commandRetry.startWith(1).flatMap(o -> routerBoxOffice.boxOffice().subscribeOn(io)
                         .map(mapperMetadata)
                         .cast(AutoBase.class)
-                        .map(new MapProgressive())
+                        .map(mapProgressive)
                         .cast(ItemView.class)
                         .map(itemView -> itemView.render(MovieSmall.BOX_OFFICE))
-                        .compose(new ScanToMap<>())
+                        .compose(scanToMap)
                         .map((Function<Map<Integer, Item>, PartialViewState<ViewStateBoxOffice>>) MoviesBoxOffice::new)
-                        .startWith(new MoviesBoxOffice(Collections.emptyMap()))
+                        .startWith(new MoviesBoxOffice(Collections.emptyMap()))// TODO: 2018-03-06 add initial state
                         .onErrorReturn(ErrorBoxOffice::new)
-                );
+                ).onErrorReturn(ErrorBoxOffice::new);
 
         reduce(ViewStateBoxOffice.builder().movies(Collections.emptyMap()).build(), boxOffice).subscribe(this);
     }

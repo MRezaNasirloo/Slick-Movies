@@ -11,6 +11,7 @@ import static com.github.pedramrn.slick.parent.util.Utils.removeRemovables;
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-11-24
+ *         TODO: create other state for box office: Loading, Loaded.
  */
 
 public class MoviesBoxOffice implements PartialViewState<ViewStateBoxOffice> {
@@ -27,7 +28,7 @@ public class MoviesBoxOffice implements PartialViewState<ViewStateBoxOffice> {
     public ViewStateBoxOffice reduce(ViewStateBoxOffice state) {
         Map<Integer, Item> movies = new TreeMap<>(state.movies());
         removeRemovables(movies.values().iterator(), null);
-        movies.putAll(new TreeMap<>(this.movies));
+        movies.putAll(this.movies);
         return state.toBuilder().movies(movies).error(null).build();
     }
 }
