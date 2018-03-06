@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -92,8 +93,9 @@ public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBo
                         .cast(ItemView.class)
                         .map(itemView -> itemView.render(MovieSmall.BOX_OFFICE))
                         .compose(scanToMap)
-                        .map((Function<Map<Integer, Item>, PartialViewState<ViewStateBoxOffice>>) MoviesBoxOffice::new)
-                        .startWith(new MoviesBoxOffice(Collections.emptyMap()))// TODO: 2018-03-06 add initial state
+                        .map((Function<Map<Integer, Item>, PartialViewState<ViewStateBoxOffice>>) movies ->
+                                new MoviesBoxOffice(new TreeMap<>(movies)))
+                        // .startWith(new MoviesBoxOffice(Collections.emptyMap()))// TODO: 2018-03-06 add initial state
                         .onErrorReturn(ErrorBoxOffice::new)
                 ).onErrorReturn(ErrorBoxOffice::new);
 
