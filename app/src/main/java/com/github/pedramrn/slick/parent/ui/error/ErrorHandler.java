@@ -16,6 +16,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import retrofit2.adapter.rxjava2.HttpException;
+
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-11-16
@@ -42,8 +44,12 @@ public class ErrorHandler {
      */
     public static short handle(@Nullable Throwable error) {
         if (error == null) return -1;
-        if (error instanceof UnknownHostException || error instanceof SocketTimeoutException || error instanceof ConnectException) {
-            // TODO: 2017-11-13 extract String? how
+        //noinspection deprecation
+        if (error instanceof UnknownHostException
+                || error instanceof SocketTimeoutException
+                || error instanceof ConnectException
+                || error instanceof HttpException// FIXME: 2018-03-09 retrofit throws this exception on 429 too many requests.
+                ) {
             if (enable) Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
             return Constants.ERROR_CODE_NETWORK;
         } else if (error instanceof InformationNotAvailableException) {
