@@ -38,6 +38,7 @@ public abstract class KnownFor {
     @SerializedName("overview")
     public abstract String overview();
 
+    @Nullable
     @SerializedName("media_type")
     public abstract String mediaType();
 
@@ -68,6 +69,7 @@ public abstract class KnownFor {
     @SerializedName("genre_ids")
     public abstract List<Integer> genreIds();
 
+    @Nullable
     @SerializedName("adult")
     public abstract Boolean adult();
 

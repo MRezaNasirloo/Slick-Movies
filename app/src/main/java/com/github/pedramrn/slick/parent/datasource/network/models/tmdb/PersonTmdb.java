@@ -23,6 +23,7 @@ public abstract class PersonTmdb {
     @SerializedName("imdb_id")
     public abstract String imdbId();
 
+    @Nullable
     @SerializedName("name")
     public abstract String name();
 
@@ -53,9 +54,11 @@ public abstract class PersonTmdb {
     @SerializedName("also_known_as")
     public abstract List<String> alsoKnownAs();
 
+    @Nullable
     @SerializedName("popularity")
     public abstract Float popularity();
 
+    @Nullable
     @SerializedName("adult")
     public abstract Boolean adult();
 

@@ -15,6 +15,7 @@ public abstract class Genre implements SimpleData {
 
     @SerializedName("id")
     public abstract Integer id();
+
     @SerializedName("name")
     public abstract String name();
 

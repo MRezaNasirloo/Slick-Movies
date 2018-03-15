@@ -14,21 +14,26 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class Crew {
 
+    @Nullable
     @SerializedName("credit_id")
     public abstract String creditId();
 
+    @Nullable
     @SerializedName("department")
     public abstract String department();
 
+    @Nullable
     @SerializedName("gender")
     public abstract Integer gender();
 
     @SerializedName("id")
     public abstract Integer id();
 
+    @Nullable
     @SerializedName("job")
     public abstract String job();
 
+    @Nullable
     @SerializedName("name")
     public abstract String name();
 

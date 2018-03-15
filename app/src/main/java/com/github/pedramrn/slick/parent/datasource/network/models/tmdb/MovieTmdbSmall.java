@@ -18,6 +18,7 @@ public abstract class MovieTmdbSmall {
     @SerializedName("id")
     public abstract Integer id();
 
+    @Nullable
     @SerializedName("title")
     public abstract String title();
 
@@ -29,12 +30,15 @@ public abstract class MovieTmdbSmall {
     @SerializedName("backdrop_path")
     public abstract String backdropPath();
 
+    @Nullable
     @SerializedName("adult")
     public abstract Boolean adult();
 
+    @Nullable
     @SerializedName("original_language")
     public abstract String originalLanguage();
 
+    @Nullable
     @SerializedName("original_title")
     public abstract String originalTitle();
 
@@ -46,15 +50,19 @@ public abstract class MovieTmdbSmall {
     @SerializedName("release_date")
     public abstract String releaseDate();
 
+    @Nullable
     @SerializedName("popularity")
     public abstract Float popularity();
 
+    @Nullable
     @SerializedName("video")
     public abstract Boolean video();
 
+    @Nullable
     @SerializedName("vote_average")
     public abstract Float voteAverage();
 
+    @Nullable
     @SerializedName("vote_count")
     public abstract Integer voteCount();
 

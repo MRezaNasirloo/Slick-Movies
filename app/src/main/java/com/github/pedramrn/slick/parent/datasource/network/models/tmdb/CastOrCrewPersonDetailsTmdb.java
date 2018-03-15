@@ -125,12 +125,15 @@ public abstract class CastOrCrewPersonDetailsTmdb {
     @SerializedName("genre_ids")
     public abstract List<Integer> genreIds();
 
+    @Nullable
     @SerializedName("popularity")
     public abstract Float popularity();
 
+    @Nullable
     @SerializedName("vote_count")
     public abstract Integer voteCount();
 
+    @Nullable
     @SerializedName("vote_average")
     public abstract Float voteAverage();
 

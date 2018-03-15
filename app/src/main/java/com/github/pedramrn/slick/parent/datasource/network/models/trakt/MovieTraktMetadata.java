@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network.models.trakt;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -16,6 +18,7 @@ public abstract class MovieTraktMetadata {
     @SerializedName("title")
     public abstract String title();
 
+    @Nullable
     @SerializedName("year")
     public abstract Integer year();
 

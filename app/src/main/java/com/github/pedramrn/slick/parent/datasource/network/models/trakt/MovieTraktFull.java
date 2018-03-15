@@ -50,9 +50,11 @@ public abstract class MovieTraktFull {
     @SerializedName("homepage")
     public abstract String homepage();
 
+    @Nullable
     @SerializedName("rating")
     public abstract Float rating();
 
+    @Nullable
     @SerializedName("votes")
     public abstract Integer votes();
 

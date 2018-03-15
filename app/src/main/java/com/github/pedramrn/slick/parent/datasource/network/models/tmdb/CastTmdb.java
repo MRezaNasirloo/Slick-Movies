@@ -17,12 +17,15 @@ public abstract class CastTmdb {
     @SerializedName("id")
     public abstract Integer id();
 
+    @Nullable
     @SerializedName("cast_id")
     public abstract Integer castId();
 
+    @Nullable
     @SerializedName("credit_id")
     public abstract String creditId();
 
+    @Nullable
     @SerializedName("name")
     public abstract String name();
 
@@ -30,12 +33,15 @@ public abstract class CastTmdb {
     @SerializedName("profile_path")
     public abstract String profilePath();
 
+    @Nullable
     @SerializedName("character")
     public abstract String character();
 
+    @Nullable
     @SerializedName("gender")
     public abstract Integer gender();
 
+    @Nullable
     @SerializedName("order")
     public abstract Integer order();
 

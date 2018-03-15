@@ -24,6 +24,7 @@ public abstract class MovieTmdb {
     @SerializedName("imdb_id")
     public abstract String imdbId();
 
+    @Nullable
     @SerializedName("adult")
     public abstract Boolean adult();
 
@@ -58,6 +59,7 @@ public abstract class MovieTmdb {
     @SerializedName("overview")
     public abstract String overview();
 
+    @Nullable
     @SerializedName("popularity")
     public abstract Float popularity();
 
@@ -75,30 +77,38 @@ public abstract class MovieTmdb {
     @SerializedName("release_date")
     public abstract String releaseDate();
 
+    @Nullable
     @SerializedName("revenue")
     public abstract Long revenue();
 
+    @Nullable
     @SerializedName("runtime")
     public abstract Integer runtime();
 
     @SerializedName("spoken_languages")
     public abstract List<SpokenLanguage> spokenLanguages();
 
+    @Nullable
     @SerializedName("status")
     public abstract String status();
 
+    @Nullable
     @SerializedName("tagline")
     public abstract String tagline();
 
+    @Nullable
     @SerializedName("title")
     public abstract String title();
 
+    @Nullable
     @SerializedName("video")
     public abstract Boolean video();
 
+    @Nullable
     @SerializedName("vote_average")
     public abstract Float voteAverage();
 
+    @Nullable
     @SerializedName("vote_count")
     public abstract Integer voteCount();
 
