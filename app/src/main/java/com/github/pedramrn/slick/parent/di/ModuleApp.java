@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -13,7 +11,6 @@ import dagger.Provides;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-03-01
  */
-@Singleton
 @Module(subcomponents = ComponentMain.class)
 public class ModuleApp {
     private static final String TAG = ModuleApp.class.getSimpleName();

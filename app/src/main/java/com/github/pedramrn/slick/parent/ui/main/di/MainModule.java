@@ -18,7 +18,6 @@ import io.reactivex.Scheduler;
  *         Created on: 2017-03-01
  */
 @Module
-@ControllerScope
 public class MainModule {
 
     @Provides

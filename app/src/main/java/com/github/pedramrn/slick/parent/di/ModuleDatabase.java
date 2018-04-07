@@ -2,15 +2,12 @@ package com.github.pedramrn.slick.parent.di;
 
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-22
  */
-@Singleton
 @Module(subcomponents = ComponentMain.class)
 public class ModuleDatabase {
 

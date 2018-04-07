@@ -3,7 +3,6 @@ package com.github.pedramrn.slick.parent.di;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,7 +15,6 @@ import io.reactivex.schedulers.Schedulers;
  *         Created on: 2017-04-22
  */
 
-@Singleton
 @Module(subcomponents = ComponentMain.class)
 public class ModuleScheduler {
 

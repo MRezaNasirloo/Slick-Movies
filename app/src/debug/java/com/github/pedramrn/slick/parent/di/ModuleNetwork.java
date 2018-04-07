@@ -44,7 +44,6 @@ import retrofit2.mock.NetworkBehavior;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-22
  */
-@Singleton
 @Module(subcomponents = ComponentMain.class)
 public class ModuleNetwork extends ModuleNetworkBase {
 
