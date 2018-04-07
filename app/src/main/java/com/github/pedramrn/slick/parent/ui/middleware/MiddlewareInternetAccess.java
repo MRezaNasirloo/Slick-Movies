@@ -4,9 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.widget.Toast;
 
-import com.github.slick.middleware.BundleSlick;
-import com.github.slick.middleware.Middleware;
-import com.github.slick.middleware.Request;
+import com.mrezanasirloo.slick.middleware.BundleSlick;
+import com.mrezanasirloo.slick.middleware.Middleware;
+import com.mrezanasirloo.slick.middleware.Request;
 
 import javax.inject.Inject;
 

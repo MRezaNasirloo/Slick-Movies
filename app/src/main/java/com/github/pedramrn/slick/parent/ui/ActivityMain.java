@@ -13,7 +13,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
-import com.github.slick.middleware.RequestStack;
+import com.mrezanasirloo.slick.middleware.RequestStack;
 
 import javax.inject.Inject;
 

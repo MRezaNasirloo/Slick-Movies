@@ -26,8 +26,8 @@ import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
-import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.UpdatingGroup;
 
@@ -73,7 +73,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         Log.d(TAG, "onCreateView");
         App.componentMain().inject(this);
-        ControllerHome_Slick.bind(this);
+        PresenterHome_Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
         adapterUpcoming = new GroupAdapter();

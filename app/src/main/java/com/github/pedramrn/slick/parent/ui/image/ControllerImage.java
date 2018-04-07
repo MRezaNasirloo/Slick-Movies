@@ -26,7 +26,7 @@ import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.pedramrn.slick.parent.ui.main.ViewPager;
-import com.github.slick.Presenter;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
-        ControllerImage_Slick.bind(this);
+        PresenterImage_Slick.bind(this);
         ControllerImageBinding binding = ControllerImageBinding.inflate(inflater, container, false);
         adapter = new GroupAdapter();
         for (String url : data) {

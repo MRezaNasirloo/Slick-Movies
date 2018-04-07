@@ -44,10 +44,10 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.slick.Presenter;
-import com.github.slick.middleware.RequestStack;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.mrezanasirloo.slick.Presenter;
+import com.mrezanasirloo.slick.middleware.RequestStack;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
@@ -169,7 +169,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
-        ControllerDetails_Slick.bind(this);
+        PresenterDetails_Slick.bind(this);
         ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(binding.toolbar, true);

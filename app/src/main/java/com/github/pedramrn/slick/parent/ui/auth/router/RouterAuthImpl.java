@@ -6,7 +6,7 @@ import com.github.pedramrn.slick.parent.datasource.network.repository.Repository
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
 import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareInternetAccess;
-import com.github.slick.Middleware;
+import com.mrezanasirloo.slick.Middleware;
 
 import javax.inject.Inject;
 

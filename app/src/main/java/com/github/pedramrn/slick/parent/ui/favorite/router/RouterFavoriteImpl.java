@@ -7,7 +7,7 @@ import com.github.pedramrn.slick.parent.datasource.network.repository.Repository
 import com.github.pedramrn.slick.parent.domain.model.FavoriteDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterFavorite;
 import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareLogin;
-import com.github.slick.Middleware;
+import com.mrezanasirloo.slick.Middleware;
 
 import java.util.List;
 

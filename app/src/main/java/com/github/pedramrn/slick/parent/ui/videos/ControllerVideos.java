@@ -25,7 +25,7 @@ import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.slick.Presenter;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.UpdatingGroup;
@@ -73,7 +73,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
-        ControllerVideos_Slick.bind(this);
+        PresenterVideos_Slick.bind(this);
         ControllerVideosBinding binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));

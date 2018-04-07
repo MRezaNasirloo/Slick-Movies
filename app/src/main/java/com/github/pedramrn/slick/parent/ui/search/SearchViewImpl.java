@@ -8,9 +8,9 @@ import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
-import com.github.slick.OnDestroyListener;
-import com.github.slick.Presenter;
 import com.lapism.searchview.SearchView;
+import com.mrezanasirloo.slick.OnDestroyListener;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 
@@ -67,8 +67,8 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         App.componentMain().inject(this);
-        SearchViewImpl_Slick.bind(this);
-        SearchViewImpl_Slick.onAttach(this);
+        PresenterSearch_Slick.bind(this);
+        PresenterSearch_Slick.onAttach(this);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
             adapter.setOnItemClickListener(null);
             adapter = null;
         }
-        SearchViewImpl_Slick.onDetach(this);
+        PresenterSearch_Slick.onDetach(this);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
         if (adapter == null) return;
         adapter.setOnItemClickListener(null);
         adapter = null;
-        SearchViewImpl_Slick.onDestroy(this);
+        PresenterSearch_Slick.onDestroy(this);
     }
 
     @Override

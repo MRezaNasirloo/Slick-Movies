@@ -3,8 +3,6 @@
 buildscript {
     repositories {
         jcenter()
-        mavenLocal()
-        mavenCentral()
         google()
 //        maven { url 'https://maven.fabric.io/public' }
     }
@@ -36,8 +34,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        mavenLocal()
-        mavenCentral()
         google()
         maven { url "https://jitpack.io" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }

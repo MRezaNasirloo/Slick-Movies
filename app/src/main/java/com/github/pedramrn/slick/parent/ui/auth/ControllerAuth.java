@@ -16,12 +16,12 @@ import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
-import com.github.slick.Presenter;
-import com.github.slick.middleware.RequestStack;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.mrezanasirloo.slick.Presenter;
+import com.mrezanasirloo.slick.middleware.RequestStack;
 
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +70,7 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
-        ControllerAuth_Slick.bind(this);
+        PresenterAuth_Slick.bind(this);
         binding = ControllerAuthBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }

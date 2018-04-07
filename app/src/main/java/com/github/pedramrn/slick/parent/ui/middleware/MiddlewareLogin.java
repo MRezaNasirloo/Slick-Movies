@@ -5,9 +5,9 @@ import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
 import com.github.pedramrn.slick.parent.ui.dialog.ControllerDialog;
-import com.github.slick.middleware.BundleSlick;
-import com.github.slick.middleware.Middleware;
-import com.github.slick.middleware.Request;
+import com.mrezanasirloo.slick.middleware.BundleSlick;
+import com.mrezanasirloo.slick.middleware.Middleware;
+import com.mrezanasirloo.slick.middleware.Request;
 
 import javax.inject.Inject;
 import javax.inject.Named;

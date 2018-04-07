@@ -1,7 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.main;
 
 import com.github.pedramrn.slick.parent.ui.boxoffice.state.ViewStateBoxOffice;
-import com.github.slick.SlickPresenter;
+import com.mrezanasirloo.slick.SlickPresenter;
 
 import javax.inject.Inject;
 

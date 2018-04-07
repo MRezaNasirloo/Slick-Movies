@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.github.pedramrn.slick.parent.App;
-import com.github.slick.Presenter;
+import com.mrezanasirloo.slick.Presenter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,8 +43,8 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
         if (isInEditMode()) { return; }
         super.onAttachedToWindow();
         App.componentMain().inject(this);
-        RecyclerViewCardListTrending_Slick.bind(this);
-        RecyclerViewCardListTrending_Slick.onAttach(this);
+        PresenterCardList_Slick.bind(this);
+        PresenterCardList_Slick.onAttach(this);
         getLayoutManager().scrollToPosition(scrollPosition);
     }
 
@@ -52,12 +52,12 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
     protected void onDetachedFromWindow() {
         if (isInEditMode()) { return; }
         super.onDetachedFromWindow();
-        RecyclerViewCardListTrending_Slick.onDetach(this);
+        PresenterCardList_Slick.onDetach(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RecyclerViewCardListTrending_Slick.onDestroy(this);
+        PresenterCardList_Slick.onDestroy(this);
     }
 }

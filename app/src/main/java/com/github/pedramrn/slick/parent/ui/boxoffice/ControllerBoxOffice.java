@@ -11,7 +11,7 @@ import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.slick.Presenter;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.UpdatingGroup;
@@ -48,7 +48,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull final ViewGroup container) {
         componentMain().inject(this);
-        ControllerBoxOffice_Slick.bind(this);
+        PresenterBoxOffice_Slick.bind(this);
         final ControllerBoxOfficeBinding binding = inflate(inflater, container, false);
 
         binding.toolbar.setTitle("Box Office");

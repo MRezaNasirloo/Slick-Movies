@@ -19,7 +19,7 @@ import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.slick.Presenter;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.UpdatingGroup;
@@ -51,7 +51,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
-        ControllerFavorite_Slick.bind(this);
+        PresenterFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
         ViewGroup containerChild = binding.container.findViewById(R.id.container_child);

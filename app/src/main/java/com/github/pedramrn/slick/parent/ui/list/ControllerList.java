@@ -20,7 +20,7 @@ import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
-import com.github.slick.Presenter;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
@@ -71,7 +71,7 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
-        ControllerList_Slick.bind(this);
+        PresenterList_Slick.bind(this);
         ControllerListBinding binding = ControllerListBinding.inflate(inflater, container, false);
 
         binding.toolbar.setTitle(title);

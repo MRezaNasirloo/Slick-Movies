@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
-import com.github.slick.SlickPresenter;
+import com.mrezanasirloo.slick.SlickPresenter;
 
 import java.util.Arrays;
 

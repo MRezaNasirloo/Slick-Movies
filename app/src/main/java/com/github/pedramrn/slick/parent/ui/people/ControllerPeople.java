@@ -27,8 +27,8 @@ import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
-import com.github.slick.Presenter;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
@@ -88,7 +88,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
-        ControllerPeople_Slick.bind(this);
+        PresenterPeople_Slick.bind(this);
         binding = ControllerPeopleBinding.inflate(inflater, container, false);
 
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);

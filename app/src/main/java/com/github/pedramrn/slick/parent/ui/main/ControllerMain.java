@@ -18,8 +18,8 @@ import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
-import com.github.slick.Presenter;
-import com.github.slick.middleware.RequestStack;
+import com.mrezanasirloo.slick.Presenter;
+import com.mrezanasirloo.slick.middleware.RequestStack;
 
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     @Override
     protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
         componentMain().inject(this);
-        ControllerMain_Slick.bind(this);
+        PresenterMain_Slick.bind(this);
         binding = ControllerMainBinding.inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
