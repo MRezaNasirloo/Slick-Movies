@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/box-office.iml" filepath="$PROJECT_DIR$/box-office.iml" />
+      <module fileurl="file://$PROJECT_DIR$/slick-movies.iml" filepath="$PROJECT_DIR$/slick-movies.iml" />
     </modules>
   </component>
 </project>
