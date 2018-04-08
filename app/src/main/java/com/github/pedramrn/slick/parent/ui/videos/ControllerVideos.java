@@ -28,6 +28,7 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
@@ -41,7 +42,7 @@ import io.reactivex.subjects.PublishSubject;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerVideos extends ControllerBase implements ViewVideos {
+public class ControllerVideos extends ControllerBase implements ViewVideos, OnItemClickListener {
 
     @Inject
     Provider<PresenterVideos> provider;
@@ -55,6 +56,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
 
     private PublishSubject<Object> errorDismissed = PublishSubject.create();
     private PublishSubject<Object> retry = PublishSubject.create();
+    private GroupAdapter adapter;
 
     public ControllerVideos(@NonNull MovieBasic movie, String transitionName) {
         this(new BundleBuilder(new Bundle())
@@ -77,7 +79,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
         ControllerVideosBinding binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
-        final GroupAdapter adapter = new GroupAdapter();
+        adapter = new GroupAdapter();
         adapterProgressive = new UpdatingGroup();
         adapter.add(adapterProgressive);
 
@@ -85,7 +87,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
         binding.recyclerView.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
         binding.recyclerView.getItemAnimator().setChangeDuration(0);
         binding.recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item)));
+        adapter.setOnItemClickListener(this);
         return binding.getRoot();
     }
 
@@ -115,6 +117,8 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
         super.onDestroyView(view);
         snackbar = null;
         adapterProgressive = null;
+        adapter.setOnItemClickListener(null);
+        adapter = null;
     }
 
     @Override
@@ -153,5 +157,10 @@ public class ControllerVideos extends ControllerBase implements ViewVideos {
     @Override
     public Observable<Object> onRetry() {
         return retry;
+    }
+
+    @Override
+    public void onItemClick(Item item, View view) {
+        ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item));
     }
 }

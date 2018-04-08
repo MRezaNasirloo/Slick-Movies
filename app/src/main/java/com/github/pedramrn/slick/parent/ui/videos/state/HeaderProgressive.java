@@ -1,7 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.videos.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavoriteProgressive;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 
 /**
  * @author : Pedramrn@gmail.com

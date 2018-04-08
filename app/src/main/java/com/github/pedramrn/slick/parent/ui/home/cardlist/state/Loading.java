@@ -1,8 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.ViewStateCardList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemLoading;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.Map;

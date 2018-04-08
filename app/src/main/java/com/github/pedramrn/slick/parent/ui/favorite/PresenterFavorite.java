@@ -8,9 +8,7 @@ import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
 import com.github.pedramrn.slick.parent.domain.router.RouterFavorite;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovie;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
@@ -22,6 +20,8 @@ import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListNoOp;
 import com.github.pedramrn.slick.parent.ui.favorite.state.FavoriteListProgressive;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Arrays;
@@ -39,7 +39,7 @@ import io.reactivex.functions.Function;
 /**
  * A simple Presenter
  */
-public class PresenterFavorite extends PresenterBase<ViewFavorite, ViewStateFavorite> {
+public class PresenterFavorite extends SlickPresenterUni<ViewFavorite, ViewStateFavorite> {
 
     private final RouterMovie routerMovie;
     private final RouterAuth routerAuth;

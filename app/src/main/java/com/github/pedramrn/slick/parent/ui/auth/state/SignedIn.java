@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.auth.state;
 
 import com.github.pedramrn.slick.parent.ui.auth.ViewStateAuth;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 
 /**
  * @author : Pedramrn@gmail.com

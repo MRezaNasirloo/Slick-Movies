@@ -1,10 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.favorite.state;
 
 import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOfficeError;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.ViewStateFavorite;
 import com.github.pedramrn.slick.parent.util.Utils;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.Iterator;

@@ -1,6 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.people.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemBio;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemMovieCast;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemMovieCrew;
@@ -8,6 +7,7 @@ import com.github.pedramrn.slick.parent.ui.people.item.ItemTvShowCast;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemTvShowCrew;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;

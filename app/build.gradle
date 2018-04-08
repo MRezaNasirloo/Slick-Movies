@@ -157,6 +157,7 @@ dependencies {
     implementation 'com.mrezanasirloo:slick:1.0.6'
     implementation 'com.mrezanasirloo:slick-middleware:1.0.6'
     implementation 'com.mrezanasirloo:slick-conductor:1.0.6'
+    implementation 'com.mrezanasirloo:slick-reactive:1.0.6'
     annotationProcessor 'com.mrezanasirloo:slick-compiler:1.0.6'
 
     //conductor

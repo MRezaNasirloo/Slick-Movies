@@ -1,11 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.ViewStateCardList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemLoading;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.Map;

@@ -1,11 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.favorite.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.favorite.ViewStateFavorite;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemEmptyStateFullScreen;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavorite;
 import com.github.pedramrn.slick.parent.util.Utils;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.Map;

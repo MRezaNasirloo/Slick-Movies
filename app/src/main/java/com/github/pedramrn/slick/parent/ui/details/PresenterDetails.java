@@ -10,7 +10,6 @@ import com.github.pedramrn.slick.parent.domain.router.RouterFavorite;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterSimilar;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperCommentDomainComment;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
@@ -24,6 +23,8 @@ import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -41,7 +42,7 @@ import io.reactivex.functions.Function;
  *         Created on: 2017-06-15
  */
 
-public class PresenterDetails extends PresenterBase<ViewDetails, ViewStateDetails> {
+public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDetails> {
     private static final String TAG = PresenterDetails.class.getSimpleName();
 
     private final RouterMovieDetails routerMovieDetails;

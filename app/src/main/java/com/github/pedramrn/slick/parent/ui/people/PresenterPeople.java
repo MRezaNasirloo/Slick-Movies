@@ -1,11 +1,14 @@
 package com.github.pedramrn.slick.parent.ui.people;
 
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.ui.people.mapper.MapperPersonDetailsDomainPersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.router.RouterPersonImpl;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -24,7 +27,7 @@ import static com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeoplePa
 /**
  * A simple Presenter
  */
-public class PresenterPeople extends PresenterBase<ViewPeople, ViewStatePeople> {
+public class PresenterPeople extends SlickPresenterUni<ViewPeople, ViewStatePeople> {
 
     private final RouterPersonImpl routerPerson;
     private final MapperPersonDetailsDomainPersonDetails mapper;
@@ -67,6 +70,11 @@ public class PresenterPeople extends PresenterBase<ViewPeople, ViewStatePeople> 
                 merge(person, personCredits, Observable.<PartialViewState<ViewStatePeople>>never())
         )
                 .subscribe(this);
+    }
+
+    @Override
+    protected void render(@NonNull ViewStatePeople state, @NonNull ViewPeople view) {
+        // TODO: 2018-04-09 use this
     }
 
 }

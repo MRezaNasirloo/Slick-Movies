@@ -1,16 +1,17 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.github.pedramrn.slick.parent.domain.router.RouterUpcoming;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterUpcomingImpl;
 import com.github.pedramrn.slick.parent.ui.home.state.PartialViewStateHome;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -25,11 +26,11 @@ import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-20
+ * Created on: 2017-06-20
  */
 
-public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
-
+public class PresenterHome extends SlickPresenterUni<ViewHome, ViewStateHome> {
+    private static final String TAG = PresenterHome.class.getSimpleName();
     public static final String UPCOMING = "UPCOMING";
 
     private final RouterUpcoming routerUpcoming;
@@ -46,6 +47,24 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
         super(main, io);
         this.routerUpcoming = routerUpcoming;
         this.mapperMovieSmall = mapperMovieSmall;
+    }
+
+    @Override
+    public void onViewUp(ViewHome view) {
+        super.onViewUp(view);
+        Log.i(TAG, "onViewUp: called");
+    }
+
+    @Override
+    public void onViewDown() {
+        super.onViewDown();
+        Log.i(TAG, "onViewDown called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy: called");
     }
 
     @Override
@@ -68,12 +87,11 @@ public class PresenterHome extends PresenterBase<ViewHome, ViewStateHome> {
                 .upcoming(Collections.emptyList())
                 .build();
 
-        reduce(initialState, merge(upcoming))
-                .subscribe(this);
+        subscribe(initialState, upcoming);
     }
 
     @Override
     public void render(@NonNull ViewStateHome state, @NonNull ViewHome view) {
-
+        view.render(state);
     }
 }

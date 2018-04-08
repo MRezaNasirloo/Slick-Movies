@@ -1,10 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.videos.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideoProgressive;
 import com.github.pedramrn.slick.parent.util.Utils;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 /**

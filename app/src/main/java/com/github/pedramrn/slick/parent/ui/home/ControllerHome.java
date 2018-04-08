@@ -18,7 +18,7 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
-import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
+import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
@@ -26,18 +26,14 @@ import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
-import com.jakewharton.rxbinding2.view.RxView;
 import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.UpdatingGroup;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
@@ -46,7 +42,7 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-06-20
  */
 
-public class ControllerHome extends ControllerElm<ViewStateHome> implements ViewHome {
+public class ControllerHome extends ControllerBase implements ViewHome {
 
     private static final String TAG = ControllerHome.class.getSimpleName();
 
@@ -67,6 +63,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
     private RecyclerViewCardListTrending recyclerViewCardListTrending;
     private RecyclerViewCardListPopular recyclerViewCardListPopular;
     private GroupAdapter adapterUpcoming;
+    private RecyclerView recyclerViewUpcoming;
 
     @NonNull
     @Override
@@ -106,7 +103,7 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         setOnItemClickListener(adapterUpcoming);
         setOnItemClickListener((GroupAdapter) searchView.getAdapter());
 
-        RecyclerView recyclerViewUpcoming = binding.recyclerViewUpcoming;
+        recyclerViewUpcoming = binding.recyclerViewUpcoming;
         recyclerViewUpcoming.setNestedScrollingEnabled(false);
         LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerViewUpcoming.setLayoutManager(layout);
@@ -119,17 +116,15 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         setupHeader(binding.headerTrending, trending);
         setupHeader(binding.headerPopular, popular);
 
-        presenter.updateStream().subscribe(this);
-
         return binding.getRoot();
     }
 
     private void setupHeader(RowCardHeaderBinding header, String title, @Nullable Consumer<Object> clickListener) {
         if (clickListener == null) {
             header.button.setVisibility(View.INVISIBLE);
-        } else {
+        } /*else {
             RxView.clicks(header.button).throttleLast(1, TimeUnit.SECONDS).subscribe(clickListener);
-        }
+        }*/
         header.textViewTitle.setText(title);
     }
 
@@ -165,30 +160,12 @@ public class ControllerHome extends ControllerElm<ViewStateHome> implements View
         }
         recyclerViewCardListPopular = null;
         recyclerViewCardListTrending = null;
+        recyclerViewUpcoming.setAdapter(null);
+        recyclerViewUpcoming = null;
         adapterUpcoming.setOnItemClickListener(null);
         adapterUpcoming = null;
+        progressiveUpcoming = null;
         searchView = null;
-    }
-
-    @Override
-    public void onSubscribe(Disposable d) {
-        add(d);
-    }
-
-    @Override
-    public void onNext(ViewStateHome viewStateHome) {
-        render(viewStateHome);
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        System.out.println("ControllerHome.onError");
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.wtf(TAG, "onComplete() called x_X");
     }
 
     @Override

@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.domain.router.RouterSearch;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
@@ -13,6 +11,8 @@ import com.github.pedramrn.slick.parent.ui.search.item.ItemRowSuggestion;
 import com.github.pedramrn.slick.parent.ui.search.router.RouterSearchImpl;
 import com.github.pedramrn.slick.parent.ui.search.state.PartialViewStateSearch;
 import com.github.pedramrn.slick.parent.ui.search.state.ViewStateSearch;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -28,7 +28,7 @@ import io.reactivex.functions.Function;
 /**
  * A simple Presenter
  */
-public class PresenterSearch extends PresenterBase<ViewSearch, ViewStateSearch> {
+public class PresenterSearch extends SlickPresenterUni<ViewSearch, ViewStateSearch> {
 
     private final RouterSearch routerSearch;
     private final MapperMovieSmallDomainMovieSmall mapperSmall;

@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.search.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;

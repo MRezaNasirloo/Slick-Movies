@@ -1,11 +1,11 @@
 package com.github.pedramrn.slick.parent.ui.list;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
-import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Collections;
@@ -16,13 +16,12 @@ import javax.inject.Named;
 
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 
 /**
  * A simple Presenter
  */
-public class PresenterList extends PresenterBase<ViewList, ViewStateList> {
+public class PresenterList extends SlickPresenterUni<ViewList, ViewStateList> {
 
     @Inject
     public PresenterList(
@@ -39,27 +38,23 @@ public class PresenterList extends PresenterBase<ViewList, ViewStateList> {
     protected void start(ViewList view) {
         Log.d(TAG, "start() called");
         Observable<PartialViewState<ViewStateList>> data = Observable.fromIterable(view.data())
-                .map(new Function<ItemViewListParcelable, Item>() {
-                    @Override
-                    public Item apply(@NonNull ItemViewListParcelable itemViewListParcelable) throws Exception {
-                        return itemViewListParcelable.render("LIST");
-                    }
-                })
+                .map(itemViewListParcelable -> itemViewListParcelable.render("LIST"))
                 .buffer(view.data().size())
-                .map(new Function<List<Item>, PartialViewState<ViewStateList>>() {
-                    @Override
-                    public PartialViewState<ViewStateList> apply(@NonNull List<Item> items) throws Exception {
-                        Log.d(TAG, "apply() called");
-                        return new ViewStateList.ItemList(items);
-                    }
+                .map((Function<List<Item>, PartialViewState<ViewStateList>>) items -> {
+                    Log.d(TAG, "apply() called");
+                    return new ViewStateList.ItemList(items);
                 })
                 .subscribeOn(io);
 
-        reduce(
-                ViewStateList.builder()
-                        .items(Collections.<Item>emptyList())
-                        .build(),
-                merge(data, Observable.<PartialViewState<ViewStateList>>never())
-        ).subscribe(this);
+        ViewStateList initialState = ViewStateList.builder()
+                .items(Collections.emptyList())
+                .build();
+
+        subscribe(initialState, data);
+    }
+
+    @Override
+    protected void render(@NonNull ViewStateList state, @NonNull ViewList view) {
+        view.update(state);
     }
 }

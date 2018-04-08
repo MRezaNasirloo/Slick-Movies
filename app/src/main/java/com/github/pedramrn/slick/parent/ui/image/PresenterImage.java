@@ -1,6 +1,9 @@
 package com.github.pedramrn.slick.parent.ui.image;
 
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
+
+import android.support.annotation.NonNull;
+
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -10,7 +13,7 @@ import io.reactivex.Scheduler;
 /**
  * A simple Presenter
  */
-public class PresenterImage extends PresenterBase<ViewImage, ViewStateImage> {
+public class PresenterImage extends SlickPresenterUni<ViewImage, ViewStateImage> {
 
     @Inject
     public PresenterImage(
@@ -23,5 +26,10 @@ public class PresenterImage extends PresenterBase<ViewImage, ViewStateImage> {
     @Override
     protected void start(ViewImage view) {
 
+    }
+
+    @Override
+    protected void render(@NonNull ViewStateImage state, @NonNull ViewImage view) {
+        // TODO: 2018-04-09 use this
     }
 }

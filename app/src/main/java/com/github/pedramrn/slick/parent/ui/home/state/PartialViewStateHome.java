@@ -1,12 +1,12 @@
 package com.github.pedramrn.slick.parent.ui.home.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.PresenterHome;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerError;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBannerProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;

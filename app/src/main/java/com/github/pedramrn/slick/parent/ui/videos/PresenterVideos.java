@@ -2,8 +2,6 @@ package com.github.pedramrn.slick.parent.ui.videos;
 
 import android.support.annotation.NonNull;
 
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
@@ -21,6 +19,8 @@ import com.github.pedramrn.slick.parent.ui.videos.state.Videos;
 import com.github.pedramrn.slick.parent.ui.videos.state.VideosProgressive;
 import com.github.pedramrn.slick.parent.ui.videos.state.ViewStateVideos;
 import com.github.pedramrn.slick.parent.util.ScanList;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import io.reactivex.functions.Function;
 /**
  * A simple Presenter
  */
-class PresenterVideos extends PresenterBase<ViewVideos, ViewStateVideos> {
+class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
 
     private final RouterMovieVideosImpl routerMovieVideos;
     private final RouterMovieImpl routerMovie;

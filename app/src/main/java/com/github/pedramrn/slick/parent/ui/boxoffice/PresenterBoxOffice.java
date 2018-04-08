@@ -3,11 +3,9 @@ package com.github.pedramrn.slick.parent.ui.boxoffice;
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.boxoffice.state.ErrorBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.state.MoviesBoxOffice;
 import com.github.pedramrn.slick.parent.ui.boxoffice.state.ViewStateBoxOffice;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
@@ -16,6 +14,8 @@ import com.github.pedramrn.slick.parent.ui.home.MapperMovieMetadataToMovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import io.reactivex.functions.Function;
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-02-28
  */
-public class PresenterBoxOffice extends PresenterBase<ViewBoxOffice, ViewStateBoxOffice> {
+public class PresenterBoxOffice extends SlickPresenterUni<ViewBoxOffice, ViewStateBoxOffice> {
 
     private final RouterBoxOffice routerBoxOffice;
     private final MapperMovieDomainMovie mapper;

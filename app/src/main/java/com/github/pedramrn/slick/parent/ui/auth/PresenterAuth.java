@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterAuth;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImplSlick;
@@ -14,7 +13,8 @@ import com.github.pedramrn.slick.parent.ui.auth.state.SignedIn;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedInLoading;
 import com.github.pedramrn.slick.parent.ui.auth.state.SignedOut;
 import com.github.pedramrn.slick.parent.ui.auth.state.SigningError;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,7 +26,7 @@ import io.reactivex.functions.Function;
 /**
  * A simple Presenter
  */
-public class PresenterAuth extends PresenterBase<ViewAuth, ViewStateAuth> {
+public class PresenterAuth extends SlickPresenterUni<ViewAuth, ViewStateAuth> {
     private static final String TAG = PresenterAuth.class.getSimpleName();
     private final RouterAuth routerAuth;
 

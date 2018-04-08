@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.domain.router.PagedRouter;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
-import com.github.pedramrn.slick.parent.ui.PresenterBase;
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
 import com.github.pedramrn.slick.parent.ui.home.MapperMovieMetadataToMovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.state.CardProgressiveMovie;
@@ -15,6 +13,8 @@ import com.github.pedramrn.slick.parent.ui.home.cardlist.state.Movies;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.util.ScanToMap;
+import com.mrezanasirloo.slick.uni.PartialViewState;
+import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import io.reactivex.functions.Function;
 /**
  * A base Presenter for loading a list of movies progressively
  */
-public class PresenterCardList extends PresenterBase<ViewCardList, ViewStateCardList> {
+public class PresenterCardList extends SlickPresenterUni<ViewCardList, ViewStateCardList> {
     public static final String MOVIES_CARD = "MOVIES_CARD_";
     public static final String POPULAR = "POPULAR";
     public static final String TRENDING = "TRENDING";

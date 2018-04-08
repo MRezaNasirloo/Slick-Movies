@@ -1,10 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist.state;
 
-import com.github.pedramrn.slick.parent.ui.details.PartialViewState;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.ViewStateCardList;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.Map;

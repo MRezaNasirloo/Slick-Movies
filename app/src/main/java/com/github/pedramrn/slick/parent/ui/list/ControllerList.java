@@ -17,13 +17,11 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerListBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
-import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
+import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
 import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
@@ -31,12 +29,10 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.disposables.Disposable;
-
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerList extends ControllerElm<ViewStateList> implements ViewList {
+public class ControllerList extends ControllerBase implements ViewList {
 
     @Inject
     Provider<PresenterList> provider;
@@ -80,12 +76,9 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
         adapter = new GroupAdapter();
         adapterItems = new UpdatingGroup();
 
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item, View view) {
-                if (item instanceof OnItemAction) {
-                    ((OnItemAction) item).action(ControllerList.this, null, adapter.getAdapterPosition(item));
-                }
+        adapter.setOnItemClickListener((item, view) -> {
+            if (item instanceof OnItemAction) {
+                ((OnItemAction) item).action(ControllerList.this, null, adapter.getAdapterPosition(item));
             }
         });
 
@@ -99,32 +92,15 @@ public class ControllerList extends ControllerElm<ViewStateList> implements View
         binding.recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         binding.recyclerView.setAdapter(adapter);
 
-        presenter.updateStream().subscribe(this);
-
         return binding.getRoot();
     }
 
     private static final String TAG = ControllerList.class.getSimpleName();
 
     @Override
-    public void onSubscribe(Disposable d) {
-        add(d);
-    }
-
-    @Override
-    public void onNext(ViewStateList state) {
+    public void update(ViewStateList state) {
         Log.d(TAG, "onNext() called with: state = [" + state + "]");
         adapterItems.update(state.items());
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.d(TAG, "onComplete() called");
     }
 
     public static void start(Router router, String title, ArrayList<ItemViewListParcelable> itemViews) {

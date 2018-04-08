@@ -13,6 +13,7 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.github.pedramrn.slick.parent.util.Utils;
+import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
 import java.util.ArrayList;
