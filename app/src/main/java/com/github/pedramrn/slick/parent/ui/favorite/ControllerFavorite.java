@@ -81,6 +81,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
         adapter.setOnItemClickListener(null);
+        recyclerViewFavorite.setAdapter(null);
         recyclerViewFavorite = null;
         adapter = null;
     }

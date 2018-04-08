@@ -96,7 +96,7 @@ class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
                 .header(new ItemFavoriteProgressive(0))
                 .build();
 
-        reduce(initialState, merge(videos, header, errorDismissed)).subscribe(this);
+        subscribe(initialState, merge(videos, header, errorDismissed));
     }
 
     @Override

@@ -71,12 +71,13 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, OnIt
         movie = getArgs().getParcelable("ITEM");
     }
 
+    ControllerVideosBinding binding;
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         App.componentMain().inject(this);
         PresenterVideos_Slick.bind(this);
-        ControllerVideosBinding binding = ControllerVideosBinding.inflate(inflater, container, false);
+        binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
         adapter = new GroupAdapter();
@@ -115,10 +116,12 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, OnIt
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
-        snackbar = null;
-        adapterProgressive = null;
+        binding.recyclerView.setAdapter(null);
         adapter.setOnItemClickListener(null);
+        adapterProgressive = null;
         adapter = null;
+        binding = null;
+        snackbar = null;
     }
 
     @Override
