@@ -32,6 +32,8 @@ import javax.inject.Provider;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
+import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
+
 /**
  * A simple {@link Controller} subclass.
  */
@@ -44,7 +46,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     private UpdatingGroup updatingFavorite;
     private PublishSubject<Object> triggerRefresh = PublishSubject.create();
     private GroupAdapter adapter;
-    private RecyclerView recyclerViewFavorite;
+    private RecyclerView rc;
 
 
     @NonNull
@@ -69,20 +71,22 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         updatingFavorite = new UpdatingGroup();
         adapter.add(updatingFavorite);
 
-        recyclerViewFavorite = binding.recyclerViewFavorite;
-        binding.recyclerViewFavorite.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerViewFavorite.setAdapter(adapter);
-        binding.recyclerViewFavorite.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_margin_long)));
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
+        rc = binding.recyclerViewFavorite;
+        rc.setLayoutManager(new LinearLayoutManager(getApplicationContext(), VERTICAL, false));
+        rc.setAdapter(adapter);
+        rc.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen
+                .item_margin_long)));
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item)
+                .action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
         return binding.getRoot();
     }
 
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
+        if (!isBeingDestroyed()) { rc.setAdapter(null); }
         adapter.setOnItemClickListener(null);
-        recyclerViewFavorite.setAdapter(null);
-        recyclerViewFavorite = null;
+        rc = null;
         adapter = null;
     }
 

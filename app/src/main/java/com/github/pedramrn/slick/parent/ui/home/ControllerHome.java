@@ -39,7 +39,7 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-20
+ * Created on: 2017-06-20
  */
 
 public class ControllerHome extends ControllerBase implements ViewHome {
@@ -158,13 +158,13 @@ public class ControllerHome extends ControllerBase implements ViewHome {
             recyclerViewCardListTrending.onDestroy();
             searchView.onDestroy();
         }
-        recyclerViewCardListPopular = null;
-        recyclerViewCardListTrending = null;
-        recyclerViewUpcoming.setAdapter(null);
-        recyclerViewUpcoming = null;
+        else { recyclerViewUpcoming.setAdapter(null); }
         adapterUpcoming.setOnItemClickListener(null);
-        adapterUpcoming = null;
+        recyclerViewCardListTrending = null;
+        recyclerViewCardListPopular = null;
+        recyclerViewUpcoming = null;
         progressiveUpcoming = null;
+        adapterUpcoming = null;
         searchView = null;
     }
 
@@ -189,6 +189,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     }
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerHome.this, null, adapter.getAdapterPosition(item)));
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerHome.this, null, adapter
+                .getAdapterPosition(item)));
     }
 }

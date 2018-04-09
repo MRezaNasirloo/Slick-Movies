@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ public class ControllerList extends ControllerBase implements ViewList {
     private final String title;
     private GroupAdapter adapter;
     private UpdatingGroup adapterItems;
+    private RecyclerView recyclerView;
 
     @Override
     public ArrayList<ItemViewListParcelable> data() {
@@ -87,10 +89,11 @@ public class ControllerList extends ControllerBase implements ViewList {
 
         adapter.add(adapterItems);
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        binding.recyclerView.getItemAnimator().setMoveDuration(0);
-        binding.recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        binding.recyclerView.setAdapter(adapter);
+        recyclerView = binding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.getItemAnimator().setMoveDuration(0);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        recyclerView.setAdapter(adapter);
 
         return binding.getRoot();
     }
@@ -111,8 +114,11 @@ public class ControllerList extends ControllerBase implements ViewList {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        adapter.setOnItemClickListener(null);
-        adapter.clear();
         super.onDestroyView(view);
+        adapter.setOnItemClickListener(null);
+        recyclerView.setAdapter(null);
+        recyclerView = null;
+        adapterItems = null;
+        adapter = null;
     }
 }

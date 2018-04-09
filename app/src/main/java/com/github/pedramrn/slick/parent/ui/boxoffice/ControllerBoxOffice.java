@@ -71,8 +71,8 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
+        if (!isBeingDestroyed()) { recyclerView.setAdapter(null); }
         adapter.setOnItemClickListener(null);
-        recyclerView.setAdapter(null);
         recyclerView = null;
         updatingGroup = null;
         adapter = null;

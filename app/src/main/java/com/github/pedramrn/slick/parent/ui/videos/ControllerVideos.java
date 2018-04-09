@@ -72,6 +72,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, OnIt
     }
 
     ControllerVideosBinding binding;
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -84,8 +85,10 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, OnIt
         adapterProgressive = new UpdatingGroup();
         adapter.add(adapterProgressive);
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        binding.recyclerView.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen.item_decoration_margin)));
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL,
+                false));
+        binding.recyclerView.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen
+                .item_decoration_margin)));
         binding.recyclerView.getItemAnimator().setChangeDuration(0);
         binding.recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
