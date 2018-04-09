@@ -66,3 +66,24 @@
 -dontwarn com.crashlytics.**
 
 -dontwarn org.bouncycastle.**
+
+# AutoValueGson
+# Retain generated classes that end in the suffix
+-keepnames class **_GsonTypeAdapter
+
+# Prevent obfuscation of types which use @GenerateTypeAdapter since the simple name
+# is used to reflectively look up the generated adapter.
+-keepnames @com.ryanharter.auto.value.gson.GenerateTypeAdapter class *
+-dontwarn com.ryanharter.auto.value.gson.GenerateTypeAdapter
+-dontwarn com.google.gson.TypeAdapterFactory
+
+# Okhttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# Dagger
+-dontwarn com.google.errorprone.annotations.*
