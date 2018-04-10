@@ -18,6 +18,7 @@ public interface MovieBasic extends Parcelable, MovieMetadata {
     @Nullable
     String imdbId();
 
+    @Nullable
     String title();
 
     @Nullable
@@ -58,6 +59,7 @@ public interface MovieBasic extends Parcelable, MovieMetadata {
     @Nullable
     String thumbnailBackdrop();
 
+    @Nullable
     String runtimePretty();
 
     @Nullable

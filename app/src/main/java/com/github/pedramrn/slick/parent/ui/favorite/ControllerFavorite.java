@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.favorite;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
@@ -37,7 +39,7 @@ import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerFavorite extends ControllerBase implements ViewFavorite, Navigator, Retryable {
+public class ControllerFavorite extends ControllerBase implements ViewFavorite, Navigator, Retryable, OnItemClickListener {
 
     @Inject
     Provider<PresenterFavorite> provider;
@@ -76,8 +78,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         rc.setAdapter(adapter);
         rc.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen
                 .item_margin_long)));
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item)
-                .action(ControllerFavorite.this, null, adapter.getAdapterPosition(item)));
+        adapter.setOnItemClickListener(this);
         return binding.getRoot();
     }
 
@@ -88,6 +89,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         adapter.setOnItemClickListener(null);
         rc = null;
         adapter = null;
+        Log.d(TAG, "onDestroyView() called");
     }
 
     @Override
@@ -103,5 +105,18 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     @Override
     public void onRetry(String tag) {
         triggerRefresh.onNext(tag);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
+    private static final String TAG = ControllerFavorite.class.getSimpleName();
+
+    @Override
+    public void onItemClick(Item item, View view) {
+        ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item));
     }
 }

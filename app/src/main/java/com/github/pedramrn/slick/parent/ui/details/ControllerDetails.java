@@ -37,6 +37,7 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemSpace;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
@@ -56,7 +57,6 @@ import com.xwray.groupie.UpdatingGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -68,7 +68,7 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-04-28
+ * Created on: 2017-04-28
  */
 
 public class ControllerDetails extends ControllerElm<ViewStateDetails> implements ViewDetails, MovieProvider {
@@ -123,9 +123,18 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private GroupAdapter adapterSimilar;
     private GroupAdapter adapterBackdrops;
 
-    public ControllerDetails(@NonNull MovieBasic movie, String transitionName) {
+    public ControllerDetails(@NonNull MovieBasic movie, @Nullable String transitionName) {
         this(new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movie)
+                .putString("IMDB_ID", movie.imdbId())
+                .putString("TRANSITION_NAME", transitionName)
+                .build());
+    }
+
+    public ControllerDetails(@NonNull String imdbId, @Nullable String transitionName) {
+        this(new BundleBuilder(new Bundle())
+                .putParcelable("ITEM", null)
+                .putString("IMDB_ID", imdbId)
                 .putString("TRANSITION_NAME", transitionName)
                 .build());
     }
@@ -134,11 +143,26 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     public ControllerDetails(@Nullable Bundle args) {
         super(args);
         transitionName = getArgs().getString("TRANSITION_NAME");
+        String imdbId = getArgs().getString("IMDB_ID");
         movie = getArgs().getParcelable("ITEM");
+        if (movie == null) { // // FIXME: 2018-04-09 this logic should be in the presenter
+            movie = MovieSmall.builder()
+                    .imdbId(imdbId)
+                    .id(-1)
+                    .uniqueId(-1)
+                    .build();
+        }
     }
 
     public static void start(@NonNull Router router, @NonNull MovieBasic movie, String transitionName) {
         router.pushController(RouterTransaction.with(new ControllerDetails(movie, transitionName))
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler())
+        );
+    }
+
+    public static void start(@NonNull Router router, @NonNull String imdbId, String transitionName) {
+        router.pushController(RouterTransaction.with(new ControllerDetails(imdbId, transitionName))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler())
         );
@@ -153,15 +177,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
                 .addCallback(callback)
                 .setDuration(60_000)
         ;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onDetach(@NonNull View view) {
     }
 
     @NonNull
@@ -267,7 +282,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public void render(ViewStateDetails state) {
         this.state = state;
-        long before = System.currentTimeMillis();
+        // long before = System.currentTimeMillis();
 
         movie = state.movieBasic();
 
@@ -293,13 +308,14 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         renderError(state.errorFavorite());
 
-        long delay = System.currentTimeMillis() - before;
-        int sizeCast = state.casts().size();
-        int sizeBackdrops = state.backdrops().size();
-        int sizeSimilar = state.similar().size();
+        // long delay = System.currentTimeMillis() - before;
+        // int sizeCast = state.casts().size();
+        // int sizeBackdrops = state.backdrops().size();
+        // int sizeSimilar = state.similar().size();
 
-        Log.e(TAG, String.format(Locale.ENGLISH, "casts: %d, backdrops: %d, similar: %d", sizeCast, sizeBackdrops, sizeSimilar));
-        Log.e(TAG, String.format(Locale.ENGLISH, "Updating the list cost you %sms", delay));
+        // Log.e(TAG, String.format(Locale.ENGLISH, "casts: %d, backdrops: %d, similar: %d", sizeCast, sizeBackdrops,
+        // sizeSimilar));
+        // Log.e(TAG, String.format(Locale.ENGLISH, "Updating the list cost you %sms", delay));
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomain
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterCommentsImpl;
+import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsIMDBImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
@@ -39,13 +40,14 @@ import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-15
+ * Created on: 2017-06-15
  */
 
 public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDetails> {
     private static final String TAG = PresenterDetails.class.getSimpleName();
 
-    private final RouterMovieDetails routerMovieDetails;
+    private RouterMovieDetails routerMovieDetails;
+    private final RouterMovieDetails routerMovieDetailsIMDB;
     private final RouterSimilar routerSimilar;
     private final RouterComments routerComments;
     private final RouterFavorite routerFavorite;
@@ -62,7 +64,8 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
     @Inject
     public PresenterDetails(
-            RouterMovieDetailsImpl routerMovieDetails,
+            RouterMovieDetailsImpl routerMovieDetailsTMDB,
+            RouterMovieDetailsIMDBImpl routerMovieDetailsIMDB,
             RouterSimilarImpl routerSimilar,
             RouterCommentsImpl routerComments,
             RouterAuthImpl routerAuth,
@@ -74,7 +77,8 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
             @Named("main") Scheduler main
     ) {
         super(main, io);
-        this.routerMovieDetails = routerMovieDetails;
+        this.routerMovieDetailsIMDB = routerMovieDetailsIMDB;
+        this.routerMovieDetails = routerMovieDetailsTMDB;
         this.routerSimilar = routerSimilar;
         this.routerComments = routerComments;
         this.routerAuth = routerAuth;
@@ -88,7 +92,14 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
     @Override
     protected void start(ViewDetails view) {
         MovieBasic movieBasic = view.getMovie();
-        final Integer movieId = movieBasic.id();
+        final String movieId;
+        if (movieBasic.id() == -1) {
+            movieId = movieBasic.imdbId();
+            routerMovieDetails = this.routerMovieDetailsIMDB;
+        }
+        else {
+            movieId = movieBasic.id().toString();
+        }
 
         Observable<Object> triggerRetry = command(ViewDetails::onRetryAll).startWith(1);
 
@@ -102,6 +113,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<PartialViewState<ViewStateDetails>> backdrops = triggerRetry.flatMap(o -> movieFull
+                .filter(movie1 -> movie1.images() != null && !movie1.images().backdrops().isEmpty())
                 .take(1)
                 .concatMap(movie1 -> Observable.fromIterable(movie1.images().backdrops()))
                 .map(new MapProgressive())
@@ -113,6 +125,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<PartialViewState<ViewStateDetails>> casts = triggerRetry.flatMap(o -> movieFull
+                .filter(movie1 -> movie1.casts() != null && !movie1.casts().isEmpty())
                 .take(1)
                 .concatMap(movie13 -> Observable.fromIterable(movie13.casts()).take(6))
                 .map(new MapProgressive())
@@ -125,42 +138,45 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
 
         Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull
+                .filter(movie1 -> movie1.imdbId() != null)
                 .take(1)
-                .flatMap(movie12 -> routerComments.comments(movie12.imdbId(), 1, 15).subscribeOn(io))
-                .concatMap(comments1 -> Observable.fromIterable(comments1.data()))
-                .map(mapperComment)
-                .map(new MapProgressive())
-                .cast(ItemView.class)
-                .map(itemView -> itemView.render(COMMENTS))
-                .buffer(20)
-                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Comments::new)
-                .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(@NonNull Boolean hadError) throws Exception {
-                        return new PartialViewStateDetails.CommentsLoaded(hadError);
-                    }
-                })
-                .onErrorReturn(PartialViewStateDetails.Error::new)
-                .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS)));
+                .flatMap(movie12 -> routerComments.comments(movie12.imdbId(), 1, 15).subscribeOn(io)
+                        .concatMap(comments1 -> Observable.fromIterable(comments1.data()))
+                        .map(mapperComment)
+                        .map(new MapProgressive())
+                        .cast(ItemView.class)
+                        .map(itemView -> itemView.render(COMMENTS))
+                        .buffer(20)
+                        .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Comments::new)
+                        .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
+                            @Override
+                            public PartialViewState<ViewStateDetails> apply(@NonNull Boolean hadError) throws Exception {
+                                return new PartialViewStateDetails.CommentsLoaded(hadError);
+                            }
+                        })
+                        .onErrorReturn(PartialViewStateDetails.Error::new)
+                        .startWith(new PartialViewStateDetails.CommentsProgressive(2, COMMENTS))));
 
 
-        Observable<PartialViewState<ViewStateDetails>> similar = triggerRetry.flatMap(o -> routerSimilar.similar(movieId, 1)
-                .subscribeOn(io)
-                .concatMap(Observable::fromIterable)
-                .map(mapperSmall)
-                .map(new MapProgressive())
-                .cast(ItemView.class)
-                .map(itemCard -> itemCard.render(SIMILAR))
-                .buffer(20)
-                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Similar::new)
-                .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
-                    @Override
-                    public PartialViewState<ViewStateDetails> apply(Boolean hadError) throws Exception {
-                        return new PartialViewStateDetails.SimilarLoaded(hadError);
-                    }
-                })
-                .startWith(new PartialViewStateDetails.SimilarProgressive(5, SIMILAR))
-                .onErrorReturn(PartialViewStateDetails.Error::new));
+        Observable<PartialViewState<ViewStateDetails>> similar = triggerRetry.flatMap(o -> movieFull
+                .take(1)
+                .flatMap(movieDomain -> routerSimilar.similar(movieDomain.id(), 1)
+                        .subscribeOn(io)
+                        .concatMap(Observable::fromIterable)
+                        .map(mapperSmall)
+                        .map(new MapProgressive())
+                        .cast(ItemView.class)
+                        .map(itemCard -> itemCard.render(SIMILAR))
+                        .buffer(20)
+                        .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) PartialViewStateDetails.Similar::new)
+                        .lift(new OnCompleteReturn<PartialViewState<ViewStateDetails>>() {
+                            @Override
+                            public PartialViewState<ViewStateDetails> apply(Boolean hadError) throws Exception {
+                                return new PartialViewStateDetails.SimilarLoaded(hadError);
+                            }
+                        })
+                        .startWith(new PartialViewStateDetails.SimilarProgressive(5, SIMILAR))
+                        .onErrorReturn(PartialViewStateDetails.Error::new)));
 
         Observable<Boolean> commandFavorite = command(ViewDetails::commandFavorite);
 
@@ -168,7 +184,8 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
         Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite
                 .flatMap(add -> (add ? routerFavorite.add(favoriteDomain) : routerFavorite.remove(favoriteDomain)).subscribeOn(io)
-                        .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
+                        .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails
+                                .NoOp())
                         .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<PartialViewState<ViewStateDetails>> favoriteUpdate = commandFavorite
@@ -176,8 +193,13 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .flatMap(ignored -> routerAuth.firebaseUserSignInStateStream())
                 .filter(signedIn -> signedIn)
                 .take(1)
-                .flatMap(ignored -> movieFull.flatMap(imdbId -> routerFavorite.add(favoriteDomain.toBuilder().imdbId(imdbId.imdbId()).build()))
-                        .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails.NoOp())
+                .flatMap(ignored -> movieFull.flatMap(movieDomain -> routerFavorite.add(favoriteDomain.toBuilder()
+                        .imdbId(movieDomain.imdbId())
+                        .tmdb(movieDomain.id())
+                        .name(movieDomain.title())
+                        .build()))
+                        .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails
+                                .NoOp())
                         .onErrorReturn(PartialViewStateDetails.Error::new));
 
 
@@ -222,9 +244,10 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
         Boolean favorite = state.isFavorite();
         if (favorite != null && favorite) {
             view.favorite();
-        } else {
+        }
+        else {
             view.notFavorite();
         }
-        if (state.error() != null) view.error(ErrorHandler.handle(state.error()));
+        if (state.error() != null) { view.error(ErrorHandler.handle(state.error())); }
     }
 }

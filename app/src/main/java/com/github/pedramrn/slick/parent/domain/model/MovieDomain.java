@@ -20,6 +20,7 @@ public abstract class MovieDomain implements MovieBasicDomain {
 
     public abstract String title();
 
+    @Nullable
     public abstract Boolean adult();
 
     @Nullable
@@ -71,6 +72,7 @@ public abstract class MovieDomain implements MovieBasicDomain {
     @Nullable
     public abstract String tagline();
 
+    @Nullable
     public abstract Boolean video();
 
     public abstract Float voteAverageTmdb();
@@ -88,6 +90,7 @@ public abstract class MovieDomain implements MovieBasicDomain {
 
     public abstract List<CastDomain> casts();
 
+    @Nullable
     public abstract ImageDomain images();
 
     public abstract List<VideoDomain> videos();

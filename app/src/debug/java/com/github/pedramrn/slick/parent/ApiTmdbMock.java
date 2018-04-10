@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieFind;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonPageTmdb;
@@ -13,8 +14,6 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Predicate;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.mock.NetworkBehavior;
@@ -54,12 +53,7 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
     @Override
     public Observable<MovieTmdb> movie(@Path("movie_id") final Integer id) {
         MovieTraktMetadata metadata = Observable.fromIterable(trendingList)
-                .filter(new Predicate<MovieTraktPageMetadata>() {
-                    @Override
-                    public boolean test(@NonNull MovieTraktPageMetadata movieTraktPageMetadata) throws Exception {
-                        return id.equals(movieTraktPageMetadata.movie().ids().tmdb());
-                    }
-                })
+                .filter(movieTraktPageMetadata -> id.equals(movieTraktPageMetadata.movie().ids().tmdb()))
                 .blockingFirst(trendingList.get(0)).movie();
         MovieTmdb movieTmdb = popularList.get(0)
                 .toBuilder()
@@ -67,12 +61,10 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
                 .title(metadata.title())
                 .releaseDate(metadata.year() + "-01-01")
                 .build();
-        return Observable.fromIterable(popularList).filter(new Predicate<MovieTmdb>() {
-            @Override
-            public boolean test(@NonNull MovieTmdb movieTmdb) throws Exception {
-                return movieTmdb.id().equals(id);
-            }
-        }).first(movieTmdb).toObservable();
+        return Observable.fromIterable(popularList)
+                .filter(movieTmdb1 -> movieTmdb1.id().equals(id))
+                .first(movieTmdb)
+                .toObservable();
     }
 
     @Override
@@ -119,6 +111,16 @@ public class ApiTmdbMock extends ApiMockBase<ApiTmdb> implements ApiTmdb {
     public Observable<PersonTmdb> personDetailsWithCredits(@Path("id") int id) {
         return Observable.never();
     }
+
+    @Override
+    public Observable<MovieFind> findMovie(String imdbId) {
+        return Observable.never();
+    }
+
+    /*@Override
+    public Observable<List<PersonTmdb>> findPerson(String imdbId) {
+        return Observable.never();
+    }*/
 
     @Override
     protected Class<ApiTmdb> getApiClassType() {

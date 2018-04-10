@@ -26,8 +26,13 @@ public class RouterMovieDetailsVideoImpl implements RouterMovieDetails {
     }
 
     @Override
-    public Observable<MovieDomain> get(final Integer tmdbId) {
-        return apiTmdb.withVideos(tmdbId).map(mapperMovie);
+    public Observable<MovieDomain> get(final String movieId) {
+        return get(Integer.valueOf(movieId));
+    }
+
+    @Override
+    public Observable<MovieDomain> get(Integer movieId) {
+        return apiTmdb.withVideos(movieId).map(mapperMovie);
     }
 
 }

@@ -17,6 +17,7 @@ public abstract class FavoriteDomain {
 
     public abstract Integer tmdb();
 
+    @Nullable
     public abstract String name();
 
     public abstract String type();

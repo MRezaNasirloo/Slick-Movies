@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
@@ -16,17 +15,17 @@ import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 
 import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.BOX_OFFICE;
 import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.UPCOMING;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-09
+ * Created on: 2017-06-09
  */
 
 @AutoValue
@@ -268,47 +267,35 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     protected static Movie map(final MovieDomain md) {//casts
         List<CastDomain> castDomains = md.casts();
         int size = castDomains.size();
-        List<Cast> casts = Observable.fromIterable(castDomains).map(new Function<CastDomain, Cast>() {
-            @Override
-            public Cast apply(@NonNull CastDomain cd) throws Exception {
-                return Cast.create(
-                        cd.id(),
-                        cd.castId(),
-                        cd.creditId(),
-                        cd.name(),
-                        cd.profilePath(),
-                        cd.character(),
-                        cd.gender(),
-                        cd.order()
-                );
-            }
-        }).toList(size == 0 ? 1 : size).blockingGet();
+        List<Cast> casts = Observable.fromIterable(castDomains).map(cd -> Cast.create(
+                cd.id(),
+                cd.castId(),
+                cd.creditId(),
+                cd.name(),
+                cd.profilePath(),
+                cd.character(),
+                cd.gender(),
+                cd.order()
+        )).toList(size == 0 ? 1 : size).blockingGet();
 
         //backdrops
-        final List<String> backdropsDomain = md.images().backdrops();
+        final List<String> backdropsDomain = md.images() != null ? md.images().backdrops() : Collections.emptyList();
         size = backdropsDomain.size();
         final List<Backdrop> backdrops = Observable.fromIterable(backdropsDomain)
                 .distinct()
-                .map(new Function<String, Backdrop>() {
-                    @Override
-                    public Backdrop apply(@NonNull String s) throws Exception {
-                        return Backdrop.create(-1, s.hashCode(), backdropsDomain, md.title(), s);
-                    }
-                }).toList(size == 0 ? 1 : size).blockingGet();
+                .map(s -> Backdrop.create(-1, s.hashCode(), backdropsDomain, md.title(), s))
+                .toList(size == 0 ? 1 : size).blockingGet();
 
         //videos
         List<VideoDomain> videosDomain = md.videos();
         size = videosDomain.size();
-        final List<Video> videos = Observable.fromIterable(videosDomain).map(new Function<VideoDomain, Video>() {
-            @Override
-            public Video apply(@NonNull VideoDomain vd) throws Exception {
-                return Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name());
-            }
-        }).toList(size == 0 ? 1 : size).blockingGet();
+        final List<Video> videos = Observable.fromIterable(videosDomain)
+                .map(vd -> Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name()))
+                .toList(size == 0 ? 1 : size).blockingGet();
 
 
         //image
-        Image image = Image.create(backdrops, md.images().posters());
+        Image image = Image.create(backdrops, md.images() != null ? md.images().posters() : Collections.emptyList());
 
         return Movie.create(
                 md.id(),

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.github.pedramrn.slick.parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="com.github.pedramrn.slick.parent"
     >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".App"
@@ -18,12 +18,27 @@
         >
         <activity
             android:name=".ui.ActivityMain"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+            <tools:validation testUrl="http://www.imdb.com/title/tt1825683" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.imdb.com"
+                    android:pathPrefix="/title/"
+                    android:scheme="http"
+                    />
             </intent-filter>
         </activity>
         <meta-data

@@ -1,7 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.main;
 
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
+import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
@@ -26,29 +30,29 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.disposables.CompositeDisposable;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
 import static com.github.pedramrn.slick.parent.App.componentMain;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-02-13
+ * Created on: 2017-02-13
  */
 
-public class ControllerMain extends Controller implements ViewMain, BottomBarHost, BottomNavigation.OnMenuItemSelectionListener {
+public class ControllerMain extends Controller implements ViewMain, BottomBarHost,
+        BottomNavigation.OnMenuItemSelectionListener {
 
     private static final String TAG = ControllerMain.class.getSimpleName();
     @Inject
     Provider<PresenterMain> provider;
     @Presenter
     PresenterMain presenter;
-    CompositeDisposable disposable = new CompositeDisposable();
     private ControllerMainBinding binding;
     private final RouterPagerAdapter routerPagerAdapter;
     private final int PAGE_COUNT = 3;
 
-    public ControllerMain() {
+    protected ControllerMain(@Nullable Bundle args) {
+        super(args);
         routerPagerAdapter = new RouterPagerAdapter(this) {
 
             @Override
@@ -62,11 +66,10 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                 if (!router.hasRootController()) {
                     switch (position) {
                         case 0:
-                            router.setRoot(RouterTransaction.with(new ControllerHome()).tag("ControllerHome"));
+                            router.setRoot(RouterTransaction.with(new ControllerHome(args)));
                             break;
                         case 1:
                             router.setRoot(RouterTransaction.with(new ControllerBoxOffice()));
-                            // router.setRoot(RouterTransaction.with(new ControllerAuth()));
                             break;
                         case 2:
                             router.setRoot(RouterTransaction.with(new ControllerFavorite()));
@@ -76,6 +79,13 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
             }
         };
         routerPagerAdapter.setMaxPagesToStateSave(3);
+    }
+
+    public ControllerMain(Uri data) {
+        this(new BundleBuilder(new Bundle())
+                .putParcelable("URI", data)
+                .build()
+        );
     }
 
     @NonNull
@@ -93,12 +103,14 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     @Override
     protected void onDestroyView(@NonNull View view) {
         binding.navigation.setOnMenuItemClickListener(null);
+        binding = null;
         super.onDestroyView(view);
-
+        Log.d(TAG, "onDestroyView() called");
     }
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy() called");
         super.onDestroy();
         App.disposeComponentMain();
     }

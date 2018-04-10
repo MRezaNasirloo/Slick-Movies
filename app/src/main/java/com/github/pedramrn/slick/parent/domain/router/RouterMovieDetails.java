@@ -11,5 +11,7 @@ import io.reactivex.Observable;
 
 public interface RouterMovieDetails {
 
-    Observable<MovieDomain> get(Integer tmdbId);
+    Observable<MovieDomain> get(String movieId);
+
+    Observable<MovieDomain> get(Integer movieId);
 }

@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.datasource.network;
 
+import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieFind;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MoviePageTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.MovieTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.PersonPageTmdb;
@@ -50,5 +51,11 @@ public interface ApiTmdb {
 
     @GET("person/{id}?append_to_response=movie_credits,tv_credits")
     Observable<PersonTmdb> personDetailsWithCredits(@Path("id") int id);
+
+    @GET("find/{imdb_id}?external_source=imdb_id")
+    Observable<MovieFind> findMovie(@Path("imdb_id") String imdbId);
+
+    // @GET("find/{imdb_id}?external_source=imdb_id")
+    // Observable<List<PersonTmdb>> findPerson(@Path("imdb_id") String imdbId);
 
 }
