@@ -249,6 +249,8 @@ dependencies {
         releaseImplementation 'com.github.markzhai:blockcanary-no-op:1.5.0'
         testImplementation 'com.github.markzhai:blockcanary-no-op:1.5.0'*/
 
+    implementation 'com.orhanobut:logger:2.2.0'
+
     //views
     implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.1-rc1'
 

@@ -14,6 +14,8 @@ import com.github.pedramrn.slick.parent.di.ModuleNetwork;
 import com.github.pedramrn.slick.parent.di.ModuleScheduler;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
 import com.github.pedramrn.slick.parent.ui.main.di.MainModule;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.tspoon.traceur.Traceur;
@@ -43,6 +45,7 @@ public class App extends Application {
     public void onCreate() {
         final long before = System.currentTimeMillis();
         super.onCreate();
+        Logger.addLogAdapter(new AndroidLogAdapter());
         // IMMLeaks.fixFocusedViewLeak(this);
         app = ((App) getApplicationContext());
         componentApp = prepareDi().build();
