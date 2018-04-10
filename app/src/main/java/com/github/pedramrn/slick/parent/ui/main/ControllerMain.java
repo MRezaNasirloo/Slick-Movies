@@ -113,6 +113,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
         Log.d(TAG, "onDestroy() called");
         super.onDestroy();
         App.disposeComponentMain();
+        App.refWatcher(getActivity()).watch(this);
     }
 
     @Override
@@ -165,6 +166,5 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
         // if (navigation.isExpanded()) {
         navigation.setExpanded(false, true);
         // }
-
     }
 }

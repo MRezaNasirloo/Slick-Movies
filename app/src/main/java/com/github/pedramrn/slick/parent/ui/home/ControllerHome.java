@@ -189,7 +189,8 @@ public class ControllerHome extends ControllerBase implements ViewHome {
             recyclerViewCardListTrending.onDestroy();
             searchView.onDestroy();
         }
-        else { recyclerViewUpcoming.setAdapter(null); }
+        // else { recyclerViewUpcoming.setAdapter(null); }
+        recyclerViewUpcoming.setAdapter(null);
         adapterUpcoming.setOnItemClickListener(null);
         recyclerViewCardListTrending = null;
         recyclerViewCardListPopular = null;
