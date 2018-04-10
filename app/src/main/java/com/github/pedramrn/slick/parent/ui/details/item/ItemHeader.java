@@ -35,7 +35,7 @@ import io.reactivex.functions.Consumer;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-16
+ * Created on: 2017-06-16
  */
 
 public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Object> {
@@ -57,7 +57,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         this.movie = movie;
         this.transitionName = transitionName;
 
-        String voteAveTmdb = String.valueOf(movie.voteAverageTmdb());
+        String voteAveTmdb = String.valueOf(movie.voteAverageTmdb() == null ? "" : movie.voteAverageTmdb());
         voteAveSpannedTmdb = new SpannableStringBuilder(voteAveTmdb).append("/10", sizeSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         Float voteAverageTrakt = movie.voteAverageTrakt();
@@ -88,9 +88,8 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         int size = resources.getDimensionPixelSize(R.dimen.size_logo_details);
         long before = System.currentTimeMillis();
         Log.d(TAG, "bind: called ");
-        viewBinding.textViewTitle.setText(movie.title());
         // TODO: 2017-06-18 use recycler view for this
-        viewBinding.textViewGenre.setText(genres);
+        // viewBinding.textViewGenre.setText(genres);
         viewBinding.textViewRelease.setText(releaseDate);
 
         Drawable logoTmdb = ResourcesCompat.getDrawable(resources, R.drawable.ic_tmdb_logo_stacked_black, null);
@@ -99,7 +98,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         logoTrakt.setBounds(0, 0, size, size);
         viewBinding.textViewScoreTmdb.setCompoundDrawablesRelative(logoTmdb, null, null, null);
         viewBinding.textViewScoreTrakt.setCompoundDrawablesRelative(logoTrakt, null, null, null);
-        viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
+        // viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
         viewBinding.imageViewIcon.load(movie.thumbnailPoster());
         Disposable disposable = RxView.clicks(viewBinding.imageViewIcon)
@@ -116,6 +115,41 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
             viewBinding.textViewCertification.setText("...");
             viewBinding.textViewScoreTrakt.setText("     ");
             viewBinding.textViewScoreTrakt.setBackgroundResource(R.drawable.line);
+        } if (movie.voteAverageTmdb() != null) {
+            viewBinding.textViewScoreTmdb.setBackground(null);
+            viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
+        } else {
+            viewBinding.textViewScoreTmdb.setText("     ");
+            viewBinding.textViewScoreTmdb.setBackgroundResource(R.drawable.line);
+        }
+        if (movie.title() != null) {
+            viewBinding.textViewTitle.setBackground(null);
+            viewBinding.textViewTitle.setText(movie.title());
+        } else {
+            viewBinding.textViewTitle.setBackgroundResource(R.drawable.line);
+            viewBinding.textViewTitle.setText("      ");
+        }
+        if (movie.genres() != null && !movie.genres().isEmpty()) {
+            viewBinding.textViewGenre.setBackground(null);
+            viewBinding.textViewGenre.setText(genres);
+        } else {
+            viewBinding.textViewGenre.setText("     ");
+            viewBinding.textViewGenre.setBackgroundResource(R.drawable.line);
+
+        }
+        if (movie.releaseDate() != null) {
+            viewBinding.textViewRelease.setBackground(null);
+            viewBinding.textViewRelease.setText(releaseDate);
+        } else {
+            viewBinding.textViewRelease.setBackgroundResource(R.drawable.line);
+            viewBinding.textViewRelease.setText("   ");
+        }
+        if (movie.runtimePretty() != null) {
+            viewBinding.textViewRuntime.setBackground(null);
+            viewBinding.textViewRuntime.setText(movie.runtimePretty());
+        } else {
+            viewBinding.textViewRuntime.setBackgroundResource(R.drawable.line);
+            viewBinding.textViewRuntime.setText("   ");
         }
         long took = System.currentTimeMillis() - before;
         Log.e(TAG, "bind: took " + took + " ms");
@@ -138,10 +172,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     }
 
     @Override
-    public void accept(Object o) throws Exception {
+    public void accept(Object o) {
         if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty()) {
             Controller controller = this.controller.get();
-            if (controller == null) return;
+            if (controller == null) { return; }
             ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
                     ((ArrayList<String>) ((Movie) movie).images().posters()));
         }
