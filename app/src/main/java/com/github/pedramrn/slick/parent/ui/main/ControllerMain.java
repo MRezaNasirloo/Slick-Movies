@@ -51,7 +51,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     private final RouterPagerAdapter routerPagerAdapter;
     private final int PAGE_COUNT = 3;
 
-    protected ControllerMain(@Nullable Bundle args) {
+    @SuppressWarnings("WeakerAccess")
+    public ControllerMain(@Nullable Bundle args) {
         super(args);
         routerPagerAdapter = new RouterPagerAdapter(this) {
 
