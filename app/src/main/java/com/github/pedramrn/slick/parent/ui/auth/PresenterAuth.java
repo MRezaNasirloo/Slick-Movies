@@ -64,7 +64,7 @@ public class PresenterAuth extends SlickPresenterUni<ViewAuth, ViewStateAuth> {
                 .flatMap(o -> routerAuth.firebaseUserSignInStateStream()
                         .flatMap(ignored -> routerAuth.currentFirebaseUser()
                                 .map((Function<UserAppDomain, PartialViewState<ViewStateAuth>>) uad -> new SignedIn(UserApp.create(uad)))
-                                .doOnError(Throwable::printStackTrace)
+                                // .doOnError(Throwable::printStackTrace)
                                 .onErrorReturn(throwable -> new SignedOut()))
                 )
                 .subscribeOn(io);

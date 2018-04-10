@@ -101,7 +101,6 @@ public class PresenterCardList extends SlickPresenterUni<ViewCardList, ViewState
 
     @Override
     protected void render(@NonNull ViewStateCardList state, @NonNull ViewCardList view) {
-        System.out.println("PresenterCardList.render " + state.toString());
         this.state = state;
         view.updateList(Arrays.asList(state.movies().values().toArray(new Item[state.movies().size()])));
         view.loading(state.isLoading());

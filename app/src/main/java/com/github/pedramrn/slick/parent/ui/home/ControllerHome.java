@@ -182,6 +182,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
+        Log.d(TAG, "onDestroyView() called");
         super.onDestroyView(view);
         if (isBeingDestroyed()) {
             recyclerViewCardListPopular.onDestroy();
@@ -197,7 +198,6 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         progressiveUpcoming = null;
         adapterUpcoming = null;
         searchView = null;
-        Log.d(TAG, "onDestroyView() called");
     }
 
     @Override
