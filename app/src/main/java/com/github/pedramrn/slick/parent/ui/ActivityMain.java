@@ -38,7 +38,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
         if (!router.hasRootController()) {
             router.setRoot(RouterTransaction.with(new ControllerMain(new Uri.Builder().build())));
         }
-        handleIntent(getIntent());
+        onNewIntent(getIntent());
         App.componentMain().inject(this);
         getLifecycle().addObserver(googleAuth);
     }
@@ -55,8 +55,8 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "onNewIntent() called with: intent = [" + intent + "]");
         super.onNewIntent(intent);
-        setIntent(intent);
         handleIntent(intent);
+        setIntent(null);
     }
 
     @Override
