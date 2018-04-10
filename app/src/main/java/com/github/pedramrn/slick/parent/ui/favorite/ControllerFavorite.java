@@ -85,7 +85,8 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
-        if (!isBeingDestroyed()) { rc.setAdapter(null); }
+        // if (!isBeingDestroyed()) { rc.setAdapter(null); }
+        rc.setAdapter(null);
         adapter.setOnItemClickListener(null);
         rc = null;
         adapter = null;

@@ -14,6 +14,7 @@ import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
@@ -32,7 +33,7 @@ import static com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBi
  *         Created on: 2017-04-13
  */
 
-public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice, Retryable {
+public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice, Retryable, OnItemClickListener {
     private static final String TAG = ControllerBoxOffice.class.getSimpleName();
 
     @Inject
@@ -63,7 +64,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         recyclerView = binding.recyclerView;
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item)));
+        adapter.setOnItemClickListener(this);
 
         return binding.getRoot();
     }
@@ -71,7 +72,8 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
-        if (!isBeingDestroyed()) { recyclerView.setAdapter(null); }
+        // if (!isBeingDestroyed()) { recyclerView.setAdapter(null); }
+        recyclerView.setAdapter(null);
         adapter.setOnItemClickListener(null);
         recyclerView = null;
         updatingGroup = null;
@@ -91,5 +93,10 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Override
     public void onRetry(String tag) {
         retry.onNext(tag);
+    }
+
+    @Override
+    public void onItemClick(Item item, View view) {
+        ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item));
     }
 }
