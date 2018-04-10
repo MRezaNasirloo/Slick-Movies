@@ -143,8 +143,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
                     String imdbId = pathSegments.get(1);
                     ControllerDetails.start(getRouter(), imdbId, null);
                 }
-            }
-            else if ("name".equalsIgnoreCase(path)) {
+            } else if ("name".equalsIgnoreCase(path)) {
                 // TODO: 2018-04-09 Launch Controller People
             }
         }
@@ -230,5 +229,17 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean("HANDLED", handled);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        handled = savedInstanceState.getBoolean("HANDLED", false);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }
