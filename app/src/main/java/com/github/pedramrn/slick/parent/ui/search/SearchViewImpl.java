@@ -11,6 +11,7 @@ import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.lapism.searchview.SearchView;
 import com.mrezanasirloo.slick.OnDestroyListener;
 import com.mrezanasirloo.slick.Presenter;
+import com.orhanobut.logger.Logger;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 
@@ -26,7 +27,7 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-08-11
+ * Created on: 2017-08-11
  */
 
 public class SearchViewImpl extends SearchView implements ViewSearch, SearchView.OnQueryTextListener,
@@ -66,6 +67,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        Logger.d("onAttachedToWindow() called");
         App.componentMain().inject(this);
         PresenterSearch_Slick.bind(this);
         PresenterSearch_Slick.onAttach(this);
@@ -74,6 +76,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        Logger.d("onDetachedFromWindow() called");
         if (adapter != null) {
             adapter.setOnItemClickListener(null);
             adapter = null;
@@ -86,6 +89,8 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
         if (adapter == null) return;
         adapter.setOnItemClickListener(null);
         adapter = null;
+        Logger.d("onDestroy() called: " + " Presenter: " + presenter);
+        if (presenter == null) return;
         PresenterSearch_Slick.onDestroy(this);
     }
 

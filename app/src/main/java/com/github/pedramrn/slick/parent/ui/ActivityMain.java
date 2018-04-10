@@ -17,6 +17,7 @@ import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
 import com.mrezanasirloo.slick.middleware.RequestStack;
+import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
 
@@ -45,9 +46,13 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
 
     private void handleIntent(Intent intent) {
         Log.d(TAG, "handleIntent() called with: intent = [" + intent + "]");
-        if (intent != null && intent.getData() != null) {
+        if (intent != null && intent.getData() != null
+                && Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())
+                && intent.getBooleanExtra("IMDB_URI", true)) {
+            Logger.w(TAG, "Starting with intent");
             router.setRoot(RouterTransaction.with(new ControllerMain(intent.getData())));
-            setIntent(null);// Consumed
+            intent.putExtra("IMDB_URI", false);
+            setIntent(intent);// Consumed
         }
     }
 

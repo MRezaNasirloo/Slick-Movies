@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.github.pedramrn.slick.parent.App;
 import com.mrezanasirloo.slick.Presenter;
+import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +16,7 @@ import static com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardLis
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-09-17
+ * Created on: 2017-09-17
  */
 public class RecyclerViewCardListPopular extends RecyclerViewCardListAbs {
 
@@ -39,8 +40,9 @@ public class RecyclerViewCardListPopular extends RecyclerViewCardListAbs {
 
     @Override
     protected void onAttachedToWindow() {
-        if (isInEditMode()) return;
+        if (isInEditMode()) { return; }
         super.onAttachedToWindow();
+        Logger.d("onAttachedToWindow() called: " + getUniqueId());
         App.componentMain().inject(this);
         PresenterCardList_Slick.bind(this);
         PresenterCardList_Slick.onAttach(this);
@@ -49,14 +51,16 @@ public class RecyclerViewCardListPopular extends RecyclerViewCardListAbs {
 
     @Override
     protected void onDetachedFromWindow() {
-        if (isInEditMode()) return;
+        if (isInEditMode()) { return; }
         super.onDetachedFromWindow();
+        Logger.d("onDetachedFromWindow() called: " + getUniqueId());
         PresenterCardList_Slick.onDetach(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        PresenterCardList_Slick.onDestroy(this);
+        Logger.d("onDestroy() called: " + getUniqueId() + " Presenter: " + presenter);
+        if (presenter != null) { PresenterCardList_Slick.onDestroy(this); }
     }
 }
