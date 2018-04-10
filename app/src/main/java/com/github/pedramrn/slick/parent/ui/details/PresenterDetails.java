@@ -183,6 +183,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
         FavoriteDomain favoriteDomain = FavoriteDomain.create(movieBasic.imdbId(), movieBasic.id(), movieBasic.title(), "movie");
 
         Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite
+                .zipWith(movieFull.filter(movie1 -> movie1.id() != null && movie1.id() == -1), (add, movie14) -> add)
                 .flatMap(add -> (add ? routerFavorite.add(favoriteDomain) : routerFavorite.remove(favoriteDomain)).subscribeOn(io)
                         .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new PartialViewStateDetails
                                 .NoOp())
