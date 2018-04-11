@@ -16,6 +16,7 @@ import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterCommentsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsIMDBImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
@@ -24,6 +25,7 @@ import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterFavoriteImplSlick;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.github.pedramrn.slick.parent.utils.LogIt;
 import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 import com.xwray.groupie.Item;
@@ -76,6 +78,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
     private final String SIMILAR = "SIMILAR";
     private final String BACKDROPS = "BACKDROPS";
     private final String COMMENTS = "COMMENTS";
+    private MovieBasic movieBasic;
 
     @Inject
     public PresenterDetails(
@@ -106,7 +109,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
     @Override
     protected void start(ViewDetails view) {
-        MovieBasic movieBasic = view.getMovie();
+        movieBasic = view.getMovie();
         final String movieId;
         if (movieBasic.id() == -1) {
             movieId = movieBasic.imdbId();
@@ -117,19 +120,22 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
         Observable<Object> triggerRetry = command(ViewDetails::onRetryAll).startWith(1);
 
+        triggerRetry.doOnEach(new LogIt<>("LOG_IT_TRIG!")).subscribe();
+
         final Observable<Movie> movieFull = triggerRetry.flatMap(o -> routerMovieDetails.get(movieId).subscribeOn(io)
                 //Maps the domains Models to View Models which have android dependency
                 .map(mapper)
+                .doOnEach(new LogIt<>(TAG))
         ).share();
 
-        Observable<PartialViewState<ViewStateDetails>> movie = triggerRetry.flatMap(o -> movieFull
+        Observable<PartialViewState<ViewStateDetails>> film = triggerRetry.flatMap(o -> movieFull
                 .map((Function<Movie, PartialViewState<ViewStateDetails>>) MovieFull::new)
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<PartialViewState<ViewStateDetails>> backdrops = triggerRetry.flatMap(o -> movieFull
-                .filter(movie1 -> movie1.images() != null && !movie1.images().backdrops().isEmpty())
+                .filter(movie -> movie.images() != null && !movie.images().backdrops().isEmpty())
                 .take(1)
-                .concatMap(movie1 -> Observable.fromIterable(movie1.images().backdrops()))
+                .concatMap(movie -> Observable.fromIterable(movie.images().backdrops()))
                 .map(new MapProgressive())
                 .cast(ItemView.class)
                 .map(itemView -> itemView.render(BACKDROPS))
@@ -139,9 +145,9 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 
         Observable<PartialViewState<ViewStateDetails>> casts = triggerRetry.flatMap(o -> movieFull
-                .filter(movie1 -> movie1.casts() != null && !movie1.casts().isEmpty())
+                .filter(movie -> movie.casts() != null && !movie.casts().isEmpty())
                 .take(1)
-                .concatMap(movie13 -> Observable.fromIterable(movie13.casts()).take(6))
+                .concatMap(movie -> Observable.fromIterable(movie.casts()).take(6))
                 .map(new MapProgressive())
                 .cast(ItemView.class)
                 .map(itemView -> itemView.render(CASTS))
@@ -152,9 +158,9 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
 
         Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull
-                .filter(movie1 -> movie1.imdbId() != null)
+                .filter(movie -> movie.imdbId() != null)
                 .take(1)
-                .flatMap(movie12 -> routerComments.comments(movie12.imdbId(), 1, 15).subscribeOn(io))
+                .flatMap(movie -> routerComments.comments(movie.imdbId(), 1, 15).subscribeOn(io))
                 .concatMap(comments1 -> Observable.fromIterable(comments1.data()))
                 .map(mapperComment)
                 .map(new MapProgressive())
@@ -193,11 +199,10 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
         Observable<Boolean> commandFavorite = command(ViewDetails::commandFavorite);
 
-        FavoriteDomain fd = FavoriteDomain.create(movieBasic.imdbId(), movieBasic.id(), movieBasic.title(), "movie");
-
+        @SuppressWarnings("ConstantConditions")
         Observable<PartialViewState<ViewStateDetails>> favorite = commandFavorite
-                .zipWith(movieFull.filter(movie1 -> movie1.id() != null && movie1.id() == -1), (add, movie14) -> add)
-                .flatMap(add -> (add ? routerFavorite.add(fd) : routerFavorite.remove(fd)).subscribeOn(io))
+                .flatMap(isAdd -> (isAdd ?
+                        routerFavorite.add(freshFavorite()) : routerFavorite.remove(freshFavorite())).subscribeOn(io))
                 .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new NoOp())
                 .onErrorReturn(PartialViewStateDetails.Error::new);
 
@@ -206,23 +211,25 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .flatMap(ignored -> routerAuth.firebaseUserSignInStateStream())
                 .filter(signedIn -> signedIn)
                 .take(1)
-                .flatMap(ignored -> movieFull.flatMap(movieDomain -> routerFavorite.add(fd.toBuilder()
-                        .imdbId(movieDomain.imdbId())
-                        .tmdb(movieDomain.id())
-                        .name(movieDomain.title())
-                        .build())))
+                .flatMap(ignored -> routerFavorite.add(freshFavorite()))
                 .map((Function<Object, PartialViewState<ViewStateDetails>>) isFavorite -> new NoOp())
                 .onErrorReturn(PartialViewStateDetails.Error::new);
 
 
-        Observable<Boolean> signInStream = routerAuth.firebaseUserSignInStateStream().share();
-        Observable<PartialViewState<ViewStateDetails>> favoriteStream = signInStream
+        Observable<Boolean> signInStream = routerAuth.firebaseUserSignInStateStream().share().replay(1).autoConnect();
+        Observable<PartialViewState<ViewStateDetails>> favoriteStream = triggerRetry
+                .doOnEach(new LogIt<>("LOG_IT_TRIGGER"))
+                .flatMap(o -> signInStream.doOnEach(new LogIt<>("LOG_IT_SIGN")))
                 .filter(signedIn -> signedIn)
-                .flatMap(ignored -> routerFavorite.updateStream(fd.tmdb())
-                        .takeUntil(signInStream.filter(signedIn2 -> !signedIn2)))
+                .flatMap(o -> movieFull.cast(MovieBasic.class)
+                        .onErrorReturn(throwable -> MovieSmall.builder().id(-1).uniqueId(-1).build())
+                        .doOnEach(new LogIt<>("LOG_IT_MOVIE_FULL")))
+                .flatMap(movie -> routerFavorite.updateStream(movie.id())
+                        .takeUntil(signInStream.filter(signedIn2 -> !signedIn2).doOnEach(new LogIt<>("LOG_IT_UPDATE"))))
                 .map((Function<Boolean, PartialViewState<ViewStateDetails>>) Favorite::new)
                 .onErrorReturn(PartialViewStateDetails.Error::new)
-                .doOnComplete(() -> Log.e(TAG, "routerFavorite.updateStream Completed"))
+                .doOnEach(new LogIt<>("LOG_IT_MAIN"))
+                .doOnComplete(() -> Log.e(TAG, "LOG_IT_routerFavorite.updateStream Completed"))
                 .subscribeOn(io);
 
         Observable<PartialViewState<ViewStateDetails>> errorDismissed =
@@ -238,7 +245,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .build();
 
         reduce(initial, merge(
-                movie,
+                film,
                 casts,
                 backdrops,
                 similar,
@@ -251,6 +258,15 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
     }
 
+    private FavoriteDomain freshFavorite() {
+        return FavoriteDomain.builder()
+                .type("movie")
+                .imdbId(movieBasic.imdbId())
+                .tmdb(movieBasic.id())
+                .name(movieBasic.title())
+                .build();
+    }
+
     @Override
     protected void render(@NonNull ViewStateDetails state, @NonNull ViewDetails view) {
         Boolean favorite = state.isFavorite();
@@ -259,6 +275,9 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
         } else {
             view.notFavorite();
         }
-        if (state.error() != null) { view.error(ErrorHandler.handle(state.error())); }
+        if (state.error() != null) view.error(ErrorHandler.handle(state.error()));
+        movieBasic = state.movieBasic();
+        boolean enable = movieBasic.id() != -1;
+        view.enableFavButton(enable);
     }
 }

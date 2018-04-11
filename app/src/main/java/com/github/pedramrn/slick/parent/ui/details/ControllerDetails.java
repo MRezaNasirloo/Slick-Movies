@@ -49,6 +49,7 @@ import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.mrezanasirloo.slick.Presenter;
 import com.mrezanasirloo.slick.middleware.RequestStack;
+import com.orhanobut.logger.Logger;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
@@ -117,7 +118,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
             onErrorDismissed.onNext(1);
-            onRetry("ALL");
+            if (DISMISS_EVENT_TIMEOUT == event || DISMISS_EVENT_ACTION == event) onRetry("ALL");
         }
     };
     private GroupAdapter adapterSimilar;
@@ -429,12 +430,14 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @Override
     public Observable<Object> onRetryComments() {
+        Logger.i("onRetryComments called");
         return onRetry.filter("COMMENTS_ERROR"::equals).cast(Object.class);
     }
 
     @Override
     public Observable<Object> onRetryAll() {
-        return onRetry.cast(Object.class);
+        Logger.i("onRetryAll called");
+        return onRetry.cast(Object.class).throttleLast(200, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -453,12 +456,19 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
-    public void onRetry(String tag) {
+    public void
+    onRetry(String tag) {
+        Logger.i("onRetry called: %s", tag);
         onRetry.onNext(tag);
     }
 
     @Override
     public void error(short code) {
         snackbar.setText(ErrorHandler.message(getApplicationContext(), code)).show();
+    }
+
+    @Override
+    public void enableFavButton(boolean enable) {
+        fab.setEnabled(enable);
     }
 }

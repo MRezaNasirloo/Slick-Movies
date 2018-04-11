@@ -29,4 +29,6 @@ public interface ViewDetails extends Retryable {
     void favorite();
 
     void error(short message);
+
+    void enableFavButton(boolean enable);
 }

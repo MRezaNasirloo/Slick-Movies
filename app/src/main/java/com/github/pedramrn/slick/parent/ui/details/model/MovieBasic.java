@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details.model;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.domain.model.MovieMetadata;
@@ -13,6 +14,7 @@ import java.util.Locale;
  *         Created on: 2017-07-14
  */
 public interface MovieBasic extends Parcelable, MovieMetadata {
+    @NonNull
     Integer id();
 
     @Nullable

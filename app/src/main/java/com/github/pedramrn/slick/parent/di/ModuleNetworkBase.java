@@ -37,7 +37,7 @@ public class ModuleNetworkBase {
 
     public OkHttpClient baseOkHttpClient(List<Interceptor> interceptors, List<Interceptor> interceptorsNetwork, Cache cache) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .cache(cache)
+                // .cache(cache)
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
                 .writeTimeout(15, TimeUnit.SECONDS);

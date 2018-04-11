@@ -7,6 +7,8 @@ import com.github.pedramrn.slick.parent.datasource.network.repository.Repository
 import com.github.pedramrn.slick.parent.domain.model.FavoriteDomain;
 import com.github.pedramrn.slick.parent.domain.router.RouterFavorite;
 import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareLogin;
+import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareValidatorFavorite;
+import com.github.pedramrn.slick.parent.ui.middleware.MiddlewareValidatorFavoriteUpdateStream;
 import com.mrezanasirloo.slick.Middleware;
 
 import java.util.List;
@@ -33,7 +35,7 @@ public class RouterFavoriteImpl implements RouterFavorite {
     }
 
     @Override
-    @Middleware(MiddlewareLogin.class)
+    @Middleware({MiddlewareLogin.class, MiddlewareValidatorFavorite.class})
     public Observable<Object> add(FavoriteDomain favorite) {
         return repositoryAuth.currentUser()
                 .flatMap(firebaseUser -> repositoryFavorite.add(firebaseUser.getUid(),
@@ -50,8 +52,9 @@ public class RouterFavoriteImpl implements RouterFavorite {
     }
 
     @Override
-    @Middleware(MiddlewareLogin.class)
+    @Middleware({MiddlewareLogin.class, MiddlewareValidatorFavoriteUpdateStream.class})
     public Observable<Boolean> updateStream(Integer tmdbId) {
+        System.out.println("LOG_IT_RouterFavoriteImpl.updateStream: " + tmdbId);
         return repositoryAuth.currentUser()
                 .flatMap(firebaseUser -> repositoryFavorite.updateStream(firebaseUser.getUid(), tmdbId));
 
