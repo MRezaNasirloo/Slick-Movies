@@ -56,7 +56,6 @@ android {
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
-        resConfigs "auto"
 
         archivesBaseName = "slick-movies-${versionCode}-${versionName}-${SHA}".replace(" ${SHA}", "")
 

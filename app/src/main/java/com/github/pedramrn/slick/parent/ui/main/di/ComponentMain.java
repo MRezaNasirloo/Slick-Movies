@@ -4,6 +4,7 @@ import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
+import com.github.pedramrn.slick.parent.ui.details.favorite.FloatingFavorite;
 import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
@@ -51,6 +52,8 @@ public interface ComponentMain {
     void inject(ControllerAuth controllerAuth);
 
     void inject(ControllerFavorite controllerFavorite);
+
+    void inject(FloatingFavorite floatingFavorite);
 
     @Subcomponent.Builder
     interface Builder {

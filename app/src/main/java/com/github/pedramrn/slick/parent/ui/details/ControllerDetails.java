@@ -1,18 +1,14 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +17,13 @@ import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
+import com.github.pedramrn.slick.parent.ui.details.favorite.FloatingFavorite;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
@@ -46,7 +42,6 @@ import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
-import com.jakewharton.rxbinding2.view.RxView;
 import com.mrezanasirloo.slick.Presenter;
 import com.mrezanasirloo.slick.middleware.RequestStack;
 import com.orhanobut.logger.Logger;
@@ -64,7 +59,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -72,7 +66,7 @@ import io.reactivex.subjects.PublishSubject;
  * Created on: 2017-04-28
  */
 
-public class ControllerDetails extends ControllerElm<ViewStateDetails> implements ViewDetails, MovieProvider {
+public class ControllerDetails extends ControllerBase implements ViewDetails, MovieProvider {
 
     private static final String TAG = ControllerDetails.class.getSimpleName();
     private static final int RC_SIGN_IN = 123;
@@ -109,7 +103,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     private ItemCardHeader headerCast;
     private PublishSubject<String> onRetry = PublishSubject.create();
     private PublishSubject<Object> onErrorDismissed = PublishSubject.create();
-    private FloatingActionButton fab;
+    private FloatingFavorite fab;
     private Drawable drawableUnFav;
     private Drawable drawableFav;
     private Snackbar snackbar;
@@ -193,12 +187,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         collapsingToolbar = binding.collapsingToolbar;
         imageViewHeader = binding.imageViewHeader;
-        fab = binding.fab;
-        if (drawableFav == null) {
-            Resources resources = getResources();
-            drawableUnFav = ResourcesCompat.getDrawable(resources, R.drawable.ic_unlike_black_24dp, null);
-            drawableFav = ResourcesCompat.getDrawable(resources, R.drawable.ic_like_red_24dp, null);
-        }
+        fab = binding.floatingFab;
 
         final Context context = getApplicationContext();
 
@@ -270,8 +259,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         //        add(bottomNavigationHandler.handle((BottomBarHost) getParentController(), binding.recyclerViewDetails));
 
-        presenter.updateStream().subscribe(this);
-
         /*fab.setOnLongClickListener(v -> {
             Crashlytics.getInstance().crash();
             return false;
@@ -309,6 +296,8 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
         renderError(state.errorFavorite());
 
+        if (movie.id() != -1) fab.setMovie(movie);
+
         // long delay = System.currentTimeMillis() - before;
         // int sizeCast = state.casts().size();
         // int sizeBackdrops = state.backdrops().size();
@@ -322,27 +311,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public MovieBasic getMovie() {
         return movie;
-    }
-
-    @Override
-    public void onSubscribe(Disposable d) {
-        add(d);
-    }
-
-    @Override
-    public void onNext(ViewStateDetails state) {
-        render(state);
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-
-    @Override
-    public void onComplete() {
-        Log.d(TAG, "onComplete() called");
     }
 
     @Override
@@ -361,6 +329,7 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
 
     @Override
     protected void onDestroyView(@NonNull View view) {
+        System.out.println("LOG_IT_ControllerDetails.onDestroyView");
         super.onDestroyView(view);
         adapterBackdrops.setOnItemClickListener(null);
         adapterSimilar.setOnItemClickListener(null);
@@ -393,10 +362,18 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
         adapterMain.clear();
         adapterMain = null;
 
-        fab.setOnClickListener(null);
+        System.out.println("LOG_IT_isBeingDestroyed() = [" + isBeingDestroyed() + "]");
+        if (isBeingDestroyed()) {
+            fab.onDestroy();
+        }
         fab = null;
-
         super.onDestroyView(view);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("LOG_IT_ControllerDetails.onDestroy");
     }
 
     @Override
@@ -422,13 +399,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
-    public Observable<Boolean> commandFavorite() {
-        return RxView.clicks(fab).throttleLast(1, TimeUnit.SECONDS)
-                .map(o -> drawableUnFav.equals(fab.getDrawable()))
-                ;
-    }
-
-    @Override
     public Observable<Object> onRetryComments() {
         Logger.i("onRetryComments called");
         return onRetry.filter("COMMENTS_ERROR"::equals).cast(Object.class);
@@ -446,16 +416,6 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     }
 
     @Override
-    public void notFavorite() {
-        fab.setImageDrawable(drawableUnFav);
-    }
-
-    @Override
-    public void favorite() {
-        fab.setImageDrawable(drawableFav);
-    }
-
-    @Override
     public void
     onRetry(String tag) {
         Logger.i("onRetry called: %s", tag);
@@ -465,10 +425,5 @@ public class ControllerDetails extends ControllerElm<ViewStateDetails> implement
     @Override
     public void error(short code) {
         snackbar.setText(ErrorHandler.message(getApplicationContext(), code)).show();
-    }
-
-    @Override
-    public void enableFavButton(boolean enable) {
-        fab.setEnabled(enable);
     }
 }

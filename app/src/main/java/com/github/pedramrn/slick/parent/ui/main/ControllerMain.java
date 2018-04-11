@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
@@ -24,8 +23,6 @@ import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.mrezanasirloo.slick.Presenter;
 import com.mrezanasirloo.slick.middleware.RequestStack;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -49,6 +46,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     PresenterMain presenter;
     private ControllerMainBinding binding;
     private final RouterPagerAdapter routerPagerAdapter;
+    @Nullable
+    private final Bundle args;
     private final int PAGE_COUNT = 3;
 
     @SuppressWarnings("WeakerAccess")
@@ -79,6 +78,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
                 }
             }
         };
+        this.args = args;
         routerPagerAdapter.setMaxPagesToStateSave(3);
     }
 
@@ -140,11 +140,14 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     private void resetStack(int position) {
         Router router = routerPagerAdapter.getRouter(position);
         if (router != null) {
+            router.popToRoot();
+            // FIXME: 2018-04-11 isBeingDestroyed returns fale.
+            /*
             List<RouterTransaction> backstack = router.getBackstack();
             if (backstack.size() > 1) {
                 backstack = backstack.subList(0, 1);
-                router.setBackstack(backstack, new SimpleSwapChangeHandler());
-            }
+                router.setBackstack(backstack, null);
+            }*/
         }
     }
 
