@@ -89,7 +89,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Singleton
     @Named("interceptors_network")
     public List<Interceptor> networkInterceptors(Context context) {
-        return Collections.emptyList();
+        return baseNetworkInterceptors(context);
     }
 
     @Provides
