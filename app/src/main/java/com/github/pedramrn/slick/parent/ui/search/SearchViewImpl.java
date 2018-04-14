@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.search;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -9,8 +10,8 @@ import android.widget.Toast;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.lapism.searchview.SearchView;
-import com.mrezanasirloo.slick.OnDestroyListener;
 import com.mrezanasirloo.slick.Presenter;
+import com.mrezanasirloo.slick.SlickLifecycleListener;
 import com.orhanobut.logger.Logger;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
@@ -31,7 +32,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class SearchViewImpl extends SearchView implements ViewSearch, SearchView.OnQueryTextListener,
-        SearchView.OnOpenCloseListener, OnDestroyListener {
+        SearchView.OnOpenCloseListener, SlickLifecycleListener {
 
     @Inject
     Provider<PresenterSearch> provider;
@@ -68,8 +69,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         Logger.d("onAttachedToWindow() called");
-        App.componentMain().inject(this);
-        PresenterSearch_Slick.bind(this);
         PresenterSearch_Slick.onAttach(this);
     }
 
@@ -82,16 +81,6 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
             adapter = null;
         }
         PresenterSearch_Slick.onDetach(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (adapter == null) return;
-        adapter.setOnItemClickListener(null);
-        adapter = null;
-        Logger.d("onDestroy() called: " + " Presenter: " + presenter);
-        if (presenter == null) return;
-        PresenterSearch_Slick.onDestroy(this);
     }
 
     @Override
@@ -151,5 +140,11 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
     public void error(short code) {
         Context context = getContext().getApplicationContext();
         Toast.makeText(context, ErrorHandler.message(context, code), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBind(@NonNull String instanceId) {
+        App.componentMain().inject(this);
+        PresenterSearch_Slick.bind(this);
     }
 }

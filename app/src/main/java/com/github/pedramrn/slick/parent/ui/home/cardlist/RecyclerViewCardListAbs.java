@@ -2,7 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home.cardlist;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,27 +20,24 @@ import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMarginSide;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
-import com.mrezanasirloo.slick.OnDestroyListener;
+import com.mrezanasirloo.slick.SlickLifecycleListener;
 import com.mrezanasirloo.slick.SlickUniqueId;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 
 import java.util.List;
-import java.util.UUID;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
-
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-09-16
- *         <p>
- *         A base Recycler View for loaing a list of movies progressivly
+ * Created on: 2017-09-16
+ * <p>
+ * A base Recycler View for loaing a list of movies progressivly
  */
 public abstract class RecyclerViewCardListAbs extends RecyclerView implements ViewCardList, OnItemClickListener,
-        Navigator, Retryable, OnDestroyListener, SlickUniqueId {
+        Navigator, Retryable, SlickLifecycleListener, SlickUniqueId {
 
     public static final String TAG = RecyclerViewCardListAbs.class.getSimpleName();
     private static final String SCROLL_POS = "SCROLL_POS_";
@@ -96,13 +93,6 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         }
         removeItemDecoration(margin);
         super.onDetachedFromWindow();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (adapter == null) return;
-        adapter.setOnItemClickListener(null);
-        adapter = null;
     }
 
     @Override
@@ -186,29 +176,11 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     }
 
-    @Nullable
-    @Override
-    public Parcelable onSaveInstanceState() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("superState", super.onSaveInstanceState());
-        bundle.putString(SLICK_UNIQUE_KEY, this.id);
-        return bundle;
-    }
+    protected String id;
 
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
-            this.id = bundle.getString(SLICK_UNIQUE_KEY);
-            state = bundle.getParcelable("superState");
-        }
-        super.onRestoreInstanceState(state);
-    }
-
-    private String id;
-
+    @NonNull
     @Override
     public String getUniqueId() {
-        return id = (id != null ? id : UUID.randomUUID().toString());
+        return id;
     }
 }

@@ -89,7 +89,6 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
 
     public void onDestroy() {
         System.out.println("ItemCardListBase.onDestroy");
-        recyclerView.onDestroy();
         recyclerView = null;
     }
 }

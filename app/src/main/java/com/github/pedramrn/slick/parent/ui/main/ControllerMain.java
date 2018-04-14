@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.support.RouterPagerAdapter;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
@@ -140,8 +141,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     private void resetStack(int position) {
         Router router = routerPagerAdapter.getRouter(position);
         if (router != null) {
-            router.popToRoot();
-            // FIXME: 2018-04-11 isBeingDestroyed returns fale.
+            router.popToRoot(new SimpleSwapChangeHandler());
             /*
             List<RouterTransaction> backstack = router.getBackstack();
             if (backstack.size() > 1) {

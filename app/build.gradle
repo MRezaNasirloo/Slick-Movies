@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.25.2'
     }
 }
 apply plugin: 'com.android.application'
@@ -51,8 +51,8 @@ android {
         applicationId "com.mreza.nasirloo.slick.movies"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 13
-        versionName "0.13 beta ${SHA}"
+        versionCode 14
+        versionName "0.14 beta ${SHA}"
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
@@ -153,11 +153,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:12.0.1'
 
     //slick
-    implementation 'com.mrezanasirloo:slick:1.0.6'
-    implementation 'com.mrezanasirloo:slick-middleware:1.0.6'
-    implementation 'com.mrezanasirloo:slick-conductor:1.0.6'
-    implementation 'com.mrezanasirloo:slick-reactive:1.0.6'
-    annotationProcessor 'com.mrezanasirloo:slick-compiler:1.0.6'
+    implementation 'com.mrezanasirloo:slick:1.1.1'
+    implementation 'com.mrezanasirloo:slick-middleware:1.1.1'
+    implementation 'com.mrezanasirloo:slick-conductor:1.1.1'
+    implementation 'com.mrezanasirloo:slick-reactive:1.1.1'
+    annotationProcessor 'com.mrezanasirloo:slick-compiler:1.1.1'
 
     //conductor
     implementation 'com.bluelinelabs:conductor:2.1.5-SNAPSHOT'

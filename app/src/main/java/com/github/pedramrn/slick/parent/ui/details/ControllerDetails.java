@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +23,7 @@ import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.favorite.FloatingFavorite;
+import com.github.pedramrn.slick.parent.ui.details.favorite.PresenterFloatingFavorite_Slick;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
@@ -104,8 +104,6 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
     private PublishSubject<String> onRetry = PublishSubject.create();
     private PublishSubject<Object> onErrorDismissed = PublishSubject.create();
     private FloatingFavorite fab;
-    private Drawable drawableUnFav;
-    private Drawable drawableFav;
     private Snackbar snackbar;
 
     private Snackbar.Callback callback = new Snackbar.Callback() {
@@ -165,6 +163,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
 
     @Override
     protected void onAttach(@NonNull View view) {
+        System.out.println("LOG_IT_onAttach() called");
         RequestStack.getInstance().processLastRequest();
         //noinspection ConstantConditions
         snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG)
@@ -174,9 +173,11 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         ;
     }
 
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+        System.out.println("LOG_IT_onCreateView() called");
         Navigator2.bind(this);
         App.componentMain().inject(this);
         PresenterDetails_Slick.bind(this);
@@ -188,6 +189,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         collapsingToolbar = binding.collapsingToolbar;
         imageViewHeader = binding.imageViewHeader;
         fab = binding.floatingFab;
+        fab.onBind(getInstanceId());
 
         final Context context = getApplicationContext();
 
@@ -362,18 +364,16 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         adapterMain.clear();
         adapterMain = null;
 
-        System.out.println("LOG_IT_isBeingDestroyed() = [" + isBeingDestroyed() + "]");
-        if (isBeingDestroyed()) {
-            fab.onDestroy();
-        }
         fab = null;
+        System.out.println("LOG_IT_isBeingDestroyed() = [" + isBeingDestroyed() + "]");
         super.onDestroyView(view);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         System.out.println("LOG_IT_ControllerDetails.onDestroy");
+        PresenterFloatingFavorite_Slick.onDestroy(getInstanceId(), getActivity());
+        super.onDestroy();
     }
 
     @Override

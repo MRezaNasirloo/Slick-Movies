@@ -1,5 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,10 +23,12 @@ import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
+import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList_Slick;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
+import com.github.pedramrn.slick.parent.ui.search.PresenterSearch_Slick;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.mrezanasirloo.slick.Presenter;
@@ -94,6 +97,10 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         recyclerViewCardListTrending = binding.recyclerViewTrending;
         recyclerViewCardListPopular = binding.recyclerViewPopular;
 
+        String instanceId = getInstanceId();
+        recyclerViewCardListPopular.onBind(instanceId);
+        recyclerViewCardListTrending.onBind(instanceId + 1);
+
         recyclerViewCardListTrending.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCardListPopular.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCardListTrending.setRouter(getRouter());
@@ -111,6 +118,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
 
         // setToolbar(binding.toolbar);
         searchView = binding.searchView;
+        searchView.onBind(instanceId);
         setOnItemClickListener(adapterUpcoming);
         setOnItemClickListener((GroupAdapter) searchView.getAdapter());
 
@@ -184,12 +192,6 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     protected void onDestroyView(@NonNull View view) {
         Log.d(TAG, "onDestroyView() called");
         super.onDestroyView(view);
-        if (isBeingDestroyed()) {
-            recyclerViewCardListPopular.onDestroy();
-            recyclerViewCardListTrending.onDestroy();
-            searchView.onDestroy();
-        }
-        // else { recyclerViewUpcoming.setAdapter(null); }
         recyclerViewUpcoming.setAdapter(null);
         adapterUpcoming.setOnItemClickListener(null);
         recyclerViewCardListTrending = null;
@@ -206,7 +208,6 @@ public class ControllerHome extends ControllerBase implements ViewHome {
             searchView.close(true);
             return true;
         }
-
         return super.handleBack();
     }
 
@@ -228,6 +229,11 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Activity activity = getActivity();
+        String instanceId = getInstanceId();
+        PresenterCardList_Slick.onDestroy(instanceId, activity);
+        PresenterCardList_Slick.onDestroy(instanceId + 1, activity);
+        PresenterSearch_Slick.onDestroy(instanceId, activity);
         Log.d(TAG, "onDestroy() called");
     }
 

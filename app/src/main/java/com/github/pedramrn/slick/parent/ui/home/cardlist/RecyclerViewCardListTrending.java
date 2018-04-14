@@ -1,6 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
@@ -44,8 +45,6 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
         if (isInEditMode()) { return; }
         super.onAttachedToWindow();
         Logger.d("onAttachedToWindow() called: " + getUniqueId());
-        App.componentMain().inject(this);
-        PresenterCardList_Slick.bind(this);
         PresenterCardList_Slick.onAttach(this);
         getLayoutManager().scrollToPosition(scrollPosition);
     }
@@ -59,9 +58,9 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Logger.d("onDestroy() called: " + getUniqueId() + " Presenter: " + presenter);
-        if (presenter != null) { PresenterCardList_Slick.onDestroy(this); }
+    public void onBind(@NonNull String instanceId) {
+        id = instanceId;
+        App.componentMain().inject(this);
+        PresenterCardList_Slick.bind(this);
     }
 }
