@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chahinem.pageindicator.PageIndicator;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
@@ -71,6 +72,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     private RecyclerViewCardListPopular recyclerViewCardListPopular;
     private GroupAdapter adapterUpcoming;
     private RecyclerView recyclerViewUpcoming;
+    private PageIndicator pageIndicator;
     private final Uri uri;
     private boolean handled;
 
@@ -130,6 +132,8 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(recyclerViewUpcoming);
 
+        pageIndicator = binding.pageIndicator;
+
         //setup headers
         setupHeader(binding.headerUpcoming, upcoming);
         setupHeader(binding.headerTrending, trending);
@@ -186,6 +190,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
+        if (state.upcoming().size() > 0) pageIndicator.attachTo(recyclerViewUpcoming);
     }
 
     @Override
@@ -199,6 +204,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         recyclerViewUpcoming = null;
         progressiveUpcoming = null;
         adapterUpcoming = null;
+        pageIndicator = null;
         searchView = null;
     }
 
