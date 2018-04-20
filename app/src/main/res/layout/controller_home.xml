@@ -51,12 +51,15 @@
                     android:layout_height="wrap_content"
                     />
 
-                <com.chahinem.pageindicator.PageIndicator
+                <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
                     android:id="@+id/pageIndicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
+                    app:spi_dotSelectedColor="@color/colorPrimary"
+                    app:spi_dotSelectedSize="8dp"
+                    app:spi_visibleDotCount="7"
                     />
 
                 <include
@@ -84,10 +87,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_14sp"
                     android:gravity="center"
-                    android:text="@string/text_powered"
                     android:padding="8dp"
+                    android:text="@string/text_powered"
+                    android:textSize="@dimen/text_size_14sp"
                     />
 
             </LinearLayout>

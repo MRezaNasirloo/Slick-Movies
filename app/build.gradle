@@ -269,7 +269,7 @@ dependencies {
     implementation 'android.arch.lifecycle:common-java8:1.1.1'
     implementation 'com.tspoon.traceur:traceur:1.0.1'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
-    implementation 'com.github.MRezaNasirloo:pageindicator:06827ae845'
+    implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.3"
 
     /*configurations.all {
         resolutionStrategy.force 'com.google.guava:guava:23.0'

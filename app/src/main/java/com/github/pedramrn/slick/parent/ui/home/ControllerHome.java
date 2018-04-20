@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.chahinem.pageindicator.PageIndicator;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
@@ -44,6 +43,7 @@ import javax.inject.Provider;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
+import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -72,7 +72,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     private RecyclerViewCardListPopular recyclerViewCardListPopular;
     private GroupAdapter adapterUpcoming;
     private RecyclerView recyclerViewUpcoming;
-    private PageIndicator pageIndicator;
+    private ScrollingPagerIndicator pageIndicator;
     private final Uri uri;
     private boolean handled;
 
@@ -133,6 +133,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         pagerSnapHelper.attachToRecyclerView(recyclerViewUpcoming);
 
         pageIndicator = binding.pageIndicator;
+        pageIndicator.attachToRecyclerView(recyclerViewUpcoming);
 
         //setup headers
         setupHeader(binding.headerUpcoming, upcoming);
@@ -190,7 +191,6 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
-        if (state.upcoming().size() > 0) pageIndicator.attachTo(recyclerViewUpcoming);
     }
 
     @Override
