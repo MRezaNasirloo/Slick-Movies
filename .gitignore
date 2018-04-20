@@ -15,3 +15,4 @@
 .externalNativeBuild
 /app/src/main/assets/paperwork.json
 *.patch
+/.idea/caches
