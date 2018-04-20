@@ -111,6 +111,7 @@
             app:search_hint="Movie name..."
             app:search_version="toolbar"
             app:search_version_margins="menu_item"
+            app:search_voice="false"
             />
 
     </android.support.design.widget.CoordinatorLayout>
