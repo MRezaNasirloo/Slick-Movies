@@ -73,6 +73,6 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        ControllerDetails.start(navigator.getRouter(), movie, transitionName);
+        navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
     }
 }

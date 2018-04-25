@@ -53,7 +53,7 @@ public class ItemBoxOffice extends Item<RowBoxOfficeBinding> implements Removabl
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        ControllerDetails.start(navigator.getRouter(), movie, transitionName);
+        ControllerDetails.newInstance(movie, transitionName);
     }
 
     @Override

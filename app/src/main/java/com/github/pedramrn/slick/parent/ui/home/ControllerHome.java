@@ -22,7 +22,10 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerHomeBinding;
 import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
-import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
+import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.Screen;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList_Slick;
@@ -53,7 +56,7 @@ import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator;
  *         Created on: 2017-06-20
  */
 
-public class ControllerHome extends ControllerBase implements ViewHome {
+public class ControllerHome extends FragmentBase implements ViewHome, Navigator {
 
     private static final String TAG = ControllerHome.class.getSimpleName();
 
@@ -76,17 +79,29 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     private GroupAdapter adapterUpcoming;
     private RecyclerView recyclerViewUpcoming;
     private ScrollingPagerIndicator pageIndicator;
-    private final Uri uri;
     private boolean handled;
+    private Uri uri;
 
-    public ControllerHome(@Nullable Bundle args) {
-        super(args);
-        uri = getArgs().getParcelable("URI");
+    public static ControllerHome newInstance(Bundle bundle) {
+        Bundle args = new Bundle();
+        ControllerHome fragment = new ControllerHome();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) handled = savedInstanceState.getBoolean("HANDLED", false);
+        Bundle bundle = getArguments();
+        if (bundle != null) { uri = bundle.getParcelable("URI"); } else uri = null;
     }
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
         Log.d(TAG, "onCreateView");
         App.componentMain().inject(this);
         PresenterHome_Slick.bind(this);
@@ -95,7 +110,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         adapterUpcoming = new GroupAdapter();
         progressiveUpcoming = new UpdatingGroup();
 
-        final Context context = getApplicationContext();
+        final Context context = getContext().getApplicationContext();
 
         RecyclerView.RecycledViewPool recycledViewPool = new RecyclerView.RecycledViewPool();
         recycledViewPool.setMaxRecycledViews(R.layout.row_card, 12);
@@ -108,8 +123,8 @@ public class ControllerHome extends ControllerBase implements ViewHome {
 
         recyclerViewCardListTrending.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCardListPopular.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewCardListTrending.setRouter(getRouter());
-        recyclerViewCardListPopular.setRouter(getRouter());
+        recyclerViewCardListTrending.setNavigator(this);
+        recyclerViewCardListPopular.setNavigator(this);
         recyclerViewCardListPopular.setRecycledViewPool(recycledViewPool);
         recyclerViewCardListTrending.setRecycledViewPool(recycledViewPool);
 
@@ -161,7 +176,9 @@ public class ControllerHome extends ControllerBase implements ViewHome {
             if ("title".equalsIgnoreCase(path)) {
                 if (pathSegments.size() > 1) {
                     String imdbId = pathSegments.get(1);
-                    ControllerDetails.start(getRouter(), imdbId, null);
+                    // // FIXME: 2018-04-25 launch me!!
+                    Screen screen = ControllerDetails.newInstance(imdbId, null);
+                    navigateTo(screen);
                 }
             }
             else if ("name".equalsIgnoreCase(path)) {
@@ -184,29 +201,19 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     }
 
     @Override
-    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        recyclerViewCardListTrending.onSaveViewState(view, outState, PresenterCardList.TRENDING);
-        recyclerViewCardListPopular.onSaveViewState(view, outState, PresenterCardList.POPULAR);
-    }
-
-    @Override
-    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        recyclerViewCardListTrending.onRestoreViewState(view, savedViewState, PresenterCardList.TRENDING);
-        recyclerViewCardListPopular.onRestoreViewState(view, savedViewState, PresenterCardList.POPULAR);
-    }
-
-    @Override
     public void render(@NonNull ViewStateHome state) {
         Log.d(TAG, "render() called");
         progressiveUpcoming.update(state.upcoming());
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
+    public void onDestroyView() {
         Log.d(TAG, "onDestroyView() called");
-        super.onDestroyView(view);
+        super.onDestroyView();
         recyclerViewUpcoming.setAdapter(null);
         adapterUpcoming.setOnItemClickListener(null);
+        recyclerViewCardListTrending.onDestroy();
+        recyclerViewCardListPopular.onDestroy();
         recyclerViewCardListTrending = null;
         recyclerViewCardListPopular = null;
         recyclerViewUpcoming = null;
@@ -216,14 +223,15 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         searchView = null;
     }
 
-    @Override
+    // TODO: 2018-04-25 add this
+    /*@Override
     public boolean handleBack() {
         if (searchView.isSearchOpen()) {
             searchView.close(true);
             return true;
         }
         return super.handleBack();
-    }
+    }*/
 
     @Override
     public Observable<Object> retryUpcoming() {
@@ -241,7 +249,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         Activity activity = getActivity();
         String instanceId = getInstanceId();
@@ -252,15 +260,24 @@ public class ControllerHome extends ControllerBase implements ViewHome {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("HANDLED", handled);
+        // recyclerViewCardListTrending.onSaveViewState(outState, PresenterCardList.TRENDING);
+        // recyclerViewCardListPopular.onSaveViewState(outState, PresenterCardList.POPULAR);
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        handled = savedInstanceState.getBoolean("HANDLED", false);
-        super.onRestoreInstanceState(savedInstanceState);
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        recyclerViewCardListTrending.onRestoreViewState(savedInstanceState, PresenterCardList.TRENDING);
+        recyclerViewCardListPopular.onRestoreViewState(savedInstanceState, PresenterCardList.POPULAR);
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!");
     }
 
 }

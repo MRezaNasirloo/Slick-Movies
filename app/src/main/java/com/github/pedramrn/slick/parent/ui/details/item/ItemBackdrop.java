@@ -6,9 +6,6 @@ import android.support.annotation.Nullable;
 import com.github.pedramrn.slick.parent.databinding.RowBackdropBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
-import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
-
-import java.util.ArrayList;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -32,12 +29,12 @@ public class ItemBackdrop extends ItemBackdropProgressive {
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        ControllerImage.start(
+        /*ControllerImage.start(
                 navigator.getRouter(),
                 backdrop.movieTitle(),
                 ((ArrayList<String>) backdrop.allBackdrops()),
                 position
-        );
+        );*/
     }
 
     private static final String TAG = ItemBackdrop.class.getSimpleName();

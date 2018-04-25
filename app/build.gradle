@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -162,6 +161,7 @@ dependencies {
     implementation 'com.mrezanasirloo:slick-middleware:1.1.3'
     implementation 'com.mrezanasirloo:slick-conductor:1.1.3'
     implementation 'com.mrezanasirloo:slick-reactive:1.1.3'
+    implementation 'com.mrezanasirloo:slick-support-fragment:1.1.3'
     annotationProcessor 'com.mrezanasirloo:slick-compiler:1.1.3'
 
     //conductor
@@ -289,3 +289,4 @@ gradle.projectsEvaluated {
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'

@@ -10,10 +10,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.Screen;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 
 import io.reactivex.subjects.PublishSubject;
@@ -80,10 +79,10 @@ public abstract class ControllerBase extends Controller implements ToolbarHost, 
     }
 
     @Override
-    public void navigateTo(Controller controller) {
-        getRouter().pushController(RouterTransaction.with(controller)
+    public void navigateTo(@NonNull Screen screen) {
+        /*getRouter().pushController(RouterTransaction.with(screen)
                 .popChangeHandler(new HorizontalChangeHandler())
-                .pushChangeHandler(new HorizontalChangeHandler()));
+                .pushChangeHandler(new HorizontalChangeHandler()));*/
     }
 
     @Override

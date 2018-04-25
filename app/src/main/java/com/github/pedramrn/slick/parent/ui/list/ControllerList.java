@@ -16,8 +16,10 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerListBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
@@ -120,5 +122,11 @@ public class ControllerList extends ControllerBase implements ViewList {
         recyclerView = null;
         adapterItems = null;
         adapter = null;
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
     }
 }

@@ -54,6 +54,6 @@ public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implemen
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        ControllerDetails.start(navigator.getRouter(), movie, transitionName);
+        ControllerDetails.newInstance(movie, transitionName);
     }
 }

@@ -6,20 +6,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
+import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
+import com.github.pedramrn.slick.parent.ui.Screen;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.favorite.FloatingFavorite;
@@ -35,11 +37,11 @@ import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
-import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.mrezanasirloo.slick.Presenter;
@@ -66,7 +68,7 @@ import io.reactivex.subjects.PublishSubject;
  * Created on: 2017-04-28
  */
 
-public class ControllerDetails extends ControllerBase implements ViewDetails, MovieProvider {
+public class ControllerDetails extends FragmentBase implements ViewDetails, MovieProvider, Screen {
 
     private static final String TAG = ControllerDetails.class.getSimpleName();
     private static final int RC_SIGN_IN = 123;
@@ -116,28 +118,35 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
     private GroupAdapter adapterSimilar;
     private GroupAdapter adapterBackdrops;
 
-    public ControllerDetails(@NonNull MovieBasic movie, @Nullable String transitionName) {
-        this(new BundleBuilder(new Bundle())
+    public static Screen newInstance(@NonNull MovieBasic movie, @Nullable String transitionName) {
+        Bundle bundle = new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", movie)
                 .putString("IMDB_ID", movie.imdbId())
                 .putString("TRANSITION_NAME", transitionName)
-                .build());
+                .build();
+        ControllerDetails fragment = new ControllerDetails();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public ControllerDetails(@NonNull String imdbId, @Nullable String transitionName) {
-        this(new BundleBuilder(new Bundle())
+    public static Screen newInstance(@NonNull String imdbId, @Nullable String transitionName) {
+        Bundle bundle = new BundleBuilder(new Bundle())
                 .putParcelable("ITEM", null)
                 .putString("IMDB_ID", imdbId)
                 .putString("TRANSITION_NAME", transitionName)
-                .build());
+                .build();
+        ControllerDetails fragment = new ControllerDetails();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public ControllerDetails(@Nullable Bundle args) {
-        super(args);
-        transitionName = getArgs().getString("TRANSITION_NAME");
-        String imdbId = getArgs().getString("IMDB_ID");
-        movie = getArgs().getParcelable("ITEM");
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle arguments = getArguments();
+        transitionName = arguments.getString("TRANSITION_NAME");
+        String imdbId = arguments.getString("IMDB_ID");
+        movie = arguments.getParcelable("ITEM");
         if (movie == null) { // // FIXME: 2018-04-09 this logic should be in the presenter
             movie = MovieSmall.builder()
                     .imdbId(imdbId)
@@ -147,22 +156,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         }
     }
 
-    public static void start(@NonNull Router router, @NonNull MovieBasic movie, String transitionName) {
-        router.pushController(RouterTransaction.with(new ControllerDetails(movie, transitionName))
-                .pushChangeHandler(new HorizontalChangeHandler())
-                .popChangeHandler(new HorizontalChangeHandler())
-        );
-    }
-
-    public static void start(@NonNull Router router, @NonNull String imdbId, String transitionName) {
-        router.pushController(RouterTransaction.with(new ControllerDetails(imdbId, transitionName))
-                .pushChangeHandler(new HorizontalChangeHandler())
-                .popChangeHandler(new HorizontalChangeHandler())
-        );
-    }
-
     @Override
-    protected void onAttach(@NonNull View view) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         System.out.println("LOG_IT_onAttach() called");
         RequestStack.getInstance().processLastRequest();
         //noinspection ConstantConditions
@@ -173,10 +168,9 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         ;
     }
 
-
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle bundle) {
         System.out.println("LOG_IT_onCreateView() called");
         Navigator2.bind(this);
         App.componentMain().inject(this);
@@ -191,7 +185,7 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         fab = binding.floatingFab;
         fab.onBind(getInstanceId());
 
-        final Context context = getApplicationContext();
+        final Context context = getContext().getApplicationContext();
 
         adapterMain = new GroupAdapter();
         adapterSimilar = new GroupAdapter();
@@ -219,7 +213,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         headerCast.setOnClickListener(o -> {
             if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
                 ArrayList<Cast> casts = (ArrayList<Cast>) ((Movie) state.movieBasic()).casts();
-                ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts", new ArrayList<>(casts));
+                // ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts", new ArrayList<>(casts));
+                // FIXME: 2018-04-25
             }
         });
         Section sectionCasts = new Section(headerCast);
@@ -228,7 +223,8 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         headerComments = new ItemCardHeader(102, "Comments", "See All");
         headerComments.setOnClickListener(o -> {
             if (!state.comments().isEmpty() && !(state.comments().get(0) instanceof ItemCommentProgressive)) {
-                ControllerList.start(ControllerDetails.this.getRouter(), "Comments for " + movie.title(), comments());
+                // ControllerList.start(ControllerDetails.this.getRouter(), "Comments for " + movie.title(), comments());
+                // FIXME: 2018-04-25
             }
         });
         Section sectionComments = new Section(headerComments);
@@ -316,23 +312,25 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
     }
 
     @Override
-    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        itemBackdropList.onSaveViewState(view, outState);
-        itemCardListSimilar.onSaveViewState(view, outState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        itemBackdropList.onSaveViewState(outState);
+        itemCardListSimilar.onSaveViewState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) return;
+        itemBackdropList.onRestoreViewState(savedInstanceState);
+        itemCardListSimilar.onRestoreViewState(savedInstanceState);
     }
 
 
     @Override
-    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        itemBackdropList.onRestoreViewState(view, savedViewState);
-        itemCardListSimilar.onRestoreViewState(view, savedViewState);
-    }
-
-
-    @Override
-    protected void onDestroyView(@NonNull View view) {
+    public void onDestroyView() {
         System.out.println("LOG_IT_ControllerDetails.onDestroyView");
-        super.onDestroyView(view);
+        super.onDestroyView();
         adapterBackdrops.setOnItemClickListener(null);
         adapterSimilar.setOnItemClickListener(null);
         adapterMain.setOnItemClickListener(null);
@@ -365,12 +363,12 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
         adapterMain = null;
 
         fab = null;
-        System.out.println("LOG_IT_isBeingDestroyed() = [" + isBeingDestroyed() + "]");
-        super.onDestroyView(view);
+        System.out.println("LOG_IT_isRemoving()= [" + isRemoving() + "]");
+        super.onDestroyView();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         System.out.println("LOG_IT_ControllerDetails.onDestroy");
         PresenterFloatingFavorite_Slick.onDestroy(getInstanceId(), getActivity());
         super.onDestroy();
@@ -424,6 +422,22 @@ public class ControllerDetails extends ControllerBase implements ViewDetails, Mo
 
     @Override
     public void error(short code) {
-        snackbar.setText(ErrorHandler.message(getApplicationContext(), code)).show();
+        snackbar.setText(ErrorHandler.message(getContext().getApplicationContext(), code)).show();
+    }
+
+    @Override
+    public void navigateTo(@NonNull Screen screen) {
+        if (screen instanceof Fragment) {
+            getFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.controller_container, ((Fragment) screen))
+                    .commit();
+        }
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
     }
 }

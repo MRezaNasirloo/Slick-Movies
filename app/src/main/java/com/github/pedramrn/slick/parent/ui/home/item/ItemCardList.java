@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardListBinding;
@@ -103,13 +102,13 @@ public class ItemCardList extends Item<RowCardListBinding> {
                 });
     }
 
-    public void onSaveViewState(View view, Bundle outState) {
+    public void onSaveViewState(Bundle outState) {
         Log.d(TAG + tag, "onSaveViewState");
         outState.putInt(SCROLL_POS, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
         outState.putBoolean(IS_LOADING, isLoading);
     }
 
-    public void onRestoreViewState(View view, Bundle savedViewState) {
+    public void onRestoreViewState(Bundle savedViewState) {
         Log.d(TAG + tag, "onRestoreViewState");
         isLoading = savedViewState.getBoolean(IS_LOADING, isLoading);
         scrollPos = savedViewState.getInt(SCROLL_POS);

@@ -69,11 +69,11 @@ public static final String TAG = ItemListHorizontal.class.getSimpleName();
         return new LinearLayoutManager(root.getContext(), LinearLayoutManager.HORIZONTAL, false);
     }
 
-    public void onSaveViewState(View view, Bundle outState) {
+    public void onSaveViewState(Bundle outState) {
         outState.putInt(SCROLL_POS, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
     }
 
-    public void onRestoreViewState(View view, Bundle savedViewState) {
+    public void onRestoreViewState(Bundle savedViewState) {
         scrollPos = savedViewState.getInt(SCROLL_POS);
     }
 

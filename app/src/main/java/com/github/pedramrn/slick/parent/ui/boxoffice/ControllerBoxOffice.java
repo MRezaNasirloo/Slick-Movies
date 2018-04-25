@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
@@ -98,5 +100,11 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item));
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
     }
 }

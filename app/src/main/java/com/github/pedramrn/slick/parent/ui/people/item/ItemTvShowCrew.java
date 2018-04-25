@@ -2,8 +2,6 @@ package com.github.pedramrn.slick.parent.ui.people.item;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 
 import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
@@ -29,9 +27,6 @@ public class ItemTvShowCrew extends ItemMovieCast {
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        View view = navigator.getView();
-        if (view != null) {
-            Snackbar.make(view, "Under Construction!!!", Snackbar.LENGTH_LONG).show();
-        }
+        navigator.snackbarManager().show("Under Construction!!!");
     }
 }

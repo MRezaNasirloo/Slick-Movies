@@ -15,8 +15,11 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
+import com.github.pedramrn.slick.parent.ui.Screen;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
@@ -50,8 +53,7 @@ import io.reactivex.disposables.Disposable;
  *
  */
 public class ControllerPeople extends ControllerElm<ViewStatePeople>
-        implements ViewPeople, AppBarLayout.OnOffsetChangedListener, OnItemClickListener {
-
+        implements ViewPeople, AppBarLayout.OnOffsetChangedListener, OnItemClickListener, Screen {
     @Inject
     Provider<PresenterPeople> provider;
     @Presenter
@@ -260,5 +262,11 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
             return;
         }
         ((OnItemAction) item).action(this, null, adapterMovies.getAdapterPosition(item));
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
     }
 }

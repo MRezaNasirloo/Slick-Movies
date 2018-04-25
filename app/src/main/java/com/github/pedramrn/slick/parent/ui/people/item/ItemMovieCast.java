@@ -74,6 +74,6 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> implements OnItemA
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        ControllerDetails.start(navigator.getRouter(), MovieSmall.create(coc), transitionName);
+        navigator.navigateTo(ControllerDetails.newInstance(MovieSmall.create(coc), transitionName));
     }
 }

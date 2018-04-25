@@ -14,8 +14,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
 
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowFavoriteMovieTvBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
@@ -142,10 +140,7 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        navigator.getRouter().pushController(RouterTransaction.with(new ControllerDetails(movie, transitionName))
-                .pushChangeHandler(new HorizontalChangeHandler())
-                .popChangeHandler(new HorizontalChangeHandler())
-        );
+        navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
     }
 
     @Override

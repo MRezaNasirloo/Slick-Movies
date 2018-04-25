@@ -10,10 +10,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMarginSide;
@@ -37,18 +33,18 @@ import io.reactivex.subjects.PublishSubject;
  * A base Recycler View for loaing a list of movies progressivly
  */
 public abstract class RecyclerViewCardListAbs extends RecyclerView implements ViewCardList, OnItemClickListener,
-        Navigator, Retryable, SlickLifecycleListener, SlickUniqueId {
+        Retryable, SlickLifecycleListener, SlickUniqueId {
 
     public static final String TAG = RecyclerViewCardListAbs.class.getSimpleName();
     private static final String SCROLL_POS = "SCROLL_POS_";
 
     private PublishSubject<String> onRetry = PublishSubject.create();
     private boolean isLoading;
-    private Router router;
     private AdapterLightWeight adapter;
 
     protected int scrollPosition;
     private ItemDecoration margin;
+    private Navigator navigator;
 
     public RecyclerViewCardListAbs(Context context) {
         super(context);
@@ -134,40 +130,25 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(this, null, ((AdapterLightWeight) getAdapter()).getAdapterPosition(item));
+        ((OnItemAction) item).action(navigator, null, ((AdapterLightWeight) getAdapter()).getAdapterPosition(item));
     }
 
-    public void setRouter(Router router) {
-        this.router = router;
+    public void setNavigator(Navigator navigator) {
+        this.navigator = navigator;
     }
 
-    @Override
-    public Router getRouter() {
-        return router;
-    }
-
-    @Override
-    public void navigateTo(Controller controller) {
-        getRouter().pushController(RouterTransaction.with(controller)
-                .popChangeHandler(new HorizontalChangeHandler())
-                .pushChangeHandler(new HorizontalChangeHandler()));
-    }
-
-    @Override
-    public View getView() {
-        return getRootView();
-    }
 
     public void setScrollPosition(int scrollPosition) {
-        this.scrollPosition = scrollPosition;
+        RecyclerViewCardListAbs.this.scrollPosition = scrollPosition;
     }
 
-    public void onSaveViewState(View view, Bundle outState, String tag) {
+    public void onSaveViewState(Bundle outState, String tag) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
         outState.putInt(SCROLL_POS + tag, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
     }
 
-    public void onRestoreViewState(View view, Bundle savedViewState, String tag) {
+    public void onRestoreViewState(Bundle savedViewState, String tag) {
+        if (savedViewState == null) return;
         scrollPosition = savedViewState.getInt(SCROLL_POS + tag, 0);
         if (scrollPosition > 0) {
             LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
@@ -182,5 +163,9 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
     @Override
     public String getUniqueId() {
         return id;
+    }
+
+    public void onDestroy() {
+        navigator = null;
     }
 }

@@ -4,17 +4,18 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
 import com.mrezanasirloo.slick.middleware.RequestStack;
 import com.orhanobut.logger.Logger;
@@ -27,7 +28,6 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     @Inject
     RepositoryGoogleAuthImpl googleAuth;
 
-    private Router router;
     private String CONTROLLER_MAIN_TAG = "ControllerMain_TAG";
 
     @Override
@@ -35,10 +35,15 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
         super.onCreate(savedInstanceState);
         final ActivityMainBinding view = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Navigator2.bind(this);
-        router = Conductor.attachRouter(this, view.controllerContainer, savedInstanceState);
-        if (!router.hasRootController()) {
-            router.setRoot(RouterTransaction.with(new ControllerMain(new Uri.Builder().build())));
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragmentByTag = fm.findFragmentByTag(CONTROLLER_MAIN_TAG);
+        if (fragmentByTag == null) {
+            fm.beginTransaction()
+                    .replace(R.id.controller_container, ControllerMain.newInstance(new Uri.Builder().build()),
+                            CONTROLLER_MAIN_TAG)
+                    .commit();
         }
+
         onNewIntent(getIntent());
         App.componentMain().inject(this);
         getLifecycle().addObserver(googleAuth);
@@ -50,7 +55,9 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
                 && Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())
                 && intent.getBooleanExtra("IMDB_URI", true)) {
             Logger.w(TAG, "Starting with intent");
-            router.setRoot(RouterTransaction.with(new ControllerMain(intent.getData())));
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.controller_container, ControllerMain.newInstance(intent.getData()))
+                    .commit();
             intent.putExtra("IMDB_URI", false);
             setIntent(intent);// Consumed
         }
@@ -67,9 +74,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     @Override
     public void onBackPressed() {
         RequestStack.getInstance().handleBack();
-        if (!router.handleBack()) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
@@ -109,6 +114,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     }
 
     public Router getRouter() {
-        return router;
+        // TODO: 2018-04-25 refactor this to an interface
+        throw new NotImplementedException("TODO: It needs a router");
     }
 }

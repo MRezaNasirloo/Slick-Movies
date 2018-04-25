@@ -14,7 +14,9 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerFavoriteBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
@@ -119,5 +121,11 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item));
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
     }
 }

@@ -1,17 +1,14 @@
 package com.github.pedramrn.slick.parent.ui;
 
-import android.view.View;
-
-import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.Router;
+import android.support.annotation.NonNull;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-09-17
+ * Created on: 2017-09-17
  */
 public interface Navigator {
-    Router getRouter();
-    void navigateTo(Controller controller);
+    void navigateTo(@NonNull Screen screen);
 
-    View getView();
+    @NonNull
+    SnackbarManager snackbarManager();
 }

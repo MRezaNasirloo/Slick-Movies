@@ -18,7 +18,9 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerVideosBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ErrorHandlerSnackbar;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
@@ -168,5 +170,11 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, OnIt
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item));
+    }
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
     }
 }

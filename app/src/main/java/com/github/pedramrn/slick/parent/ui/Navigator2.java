@@ -1,10 +1,11 @@
 package com.github.pedramrn.slick.parent.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Controller;
@@ -15,19 +16,24 @@ import java.lang.ref.WeakReference;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-11-09
+ * Created on: 2017-11-09
  */
 
 public class Navigator2 {
-    private static WeakReference<Activity> weakReferenceActivity;
+    private static WeakReference<AppCompatActivity> weakReferenceActivity;
     private static WeakReference<Controller> weakReferenceController;
+    private static WeakReference<Fragment> weakReferenceFragment;
 
-    public static void bind(Activity activity) {
+    public static void bind(AppCompatActivity activity) {
         weakReferenceActivity = new WeakReference<>(activity);
     }
 
     public static void bind(Controller controller) {
         weakReferenceController = new WeakReference<>(controller);
+    }
+
+    public static void bind(Fragment fragment) {
+        weakReferenceFragment = new WeakReference<>(fragment);
     }
 
     public static void unbindActivity() {
@@ -46,9 +52,9 @@ public class Navigator2 {
     }
 
     public static void go(@IdRes int id, Fragment fragment) {
-        final Activity context = weakReferenceActivity.get();
+        final AppCompatActivity context = weakReferenceActivity.get();
         if (context != null) {
-            context.getFragmentManager().beginTransaction().replace(id, fragment).commit();
+            context.getSupportFragmentManager().beginTransaction().replace(id, fragment).commit();
         }
     }
 
@@ -94,6 +100,4 @@ public class Navigator2 {
             return null;
         }
     }
-
-
 }

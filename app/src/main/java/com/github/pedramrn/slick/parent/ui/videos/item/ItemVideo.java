@@ -22,6 +22,7 @@ import com.xwray.groupie.Item;
 public class ItemVideo extends Item<RowVideoBinding> implements OnItemAction {
 
     private final Video video;
+    private Context applicationContext;
 
     public ItemVideo(long id, Video video) {
         super(id);
@@ -35,6 +36,7 @@ public class ItemVideo extends Item<RowVideoBinding> implements OnItemAction {
 
     @Override
     public void bind(RowVideoBinding viewBinding, int position) {
+        applicationContext = viewBinding.getRoot().getContext().getApplicationContext();
         viewBinding.layoutShimmer.stopShimmerAnimation();
         viewBinding.imageViewThumbnail.load(video.thumbnail());
         viewBinding.textViewName.setBackground(null);
@@ -46,7 +48,7 @@ public class ItemVideo extends Item<RowVideoBinding> implements OnItemAction {
     @Override
     @SuppressWarnings("ConstantConditions")
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        playYoutubeVideo(navigator.getView().getContext(), video.key());
+        playYoutubeVideo(applicationContext, video.key());
     }
 
     private static void playYoutubeVideo(@NonNull Context context, @NonNull String id) {

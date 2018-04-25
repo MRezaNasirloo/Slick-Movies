@@ -21,8 +21,10 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerImageBinding;
+import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
+import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.pedramrn.slick.parent.ui.main.ViewPager;
@@ -236,4 +238,10 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
     }
 
     private static final String TAG = ControllerImage.class.getSimpleName();
+
+    @NonNull
+    @Override
+    public SnackbarManager snackbarManager() {
+        throw new NotImplementedException("Sorry!!!");
+    }
 }
