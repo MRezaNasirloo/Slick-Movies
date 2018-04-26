@@ -59,6 +59,33 @@ public class ImageViewLoader extends AppCompatImageView {
                 .into(this);
     }
 
+    public void load(String url, Runnable callback) {
+        if (mock) {
+            setBackgroundResource(R.drawable.rectangle_no_corners);
+            return;
+        }
+        if (url == null) {
+            // TODO: 2017-11-11 do this for all
+            setImageResource(R.drawable.rectangle_no_corners);
+            return;
+        }
+        Context context = getContext();
+        picasso(context)
+                .load(url)
+                .placeholder(R.drawable.rectangle_no_corners)
+                .into(this, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        callback.run();
+                    }
+
+                    @Override
+                    public void onError() {
+                        callback.run();
+                    }
+                });
+    }
+
     public void load(String thumbnailUrl, String url) {
         if (mock) {
             setBackgroundResource(R.drawable.rectangle_no_corners);
