@@ -12,6 +12,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.ChangeTransform;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,6 +33,7 @@ import com.github.pedramrn.slick.parent.databinding.RowCardHeaderBinding;
 import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.Screen;
+import com.github.pedramrn.slick.parent.ui.ScreenTransition;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
@@ -245,7 +254,7 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerHome.this, null, adapter
-                .getAdapterPosition(item)));
+                .getAdapterPosition(item), view));
     }
 
     @Override
@@ -280,4 +289,51 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
         throw new NotImplementedException("Sorry!!");
     }
 
+
+    @Override
+    public ScreenTransition getScreenTransition() {
+        TransitionSet transition = new TransitionSet()
+                .setOrdering(TransitionSet.ORDERING_TOGETHER)
+                .addTransition(new ChangeTransform())
+                .addTransition(new ChangeBounds())
+                .addTransition(new ChangeClipBounds())
+                .addTransition(new ChangeImageTransform());
+        transition.setPathMotion(new ArcMotion());
+
+        return new ScreenTransition() {
+            @Override
+            public Transition sharedElementEnterTransition() {
+                return transition;
+            }
+
+            @Override
+            public Transition sharedElementReturnTransition() {
+                return transition;
+            }
+
+            @Override
+            public Transition exitTransition() {
+                return new Fade();
+            }
+
+            @Override
+            public Transition enterTransition() {
+                return new Fade();
+            }
+
+            @Override
+            public Transition reenterTransition() {
+                return new Fade();
+            }
+        };
+    }
+
+    @Override
+    public void setScreenTransition(ScreenTransition screenTransition) {
+        setExitTransition(screenTransition.exitTransition().setDuration(300));
+        setReenterTransition(screenTransition.reenterTransition().setDuration(300));
+        setEnterTransition(screenTransition.enterTransition().setDuration(300));
+        // setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition());
+        // setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition());
+    }
 }

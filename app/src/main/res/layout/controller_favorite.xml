@@ -5,8 +5,9 @@
     tools:context="com.github.pedramrn.slick.parent.ui.favorite.Favorite"
     >
 
+    <!--fixme duplicate id-->
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/container"
+        android:id="@+id/container_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >

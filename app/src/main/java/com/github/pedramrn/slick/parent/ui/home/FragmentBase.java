@@ -19,6 +19,7 @@ import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.details.ErrorHandlerSnackbar;
 import com.mrezanasirloo.slick.SlickUniqueId;
+import com.orhanobut.logger.Logger;
 
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
  * @author : M.Reza.Nasirloo@gmail.com
  * Created on: 2018-04-25
  */
-public class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
+public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
     private String id;
 
@@ -66,6 +67,24 @@ public class FragmentBase extends Fragment implements SlickUniqueId, Screen, Too
                     .addToBackStack(screen.toString())
                     .commit();
         }
+    }
+
+    private static final String TAG = FragmentBase.class.getSimpleName();
+
+    @Override
+    public void navigateTo(@NonNull Screen screen, View sharedView, String transitionName) {
+        Logger.e("navigateTo() called with: screen = [" + screen + "], sharedView = [" + sharedView + "], transitionName = ["
+                + transitionName + "]");
+        screen.setScreenTransition(screen.getScreenTransition());
+        setScreenTransition(getScreenTransition());
+
+        getFragmentManager()
+                .beginTransaction()
+                .addSharedElement(sharedView, transitionName)
+                .replace(R.id.fragment_container, ((Fragment) screen), "tag")
+                .addToBackStack(null)
+                .commit();
+
     }
 
     @NonNull

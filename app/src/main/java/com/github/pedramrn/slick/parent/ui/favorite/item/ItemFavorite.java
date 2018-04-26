@@ -13,6 +13,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
+import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowFavoriteMovieTvBinding;
@@ -139,7 +140,7 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
         navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
     }
 

@@ -5,6 +5,7 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
@@ -50,8 +51,7 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
         viewBinding.textViewTitle.setBackground(null);
         viewBinding.imageViewPoster.setBackground(null);
         viewBinding.imageViewPoster.setTransitionName(transitionName);
-        viewBinding.imageViewPoster.loadBlur(movie.thumbnailTinyPoster());
-        viewBinding.imageViewPoster.load(movie.thumbnailPoster());
+        viewBinding.imageViewPoster.load(movie.thumbnailTinyPoster(), movie.thumbnailPoster());
     }
 
     @Override
@@ -71,8 +71,10 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
         return false;
     }
 
+    private static final String TAG = ItemCardMovie.class.getSimpleName();
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+        navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName), view.findViewById(R.id.imageView_poster),
+                transitionName);
     }
 }

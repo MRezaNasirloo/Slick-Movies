@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
+    <!--fixme duplicate id-->
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/container"
+        android:id="@+id/container_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >

@@ -79,7 +79,7 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
     private static final String TAG = ItemCardHeader.class.getSimpleName();
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
         //no-op
     }
 

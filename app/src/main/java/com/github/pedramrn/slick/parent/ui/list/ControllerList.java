@@ -82,7 +82,7 @@ public class ControllerList extends ControllerBase implements ViewList {
 
         adapter.setOnItemClickListener((item, view) -> {
             if (item instanceof OnItemAction) {
-                ((OnItemAction) item).action(ControllerList.this, null, adapter.getAdapterPosition(item));
+                ((OnItemAction) item).action(ControllerList.this, null, adapter.getAdapterPosition(item), view);
             }
         });
 

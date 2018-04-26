@@ -2,13 +2,12 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.pedramrn.slick.parent.ui.people.ControllerPeople;
-import com.github.pedramrn.slick.parent.ui.people.model.Person;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -42,11 +41,12 @@ public class ItemCast extends ItemCastProgressive implements OnItemAction {
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position) {
-        navigator.navigateTo(new ControllerPeople(Person.create(
+    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+        /*navigator.navigateTo(new ControllerPeople(Person.create(
                 cast.id(),
                 cast.name(),
                 cast.profilePicId()
-        ), transitionName()));
+        ), transitionName()), view, transitionName());*/
+        // FIXME: 2018-04-26 convert to fragment
     }
 }

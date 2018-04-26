@@ -60,8 +60,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         PresenterFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
-        ViewGroup containerChild = binding.container.findViewById(R.id.container_child);
-        Router childRouter = getChildRouter(containerChild).setPopsLastView(false);
+        Router childRouter = getChildRouter(binding.containerChild).setPopsLastView(false);
         if (!childRouter.hasRootController()) {
             ControllerAuth controllerAuth = new ControllerAuth(false, getInstanceId());
             childRouter.setRoot(RouterTransaction.with(controllerAuth));
@@ -120,7 +119,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item));
+        ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item), view);
     }
 
     @NonNull

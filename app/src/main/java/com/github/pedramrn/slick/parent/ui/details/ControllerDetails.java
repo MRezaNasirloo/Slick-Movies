@@ -9,6 +9,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.ChangeTransform;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +29,7 @@ import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.Screen;
+import com.github.pedramrn.slick.parent.ui.ScreenTransition;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
@@ -361,6 +370,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
         adapterMain.clear();
         adapterMain = null;
+        fab.onDestroy();
 
         fab = null;
         System.out.println("LOG_IT_isRemoving()= [" + isRemoving() + "]");
@@ -393,7 +403,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item)
-                .action(ControllerDetails.this, null, adapter.getAdapterPosition(item)));
+                .action(ControllerDetails.this, null, adapter.getAdapterPosition(item), view));
     }
 
     @Override
@@ -439,5 +449,53 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     @Override
     public SnackbarManager snackbarManager() {
         throw new NotImplementedException("Sorry!!!");
+    }
+
+    @Override
+    public ScreenTransition getScreenTransition() {
+        TransitionSet transition = new TransitionSet()
+                .setOrdering(TransitionSet.ORDERING_TOGETHER)
+                .addTransition(new ChangeTransform())
+                .addTransition(new ChangeBounds())
+                .addTransition(new ChangeClipBounds())
+                .addTransition(new ChangeImageTransform());
+        transition.setPathMotion(new ArcMotion());
+
+        return new ScreenTransition() {
+
+            @Override
+            public Transition sharedElementEnterTransition() {
+                return transition;
+            }
+
+            @Override
+            public Transition sharedElementReturnTransition() {
+                return transition;
+            }
+
+            @Override
+            public Transition exitTransition() {
+                return new Fade();
+            }
+
+            @Override
+            public Transition enterTransition() {
+                return new Fade();
+            }
+
+            @Override
+            public Transition reenterTransition() {
+                return new Fade();
+            }
+        };
+    }
+
+    @Override
+    public void setScreenTransition(ScreenTransition screenTransition) {
+        setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition().setDuration(300));
+        // setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition().setDuration(300));
+        setEnterTransition(screenTransition.enterTransition().setDuration(300));
+        setExitTransition(screenTransition.exitTransition().setDuration(300));
+        setReenterTransition(screenTransition.reenterTransition().setDuration(300));
     }
 }

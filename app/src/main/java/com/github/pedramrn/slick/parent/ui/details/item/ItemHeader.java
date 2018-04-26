@@ -17,6 +17,7 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.orhanobut.logger.Logger;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
@@ -98,7 +99,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         viewBinding.textViewScoreTrakt.setCompoundDrawablesRelative(logoTrakt, null, null, null);
         // viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
-        viewBinding.imageViewIcon.load(movie.thumbnailPoster());
+        viewBinding.imageViewIcon.load(movie.thumbnailPoster(), () -> {
+            viewBinding.imageViewIcon.setTransitionName(transitionName);
+            Logger.i("Transition Name is: %s", transitionName);
+        });
         Disposable disposable = RxView.clicks(viewBinding.imageViewIcon)
                 .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this);

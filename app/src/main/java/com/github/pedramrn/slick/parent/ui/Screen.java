@@ -5,4 +5,7 @@ package com.github.pedramrn.slick.parent.ui;
  * Created on: 2018-04-25
  */
 public interface Screen {
+    ScreenTransition getScreenTransition();
+
+    void setScreenTransition(ScreenTransition screenTransition);
 }

@@ -106,4 +106,9 @@ public abstract class ControllerBase extends Controller implements ToolbarHost, 
     protected void showSnakbar(@NonNull String message) {
         snackbar.show(message);
     }
+
+    @Override
+    public void navigateTo(@NonNull Screen screen, View sharedView, String transitionName) {
+
+    }
 }

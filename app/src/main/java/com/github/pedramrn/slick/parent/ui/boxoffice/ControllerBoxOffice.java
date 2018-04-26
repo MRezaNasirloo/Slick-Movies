@@ -99,7 +99,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item));
+        ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item), view);
     }
 
     @NonNull

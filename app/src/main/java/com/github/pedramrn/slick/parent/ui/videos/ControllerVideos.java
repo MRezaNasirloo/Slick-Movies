@@ -169,7 +169,7 @@ public class ControllerVideos extends ControllerBase implements ViewVideos, OnIt
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item));
+        ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item), view);
     }
 
     @NonNull
