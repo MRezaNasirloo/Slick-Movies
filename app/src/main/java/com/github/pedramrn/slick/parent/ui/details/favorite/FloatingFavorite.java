@@ -68,6 +68,7 @@ public class FloatingFavorite extends FloatingActionButton
     protected void onAttachedToWindow() {
         System.out.println("LOG_IT_FloatingFavorite.onAttachedToWindow");
         super.onAttachedToWindow();
+        if (presenter == null) return;
         PresenterFloatingFavorite_Slick.onAttach(this);
 
     }
@@ -111,6 +112,7 @@ public class FloatingFavorite extends FloatingActionButton
         System.out.println("LOG_IT_FloatingFavorite.onDestroy");
         drawableFav = null;
         drawableUnFav = null;
+        presenter = null;
     }
 
     private String id;
