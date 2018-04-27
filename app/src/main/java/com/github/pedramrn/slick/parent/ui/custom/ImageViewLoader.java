@@ -9,13 +9,13 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.github.pedramrn.slick.parent.R;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Action;
 import io.reactivex.subjects.CompletableSubject;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -93,6 +93,7 @@ public class ImageViewLoader extends AppCompatImageView {
         }
         if (url == null || thumbnailUrl == null) {
             // TODO: 2017-11-11 do this for all
+            Logger.e("load: something was null");
             setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
@@ -100,6 +101,7 @@ public class ImageViewLoader extends AppCompatImageView {
         Picasso.with(context)
                 .load(thumbnailUrl)
                 .transform(new BlurTransformation(context))
+                .placeholder(R.drawable.rectangle_no_corners)
                 .into(this, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -217,12 +219,7 @@ public class ImageViewLoader extends AppCompatImageView {
         }
         final CompletableSubject subject = CompletableSubject.create();
         subject.ambWith(Observable.just(1).take(1).delay(500, TimeUnit.MILLISECONDS).ignoreElements())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        onCompleteGlide.onCompleteGlide();
-                    }
-                });
+                .subscribe(() -> onCompleteGlide.onCompleteGlide());
         final Context context = getContext();
         picasso(context)
                 .load(url)
