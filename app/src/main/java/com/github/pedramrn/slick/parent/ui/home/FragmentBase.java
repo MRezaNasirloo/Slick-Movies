@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -12,7 +13,6 @@ import android.widget.Toast;
 
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.Screen;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
@@ -36,9 +36,14 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
  */
 public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
-    private String id;
+    private static final String TAG = FragmentBase.class.getSimpleName();
+    protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
+    protected final PublishSubject<Object> retry = PublishSubject.create();
     private CompositeDisposable compositeDisposable;
+    private ErrorHandlerSnackbar snackbar;
+    private String id;
 
+    @CallSuper
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,37 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
         setScreenTransition(getScreenTransition());
     }
 
+    @CallSuper
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        snackbar = new ErrorHandlerSnackbar(view, "Retry") {
+            @Override
+            public void onDismissed(int event) {
+                errorDismissed.onNext(1);
+                if (Snackbar.Callback.DISMISS_EVENT_ACTION == event) {
+                    retry.onNext(1);
+                }
+            }
+        };
+    }
+
+    @CallSuper
+    @Override
+    public void onDestroyView() {
+        setToolbar(null);
+        snackbar = null;
+        UtilsRx.dispose(compositeDisposable);
+        super.onDestroyView();
+    }
+
+    @CallSuper
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        App.refWatcher(getActivity()).watch(this);
+    }
+
+    @CallSuper
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -75,8 +111,6 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
         }
     }
 
-    private static final String TAG = FragmentBase.class.getSimpleName();
-
     @Override
     public void navigateTo(@NonNull Screen screen, View sharedView, String transitionName) {
         Logger.e("navigateTo() called with: screen = [" + screen + "], sharedView = [" + sharedView + "], transitionName = ["
@@ -94,12 +128,8 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
     @NonNull
     @Override
     public SnackbarManager snackbarManager() {
-        throw new NotImplementedException("Sorry!!!");
+        return message -> snackbar.show(message);
     }
-
-    protected final PublishSubject<Object> retry = PublishSubject.create();
-    protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
-    private ErrorHandlerSnackbar snackbar;
 
 
     public ToolbarHost setToolbar(Toolbar toolbar) {
@@ -121,42 +151,11 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
         return this;
     }
 
-    @Override
-    public void onDestroyView() {
-        setToolbar(null);
-        snackbar = null;
-        UtilsRx.dispose(compositeDisposable);
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        App.refWatcher(getActivity()).watch(this);
-    }
-
     protected void renderError(@Nullable Throwable throwable) {
         if (throwable != null) {
             throwable.printStackTrace();
             Toast.makeText(this.getContext().getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        snackbar = new ErrorHandlerSnackbar(view, "Retry") {
-            @Override
-            public void onDismissed(int event) {
-                errorDismissed.onNext(1);
-                if (Snackbar.Callback.DISMISS_EVENT_ACTION == event) {
-                    retry.onNext(1);
-                }
-            }
-        };
-    }
-
-    protected void showSnakbar(String message) {
-        snackbar.show(message);
     }
 
     public void add(Disposable disposable) {

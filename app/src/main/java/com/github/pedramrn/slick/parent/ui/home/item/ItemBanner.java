@@ -59,7 +59,6 @@ public class ItemBanner extends Item<RowBannerBinding> implements OnItemAction, 
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
-        ControllerVideos.start(null, movie, transitionName(), position);
-        // FIXME: 2018-04-25
+        navigator.navigateTo(ControllerVideos.newInstance(movie, transitionName()));
     }
 }
