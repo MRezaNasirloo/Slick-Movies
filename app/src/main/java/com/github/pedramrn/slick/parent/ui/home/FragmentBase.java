@@ -46,6 +46,7 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
             id = savedInstanceState.getString(SLICK_UNIQUE_KEY);
         }
         compositeDisposable = new CompositeDisposable();
+        setScreenTransition(getScreenTransition());
     }
 
     @Override
@@ -81,8 +82,6 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
         Logger.e("navigateTo() called with: screen = [" + screen + "], sharedView = [" + sharedView + "], transitionName = ["
                 + transitionName + "]");
         screen.setScreenTransition(screen.getScreenTransition());
-        setScreenTransition(getScreenTransition());
-
         getFragmentManager()
                 .beginTransaction()
                 .addSharedElement(sharedView, transitionName)
