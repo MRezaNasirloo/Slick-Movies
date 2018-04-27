@@ -46,7 +46,6 @@ public class RecyclerViewCardListTrending extends RecyclerViewCardListAbs {
         super.onAttachedToWindow();
         Logger.d("onAttachedToWindow() called: " + getUniqueId());
         PresenterCardList_Slick.onAttach(this);
-        getLayoutManager().scrollToPosition(scrollPosition);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,13 +35,11 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         Retryable, SlickLifecycleListener, SlickUniqueId {
 
     public static final String TAG = RecyclerViewCardListAbs.class.getSimpleName();
-    private static final String SCROLL_POS = "SCROLL_POS_";
 
     private PublishSubject<String> onRetry = PublishSubject.create();
     private boolean isLoading;
     private AdapterLightWeight adapter;
 
-    protected int scrollPosition;
     private ItemDecoration margin;
     private Navigator navigator;
 
@@ -80,9 +77,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     protected void onDetachedFromWindow() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-        Log.d(TAG, "onDetachedFromWindow: X: Y: " + layoutManager.findFirstVisibleItemPosition());
-        Log.d(TAG, "onDetachedFromWindow");
+        Log.e(TAG, "onDetachedFromWindow");
         if (adapter != null) {
             adapter.setOnItemClickListener(null);
             adapter = null;
@@ -135,26 +130,6 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     public void setNavigator(Navigator navigator) {
         this.navigator = navigator;
-    }
-
-
-    public void setScrollPosition(int scrollPosition) {
-        RecyclerViewCardListAbs.this.scrollPosition = scrollPosition;
-    }
-
-    public void onSaveViewState(Bundle outState, String tag) {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-        outState.putInt(SCROLL_POS + tag, layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0);
-    }
-
-    public void onRestoreViewState(Bundle savedViewState, String tag) {
-        if (savedViewState == null) return;
-        scrollPosition = savedViewState.getInt(SCROLL_POS + tag, 0);
-        if (scrollPosition > 0) {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-            layoutManager.scrollToPosition(scrollPosition);
-        }
-
     }
 
     protected String id;

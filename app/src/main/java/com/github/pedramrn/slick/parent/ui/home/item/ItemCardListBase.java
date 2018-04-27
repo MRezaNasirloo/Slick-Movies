@@ -55,7 +55,6 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
         recyclerView.addItemDecoration(margin);
         // TODO: 2018-04-25 commented out
         // recyclerView.setNavigator(router);
-        recyclerView.setScrollPosition(scrollPos);
 //        snapHelper.attachToRecyclerView(recyclerView);
     }
 

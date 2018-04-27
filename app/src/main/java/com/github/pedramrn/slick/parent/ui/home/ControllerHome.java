@@ -36,7 +36,6 @@ import com.github.pedramrn.slick.parent.ui.Screen;
 import com.github.pedramrn.slick.parent.ui.ScreenTransition;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
-import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.PresenterCardList_Slick;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPopular;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
@@ -105,6 +104,7 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
         if (savedInstanceState != null) handled = savedInstanceState.getBoolean("HANDLED", false);
         Bundle bundle = getArguments();
         if (bundle != null) { uri = bundle.getParcelable("URI"); } else uri = null;
+        Log.e(TAG, "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
     }
 
     @NonNull
@@ -271,15 +271,11 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("HANDLED", handled);
-        // recyclerViewCardListTrending.onSaveViewState(outState, PresenterCardList.TRENDING);
-        // recyclerViewCardListPopular.onSaveViewState(outState, PresenterCardList.POPULAR);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        recyclerViewCardListTrending.onRestoreViewState(savedInstanceState, PresenterCardList.TRENDING);
-        recyclerViewCardListPopular.onRestoreViewState(savedInstanceState, PresenterCardList.POPULAR);
         super.onViewStateRestored(savedInstanceState);
     }
 
