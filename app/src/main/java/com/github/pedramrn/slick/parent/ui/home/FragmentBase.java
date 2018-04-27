@@ -18,11 +18,14 @@ import com.github.pedramrn.slick.parent.ui.Screen;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.details.ErrorHandlerSnackbar;
+import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.mrezanasirloo.slick.SlickUniqueId;
 import com.orhanobut.logger.Logger;
 
 import java.util.UUID;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
@@ -34,6 +37,7 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
 public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
     private String id;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
         if (savedInstanceState != null) {
             id = savedInstanceState.getString(SLICK_UNIQUE_KEY);
         }
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -121,6 +126,7 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
     public void onDestroyView() {
         setToolbar(null);
         snackbar = null;
+        UtilsRx.dispose(compositeDisposable);
         super.onDestroyView();
     }
 
@@ -152,5 +158,9 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
 
     protected void showSnakbar(String message) {
         snackbar.show(message);
+    }
+
+    public void add(Disposable disposable) {
+        compositeDisposable.add(disposable);
     }
 }

@@ -70,6 +70,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -116,6 +117,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     private PublishSubject<Object> onErrorDismissed = PublishSubject.create();
     private FloatingFavorite fab;
     private Snackbar snackbar;
+    private PublishSubject<MovieBasic> headerMoviePublish = PublishSubject.create();
 
     private Snackbar.Callback callback = new Snackbar.Callback() {
         @Override
@@ -271,6 +273,19 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
             return false;
         });*/
 
+        updatingHeader.update(Collections.singletonList(new ItemHeader(ControllerDetails.this, movie, transitionName)));
+
+        // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
+        // the animation is stopped, weirdly shared animation callback didn't work all the time.
+        add(headerMoviePublish.distinct()
+                .delay(302, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .subscribe(movieBasic -> {
+                    if (updatingHeader != null) {
+                        updatingHeader.update(
+                                Collections.singletonList(new ItemHeader(this, movieBasic, transitionName)));
+                    }
+                }));
+
         return binding.getRoot();
     }
 
@@ -284,7 +299,12 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         collapsingToolbar.setTitle(movie.title());
         imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
-        updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
+        /*if (animationEnded) {
+            updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
+            Logger.d("Updated Header!");
+        }*/
+
+        headerMoviePublish.onNext(movie);
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));
@@ -345,8 +365,9 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         adapterMain.setOnItemClickListener(null);
         itemCardListSimilar.onDestroyView();
         itemBackdropList.onDestroyView();
-        headerCast.onDestroyView();
         headerComments.onDestroyView();
+        headerCast.onDestroyView();
+        fab.onDestroy();
 
         updatingHeader = null;
         progressiveCast = null;
@@ -370,7 +391,6 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
         adapterMain.clear();
         adapterMain = null;
-        fab.onDestroy();
 
         fab = null;
         System.out.println("LOG_IT_isRemoving()= [" + isRemoving() + "]");
@@ -496,6 +516,6 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         // setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition().setDuration(300));
         setEnterTransition(screenTransition.enterTransition().setDuration(300));
         setExitTransition(screenTransition.exitTransition().setDuration(300));
-        setReenterTransition(screenTransition.reenterTransition().setDuration(300));
+        // setReenterTransition(screenTransition.reenterTransition().setDuration(300));
     }
 }
