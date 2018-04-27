@@ -20,6 +20,7 @@ import com.xwray.groupie.ViewHolder;
 
 public class ItemListHorizontal extends Item<RowCastListBinding> {
 
+    private static final String TAG = ItemListHorizontal.class.getSimpleName();
 
     private GroupAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -54,7 +55,6 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
         long took = System.currentTimeMillis() - before;
         Log.e(TAG, "bind: took " + took + " ms");
     }
-public static final String TAG = ItemListHorizontal.class.getSimpleName();
     @Override
     public void unbind(ViewHolder<RowCastListBinding> holder) {
         Log.d(TAG, "unbind() called with: holder = [" + holder + "]");

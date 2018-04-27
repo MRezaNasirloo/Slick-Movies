@@ -73,7 +73,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(margin);
         recyclerView.setAdapter(adapter);
-//        snapHelper.attachToRecyclerView(recyclerView);
+        // snapHelper.attachToRecyclerView(recyclerView);
         layoutManager.scrollToPosition(scrollPos);
         disposable = registerLoadMoreTrigger(recyclerView).subscribe();
     }
