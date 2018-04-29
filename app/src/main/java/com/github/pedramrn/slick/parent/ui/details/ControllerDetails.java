@@ -9,14 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.transition.ArcMotion;
-import android.transition.ChangeBounds;
-import android.transition.ChangeClipBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.ChangeTransform;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +16,10 @@ import android.view.ViewGroup;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.Screen;
-import com.github.pedramrn.slick.parent.ui.ScreenTransition;
-import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.favorite.FloatingFavorite;
@@ -279,7 +268,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
         // the animation is stopped, weirdly shared animation callback didn't work all the time.
         add(headerMoviePublish.distinct()
-                .delay(400, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .delay(duration + 150, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe(movieBasic -> {
                     if (updatingHeader != null) {
                         updatingHeader.update(
@@ -464,59 +453,5 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
                     .replace(R.id.controller_container, ((Fragment) screen))
                     .commit();
         }
-    }
-
-    @NonNull
-    @Override
-    public SnackbarManager snackbarManager() {
-        throw new NotImplementedException("Sorry!!!");
-    }
-
-    @Override
-    public ScreenTransition getScreenTransition() {
-        TransitionSet transition = new TransitionSet()
-                .setOrdering(TransitionSet.ORDERING_TOGETHER)
-                .addTransition(new ChangeTransform())
-                .addTransition(new ChangeBounds())
-                .addTransition(new ChangeClipBounds())
-                .addTransition(new ChangeImageTransform());
-        transition.setPathMotion(new ArcMotion());
-
-        return new ScreenTransition() {
-
-            @Override
-            public Transition sharedElementEnterTransition() {
-                return transition;
-            }
-
-            @Override
-            public Transition sharedElementReturnTransition() {
-                return transition;
-            }
-
-            @Override
-            public Transition exitTransition() {
-                return new Fade();
-            }
-
-            @Override
-            public Transition enterTransition() {
-                return new Fade();
-            }
-
-            @Override
-            public Transition reenterTransition() {
-                return new Fade();
-            }
-        };
-    }
-
-    @Override
-    public void setScreenTransition(ScreenTransition screenTransition) {
-        setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition().setDuration(300));
-        // setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition().setDuration(300));
-        setEnterTransition(screenTransition.enterTransition().setDuration(300));
-        setExitTransition(screenTransition.exitTransition().setDuration(300));
-        // setReenterTransition(screenTransition.reenterTransition().setDuration(300));
     }
 }

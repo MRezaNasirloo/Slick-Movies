@@ -45,6 +45,7 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
  */
 public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
+    protected static final int duration = 400;
     private static final String TAG = FragmentBase.class.getSimpleName();
     private final ScreenTransitionBase screenTransitionBase = new ScreenTransitionBase();
     protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
@@ -179,11 +180,11 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
 
     @Override
     public void setScreenTransition(ScreenTransition screenTransition) {
-        setExitTransition(screenTransition.exitTransition().setDuration(300));
-        setReenterTransition(screenTransition.reenterTransition().setDuration(300));
-        setEnterTransition(screenTransition.enterTransition().setDuration(300));
-        // setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition());
-        // setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition());
+        setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition().setDuration(duration));
+        setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition().setDuration(duration));
+        setEnterTransition(screenTransition.enterTransition().setDuration(duration));
+        setExitTransition(screenTransition.exitTransition().setDuration(duration));
+        setReenterTransition(screenTransition.reenterTransition().setDuration(duration));
     }
 
     private class ScreenTransitionBase implements ScreenTransition {
