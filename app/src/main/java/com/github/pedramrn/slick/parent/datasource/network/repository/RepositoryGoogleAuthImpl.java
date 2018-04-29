@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.google.android.gms.auth.api.Auth;
@@ -67,12 +67,14 @@ public class RepositoryGoogleAuthImpl implements DefaultLifecycleObserver, Googl
 
     public Observable<Object> signIn(String id) {
         return Observable.create(e -> {
+            // FIXME: 2018-04-30 dirty hack use bus :(
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-            Controller controller = ((ActivityMain) ownerWeakReference.get()).getRouter().getControllerWithInstanceId(id);
-            if (controller != null) {
-                controller.startActivityForResult(signInIntent, 123);
+            Fragment fragment = ((ActivityMain) ownerWeakReference.get())
+                    .getLogInFragment();
+            if (fragment != null) {
+                fragment.startActivityForResult(signInIntent, 123);
             } else if (!e.isDisposed()) {
-                e.onError(new Throwable("Cannot find the Requested Controller."));
+                e.onError(new Throwable("Cannot find the Requested Fragment."));
             }
         });
     }

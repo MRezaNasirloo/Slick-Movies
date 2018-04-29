@@ -24,7 +24,7 @@ private const val FRAGMENT_TYPE = "FRAGMENT_TYPE"
  * create an instance of this fragment.
  *
  */
-class FragmentContainer : Fragment() {
+class FragmentContainer : BackStackFragment() {
     // TODO: Rename and change types of parameters
     private var bundle: Bundle? = null
     private var fragmentType: String? = null
@@ -45,10 +45,10 @@ class FragmentContainer : Fragment() {
     private val TAG = "FRAGMENT_HOME"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (childFragmentManager?.findFragmentByTag(TAG) == null)
-            childFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment_container, ControllerHome.newInstance(bundle), TAG)
-                    ?.commit()
+        if (childFragmentManager.findFragmentByTag(TAG) == null)
+            childFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ControllerHome.newInstance(bundle), TAG)
+                    .commit()
     }
 
     // TODO: Rename method, update argument and hook method into UI event

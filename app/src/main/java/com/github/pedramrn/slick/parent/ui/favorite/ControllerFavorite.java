@@ -1,6 +1,10 @@
 package com.github.pedramrn.slick.parent.ui.favorite;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerFavoriteBinding;
@@ -18,8 +20,8 @@ import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
-import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.mrezanasirloo.slick.Presenter;
@@ -41,7 +43,7 @@ import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerFavorite extends ControllerBase implements ViewFavorite, Navigator, Retryable, OnItemClickListener {
+public class ControllerFavorite extends FragmentBase implements ViewFavorite, Navigator, Retryable, OnItemClickListener {
 
     @Inject
     Provider<PresenterFavorite> provider;
@@ -55,15 +57,15 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         App.componentMain().inject(this);
         PresenterFavorite_Slick.bind(this);
         ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
 
-        Router childRouter = getChildRouter(binding.containerChild).setPopsLastView(false);
-        if (!childRouter.hasRootController()) {
-            ControllerAuth controllerAuth = new ControllerAuth(false, getInstanceId());
-            childRouter.setRoot(RouterTransaction.with(controllerAuth));
+        FragmentManager fm = getChildFragmentManager();
+        Fragment fragment = fm.findFragmentByTag("FRAGMENT_LOG_IN");
+        if (fragment == null) {
+            fm.beginTransaction().replace(R.id.container_child, ControllerAuth.newInstance(false)).commit();
         }
         // binding.collapsingToolbar.setTitle(true);
         // binding.collapsingToolbar.setTitleEnabled(true);
@@ -75,7 +77,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
         adapter.add(updatingFavorite);
 
         rc = binding.recyclerViewFavorite;
-        rc.setLayoutManager(new LinearLayoutManager(getApplicationContext(), VERTICAL, false));
+        rc.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext(), VERTICAL, false));
         rc.setAdapter(adapter);
         rc.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen
                 .item_margin_long)));
@@ -84,8 +86,8 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
+    public void onDestroyView() {
+        super.onDestroyView();
         // if (!isBeingDestroyed()) { rc.setAdapter(null); }
         rc.setAdapter(null);
         adapter.setOnItemClickListener(null);
@@ -110,7 +112,7 @@ public class ControllerFavorite extends ControllerBase implements ViewFavorite, 
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
     }

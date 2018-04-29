@@ -6,8 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -37,7 +36,7 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
         BottomNavigation.OnMenuItemSelectionListener {
 
     private static final String TAG = ControllerMain.class.getSimpleName();
-    private FragmentPagerAdapter pagerAdapter;
+    private FragmentStatePagerAdapter pagerAdapter;
     @Inject
     Provider<PresenterMain> provider;
     @Presenter
@@ -47,7 +46,6 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
     @Presenter
     PresenterIran presenterIran;
     private ControllerMainBinding binding;
-    private final int PAGE_COUNT = 2;
 
     public static ControllerMain newInstance(Bundle args) {
         ControllerMain fragment = new ControllerMain();
@@ -144,9 +142,7 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
     }
 
     public boolean onBackPressed() {
-        int currentItem = binding.viewPager.getCurrentItem();
-        FragmentManager fm = pagerAdapter.getItem(currentItem).getChildFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) { fm.popBackStack(); return true; } else return false;
+        return BackStackFragment.handleBackPressed(getChildFragmentManager());
     }
 
     @Override
@@ -170,12 +166,15 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
     private class SectionPagerAdapter extends FragmentPagerAdapter {
 
         private final SparseArray<Fragment> fragments;
+    private class SectionPagerAdapter extends FragmentStatePagerAdapter {
+        private final int PAGE_COUNT = 3;
+        private final SparseArray<Fragment> fragments = new SparseArray<>(3);
 
         SectionPagerAdapter() {
             super(getChildFragmentManager());
-            fragments = new SparseArray<>(3);
             fragments.put(0, FragmentContainer.newInstance(getArguments()));
-            fragments.put(1, FragmentContainerBoxOffice.newInstance(getArguments()));
+            fragments.put(1, FragmentContainerBoxOffice.newInstance());
+            fragments.put(2, FragmentContainerFavorite.newInstance());
         }
 
         @Override

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +15,12 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerAuthBinding;
 import com.github.pedramrn.slick.parent.exception.NotImplementedException;
+import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.auth.model.GugleSignInResult;
 import com.github.pedramrn.slick.parent.ui.auth.model.UserApp;
-import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -38,10 +41,9 @@ import io.reactivex.subjects.PublishSubject;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerAuth extends ControllerBase implements ViewAuth {
+public class ControllerAuth extends FragmentBase implements ViewAuth {
 
     private static final String MANAGED = "MANAGED";
-    private static final String PARENT_ID = "PARENT_ID";
     private static final int RC_SIGN_IN = 123;
 
     @Inject
@@ -51,26 +53,27 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     private PublishSubject<GugleSignInResult> streamResult = PublishSubject.create();
     private ControllerAuthBinding binding;
-    private boolean status;
-    private final boolean managed;
-    private final String parentId;
+    private boolean managed;
 
-    public ControllerAuth(boolean managed, String parentId) {
-        this(new BundleBuilder(new Bundle())
+    public static Fragment newInstance(boolean managed) {
+        ControllerAuth fragment = new ControllerAuth();
+        Bundle bundle = new BundleBuilder(new Bundle())
                 .putBoolean(MANAGED, managed)
-                .putString(PARENT_ID, parentId)
-                .build());
+                .build();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public ControllerAuth(@NonNull Bundle args) {
-        super(args);
-        managed = args.getBoolean("MANAGED", false);
-        parentId = args.getString(PARENT_ID);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        managed = getArguments().getBoolean("MANAGED", false);
+        if (!managed) ((ActivityMain) getActivity()).setLogInFragment(this);
     }
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         App.componentMain().inject(this);
         PresenterAuth_Slick.bind(this);
         binding = ControllerAuthBinding.inflate(inflater, container, false);
@@ -78,16 +81,19 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     }
 
 
+    @NonNull
     @Override
     public Observable<String> signInWithGoogle() {
         return RxView.clicks(binding.buttonGoogle).throttleFirst(1, TimeUnit.SECONDS).map(o -> getInstanceId());
     }
 
+    @NonNull
     @Override
     public Observable<Object> signOut() {
         return RxView.clicks(binding.buttonSignOut).throttleFirst(1, TimeUnit.SECONDS);
     }
 
+    @NonNull
     @Override
     public Observable<GugleSignInResult> result() {
         return streamResult;
@@ -95,7 +101,6 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
 
     @Override
     public void userSignedIn(UserApp user) {
-        status = true;
         binding.buttonGoogle.setVisibility(View.GONE);
         binding.buttonSignOut.setVisibility(View.VISIBLE);
         binding.textViewProfileInfo.setText(user.name());
@@ -103,22 +108,19 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
         binding.imageViewAvatarUser.load(user.avatar());
         binding.imageViewAvatarUser.setVisibility(View.VISIBLE);
         if (managed) {
-            Observable.just(1).delay(700, TimeUnit.MILLISECONDS)
+            add(Observable.just(1).delay(700, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(integer -> {
+                    .subscribe(ignored -> {
                         RequestStack.getInstance().processLastRequest();
-                        Controller parentController = getParentController();
-                        if (parentController != null) {
-                            parentController.getRouter().handleBack();
-                        }
-                    });
+                        FragmentActivity activity = getActivity();
+                        if (activity != null) activity.onBackPressed();
+                    }));
         }
     }
 
     @Override
     public void userSignedOut() {
-        status = false;
         binding.buttonGoogle.setVisibility(View.VISIBLE);
         binding.buttonSignOut.setVisibility(View.GONE);
         binding.imageViewAvatarUser.setVisibility(View.GONE);
@@ -127,8 +129,8 @@ public class ControllerAuth extends ControllerBase implements ViewAuth {
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
+    public void onDestroyView() {
+        super.onDestroyView();
         binding = null;
     }
 

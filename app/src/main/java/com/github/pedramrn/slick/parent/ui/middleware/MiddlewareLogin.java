@@ -1,6 +1,5 @@
 package com.github.pedramrn.slick.parent.ui.middleware;
 
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.domain.model.UserAppDomain;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.auth.router.RouterAuthImpl;
@@ -18,7 +17,7 @@ import io.reactivex.disposables.Disposable;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-03-29
+ * Created on: 2017-03-29
  */
 
 public class MiddlewareLogin extends Middleware {
@@ -52,7 +51,7 @@ public class MiddlewareLogin extends Middleware {
 
                     @Override
                     public void onError(Throwable e) {
-                        Navigator2.go(new ControllerDialog(), new FadeChangeHandler(false), new FadeChangeHandler(false));
+                        Navigator2.show(new ControllerDialog(), ControllerDialog.TAG);
                     }
 
                     @Override

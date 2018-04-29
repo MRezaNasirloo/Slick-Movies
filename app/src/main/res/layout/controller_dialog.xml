@@ -1,38 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:id="@+id/dialog_window"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:minHeight="64dp"
+    android:minWidth="320dp"
+    android:orientation="vertical"
     >
 
-    <View
-        android:id="@+id/dialog_background"
+    <FrameLayout
+        android:id="@+id/container_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/immersive_background"
         />
+</LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/dialog_bg"
-        android:elevation="@dimen/dialog_elevation"
-        android:minWidth="280dp"
-        android:minHeight="64dp"
-        android:orientation="vertical"
-        android:transitionName="@string/fab_dialog_transition_name"
-        >
-
-        <FrameLayout
-            android:id="@+id/container_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-    </LinearLayout>
-</FrameLayout>

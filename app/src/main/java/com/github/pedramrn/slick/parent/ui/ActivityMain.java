@@ -4,18 +4,18 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ActivityMainBinding;
 import com.github.pedramrn.slick.parent.datasource.network.repository.RepositoryGoogleAuthImpl;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
+import com.github.pedramrn.slick.parent.ui.dialog.ControllerDialog;
 import com.github.pedramrn.slick.parent.ui.main.ControllerMain;
 import com.mrezanasirloo.slick.middleware.RequestStack;
 import com.orhanobut.logger.Logger;
@@ -28,7 +28,8 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     @Inject
     RepositoryGoogleAuthImpl googleAuth;
 
-    private String CONTROLLER_MAIN_TAG = "ControllerMain_TAG";
+    public static String CONTROLLER_MAIN_TAG = "ControllerMain_TAG";
+    private Fragment logInFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,21 +75,17 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     @Override
     public void onBackPressed() {
         RequestStack.getInstance().handleBack();
-        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(CONTROLLER_MAIN_TAG);
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment dialog = fm.findFragmentByTag(ControllerDialog.TAG);
+        if (dialog != null) {
+            ((DialogFragment) dialog).dismiss();
+            return;
+        }
+        Fragment fragmentByTag = fm.findFragmentByTag(CONTROLLER_MAIN_TAG);
         if (fragmentByTag != null) {
             if (((ControllerMain) fragmentByTag).onBackPressed()) return;
         }
         super.onBackPressed();
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
     }
 
     @Override
@@ -117,8 +114,11 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
         return this;
     }
 
-    public Router getRouter() {
-        // TODO: 2018-04-25 refactor this to an interface
-        throw new NotImplementedException("TODO: It needs a router");
+    public void setLogInFragment(Fragment logInFragment) {
+        this.logInFragment = logInFragment;
+    }
+
+    public Fragment getLogInFragment() {
+        return logInFragment;
     }
 }

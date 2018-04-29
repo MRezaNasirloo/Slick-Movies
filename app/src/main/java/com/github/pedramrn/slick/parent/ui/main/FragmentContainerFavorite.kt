@@ -8,18 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.pedramrn.slick.parent.R
-import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice
+import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite
 
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [FragmentContainerBoxOffice.OnFragmentInteractionListener] interface
+ * [FragmentContainerFavorite.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [FragmentContainerBoxOffice.newInstance] factory method to
+ * Use the [FragmentContainerFavorite.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class FragmentContainerBoxOffice : BackStackFragment() {
+class FragmentContainerFavorite : BackStackFragment() {
     private val ARG_PARAM1 = "param1"
     private val FRAGMENT_TYPE = "FRAGMENT_TYPE"
     // TODO: Rename and change types of parameters
@@ -39,12 +39,12 @@ class FragmentContainerBoxOffice : BackStackFragment() {
         return inflater.inflate(R.layout.fragment_container, container, false)
     }
 
-    private val TAG = "FRAGMENT_BOX_OFFICE"
+    private val TAG = "FRAGMENT_FAVORITE"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (childFragmentManager.findFragmentByTag(TAG) == null)
             childFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, ControllerBoxOffice(), TAG)
+                    .replace(R.id.fragment_container, ControllerFavorite(), TAG)
                     .commit()
     }
 
@@ -92,6 +92,6 @@ class FragmentContainerBoxOffice : BackStackFragment() {
          * @return A new instance of fragment FragmentContainer.
          */
         @JvmStatic
-        fun newInstance() = FragmentContainerBoxOffice()
+        fun newInstance() = FragmentContainerFavorite()
     }
 }

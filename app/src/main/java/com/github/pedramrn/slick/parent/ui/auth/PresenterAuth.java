@@ -40,7 +40,7 @@ public class PresenterAuth extends SlickPresenterUni<ViewAuth, ViewStateAuth> {
     }
 
     @Override
-    protected void start(ViewAuth view) {
+    protected void start(@NonNull ViewAuth view) {
         Observable<String> commandSignInGoogle = command(ViewAuth::signInWithGoogle);
         Observable<Object> commandSignOut = command(ViewAuth::signOut);
         Observable<GugleSignInResult> commandResult = command(ViewAuth::result);

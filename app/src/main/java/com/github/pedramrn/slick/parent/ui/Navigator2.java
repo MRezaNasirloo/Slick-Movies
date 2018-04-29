@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -55,6 +56,13 @@ public class Navigator2 {
         final AppCompatActivity context = weakReferenceActivity.get();
         if (context != null) {
             context.getSupportFragmentManager().beginTransaction().replace(id, fragment).commit();
+        }
+    }
+
+    public static void show(DialogFragment fragment, String tag) {
+        final AppCompatActivity context = weakReferenceActivity.get();
+        if (context != null) {
+            fragment.show(context.getSupportFragmentManager(), tag);
         }
     }
 
