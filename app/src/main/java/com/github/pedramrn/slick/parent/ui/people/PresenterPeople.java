@@ -74,7 +74,7 @@ public class PresenterPeople extends SlickPresenterUni<ViewPeople, ViewStatePeop
 
     @Override
     protected void render(@NonNull ViewStatePeople state, @NonNull ViewPeople view) {
-        // TODO: 2018-04-09 use this
+        view.render(state);
     }
 
 }

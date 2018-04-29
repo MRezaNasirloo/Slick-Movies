@@ -174,7 +174,6 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
             if ("title".equalsIgnoreCase(path)) {
                 if (pathSegments.size() > 1) {
                     String imdbId = pathSegments.get(1);
-                    // // FIXME: 2018-04-25 launch me!!
                     Screen screen = ControllerDetails.newInstance(imdbId, null);
                     navigateTo(screen);
                 }

@@ -7,7 +7,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewCircular;
-import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
@@ -49,17 +48,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 /**
- *
+ * TODO: 2018-04-30 retain recycler views scroll position
  */
-public class ControllerPeople extends ControllerElm<ViewStatePeople>
+public class ControllerPeople extends FragmentBase
         implements ViewPeople, AppBarLayout.OnOffsetChangedListener, OnItemClickListener {
     @Inject
     Provider<PresenterPeople> provider;
     @Presenter
     PresenterPeople presenter;
 
-    private final String transitionName;
-    private final Person person;
+    private String transitionName;
+    private Person person;
 
     private final String TV_SHOWS = "TV Shows";
     private final String MOVIES = "Movies";
@@ -74,22 +73,26 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     private ViewStatePeople state;
     private Disposable disposable;
 
-    public ControllerPeople(Person person, String transitionName) {
-        this(new BundleBuilder(new Bundle())
+    public static ControllerPeople newInstance(Person person, String transitionName) {
+        Bundle bundle = new BundleBuilder(new Bundle())
                      .putParcelable("ITEM", person)
                      .putString("TRANSITION_NAME", transitionName)
-                     .build());
+                     .build();
+        ControllerPeople fragment = new ControllerPeople();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public ControllerPeople(@Nullable Bundle args) {
-        super(args);
-        transitionName = getArgs().getString("TRANSITION_NAME");
-        person = getArgs().getParcelable("ITEM");
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        transitionName = getArguments().getString("TRANSITION_NAME");
+        person = getArguments().getParcelable("ITEM");
     }
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
         PresenterPeople_Slick.bind(this);
@@ -143,19 +146,19 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
         adapterMovies.setOnItemClickListener(this);
         adapterTvShows.setOnItemClickListener(this);
 
-        binding.imageViewHeader.loadBlur(person.profileThumbnail());
-        binding.imageViewHeader.loadBlurNP(person.profileMedium());
-        binding.imageViewProfile.load(person.profileThumbnail());
-        binding.imageViewProfile.loadNP(person.profileMedium());
+        // TODO: 2018-04-30 fine tune this
+        binding.imageViewHeader.loadBlur(person.profileMedium());
+        binding.imageViewProfile.load(person.profileThumbnail(), () -> {
+            binding.imageViewProfile.setTransitionName(transitionName);
+        });
         binding.textViewName.setText(person.name());
         binding.appbar.addOnOffsetChangedListener(this);
-        presenter.updateStream().subscribe(this);
         return binding.getRoot();
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
+    public void onDestroyView() {
+        super.onDestroyView();
         UtilsRx.dispose(disposable);
         disposable = null;
         state = null;
@@ -172,24 +175,13 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-
-    @Override
     public int personId() {
         return person.id();
     }
 
     @Override
-    public void onSubscribe(Disposable d) {
-        add(d);
-    }
-
-    @Override
     @SuppressWarnings("SpellCheckingInspection")
-    public void onNext(ViewStatePeople state) {
+    public void render(ViewStatePeople state) {
         this.state = state;
         PersonDetails personDetails = state.personDetails();
         setHeader(personDetails);
@@ -216,16 +208,6 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     private void setHeader(PersonDetails personDetails) {
         if (personDetails == null) { return; }
         binding.textViewName.setText(personDetails.nameBorn());
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.e(TAG, "onComplete() called");
     }
 
     @Override
