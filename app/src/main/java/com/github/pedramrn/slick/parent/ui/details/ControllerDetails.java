@@ -332,15 +332,17 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        itemBackdropList.onSaveViewState(outState);
-        itemCardListSimilar.onSaveViewState(outState);
+        if (itemBackdropList != null) {
+            itemBackdropList.onSaveViewState(outState);
+            itemCardListSimilar.onSaveViewState(outState);
+        }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState == null) return;
+        if (savedInstanceState == null || itemBackdropList == null) return;
         itemBackdropList.onRestoreViewState(savedInstanceState);
         itemCardListSimilar.onRestoreViewState(savedInstanceState);
     }
