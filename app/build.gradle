@@ -272,7 +272,7 @@ dependencies {
     implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
     implementation 'com.tspoon.traceur:traceur:1.0.1'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
-    implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.3"
+    implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.4"
 
     /*configurations.all {
         resolutionStrategy.force 'com.google.guava:guava:23.0'

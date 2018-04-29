@@ -219,6 +219,7 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView() called");
         super.onDestroyView();
+        pageIndicator.detachFromPager();
         recyclerViewUpcoming.setAdapter(null);
         adapterUpcoming.setOnItemClickListener(null);
         recyclerViewCardListTrending.onDestroy();
