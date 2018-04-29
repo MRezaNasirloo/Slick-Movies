@@ -8,6 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.ChangeTransform;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,6 +23,7 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.Screen;
+import com.github.pedramrn.slick.parent.ui.ScreenTransition;
 import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.details.ErrorHandlerSnackbar;
@@ -37,6 +46,7 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
 public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
     private static final String TAG = FragmentBase.class.getSimpleName();
+    private final ScreenTransitionBase screenTransitionBase = new ScreenTransitionBase();
     protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
     protected final PublishSubject<Object> retry = PublishSubject.create();
     private CompositeDisposable compositeDisposable;
@@ -116,7 +126,7 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
         Logger.e("navigateTo() called with: screen = [" + screen + "], sharedView = [" + sharedView + "], transitionName = ["
                 + transitionName + "]");
         screen.setScreenTransition(screen.getScreenTransition());
-        getFragmentManager()
+        getParentFragment().getChildFragmentManager()
                 .beginTransaction()
                 .addSharedElement(sharedView, transitionName)
                 .replace(R.id.fragment_container, ((Fragment) screen), "tag")
@@ -160,5 +170,58 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
 
     public void add(Disposable disposable) {
         compositeDisposable.add(disposable);
+    }
+
+    @Override
+    public ScreenTransition getScreenTransition() {
+        return screenTransitionBase;
+    }
+
+    @Override
+    public void setScreenTransition(ScreenTransition screenTransition) {
+        setExitTransition(screenTransition.exitTransition().setDuration(300));
+        setReenterTransition(screenTransition.reenterTransition().setDuration(300));
+        setEnterTransition(screenTransition.enterTransition().setDuration(300));
+        // setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition());
+        // setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition());
+    }
+
+    private class ScreenTransitionBase implements ScreenTransition {
+        private final TransitionSet transition;
+
+        ScreenTransitionBase() {
+            transition = new TransitionSet()
+                    .setOrdering(TransitionSet.ORDERING_TOGETHER)
+                    .addTransition(new ChangeTransform())
+                    .addTransition(new ChangeBounds())
+                    .addTransition(new ChangeClipBounds())
+                    .addTransition(new ChangeImageTransform());
+            transition.setPathMotion(new ArcMotion());
+        }
+
+        @Override
+        public Transition sharedElementEnterTransition() {
+            return transition;
+        }
+
+        @Override
+        public Transition sharedElementReturnTransition() {
+            return transition;
+        }
+
+        @Override
+        public Transition exitTransition() {
+            return new Fade();
+        }
+
+        @Override
+        public Transition enterTransition() {
+            return new Fade();
+        }
+
+        @Override
+        public Transition reenterTransition() {
+            return new Fade();
+        }
     }
 }

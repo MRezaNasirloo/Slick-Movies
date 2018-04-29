@@ -74,6 +74,10 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
     @Override
     public void onBackPressed() {
         RequestStack.getInstance().handleBack();
+        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(CONTROLLER_MAIN_TAG);
+        if (fragmentByTag != null) {
+            if (((ControllerMain) fragmentByTag).onBackPressed()) return;
+        }
         super.onBackPressed();
     }
 

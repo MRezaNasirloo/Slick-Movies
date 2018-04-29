@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.boxoffice;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBinding;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
-import com.github.pedramrn.slick.parent.ui.SnackbarManager;
-import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.mrezanasirloo.slick.Presenter;
@@ -32,10 +32,10 @@ import static com.github.pedramrn.slick.parent.databinding.ControllerBoxOfficeBi
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-04-13
+ * Created on: 2017-04-13
  */
 
-public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice, Retryable, OnItemClickListener {
+public class ControllerBoxOffice extends FragmentBase implements ViewBoxOffice, Retryable, OnItemClickListener {
     private static final String TAG = ControllerBoxOffice.class.getSimpleName();
 
     @Inject
@@ -49,7 +49,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull final ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle bundle) {
         componentMain().inject(this);
         PresenterBoxOffice_Slick.bind(this);
         final ControllerBoxOfficeBinding binding = inflate(inflater, container, false);
@@ -61,7 +61,7 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
         updatingGroup = new UpdatingGroup();
         adapter.add(updatingGroup);
 
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, false);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext().getApplicationContext(), VERTICAL, false);
         binding.recyclerView.setLayoutManager(layoutManager);
         recyclerView = binding.recyclerView;
         recyclerView.setAdapter(adapter);
@@ -72,8 +72,8 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
+    public void onDestroyView() {
+        super.onDestroyView();
         // if (!isBeingDestroyed()) { recyclerView.setAdapter(null); }
         recyclerView.setAdapter(null);
         adapter.setOnItemClickListener(null);
@@ -100,11 +100,5 @@ public class ControllerBoxOffice extends ControllerBase implements ViewBoxOffice
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(ControllerBoxOffice.this, null, adapter.getAdapterPosition(item), view);
-    }
-
-    @NonNull
-    @Override
-    public SnackbarManager snackbarManager() {
-        throw new NotImplementedException("Sorry!!!");
     }
 }

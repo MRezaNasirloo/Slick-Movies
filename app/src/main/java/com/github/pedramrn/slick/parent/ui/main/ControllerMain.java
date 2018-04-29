@@ -6,8 +6,10 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +47,7 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
     @Presenter
     PresenterIran presenterIran;
     private ControllerMainBinding binding;
-    private final int PAGE_COUNT = 1;
+    private final int PAGE_COUNT = 2;
 
     public static ControllerMain newInstance(Bundle args) {
         ControllerMain fragment = new ControllerMain();
@@ -116,7 +118,7 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
     }
 
     private void resetStack(int position) {
-        Fragment item = pagerAdapter.getItem(position);
+        // Fragment item = pagerAdapter.getItem(position);
         // TODO: 2018-04-25 Reset back stack for this fragment
     }
 
@@ -141,6 +143,12 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
         // }
     }
 
+    public boolean onBackPressed() {
+        int currentItem = binding.viewPager.getCurrentItem();
+        FragmentManager fm = pagerAdapter.getItem(currentItem).getChildFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) { fm.popBackStack(); return true; } else return false;
+    }
+
     @Override
     public void showWarningIran() {
         showSnakbar(getResources().getString(R.string.message_iran));
@@ -160,20 +168,19 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
 
 
     private class SectionPagerAdapter extends FragmentPagerAdapter {
-        public SectionPagerAdapter() {super(ControllerMain.this.getFragmentManager());}
+
+        private final SparseArray<Fragment> fragments;
+
+        SectionPagerAdapter() {
+            super(getChildFragmentManager());
+            fragments = new SparseArray<>(3);
+            fragments.put(0, FragmentContainer.newInstance(getArguments()));
+            fragments.put(1, FragmentContainerBoxOffice.newInstance(getArguments()));
+        }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return FragmentContainer.newInstance(getArguments());
-                case 1:
-                    return null;
-                case 2:
-                    return null;
-                default:
-                    throw new IllegalStateException("Pager has more than 3 page.");
-            }
+            return fragments.get(position);
         }
 
         @Override

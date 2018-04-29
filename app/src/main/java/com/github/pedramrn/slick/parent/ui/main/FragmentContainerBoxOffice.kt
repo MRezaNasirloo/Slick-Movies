@@ -8,23 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.pedramrn.slick.parent.R
-import com.github.pedramrn.slick.parent.ui.home.ControllerHome
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val FRAGMENT_TYPE = "FRAGMENT_TYPE"
+import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice
 
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [FragmentContainer.OnFragmentInteractionListener] interface
+ * [FragmentContainerBoxOffice.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [FragmentContainer.newInstance] factory method to
+ * Use the [FragmentContainerBoxOffice.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class FragmentContainer : Fragment() {
+class FragmentContainerBoxOffice : Fragment() {
+    private val ARG_PARAM1 = "param1"
+    private val FRAGMENT_TYPE = "FRAGMENT_TYPE"
     // TODO: Rename and change types of parameters
     private var bundle: Bundle? = null
     private var fragmentType: String? = null
@@ -42,12 +39,12 @@ class FragmentContainer : Fragment() {
         return inflater.inflate(R.layout.fragment_container, container, false)
     }
 
-    private val TAG = "FRAGMENT_HOME"
+    private val TAG = "FRAGMENT_BOX_OFFICE"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (childFragmentManager?.findFragmentByTag(TAG) == null)
             childFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment_container, ControllerHome.newInstance(bundle), TAG)
+                    ?.replace(R.id.fragment_container, ControllerBoxOffice(), TAG)
                     ?.commit()
     }
 
@@ -96,7 +93,7 @@ class FragmentContainer : Fragment() {
          */
         @JvmStatic
         fun newInstance(bundle: Bundle?) =
-                FragmentContainer().apply {
+                FragmentContainerBoxOffice().apply {
                     arguments = Bundle().apply {
                         putBundle(ARG_PARAM1, bundle)
                     }
