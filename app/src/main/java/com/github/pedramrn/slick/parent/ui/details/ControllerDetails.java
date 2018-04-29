@@ -169,6 +169,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         System.out.println("LOG_IT_onAttach() called");
         RequestStack.getInstance().processLastRequest();
         //noinspection ConstantConditions
@@ -181,7 +182,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
     @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle bundle) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         System.out.println("LOG_IT_onCreateView() called");
         Navigator2.bind(this);
         App.componentMain().inject(this);
@@ -278,7 +279,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
         // the animation is stopped, weirdly shared animation callback didn't work all the time.
         add(headerMoviePublish.distinct()
-                .delay(302, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .delay(400, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe(movieBasic -> {
                     if (updatingHeader != null) {
                         updatingHeader.update(
