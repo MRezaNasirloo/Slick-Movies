@@ -20,10 +20,12 @@ import com.github.pedramrn.slick.parent.ui.people.model.Person;
 public class ItemCast extends ItemCastProgressive implements OnItemAction {
 
     private final Cast cast;
+    private String transitionName;
 
     public ItemCast(int id, Cast cast) {
         super(id);
         this.cast = cast;
+        transitionName = transitionName();
     }
 
     @Override
@@ -31,7 +33,7 @@ public class ItemCast extends ItemCastProgressive implements OnItemAction {
         viewBinding.textViewCharacter.setBackground(null);
         viewBinding.textViewName.setBackground(null);
         viewBinding.imageViewProfile.load(cast.profileIcon());
-        viewBinding.imageViewProfile.setTransitionName(transitionName());
+        viewBinding.imageViewProfile.setTransitionName(transitionName);
         viewBinding.textViewName.setText(cast.name());
         viewBinding.textViewCharacter.setText(cast.character());
     }
@@ -51,7 +53,8 @@ public class ItemCast extends ItemCastProgressive implements OnItemAction {
                 cast.name(),
                 cast.profilePicId()
         );
-        navigator.navigateTo(ControllerPeople.newInstance(person, transitionName()),
-                view.findViewById(R.id.imageView_profile), transitionName());
+        View sharedView = view.findViewById(R.id.imageView_profile);
+        navigator.navigateTo(ControllerPeople.newInstance(person, sharedView.getTransitionName()),
+                sharedView, sharedView.getTransitionName());
     }
 }

@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.App;
-import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
@@ -40,6 +38,7 @@ import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardHeader;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
+import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.mrezanasirloo.slick.Presenter;
@@ -214,8 +213,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         headerCast.setOnClickListener(o -> {
             if (state.movieBasic() instanceof Movie && !((Movie) state.movieBasic()).casts().isEmpty()) {
                 ArrayList<Cast> casts = (ArrayList<Cast>) ((Movie) state.movieBasic()).casts();
-                // ControllerList.start(getRouter(), state.movieBasic().title() + "'s Casts", new ArrayList<>(casts));
-                // FIXME: 2018-04-25
+                navigateTo(ControllerList.newInstance(state.movieBasic().title() + "'s Casts", new ArrayList<>(casts)));
             }
         });
         Section sectionCasts = new Section(headerCast);
@@ -224,8 +222,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         headerComments = new ItemCardHeader(102, "Comments", "See All");
         headerComments.setOnClickListener(o -> {
             if (!state.comments().isEmpty() && !(state.comments().get(0) instanceof ItemCommentProgressive)) {
-                // ControllerList.start(ControllerDetails.this.getRouter(), "Comments for " + movie.title(), comments());
-                // FIXME: 2018-04-25
+                navigateTo(ControllerList.newInstance("Comments for " + movie.title(), comments()));
             }
         });
         Section sectionComments = new Section(headerComments);
@@ -445,15 +442,5 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     @Override
     public void error(short code) {
         snackbar.setText(ErrorHandler.message(getContext().getApplicationContext(), code)).show();
-    }
-
-    @Override
-    public void navigateTo(@NonNull Screen screen) {
-        if (screen instanceof Fragment) {
-            getFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.controller_container, ((Fragment) screen))
-                    .commit();
-        }
     }
 }

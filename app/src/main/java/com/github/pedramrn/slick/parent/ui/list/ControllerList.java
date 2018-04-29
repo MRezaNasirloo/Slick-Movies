@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.list;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,16 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerListBinding;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
-import com.github.pedramrn.slick.parent.ui.SnackbarManager;
-import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
 import com.mrezanasirloo.slick.Presenter;
@@ -35,14 +31,14 @@ import javax.inject.Provider;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerList extends ControllerBase implements ViewList {
+public class ControllerList extends FragmentBase implements ViewList {
 
     @Inject
     Provider<PresenterList> provider;
     @Presenter
     PresenterList presenter;
-    private final ArrayList<ItemViewListParcelable> data;
-    private final String title;
+    private ArrayList<ItemViewListParcelable> data;
+    private String title;
     private GroupAdapter adapter;
     private UpdatingGroup adapterItems;
     private RecyclerView recyclerView;
@@ -52,23 +48,28 @@ public class ControllerList extends ControllerBase implements ViewList {
         return data;
     }
 
-    public ControllerList(@NonNull Bundle args) {
-        super(args);
-        data =  args.getParcelableArrayList("DATA");
-        title = args.getString("TITLE");
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        data = getArguments().getParcelableArrayList("DATA");
+        title = getArguments().getString("TITLE");
     }
 
-    public ControllerList(@NonNull String title, @NonNull ArrayList<ItemViewListParcelable> itemViews) {
-        this(new BundleBuilder(new Bundle())
+    public static ControllerList newInstance(@NonNull String title, @NonNull ArrayList<ItemViewListParcelable> itemViews) {
+
+        Bundle bundle = new BundleBuilder(new Bundle())
                 .putString("TITLE", title)
                 .putParcelableArrayList("DATA", itemViews)
-                .build()
-        );
+                .build();
+
+        ControllerList fragment = new ControllerList();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
         PresenterList_Slick.bind(this);
@@ -108,25 +109,13 @@ public class ControllerList extends ControllerBase implements ViewList {
         adapterItems.update(state.items());
     }
 
-    public static void start(Router router, String title, ArrayList<ItemViewListParcelable> itemViews) {
-        router.pushController(RouterTransaction.with(new ControllerList(title, itemViews))
-                                      .pushChangeHandler(new HorizontalChangeHandler())
-                                      .popChangeHandler(new HorizontalChangeHandler()));
-    }
-
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
+    public void onDestroyView() {
+        super.onDestroyView();
         adapter.setOnItemClickListener(null);
         recyclerView.setAdapter(null);
         recyclerView = null;
         adapterItems = null;
         adapter = null;
-    }
-
-    @NonNull
-    @Override
-    public SnackbarManager snackbarManager() {
-        throw new NotImplementedException("Sorry!!!");
     }
 }
