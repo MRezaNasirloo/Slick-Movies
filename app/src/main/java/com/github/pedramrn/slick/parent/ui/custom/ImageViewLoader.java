@@ -114,6 +114,42 @@ public class ImageViewLoader extends AppCompatImageView {
                     @Override
                     public void onError() {
                         Picasso.with(context).load(R.drawable.error_state_car)
+                                .placeholder(R.drawable.rectangle_no_corners)
+                                .into(ImageViewLoader.this);
+                        // setOnClickListener(v -> load(thumbnailUrl, url));
+                    }
+                });
+    }
+
+    public void load(String thumbnailUrl, String url, @DrawableRes int placeholder) {
+        if (mock) {
+            setBackgroundResource(placeholder);
+            return;
+        }
+        if (url == null || thumbnailUrl == null) {
+            // TODO: 2017-11-11 do this for all
+            Logger.e("load: something was null");
+            setImageResource(placeholder);
+            return;
+        }
+        Context context = getContext();
+        Picasso.with(context)
+                .load(thumbnailUrl)
+                .transform(new BlurTransformation(context))
+                .placeholder(placeholder)
+                .into(this, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Picasso.with(context)
+                                .load(url)
+                                .placeholder(getDrawable())
+                                .into(ImageViewLoader.this);
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context).load(R.drawable.error_state_car)
+                                .placeholder(placeholder)
                                 .into(ImageViewLoader.this);
                         // setOnClickListener(v -> load(thumbnailUrl, url));
                     }

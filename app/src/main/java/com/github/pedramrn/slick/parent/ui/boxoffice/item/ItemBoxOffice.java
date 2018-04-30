@@ -41,7 +41,7 @@ public class ItemBoxOffice extends Item<RowBoxOfficeBinding> implements Removabl
         if (movie.revenue() != null) holder.revenue.setText(String.format("%s $", withSuffix(movie.revenue())));
         holder.title.setText(movie.title());
         holder.rank.setText(movie.rank(position));
-        holder.poster.load(movie.thumbnailTinyPoster(), movie.thumbnailPoster());
+        holder.poster.load(movie.thumbnailTinyPoster(), movie.thumbnailPoster(), R.drawable.rectangle_no_corners_dark);
         holder.poster.setTransitionName(transitionName);
     }
 

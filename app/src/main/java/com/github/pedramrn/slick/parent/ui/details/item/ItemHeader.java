@@ -14,6 +14,7 @@ import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -23,6 +24,7 @@ import com.xwray.groupie.ViewHolder;
 
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +41,7 @@ import io.reactivex.functions.Consumer;
 
 public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Object> {
 
-    private final WeakReference<Navigator> controller;
+    private final WeakReference<Navigator> navigator;
     private final MovieBasic movie;
     private final String transitionName;
     private final RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
@@ -52,7 +54,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
 
     public ItemHeader(Navigator navigator, MovieBasic movie, String transitionName) {
         super(1000);
-        this.controller = new WeakReference<>(navigator);
+        this.navigator = new WeakReference<>(navigator);
         this.movie = movie;
         this.transitionName = transitionName;
 
@@ -176,11 +178,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     @Override
     public void accept(Object o) {
         if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty()) {
-            Navigator controller = this.controller.get();
-            if (controller == null) { return; }
-            // FIXME: 2018-04-25 start screen
-            // ControllerImage.start(controller.getRouter(), ItemHeader.this.movie.title(),
-            //         ((ArrayList<String>) ((Movie) movie).images().posters()));
+            Navigator navigator = this.navigator.get();
+            if (navigator == null) return;
+            navigator.navigateTo(ControllerImage.newInstance(ItemHeader.this.movie.title(),
+                    ((ArrayList<String>) ((Movie) movie).images().posters())));
         }
     }
 }

@@ -69,7 +69,7 @@ public class ControllerImage extends FragmentBase implements ViewImage {
         return fragment;
     }
 
-    public static ControllerImage newInstance(@NonNull String title, @NonNull ArrayList<String> items) {
+    public static ControllerImage newInstance(String title, @NonNull ArrayList<String> items) {
         Bundle args = new BundleBuilder(new Bundle())
                 .putStringArrayList("DATA", items)
                 .putString("TITLE", title)
