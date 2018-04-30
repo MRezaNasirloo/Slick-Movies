@@ -3,14 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
-        android:background="@color/color_black"
-        android:id="@+id/imageView"
-        android:scaleType="fitCenter"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="ContentDescription"
-        tools:src="@mipmap/ic_launcher"
-        />
+        >
+
+        <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/color_black"
+            android:scaleType="fitCenter"
+            tools:ignore="ContentDescription"
+            tools:src="@mipmap/ic_launcher"
+            />
+
+        <ProgressBar
+            android:layout_gravity="center"
+            android:id="@+id/progressBar_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            />
+
+    </FrameLayout>
+
 
 </layout>

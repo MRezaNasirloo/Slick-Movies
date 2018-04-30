@@ -3,7 +3,9 @@ package com.github.pedramrn.slick.parent.ui.image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -14,18 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.ControllerChangeHandler;
-import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerImageBinding;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
+import com.github.pedramrn.slick.parent.ui.ActivityMain;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
-import com.github.pedramrn.slick.parent.ui.SnackbarManager;
-import com.github.pedramrn.slick.parent.ui.details.ControllerElm;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.main.BottomBarHost;
 import com.github.pedramrn.slick.parent.ui.main.ViewPager;
 import com.mrezanasirloo.slick.Presenter;
@@ -36,76 +33,57 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.disposables.Disposable;
-
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerImage extends ControllerElm<ViewStateImage> implements ViewImage {
-
+public class ControllerImage extends FragmentBase implements ViewImage {
+    private static final String TAG = ControllerImage.class.getSimpleName();
     @Inject
     Provider<PresenterImage> provider;
     @Presenter
     PresenterImage presenter;
-    private final ArrayList<String> data;
-    private final String title;
-    private final int pos;
+    private ArrayList<String> data;
+    private String title;
+    private int pos;
     private GroupAdapter adapter;
     private LinearLayoutManager layoutManager;
     private int newPos;
 
-    public ControllerImage(@NonNull Bundle args) {
-        super(args);
-        data = args.getStringArrayList("DATA");
-        title = args.getString("TITLE");
-        pos = args.getInt("POS", 0);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        data = getArguments().getStringArrayList("DATA");
+        title = getArguments().getString("TITLE");
+        pos = getArguments().getInt("POS", 0);
     }
 
-    public ControllerImage(@NonNull String title, @NonNull ArrayList<String> items, int position) {
-        this(new BundleBuilder(new Bundle())
+    public static ControllerImage newInstance(@NonNull String title, @NonNull ArrayList<String> items, int position) {
+        Bundle bundle = new BundleBuilder(new Bundle())
                 .putStringArrayList("DATA", items)
                 .putString("TITLE", title)
                 .putInt("POS", position)
-                .build());
+                .build();
+
+        ControllerImage fragment = new ControllerImage();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public ControllerImage(@NonNull String title, @NonNull ArrayList<String> items) {
-        this(new BundleBuilder(new Bundle())
+    public static ControllerImage newInstance(@NonNull String title, @NonNull ArrayList<String> items) {
+        Bundle args = new BundleBuilder(new Bundle())
                 .putStringArrayList("DATA", items)
                 .putString("TITLE", title)
-                .build());
-    }
+                .build();
 
-    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items) {
-        router.pushController(RouterTransaction.with(new ControllerImage(title, items))
-                .pushChangeHandler(new FadeChangeHandler())
-                .popChangeHandler(new FadeChangeHandler()));
-    }
-
-    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items,
-                             ControllerChangeHandler changeHandler) {
-        router.pushController(RouterTransaction.with(new ControllerImage(title, items))
-                .pushChangeHandler(changeHandler)
-                .popChangeHandler(changeHandler));
-    }
-
-    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items, int position) {
-        router.pushController(RouterTransaction.with(new ControllerImage(title, items, position))
-                .pushChangeHandler(new FadeChangeHandler())
-                .popChangeHandler(new FadeChangeHandler()));
-    }
-
-    public static void start(@NonNull Router router, @NonNull String title, @NonNull ArrayList<String> items, int position,
-                             ControllerChangeHandler changeHandler) {
-        router.pushController(RouterTransaction.with(new ControllerImage(title, items, position))
-                .pushChangeHandler(changeHandler)
-                .popChangeHandler(changeHandler));
+        ControllerImage fragment = new ControllerImage();
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         Navigator2.bind(this);
         App.componentMain().inject(this);
         PresenterImage_Slick.bind(this);
@@ -121,30 +99,37 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         recyclerView.setAdapter(adapter);
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
-        ((BottomBarHost) getParentController()).hide();
+        Fragment parent = getMainParent();
+        ((BottomBarHost) parent).hide();
         newPos = pos;
 
-        presenter.updateStream().subscribe(this);
         return binding.getRoot();
     }
 
+    protected Fragment getMainParent() {
+        return getActivity().getSupportFragmentManager().findFragmentByTag(ActivityMain.CONTROLLER_MAIN_TAG);
+    }
+
     @Override
-    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt("POS", layoutManager.findFirstVisibleItemPosition());
     }
 
     @Override
-    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        newPos = savedViewState.getInt("POS", this.pos);
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) return;
+        newPos = savedInstanceState.getInt("POS", this.pos);
     }
 
-
     @Override
-    protected void onAttach(@NonNull View view) {
+    public void onResume() {
+        super.onResume();
         layoutManager.scrollToPosition(newPos);
         toggleHideBar();
         // TODO: 2017-09-06 maybe adding a footer?
-        View parentView = getParentController().getView();
+        View parentView = getMainParent().getView();
         ViewPager viewPager = (ViewPager) parentView.findViewById(R.id.view_pager);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
         layoutParams.setMargins(0, 0, 0, 0);
@@ -154,9 +139,10 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected void onDetach(@NonNull View view) {
+    public void onPause() {
+        super.onPause();
         toggleHideBar();
-        View parentView = getParentController().getView();
+        View parentView = getMainParent().getView();
         ViewPager viewPager = (ViewPager) parentView.findViewById(R.id.view_pager);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
         layoutParams.setMargins(0, 0, 0, getActionBarHeight());
@@ -172,31 +158,10 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         return getResources().getDimensionPixelOffset(R.dimen.action_bar_size);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ((BottomBarHost) getParentController()).show();
-    }
-
-    @Override
-    public void onSubscribe(Disposable d) {
-        add(d);
-    }
-
-    @Override
-    public void onNext(ViewStateImage state) {
-        //no-op
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.d(TAG, "onComplete() called");
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((BottomBarHost) getMainParent()).show();
     }
 
     public void toggleHideBar() {
@@ -235,13 +200,5 @@ public class ControllerImage extends ControllerElm<ViewStateImage> implements Vi
         }
 
         getActivity().getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-    }
-
-    private static final String TAG = ControllerImage.class.getSimpleName();
-
-    @NonNull
-    @Override
-    public SnackbarManager snackbarManager() {
-        throw new NotImplementedException("Sorry!!!");
     }
 }

@@ -12,7 +12,7 @@ import com.xwray.groupie.Item;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-09-06
+ * Created on: 2017-09-06
  */
 
 public class ItemImage extends Item<RowImageBinding> implements OnItemAction {
@@ -39,7 +39,7 @@ public class ItemImage extends Item<RowImageBinding> implements OnItemAction {
     public void bind(RowImageBinding viewBinding, int position) {
         viewBinding.imageView.setImageDrawable(null);
         // viewBinding.imageView.loadBlurNP(urlTiny);
-        viewBinding.imageView.load(urlSmall, urlHigh);
+        viewBinding.imageView.load(urlSmall, urlHigh, () -> viewBinding.progressBarImage.setVisibility(View.GONE));
     }
 
     @Override

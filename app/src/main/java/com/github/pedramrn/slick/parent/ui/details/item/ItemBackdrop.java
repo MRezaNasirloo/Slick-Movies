@@ -7,10 +7,13 @@ import android.view.View;
 import com.github.pedramrn.slick.parent.databinding.RowBackdropBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
+import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
+
+import java.util.ArrayList;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-17
+ * Created on: 2017-06-17
  */
 
 public class ItemBackdrop extends ItemBackdropProgressive {
@@ -30,12 +33,11 @@ public class ItemBackdrop extends ItemBackdropProgressive {
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
-        /*ControllerImage.start(
-                navigator.getRouter(),
+        navigator.navigateTo(ControllerImage.newInstance(
                 backdrop.movieTitle(),
                 ((ArrayList<String>) backdrop.allBackdrops()),
                 position
-        );*/
+        ));
     }
 
     private static final String TAG = ItemBackdrop.class.getSimpleName();

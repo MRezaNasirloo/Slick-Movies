@@ -120,6 +120,49 @@ public class ImageViewLoader extends AppCompatImageView {
                 });
     }
 
+    public void load(String thumbnailUrl, String url, Runnable action) {
+        if (mock) {
+            setBackgroundResource(R.drawable.rectangle_no_corners);
+            return;
+        }
+        if (url == null || thumbnailUrl == null) {
+            // TODO: 2017-11-11 do this for all
+            Logger.e("load: something was null");
+            setImageResource(R.drawable.rectangle_no_corners);
+            return;
+        }
+        Context context = getContext();
+        Picasso.with(context)
+                .load(thumbnailUrl)
+                .transform(new BlurTransformation(context))
+                .into(this, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Picasso.with(context)
+                                .load(url)
+                                .placeholder(getDrawable())
+                                .into(ImageViewLoader.this, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        action.run();
+                                    }
+
+                                    @Override
+                                    public void onError() {
+
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context).load(R.drawable.error_state_car)
+                                .into(ImageViewLoader.this);
+                        // setOnClickListener(v -> load(thumbnailUrl, url));
+                    }
+                });
+    }
+
     public void load(String url, @DimenRes int dimen) {
         if (mock) {
             return;

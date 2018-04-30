@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerPeopleBinding;
 import com.github.pedramrn.slick.parent.exception.NotImplementedException;
@@ -30,7 +29,6 @@ import com.github.pedramrn.slick.parent.ui.people.item.ItemTvShowCrew;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
-import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.mrezanasirloo.slick.Presenter;
 import com.xwray.groupie.GroupAdapter;
@@ -45,7 +43,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 /**
  * TODO: 2018-04-30 retain recycler views scroll position
@@ -71,7 +68,6 @@ public class ControllerPeople extends FragmentBase
     private int maxScroll;
     private int deltaHeight;
     private ViewStatePeople state;
-    private Disposable disposable;
 
     public static ControllerPeople newInstance(Person person, String transitionName) {
         Bundle bundle = new BundleBuilder(new Bundle())
@@ -102,7 +98,7 @@ public class ControllerPeople extends FragmentBase
         binding.toolbar.setTitle("");
         binding.collapsingToolbar.setTitle("");
 
-        disposable = RxView.clicks(binding.imageViewProfile)
+        add(RxView.clicks(binding.imageViewProfile)
                 .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(o -> {
                     PersonDetails ps = state.personDetails();
@@ -110,9 +106,9 @@ public class ControllerPeople extends FragmentBase
                         ArrayList<String> images = new ArrayList<>(ps.images());
                         images.remove(ps.profilePicId());
                         images.add(0, ps.profilePicId());
-                        Navigator2.go(new ControllerImage(ps.name(), images), new FadeChangeHandler(), new FadeChangeHandler());
+                        navigateTo(ControllerImage.newInstance(ps.name(), images));
                     }
-                });
+                }));
 
         adapter = new GroupAdapter();
 
@@ -159,8 +155,6 @@ public class ControllerPeople extends FragmentBase
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        UtilsRx.dispose(disposable);
-        disposable = null;
         state = null;
         adapter.clear();
         adapterMovies.clear();
