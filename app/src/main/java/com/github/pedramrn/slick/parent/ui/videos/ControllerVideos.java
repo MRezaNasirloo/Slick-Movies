@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.transition.Fade;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerVideosBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
-import com.github.pedramrn.slick.parent.ui.ScreenTransition;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
@@ -80,7 +77,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
         PresenterVideos_Slick.bind(this);
         binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
-        binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
+        // binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
         adapter = new GroupAdapter();
         adapterProgressive = new UpdatingGroup();
         adapter.add(adapterProgressive);
@@ -100,7 +97,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding.recyclerView.setAdapter(null);
+        // binding.recyclerView.setAdapter(null);
         adapter.setOnItemClickListener(null);
         adapterProgressive = null;
         adapter = null;
@@ -135,42 +132,5 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item), view);
-    }
-
-    @Override
-    public ScreenTransition getScreenTransition() {
-        return new ScreenTransition() {
-            @Override
-            public Transition sharedElementEnterTransition() {
-                return null;
-            }
-
-            @Override
-            public Transition sharedElementReturnTransition() {
-                return null;
-            }
-
-            @Override
-            public Transition exitTransition() {
-                return new Fade();
-            }
-
-            @Override
-            public Transition enterTransition() {
-                return new Fade();
-            }
-
-            @Override
-            public Transition reenterTransition() {
-                return new Fade();
-            }
-        };
-    }
-
-    @Override
-    public void setScreenTransition(ScreenTransition screenTransition) {
-        setEnterTransition(screenTransition.enterTransition());
-        setExitTransition(screenTransition.exitTransition());
-        setReenterTransition(screenTransition.reenterTransition());
     }
 }

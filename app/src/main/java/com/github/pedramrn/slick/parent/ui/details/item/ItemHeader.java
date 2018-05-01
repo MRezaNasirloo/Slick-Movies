@@ -101,9 +101,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         viewBinding.textViewScoreTrakt.setCompoundDrawablesRelative(logoTrakt, null, null, null);
         // viewBinding.textViewScoreTmdb.setText(voteAveSpannedTmdb);
         viewBinding.textViewRuntime.setText(movie.runtimePretty());
+        viewBinding.imageViewIcon.setTransitionName(transitionName);
         viewBinding.imageViewIcon.load(movie.thumbnailPoster(), () -> {
-            viewBinding.imageViewIcon.setTransitionName(transitionName);
             Logger.i("Transition Name is: %s", transitionName);
+            navigator.get().startPostponedEnterTransitionNav();
         });
         Disposable disposable = RxView.clicks(viewBinding.imageViewIcon)
                 .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())

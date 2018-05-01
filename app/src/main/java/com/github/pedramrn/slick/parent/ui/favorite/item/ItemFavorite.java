@@ -31,7 +31,7 @@ import io.reactivex.Observable;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-16
+ * Created on: 2017-06-16
  */
 
 public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnItemAction, RemovableOnError {
@@ -80,7 +80,9 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
         init(viewBinding.getRoot().getContext());
         viewBinding.textViewFavoriteInfo.setBackground(null);
         viewBinding.textViewFavoriteInfo.setText(info);
-        viewBinding.imageViewFavoritePoster.load(movie.thumbnailTinyPoster());
+        viewBinding.imageViewFavoritePoster.setTransitionName(transitionName);
+        viewBinding.imageViewFavoritePoster.load(movie.thumbnailPoster(), () -> {
+        });
         long took = System.currentTimeMillis() - before;
         Log.e(TAG, "bind fav item at position: " + position + " took: " + took + " ms");
     }
@@ -107,7 +109,8 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
             spannedScoreMax = new SpannableString("/10   ");
             spannedScoreMax.setSpan(new ForegroundColorSpan(gray), 0, spannedScoreMax.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannedScoreMax.setSpan(new AbsoluteSizeSpan(size_12), 0, spannedScoreMax.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannedScoreMax.setSpan(imageSpan, spannedScoreMax.length() - 1, spannedScoreMax.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannedScoreMax.setSpan(imageSpan, spannedScoreMax.length() - 1, spannedScoreMax.length(), Spanned
+                    .SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (info == null) {
             String genres = Observable.fromIterable(movie.genres())
@@ -141,7 +144,9 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
 
     @Override
     public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
-        navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
+        View sharedView = view.findViewById(R.id.imageView_favorite_poster);
+        navigator.navigateTo(ControllerDetails.newInstance(movie, sharedView.getTransitionName()),
+                sharedView, sharedView.getTransitionName());
     }
 
     @Override

@@ -14,4 +14,8 @@ public interface Navigator {
 
     @NonNull
     SnackbarManager snackbarManager();
+
+    void postponeEnterTransitionNav();
+
+    void startPostponedEnterTransitionNav();
 }

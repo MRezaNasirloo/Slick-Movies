@@ -16,9 +16,7 @@ import com.bluelinelabs.conductor.Controller;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerFavoriteBinding;
-import com.github.pedramrn.slick.parent.exception.NotImplementedException;
 import com.github.pedramrn.slick.parent.ui.Navigator;
-import com.github.pedramrn.slick.parent.ui.SnackbarManager;
 import com.github.pedramrn.slick.parent.ui.auth.ControllerAuth;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
@@ -60,12 +58,16 @@ public class ControllerFavorite extends FragmentBase implements ViewFavorite, Na
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
         App.componentMain().inject(this);
         PresenterFavorite_Slick.bind(this);
-        ControllerFavoriteBinding binding = ControllerFavoriteBinding.inflate(inflater, container, false);
+        ControllerFavoriteBinding binding
+                = ControllerFavoriteBinding.inflate(inflater, container, false);
 
         FragmentManager fm = getChildFragmentManager();
         Fragment fragment = fm.findFragmentByTag("FRAGMENT_LOG_IN");
         if (fragment == null) {
-            fm.beginTransaction().replace(R.id.container_child, ControllerAuth.newInstance(false)).commit();
+            fm.beginTransaction()
+                    .replace(R.id.container_child, ControllerAuth.newInstance(false))
+                    .addToBackStack(null)
+                    .commit();
         }
         // binding.collapsingToolbar.setTitle(true);
         // binding.collapsingToolbar.setTitleEnabled(true);
@@ -89,7 +91,7 @@ public class ControllerFavorite extends FragmentBase implements ViewFavorite, Na
     public void onDestroyView() {
         super.onDestroyView();
         // if (!isBeingDestroyed()) { rc.setAdapter(null); }
-        rc.setAdapter(null);
+        // rc.setAdapter(null);
         adapter.setOnItemClickListener(null);
         rc = null;
         adapter = null;
@@ -122,11 +124,5 @@ public class ControllerFavorite extends FragmentBase implements ViewFavorite, Na
     @Override
     public void onItemClick(Item item, View view) {
         ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item), view);
-    }
-
-    @NonNull
-    @Override
-    public SnackbarManager snackbarManager() {
-        throw new NotImplementedException("Sorry!!!");
     }
 }

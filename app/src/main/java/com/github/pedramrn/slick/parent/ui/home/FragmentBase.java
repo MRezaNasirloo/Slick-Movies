@@ -16,6 +16,7 @@ import android.transition.ChangeTransform;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
  */
 public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
-    protected static final int duration = 400;
+    protected static final int duration = 5000;
     private static final String TAG = FragmentBase.class.getSimpleName();
     private final ScreenTransitionBase screenTransitionBase = new ScreenTransitionBase();
     protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
@@ -62,7 +63,6 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
             id = savedInstanceState.getString(SLICK_UNIQUE_KEY);
         }
         compositeDisposable = new CompositeDisposable();
-        setScreenTransition(getScreenTransition());
     }
 
     @CallSuper
@@ -115,20 +115,30 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
     @Override
     public void navigateTo(@NonNull Screen screen) {
         if (screen instanceof Fragment) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, ((Fragment) screen))
-                    .addToBackStack(screen.toString())
+            setScreenTransition(getScreenTransition());
+            screen.setScreenTransition(screen.getScreenTransition());
+            getParentFragment()
+                    .getChildFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.fragment_container, ((Fragment) screen), "tag")
+                    .addToBackStack(null)
                     .commit();
         }
     }
 
     @Override
     public void navigateTo(@NonNull Screen screen, View sharedView, String transitionName) {
+
         Logger.e("navigateTo() called with: screen = [" + screen + "], sharedView = [" + sharedView + "], transitionName = ["
                 + transitionName + "]");
+        setScreenTransition(getScreenTransition());
         screen.setScreenTransition(screen.getScreenTransition());
-        getParentFragment().getChildFragmentManager()
+        getParentFragment()
+                .getChildFragmentManager()
                 .beginTransaction()
+                // .setReorderingAllowed(true)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                 .addSharedElement(sharedView, transitionName)
                 .replace(R.id.fragment_container, ((Fragment) screen), "tag")
                 .addToBackStack(null)
@@ -180,11 +190,24 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
 
     @Override
     public void setScreenTransition(ScreenTransition screenTransition) {
+        Log.i(TAG, "setScreenTransition() called");
         setSharedElementEnterTransition(screenTransition.sharedElementEnterTransition().setDuration(duration));
         setSharedElementReturnTransition(screenTransition.sharedElementReturnTransition().setDuration(duration));
-        setEnterTransition(screenTransition.enterTransition().setDuration(duration));
-        setExitTransition(screenTransition.exitTransition().setDuration(duration));
-        setReenterTransition(screenTransition.reenterTransition().setDuration(duration));
+        // setEnterTransition(screenTransition.enterTransition().setDuration(duration));
+        // setExitTransition(screenTransition.exitTransition().setDuration(duration));
+        // setReenterTransition(screenTransition.reenterTransition().setDuration(duration));
+        setAllowEnterTransitionOverlap(false);
+        setAllowReturnTransitionOverlap(false);
+    }
+
+    @Override
+    public void postponeEnterTransitionNav() {
+        postponeEnterTransition();
+    }
+
+    @Override
+    public void startPostponedEnterTransitionNav() {
+        startPostponedEnterTransition();
     }
 
     private class ScreenTransitionBase implements ScreenTransition {
@@ -212,12 +235,12 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
 
         @Override
         public Transition exitTransition() {
-            return new Fade();
+            return new Fade(Fade.IN);
         }
 
         @Override
         public Transition enterTransition() {
-            return new Fade();
+            return new Fade(Fade.OUT);
         }
 
         @Override

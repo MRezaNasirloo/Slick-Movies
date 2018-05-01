@@ -20,7 +20,7 @@ public class ItemFavoriteProgressive extends ItemFavorite {
 
     @Override
     public void bind(RowFavoriteMovieTvBinding viewBinding, int position) {
-        viewBinding.textViewFavoriteInfo.setText("         \n               \n              ");
+        viewBinding.textViewFavoriteInfo.setText("    ");
         viewBinding.textViewFavoriteInfo.setBackgroundResource(R.drawable.line);
         viewBinding.imageViewFavoritePoster.load(R.drawable.rectangle);
     }

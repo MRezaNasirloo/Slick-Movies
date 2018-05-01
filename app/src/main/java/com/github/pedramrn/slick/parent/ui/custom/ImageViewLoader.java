@@ -44,7 +44,7 @@ public class ImageViewLoader extends AppCompatImageView {
 
     public void load(String url) {
         if (mock) {
-            setBackgroundResource(R.drawable.rectangle_no_corners);
+            setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
         if (url == null) {
@@ -61,7 +61,7 @@ public class ImageViewLoader extends AppCompatImageView {
 
     public void load(String url, Runnable callback) {
         if (mock) {
-            setBackgroundResource(R.drawable.rectangle_no_corners);
+            setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
         if (url == null) {
@@ -72,7 +72,7 @@ public class ImageViewLoader extends AppCompatImageView {
         Context context = getContext();
         picasso(context)
                 .load(url)
-                .placeholder(R.drawable.rectangle_no_corners)
+                .noPlaceholder()
                 .into(this, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -88,7 +88,7 @@ public class ImageViewLoader extends AppCompatImageView {
 
     public void load(String thumbnailUrl, String url) {
         if (mock) {
-            setBackgroundResource(R.drawable.rectangle_no_corners);
+            setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
         if (url == null || thumbnailUrl == null) {
@@ -123,7 +123,7 @@ public class ImageViewLoader extends AppCompatImageView {
 
     public void load(String thumbnailUrl, String url, @DrawableRes int placeholder) {
         if (mock) {
-            setBackgroundResource(placeholder);
+            setImageResource(placeholder);
             return;
         }
         if (url == null || thumbnailUrl == null) {
@@ -158,7 +158,7 @@ public class ImageViewLoader extends AppCompatImageView {
 
     public void load(String thumbnailUrl, String url, Runnable action) {
         if (mock) {
-            setBackgroundResource(R.drawable.rectangle_no_corners);
+            setImageResource(R.drawable.rectangle_no_corners);
             return;
         }
         if (url == null || thumbnailUrl == null) {
