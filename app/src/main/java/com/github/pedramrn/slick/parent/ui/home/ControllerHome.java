@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +38,7 @@ import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.UpdatingGroup;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -47,7 +50,7 @@ import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator;
 
 /**
  * @author : Pedramrn@gmail.com
- * Created on: 2017-06-20
+ *         Created on: 2017-06-20
  */
 
 public class ControllerHome extends ControllerBase implements ViewHome {
@@ -110,10 +113,14 @@ public class ControllerHome extends ControllerBase implements ViewHome {
         recyclerViewCardListPopular.setRecycledViewPool(recycledViewPool);
         recyclerViewCardListTrending.setRecycledViewPool(recycledViewPool);
 
-        SnapHelper snapHelperStartTrending = new GravitySnapHelper(Gravity.START);
-        SnapHelper snapHelperStartPopular = new GravitySnapHelper(Gravity.START);
-        snapHelperStartTrending.attachToRecyclerView(recyclerViewCardListTrending);
-        snapHelperStartPopular.attachToRecyclerView(recyclerViewCardListPopular);
+        boolean isRTL = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
+        Log.w(TAG, "Layout isRTL: " + isRTL);
+        if (!isRTL) {
+            SnapHelper snapHelperStartTrending = new GravitySnapHelper(Gravity.START);
+            SnapHelper snapHelperStartPopular = new GravitySnapHelper(Gravity.START);
+            snapHelperStartTrending.attachToRecyclerView(recyclerViewCardListTrending);
+            snapHelperStartPopular.attachToRecyclerView(recyclerViewCardListPopular);
+        }
 
         adapterUpcoming.add(progressiveUpcoming);
 
@@ -156,7 +163,8 @@ public class ControllerHome extends ControllerBase implements ViewHome {
                     String imdbId = pathSegments.get(1);
                     ControllerDetails.start(getRouter(), imdbId, null);
                 }
-            } else if ("name".equalsIgnoreCase(path)) {
+            }
+            else if ("name".equalsIgnoreCase(path)) {
                 // TODO: 2018-04-09 Launch Controller People
             }
         }
