@@ -87,3 +87,6 @@
 
 # Dagger
 -dontwarn com.google.errorprone.annotations.*
+
+# Arch Lifecycle
+-dontwarn android.arch.**
