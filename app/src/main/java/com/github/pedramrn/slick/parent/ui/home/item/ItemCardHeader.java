@@ -59,8 +59,8 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
             disposable = RxView.clicks(viewBinding.button).throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe(onClickListener);
         }
-        if (buttonText == null) {
-            viewBinding.button.setVisibility(View.INVISIBLE);
+        if (buttonText == null || buttonText.trim().isEmpty()) {
+            viewBinding.button.setVisibility(View.GONE);
         } else {
             viewBinding.button.setVisibility(View.VISIBLE);
 

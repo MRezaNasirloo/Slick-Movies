@@ -164,7 +164,7 @@ public class ControllerHome extends ControllerBase implements ViewHome {
 
     private void setupHeader(RowCardHeaderBinding header, String title, @Nullable Consumer<Object> clickListener) {
         if (clickListener == null) {
-            header.button.setVisibility(View.INVISIBLE);
+            header.button.setVisibility(View.GONE);
         } /*else {
             RxView.clicks(header.button).throttleLast(1, TimeUnit.SECONDS).subscribe(clickListener);
         }*/
