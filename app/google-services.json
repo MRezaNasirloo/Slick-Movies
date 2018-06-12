@@ -1,43 +1,39 @@
 {
   "project_info": {
-    "project_number": "379627951422",
-    "firebase_url": "https://slick-movies.firebaseio.com",
-    "project_id": "slick-movies",
-    "storage_bucket": "slick-movies.appspot.com"
+    "project_number": "262029580687",
+    "firebase_url": "https://slick-movie.firebaseio.com",
+    "project_id": "slick-movie",
+    "storage_bucket": "slick-movie.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:379627951422:android:cc88daba1e218c3a",
+        "mobilesdk_app_id": "1:262029580687:android:af41213631720dbc",
         "android_client_info": {
-          "package_name": "com.mreza.nasirloo.slick.movies"
+          "package_name": "com.mrezanasirloo.slick.movies"
         }
       },
       "oauth_client": [
         {
-          "client_id": "379627951422-40c8se413dfiau2dg6c1eer8kfatf1fd.apps.googleusercontent.com",
+          "client_id": "262029580687-nuu8nc5drghsi95p039qi8lfmr3mgpkj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mreza.nasirloo.slick.movies",
-            "certificate_hash": "e5357ba14117730d2cf42a0b26441e3f0326f0dd"
+            "package_name": "com.mrezanasirloo.slick.movies",
+            "certificate_hash": "1eaa5cfa574fede753e46e1e02cc716de1693912"
           }
         },
         {
-          "client_id": "379627951422-v4m96hi81pusleiqfnj4qmvnq0sher2u.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mreza.nasirloo.slick.movies",
-            "certificate_hash": "74a113bc9327e9f24ff1126cd7c2b4ddee3e6d20"
-          }
+          "client_id": "262029580687-b2kne11s44j7o51ncu768aq3fq2i73f1.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
-          "client_id": "379627951422-29r17lm7s5ug6cccbub9t9c1mlvrk0sa.apps.googleusercontent.com",
+          "client_id": "262029580687-b2kne11s44j7o51ncu768aq3fq2i73f1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB_aLcxn03TwMdyJGg_iIF7sin_ye-IU6o"
+          "current_key": "AIzaSyDOshVrHtxbje8yyLxqNKen7COVxHKG5Zg"
         }
       ],
       "services": {
@@ -48,7 +44,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "379627951422-29r17lm7s5ug6cccbub9t9c1mlvrk0sa.apps.googleusercontent.com",
+              "client_id": "262029580687-b2kne11s44j7o51ncu768aq3fq2i73f1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
