@@ -69,7 +69,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.config
-            debuggable true
+            debuggable false
             minifyEnabled true
             multiDexEnabled false
             ext.enableCrashlytics = true
