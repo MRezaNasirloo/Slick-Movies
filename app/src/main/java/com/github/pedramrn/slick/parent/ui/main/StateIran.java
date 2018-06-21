@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.home.state;
+package com.github.pedramrn.slick.parent.ui.main;
 
 import com.github.pedramrn.slick.parent.datasource.network.models.IpLocation;
 import com.google.auto.value.AutoValue;
@@ -13,7 +13,9 @@ public abstract class StateIran {
 
     public abstract Boolean seen();
 
-    public static Builder builder() {return new AutoValue_StateIran.Builder();}
+    public static Builder builder() {
+        return new AutoValue_StateIran.Builder();
+    }
 
     public abstract Builder toBuilder();
 

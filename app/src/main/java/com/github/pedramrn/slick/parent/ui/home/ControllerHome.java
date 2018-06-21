@@ -30,7 +30,6 @@ import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListPop
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListTrending;
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.github.pedramrn.slick.parent.ui.main.iran.ViewIran;
 import com.github.pedramrn.slick.parent.ui.search.PresenterSearch_Slick;
 import com.github.pedramrn.slick.parent.ui.search.SearchViewImpl;
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
@@ -54,7 +53,7 @@ import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator;
  *         Created on: 2017-06-20
  */
 
-public class ControllerHome extends ControllerBase implements ViewHome, ViewIran {
+public class ControllerHome extends ControllerBase implements ViewHome {
 
     private static final String TAG = ControllerHome.class.getSimpleName();
 
@@ -62,11 +61,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, ViewIran
     Provider<PresenterHome> provider;
     @Presenter
     PresenterHome presenter;
-
-    @Inject
-    Provider<PresenterIran> providerIran;
-    @Presenter
-    PresenterIran presenterIran;
 
     private UpdatingGroup progressiveUpcoming;
 
@@ -96,7 +90,6 @@ public class ControllerHome extends ControllerBase implements ViewHome, ViewIran
         Log.d(TAG, "onCreateView");
         App.componentMain().inject(this);
         PresenterHome_Slick.bind(this);
-        PresenterIran_Slick.bind(this);
         ControllerHomeBinding binding = ControllerHomeBinding.inflate(inflater, container, false);
 
         adapterUpcoming = new GroupAdapter();
@@ -270,20 +263,4 @@ public class ControllerHome extends ControllerBase implements ViewHome, ViewIran
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    @Override
-    public void showWarningIran() {
-        showSnakbar(getResources().getString(R.string.message_iran));
-    }
-
-    @NonNull
-    @Override
-    protected String getSnackbarActionText() {
-        return getResources().getString(R.string.ok);
-    }
-
-    @NonNull
-    @Override
-    public Observable<Object> messageDismissed() {
-        return retry;
-    }
 }

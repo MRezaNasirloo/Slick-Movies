@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
@@ -20,6 +19,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.boxoffice.ControllerBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.ControllerBase;
 import com.github.pedramrn.slick.parent.ui.favorite.ControllerFavorite;
 import com.github.pedramrn.slick.parent.ui.home.ControllerHome;
 import com.mrezanasirloo.slick.Presenter;
@@ -28,16 +28,17 @@ import com.mrezanasirloo.slick.middleware.RequestStack;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.Observable;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
 import static com.github.pedramrn.slick.parent.App.componentMain;
 
 /**
  * @author : Pedramrn@gmail.com
- * Created on: 2017-02-13
+ *         Created on: 2017-02-13
  */
 
-public class ControllerMain extends Controller implements ViewMain, BottomBarHost,
+public class ControllerMain extends ControllerBase implements ViewMain, ViewIran, BottomBarHost,
         BottomNavigation.OnMenuItemSelectionListener {
 
     private static final String TAG = ControllerMain.class.getSimpleName();
@@ -45,6 +46,10 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     Provider<PresenterMain> provider;
     @Presenter
     PresenterMain presenter;
+    @Inject
+    Provider<PresenterIran> providerIran;
+    @Presenter
+    PresenterIran presenterIran;
     private ControllerMainBinding binding;
     private final RouterPagerAdapter routerPagerAdapter;
     @Nullable
@@ -85,8 +90,8 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
 
     public ControllerMain(Uri data) {
         this(new BundleBuilder(new Bundle())
-                .putParcelable("URI", data)
-                .build()
+                     .putParcelable("URI", data)
+                     .build()
         );
     }
 
@@ -95,6 +100,7 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
     protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
         componentMain().inject(this);
         PresenterMain_Slick.bind(this);
+        PresenterIran_Slick.bind(this);
         binding = ControllerMainBinding.inflate(layoutInflater, viewGroup, false);
         binding.viewPager.setAdapter(routerPagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
@@ -171,4 +177,22 @@ public class ControllerMain extends Controller implements ViewMain, BottomBarHos
         navigation.setExpanded(false, true);
         // }
     }
+
+    @Override
+    public void showWarningIran() {
+        showSnakbar(getResources().getString(R.string.message_iran));
+    }
+
+    @NonNull
+    @Override
+    protected String getSnackbarActionText() {
+        return getResources().getString(R.string.ok);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Object> messageDismissed() {
+        return retry;
+    }
+
 }

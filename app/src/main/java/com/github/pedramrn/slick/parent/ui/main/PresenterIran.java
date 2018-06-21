@@ -1,11 +1,9 @@
-package com.github.pedramrn.slick.parent.ui.home;
+package com.github.pedramrn.slick.parent.ui.main;
 
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.datasource.network.ApiIpLocation;
 import com.github.pedramrn.slick.parent.datasource.network.models.IpLocation;
-import com.github.pedramrn.slick.parent.ui.home.state.StateIran;
-import com.github.pedramrn.slick.parent.ui.main.iran.ViewIran;
 import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.mrezanasirloo.slick.uni.SlickPresenterUni;
 

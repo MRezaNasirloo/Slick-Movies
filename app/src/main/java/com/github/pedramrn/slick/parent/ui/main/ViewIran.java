@@ -1,4 +1,4 @@
-package com.github.pedramrn.slick.parent.ui.main.iran;
+package com.github.pedramrn.slick.parent.ui.main;
 
 import android.support.annotation.NonNull;
 
