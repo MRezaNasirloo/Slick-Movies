@@ -20,4 +20,6 @@
     <dimen name="dialog_elevation">6dp</dimen>
     <dimen name="dialog_corners">2dp</dimen>
     <dimen name="size_logo_details">24dp</dimen>
+    <dimen name="width_card_movie">138dp</dimen>
+    <dimen name="height_card_movie">224dp</dimen>
 </resources>

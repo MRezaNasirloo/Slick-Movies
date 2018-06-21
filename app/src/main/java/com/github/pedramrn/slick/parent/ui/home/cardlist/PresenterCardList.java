@@ -58,7 +58,7 @@ public class PresenterCardList extends SlickPresenterUni<ViewCardList, ViewState
     }
 
     @Override
-    protected void start(ViewCardList view) {
+    protected void start(@NonNull ViewCardList view) {
         final int pageSize = view.pageSize();
         Observable<Integer> trigger = command(ViewCardList::trigger).map(o -> state.page()).startWith(1);
         final Observable<PartialViewState<ViewStateCardList>> movies = trigger.concatMap(page -> {

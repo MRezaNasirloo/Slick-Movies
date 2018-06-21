@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home.cardlist;
 
+import android.support.annotation.NonNull;
+
 import com.xwray.groupie.Item;
 
 import java.util.List;
@@ -17,5 +19,6 @@ public interface ViewCardList {
 
     int pageSize();
 
+    @NonNull
     Observable<Object> trigger();
 }

@@ -5,8 +5,8 @@
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
-        android:layout_width="75dp"
-        android:layout_height="240dp"
+        android:layout_width="@dimen/width_card_movie"
+        android:layout_height="@dimen/height_card_movie"
         android:padding="18dp"
         />
 
