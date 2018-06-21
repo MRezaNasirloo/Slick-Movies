@@ -114,7 +114,7 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Singleton
     @Named("ip-api")
     public HttpUrl apiUrlIpApi() {
-        return baseApiUrlTmdb();
+        return baseApiUrlIpApi();
     }
 
     @Provides
