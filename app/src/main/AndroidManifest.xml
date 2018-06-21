@@ -41,7 +41,10 @@
                     />
             </intent-filter>
         </activity>
-        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="65d05f52c2babbe22ede3809e18882a8a6be0805"
+            />
     </application>
 
 </manifest>
