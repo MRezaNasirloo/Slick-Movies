@@ -5,6 +5,7 @@ import android.content.Context;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
+import com.github.pedramrn.slick.parent.datasource.network.ApiIpLocation;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovie;
 import com.github.pedramrn.slick.parent.domain.router.RouterBoxOffice;
 import com.github.pedramrn.slick.parent.ui.main.di.ComponentMain;
