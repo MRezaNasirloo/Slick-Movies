@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="message_iran">این برنامه از سرویس هایی استفاده میکند که در ایران فیلتر و تحریم است، فیلترشکن را روشن کنید و دوباره تلاش کنید ;)</string>
+    <string name="ok">باشه</string>
+</resources>

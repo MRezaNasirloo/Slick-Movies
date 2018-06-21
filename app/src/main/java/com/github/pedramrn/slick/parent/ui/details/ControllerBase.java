@@ -88,18 +88,23 @@ public abstract class ControllerBase extends Controller implements ToolbarHost, 
 
     @Override
     protected void onAttach(@NonNull View view) {
-        snackbar = new ErrorHandlerSnackbar(view, "Retry") {
+        snackbar = new ErrorHandlerSnackbar(view, getSnackbarActionText()) {
             @Override
             public void onDismissed(int event) {
                 errorDismissed.onNext(1);
-                if (Snackbar.Callback.DISMISS_EVENT_ACTION == event) {
+                if (Snackbar.Callback.DISMISS_EVENT_ACTION == event || Snackbar.Callback.DISMISS_EVENT_TIMEOUT == event) {
                     retry.onNext(1);
                 }
             }
         };
     }
 
-    protected void showSnakbar(String message) {
+    @NonNull
+    protected String getSnackbarActionText() {
+        return "Retry";
+    }
+
+    protected void showSnakbar(@NonNull String message) {
         snackbar.show(message);
     }
 }

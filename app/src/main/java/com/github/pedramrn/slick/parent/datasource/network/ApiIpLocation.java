@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network;
 
+import com.github.pedramrn.slick.parent.datasource.network.models.IpLocation;
+
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 
@@ -10,5 +12,5 @@ import retrofit2.http.GET;
 public interface ApiIpLocation {
 
     @GET("/json")
-    Observable<String> location();
+    Observable<IpLocation> location();
 }
