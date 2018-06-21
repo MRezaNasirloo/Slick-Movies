@@ -35,8 +35,7 @@ public class ItemComment extends Item<RowCommentBinding> implements OnItemAction
         viewBinding.textViewComment.setText(comment.comment());
         String name = comment.user().name();
         String text = name != null && !name.isEmpty() ? name : comment.user().username();
-        text = "Read more \n\n" + text;
-        viewBinding.textViewUserNameDate.setText(text);
+        String readMoreName = "Read more \n\n" + text;
         viewBinding.textViewReplies.setText(String.valueOf(comment.replies()));
         viewBinding.textViewLikes.setText(String.valueOf(comment.likes()));
         // viewBinding.textViewReadMore.setVisibility(View.INVISIBLE);// TODO: 2017-07-24 if needed
@@ -44,6 +43,19 @@ public class ItemComment extends Item<RowCommentBinding> implements OnItemAction
         viewBinding.textViewUserNameDate.setBackground(null);
         viewBinding.textViewReplies.setBackground(null);
         viewBinding.textViewLikes.setBackground(null);
+        viewBinding.textViewComment.post(() -> {
+            int lineCount = viewBinding.textViewComment.getLineCount();
+            if (lineCount >= viewBinding.textViewComment.getMaxLines()) {
+                viewBinding.textViewUserNameDate.setText(readMoreName);
+                viewBinding.textViewUserNameDate.setOnClickListener(v -> {
+                    viewBinding.textViewComment.setMaxLines(200);
+                    viewBinding.textViewUserNameDate.setText(text);
+                });
+            }
+            else {
+                viewBinding.textViewUserNameDate.setText(text);
+            }
+        });
     }
 
     @Override
