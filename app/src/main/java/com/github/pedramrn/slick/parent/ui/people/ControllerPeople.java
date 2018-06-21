@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,6 +24,8 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.item.ItemCreditsProgressive;
+import com.github.pedramrn.slick.parent.ui.people.item.ItemTvShowCast;
+import com.github.pedramrn.slick.parent.ui.people.item.ItemTvShowCrew;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
 import com.github.pedramrn.slick.parent.ui.people.state.ViewStatePeople;
@@ -72,9 +75,9 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
 
     public ControllerPeople(Person person, String transitionName) {
         this(new BundleBuilder(new Bundle())
-                .putParcelable("ITEM", person)
-                .putString("TRANSITION_NAME", transitionName)
-                .build());
+                     .putParcelable("ITEM", person)
+                     .putString("TRANSITION_NAME", transitionName)
+                     .build());
     }
 
     public ControllerPeople(@Nullable Bundle args) {
@@ -137,6 +140,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
 
         adapter.setOnItemClickListener(this);
         adapterMovies.setOnItemClickListener(this);
+        adapterTvShows.setOnItemClickListener(this);
 
         binding.imageViewHeader.loadBlur(person.profileThumbnail());
         binding.imageViewHeader.loadBlurNP(person.profileMedium());
@@ -209,7 +213,7 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
     }
 
     private void setHeader(PersonDetails personDetails) {
-        if (personDetails == null) return;
+        if (personDetails == null) { return; }
         binding.textViewName.setText(personDetails.nameBorn());
     }
 
@@ -250,6 +254,11 @@ public class ControllerPeople extends ControllerElm<ViewStatePeople>
 
     @Override
     public void onItemClick(Item item, View view) {
+        if (item instanceof ItemTvShowCrew || item instanceof ItemTvShowCast) {
+            View parent = getView();
+            if (parent != null) { Snackbar.make(parent, "Under Construction...!!!", Snackbar.LENGTH_LONG).show(); }
+            return;
+        }
         ((OnItemAction) item).action(this, null, adapterMovies.getAdapterPosition(item));
     }
 }
