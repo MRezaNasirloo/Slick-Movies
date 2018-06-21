@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 
 import com.github.pedramrn.slick.parent.ApiTmdbMock;
 import com.github.pedramrn.slick.parent.ApiTraktMock;
+import com.github.pedramrn.slick.parent.datasource.network.ApiIpLocation;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
@@ -128,6 +129,16 @@ public class ModuleNetwork extends ModuleNetworkBase {
 
     @Provides
     @Singleton
+    public ApiIpLocation apiIpLocation(@Named("ip-api") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson,
+                                  NetworkBehavior behavior) {
+        /*if (MOCK_MODE) {
+            // TODO: 2018-06-21 implement mock
+        }*/
+        return baseApiIpApi(url, okHttpClient, builder, gson);
+    }
+
+    @Provides
+    @Singleton
     public Gson gsonConverterFactory() {
         return baseGsonConverterFactory();
     }
@@ -143,6 +154,13 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Singleton
     @Named("tmdb")
     public HttpUrl apiUrlTmdb() {
+        return baseApiUrlTmdb();
+    }
+
+    @Provides
+    @Singleton
+    @Named("ip-api")
+    public HttpUrl apiUrlIpApi() {
         return baseApiUrlTmdb();
     }
 

@@ -86,6 +86,12 @@ public class ModuleNetwork extends ModuleNetworkBase {
 
     @Provides
     @Singleton
+    public ApiIpLocation apiIpLocation(@Named("ip-api") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson) {
+        return baseApiIpApi(url, okHttpClient, builder, gson);
+    }
+
+    @Provides
+    @Singleton
     public Gson gsonConverterFactory() {
         return baseGsonConverterFactory();
     }
@@ -101,6 +107,13 @@ public class ModuleNetwork extends ModuleNetworkBase {
     @Singleton
     @Named("tmdb")
     public HttpUrl apiUrlTmdb() {
+        return baseApiUrlTmdb();
+    }
+
+    @Provides
+    @Singleton
+    @Named("ip-api")
+    public HttpUrl apiUrlIpApi() {
         return baseApiUrlTmdb();
     }
 

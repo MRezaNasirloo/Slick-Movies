@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.di;
 
 import android.content.Context;
 
+import com.github.pedramrn.slick.parent.datasource.network.ApiIpLocation;
 import com.github.pedramrn.slick.parent.datasource.network.ApiOmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.datasource.network.ApiTrakt;
@@ -109,6 +110,14 @@ public class ModuleNetworkBase {
                 .create(ApiTrakt.class);
     }
 
+    public ApiIpLocation baseApiIpApi(@Named("ip-api") HttpUrl url, OkHttpClient okHttpClient, Retrofit.Builder builder, Gson gson) {
+        return builder
+                .client(okHttpClient)
+                .baseUrl(url)
+                .build()
+                .create(ApiIpLocation.class);
+    }
+
     public Gson baseGsonConverterFactory() {
         return new GsonBuilder()
                 .registerTypeAdapterFactory(TypeAdapterFactoryGson.create())
@@ -121,6 +130,10 @@ public class ModuleNetworkBase {
 
     public HttpUrl baseApiUrlTmdb() {
         return HttpUrl.parse("https://api.themoviedb.org/3/");
+    }
+
+    public HttpUrl baseApiUrlIpApi() {
+        return HttpUrl.parse("http://ip-api.com");
     }
 
     public RouterBoxOffice baseRouterBoxOffice(ApiTmdb apiTmdb, ApiTrakt apiTrakt, MapperMovie mapper, @Named("io") Scheduler io) {
