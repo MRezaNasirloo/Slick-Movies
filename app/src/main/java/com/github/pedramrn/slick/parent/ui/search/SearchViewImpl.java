@@ -62,6 +62,7 @@ public class SearchViewImpl extends SearchView implements ViewSearch, SearchView
         setAdapter(adapter);
         setOnQueryTextListener(this);
         setOnOpenCloseListener(this);
+        setNavigationIcon(null);
         mSearchEditText.setInputType(InputType.TYPE_CLASS_TEXT);
     }
 
