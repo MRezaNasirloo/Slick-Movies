@@ -41,7 +41,12 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
     public void bind(RowCardBinding viewBinding, int position) {
         viewBinding.layoutShimmer.stopShimmerAnimation();
         viewBinding.imageViewPoster.setImageResource(R.drawable.rectangle_no_corners);
-        viewBinding.textViewTitle.setText(String.format(Locale.getDefault(),"%s  (%d)", movie.title(), movie.year()));
+        viewBinding.textViewTitle.setText(movie.year() != null ? String.format(
+                Locale.getDefault(),
+                "%s  (%d)",
+                movie.title(),
+                movie.year()
+        ) : movie.title());
         viewBinding.textViewTitle.setBackground(null);
         viewBinding.imageViewPoster.setBackground(null);
         viewBinding.imageViewPoster.setTransitionName(transitionName);
