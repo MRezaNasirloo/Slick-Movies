@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.datasource.network.interceptor;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -12,7 +14,7 @@ import okhttp3.Response;
  */
 public class InterceptorAuthToken implements Interceptor {
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
         if (request.url().url().toString().contains("api.trakt.tv")) {
             request = request.newBuilder()
