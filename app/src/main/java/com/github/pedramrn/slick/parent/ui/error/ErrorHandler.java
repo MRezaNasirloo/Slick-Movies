@@ -24,7 +24,7 @@ import retrofit2.adapter.rxjava2.HttpException;
  */
 public class ErrorHandler {
 
-    private static boolean enable;
+    private static boolean enable = true;
 
     private ErrorHandler() {
         //no instance
@@ -51,9 +51,11 @@ public class ErrorHandler {
                 || error instanceof HttpException// FIXME: 2018-03-09 retrofit throws this exception on 429 too many requests.
                 ) {
             if (enable) Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
+            if (enable) Crashlytics.logException(error);
             return Constants.ERROR_CODE_NETWORK;
         } else if (error instanceof InformationNotAvailableException) {
             if (enable) Crashlytics.log(Log.INFO, error.getClass().getSimpleName(), error.getMessage());
+            if (enable) Crashlytics.logException(error);
             return Constants.ERROR_CODE_NO_INFO;
         } else {
             if (BuildConfig.DEBUG) error.printStackTrace();
