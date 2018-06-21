@@ -13,13 +13,6 @@ import java.util.List;
 @AutoValue
 public abstract class MovieTinyDomain implements MovieBasicDomain {
 
-    public abstract Integer id();
-
-    @Nullable
-    public abstract String imdbId();
-
-    public abstract String title();
-
     @Nullable
     public abstract String overview();
 

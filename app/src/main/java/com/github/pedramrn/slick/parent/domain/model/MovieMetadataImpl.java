@@ -8,18 +8,6 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class MovieMetadataImpl implements MovieMetadata {
-    @Override
-    abstract public Integer id();
-
-    @Override
-    abstract public String imdbId();
-
-    @Override
-    abstract public String title();
-
-    @Override
-    abstract public Integer year();
-
     public static MovieMetadataImpl create(
             Integer id,
             String imdbId,

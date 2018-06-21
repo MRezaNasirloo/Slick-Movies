@@ -16,6 +16,7 @@ import java.util.List;
 @AutoValue
 public abstract class MovieTraktFull {
 
+    @Nullable
     @SerializedName("title")
     public abstract String title();
 

@@ -10,8 +10,10 @@ public interface MovieMetadata {
 
     Integer id();
 
+    @Nullable
     String imdbId();
 
+    @Nullable
     String title();
 
     @Nullable

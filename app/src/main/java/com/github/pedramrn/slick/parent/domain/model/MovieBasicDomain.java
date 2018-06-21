@@ -10,11 +10,6 @@ import java.util.List;
  */
 public interface MovieBasicDomain extends MovieMetadata {
 
-    Integer id();
-
-    @Nullable
-    String imdbId();
-
     List<String> genres();
 
     @Nullable
@@ -34,8 +29,6 @@ public interface MovieBasicDomain extends MovieMetadata {
 
     @Nullable
     String tagline();
-
-    String title();
 
     @Nullable
     Float voteAverageTrakt();

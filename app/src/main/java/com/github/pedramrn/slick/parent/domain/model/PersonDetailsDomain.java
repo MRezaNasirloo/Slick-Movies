@@ -15,8 +15,10 @@ import java.util.List;
 public abstract class PersonDetailsDomain {
     public abstract Integer id();
 
+    @Nullable
     public abstract String imdbId();
 
+    @Nullable
     public abstract String name();
 
     @Nullable

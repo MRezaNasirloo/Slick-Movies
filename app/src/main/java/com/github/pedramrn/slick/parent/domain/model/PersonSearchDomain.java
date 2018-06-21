@@ -13,6 +13,7 @@ public abstract class PersonSearchDomain {
 
     public abstract Integer id();
 
+    @Nullable
     public abstract String name();
 
     @Nullable

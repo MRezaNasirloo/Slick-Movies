@@ -104,10 +104,13 @@ public abstract class CastOrCrewPersonDetailsDomain implements Comparable<CastOr
 
     public abstract List<Integer> genreIds();
 
+    @Nullable
     public abstract Float popularity();
 
+    @Nullable
     public abstract Integer voteCount();
 
+    @Nullable
     public abstract Float voteAverage();
 
     @Override

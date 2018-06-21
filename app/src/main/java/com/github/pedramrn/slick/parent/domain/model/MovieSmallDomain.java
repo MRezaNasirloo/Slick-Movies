@@ -4,8 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-04-11
@@ -15,11 +13,13 @@ public abstract class MovieSmallDomain {
 
     public abstract Integer id();
 
+    @Nullable
     public abstract String title();
 
     @Nullable
     public abstract String overview();
 
+    @Nullable
     public abstract String originalTitle();
 
     @Nullable
@@ -31,6 +31,7 @@ public abstract class MovieSmallDomain {
     @Nullable
     public abstract String releaseDate();
 
+    @Nullable
     public abstract String originalLanguage();
 
     public abstract Boolean adult();

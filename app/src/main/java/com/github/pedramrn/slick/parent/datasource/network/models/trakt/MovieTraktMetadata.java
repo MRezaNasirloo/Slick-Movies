@@ -15,6 +15,7 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class MovieTraktMetadata {
 
+    @Nullable
     @SerializedName("title")
     public abstract String title();
 
