@@ -64,10 +64,9 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
         return "http://image.tmdb.org/t/p/w300" + backdropPath();
     }
 
-    @Nullable
     @Override
     public String runtimePretty() {
-        return null;
+        return "";
     }
 
     @Override

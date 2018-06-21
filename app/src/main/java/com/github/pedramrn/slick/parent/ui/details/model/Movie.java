@@ -25,7 +25,7 @@ import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.UPCOM
 
 /**
  * @author : Pedramrn@gmail.com
- * Created on: 2017-06-09
+ *         Created on: 2017-06-09
  */
 
 @AutoValue
@@ -105,11 +105,14 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     public Item render(String tag) {
         if (UPCOMING.equals(tag)) {
             return new ItemBanner(uniqueId(), this);
-        } else if (BOX_OFFICE.equals(tag)) {
+        }
+        else if (BOX_OFFICE.equals(tag)) {
             return new ItemBoxOffice(uniqueId(), this, tag + uniqueId());
-        } else if (FAVORITE.equals(tag)) {
+        }
+        else if (FAVORITE.equals(tag)) {
             return new ItemFavorite(uniqueId(), this, tag + uniqueId());
-        } else {
+        }
+        else {
             return new ItemCardMovie(uniqueId(), this, tag);
         }
 
@@ -120,10 +123,9 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
         return uniqueId().longValue();
     }
 
-    @Nullable
     @Override
     public String runtimePretty() {
-        return runtime() + " min";
+        return runtime() != null ? runtime() + " min" : "";
     }
 
     public static Movie create(MovieDomain md) {

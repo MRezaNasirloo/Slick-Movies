@@ -61,7 +61,6 @@ public interface MovieBasic extends Parcelable, MovieMetadata {
     @Nullable
     String thumbnailBackdrop();
 
-    @Nullable
     String runtimePretty();
 
     @Nullable
