@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.ControllerMainBinding;
+import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.mrezanasirloo.slick.Presenter;
 import com.mrezanasirloo.slick.middleware.RequestStack;
 
@@ -29,10 +30,10 @@ import static com.github.pedramrn.slick.parent.App.componentMain;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-02-13
+ * Created on: 2017-02-13
  */
 
-public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
+public class ControllerMain extends FragmentBase implements ViewMain, ViewIran, BottomBarHost,
         BottomNavigation.OnMenuItemSelectionListener {
 
     private static final String TAG = ControllerMain.class.getSimpleName();
@@ -67,12 +68,10 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
             savedInstanceState) {
         componentMain().inject(this);
         PresenterMain_Slick.bind(this);
-        pagerAdapter = new SectionPagerAdapter();
-        binding = ControllerMainBinding.inflate(inflater, container, false);
-        binding.viewPager.setAdapter(pagerAdapter);
         PresenterIran_Slick.bind(this);
-        binding = ControllerMainBinding.inflate(layoutInflater, viewGroup, false);
-        binding.viewPager.setAdapter(routerPagerAdapter);
+        binding = ControllerMainBinding.inflate(inflater, container, false);
+        pagerAdapter = new SectionPagerAdapter();
+        binding.viewPager.setAdapter(pagerAdapter);
         binding.navigation.setOnMenuItemClickListener(this);
         binding.viewPager.setOffscreenPageLimit(2);
         return binding.getRoot();
@@ -163,9 +162,6 @@ public class ControllerMain extends Fragment implements ViewMain, BottomBarHost,
     }
 
 
-    private class SectionPagerAdapter extends FragmentPagerAdapter {
-
-        private final SparseArray<Fragment> fragments;
     private class SectionPagerAdapter extends FragmentStatePagerAdapter {
         private final int PAGE_COUNT = 3;
         private final SparseArray<Fragment> fragments = new SparseArray<>(3);

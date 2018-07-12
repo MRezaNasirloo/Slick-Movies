@@ -236,7 +236,6 @@ public class ControllerPeople extends FragmentBase
             if (parent != null) { Snackbar.make(parent, "Under Construction...!!!", Snackbar.LENGTH_LONG).show(); }
             return;
         }
-        ((OnItemAction) item).action(this, null, adapterMovies.getAdapterPosition(item));
         ((OnItemAction) item).action(this, null, adapterMovies.getAdapterPosition(item), view);
     }
 

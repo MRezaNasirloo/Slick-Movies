@@ -46,7 +46,7 @@ import static com.mrezanasirloo.slick.SlickDelegateActivity.SLICK_UNIQUE_KEY;
  */
 public abstract class FragmentBase extends Fragment implements SlickUniqueId, Screen, ToolbarHost, Navigator {
 
-    protected static final int duration = 5000;
+    protected static final int duration = 500;
     private static final String TAG = FragmentBase.class.getSimpleName();
     private final ScreenTransitionBase screenTransitionBase = new ScreenTransitionBase();
     protected final PublishSubject<Object> errorDismissed = PublishSubject.create();
@@ -68,7 +68,7 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
     @CallSuper
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        snackbar = new ErrorHandlerSnackbar(view, "Retry") {
+        snackbar = new ErrorHandlerSnackbar(view, getSnackbarActionText()) {
             @Override
             public void onDismissed(int event) {
                 errorDismissed.onNext(1);
@@ -77,6 +77,15 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
                 }
             }
         };
+    }
+
+    @NonNull
+    protected String getSnackbarActionText() {
+        return "Retry";
+    }
+
+    protected void showSnakbar(@NonNull String message) {
+        snackbar.show(message);
     }
 
     @CallSuper
@@ -149,7 +158,7 @@ public abstract class FragmentBase extends Fragment implements SlickUniqueId, Sc
     @NonNull
     @Override
     public SnackbarManager snackbarManager() {
-        return message -> snackbar.show(message);
+        return snackbar::show;
     }
 
 
