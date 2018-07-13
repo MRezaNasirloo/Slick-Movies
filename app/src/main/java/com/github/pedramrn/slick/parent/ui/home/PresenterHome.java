@@ -50,7 +50,7 @@ public class PresenterHome extends SlickPresenterUni<ViewHome, ViewStateHome> {
     }
 
     @Override
-    public void onViewUp(ViewHome view) {
+    public void onViewUp(@NonNull ViewHome view) {
         super.onViewUp(view);
         Log.i(TAG, "onViewUp: called");
     }
@@ -68,7 +68,7 @@ public class PresenterHome extends SlickPresenterUni<ViewHome, ViewStateHome> {
     }
 
     @Override
-    public void start(ViewHome view) {
+    public void start(@NonNull ViewHome view) {
         Observable<PartialViewState<ViewStateHome>> upcoming = command(ViewHome::retryUpcoming)
                 .startWith(this).flatMap(o -> routerUpcoming.upcoming(1)
                         .concatMap(pagedData -> Observable.fromIterable(pagedData.data()))

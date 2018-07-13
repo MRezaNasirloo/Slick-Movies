@@ -242,6 +242,7 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
         return super.handleBack();
     }*/
 
+    @NonNull
     @Override
     public Observable<Object> retryUpcoming() {
         return onRetry.filter(PresenterHome.UPCOMING::equals).cast(Object.class);

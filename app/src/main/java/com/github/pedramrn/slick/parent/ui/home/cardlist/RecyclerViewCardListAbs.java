@@ -107,6 +107,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
         return 6;
     }
 
+    @NonNull
     @Override
     public Observable<Object> trigger() {
         return RxRecyclerView.scrollEvents(this)

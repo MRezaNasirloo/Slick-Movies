@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.ui.home.state.ViewStateHome;
 
 import io.reactivex.Observable;
@@ -12,5 +14,6 @@ import io.reactivex.Observable;
 public interface ViewHome extends Retryable {
     void render(ViewStateHome state);
 
+    @NonNull
     Observable<Object> retryUpcoming();
 }
