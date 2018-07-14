@@ -54,8 +54,8 @@ public class ControllerBoxOffice extends FragmentBase implements ViewBoxOffice, 
         PresenterBoxOffice_Slick.bind(this);
         final ControllerBoxOfficeBinding binding = inflate(inflater, container, false);
 
-        binding.toolbar.setTitle("Box Office");
-        setToolbar(binding.toolbar);
+        // binding.toolbar.setTitle("Box Office");
+        // setToolbar(binding.toolbar);
 
         adapter = new GroupAdapter();
         updatingGroup = new UpdatingGroup();
