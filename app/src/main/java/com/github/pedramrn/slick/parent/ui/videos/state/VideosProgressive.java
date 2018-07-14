@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.videos.state;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
 import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideoProgressive;
@@ -18,10 +20,11 @@ public class VideosProgressive extends PartialProgressive implements PartialView
     }
 
 
+    @NonNull
     @Override
-    public ViewStateVideos reduce(ViewStateVideos state) {
-        Utils.removeRemovables(state.videos().iterator(), "Videos");
-        return state.toBuilder().videos(reduce(state.videos())).build();
+    public ViewStateVideos reduce(@NonNull ViewStateVideos state) {
+        Utils.removeRemovables(state.videosItem().iterator(), "Videos");
+        return state.toBuilder().videosItem(reduce(state.videosItem())).build();
     }
 
     private static class ProgressiveVideosRenderer implements ItemRenderer {

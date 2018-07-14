@@ -16,9 +16,13 @@ import io.reactivex.Observable;
  */
 public interface ViewVideos extends Retryable {
 
+    @NonNull
+    String viewType();
+
+    @NonNull
     MovieBasic movie();
 
-    void update(List<Item> videos);
+    void update(@NonNull List<Item> videos);
 
     void error(short message);
 

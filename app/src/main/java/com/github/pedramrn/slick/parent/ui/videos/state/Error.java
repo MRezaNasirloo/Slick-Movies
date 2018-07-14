@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.videos.state;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.util.Utils;
 import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
@@ -8,7 +10,7 @@ import java.util.Iterator;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2018-03-06
+ * Created on: 2018-03-06
  */
 public class Error implements PartialViewState<ViewStateVideos> {
 
@@ -19,10 +21,11 @@ public class Error implements PartialViewState<ViewStateVideos> {
         this.throwable = throwable;
     }
 
+    @NonNull
     @Override
-    public ViewStateVideos reduce(ViewStateVideos state) {
+    public ViewStateVideos reduce(@NonNull ViewStateVideos state) {
         if (state.error() == null) {
-            Iterator<Item> iterator = state.videos().iterator();
+            Iterator<Item> iterator = state.videosItem().iterator();
             Utils.removeRemovables(iterator, VIDEOS);
             state = state.toBuilder().error(throwable).build();
         }

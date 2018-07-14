@@ -119,6 +119,13 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, ViewHe
         binding = null;
     }
 
+    @NonNull
+    @Override
+    public String viewType() {
+        return PresenterVideos.VIDEO_IN_VIDEOS_PAGE;
+    }
+
+    @NonNull
     @Override
     public MovieBasic movie() {
         return movie;
@@ -130,7 +137,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, ViewHe
     }
 
     @Override
-    public void update(List<Item> videos) {
+    public void update(@NonNull List<Item> videos) {
         progressiveVideos.update(videos);
     }
 

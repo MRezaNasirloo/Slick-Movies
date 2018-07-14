@@ -4,13 +4,15 @@ import android.os.Parcelable;
 
 import com.github.pedramrn.slick.parent.ui.details.model.AutoBase;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
+import com.github.pedramrn.slick.parent.ui.videos.PresenterVideos;
 import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideo;
+import com.github.pedramrn.slick.parent.ui.videos.item.ItemVideoInDetailsPage;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-20
+ * Created on: 2017-06-20
  */
 
 @AutoValue
@@ -29,8 +31,17 @@ public abstract class Video extends AutoBase implements Parcelable, ItemView {
     }
 
     @Override
-    public Item render(String tag) {
-        return new ItemVideo(uniqueId(), this);
+    public Item render(final String tag) {
+        switch (tag) {
+            case PresenterVideos.VIDEO_IN_DETAILS_PAGE: {
+                return new ItemVideoInDetailsPage(uniqueId(), this);
+            }
+            case PresenterVideos.VIDEO_IN_VIDEOS_PAGE: {
+                return new ItemVideo(uniqueId(), this);
+            }
+            default:
+                throw new IllegalArgumentException("Cannot handle view type: " + tag);
+        }
     }
 
     @Override
