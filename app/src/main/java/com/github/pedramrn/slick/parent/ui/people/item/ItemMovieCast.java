@@ -9,6 +9,7 @@ import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.github.pedramrn.slick.parent.util.DateUtils;
@@ -73,7 +74,8 @@ public class ItemMovieCast extends Item<RowCardCreditBinding> implements OnItemA
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         navigator.navigateTo(ControllerDetails.newInstance(MovieSmall.create(coc), transitionName));
     }
 }

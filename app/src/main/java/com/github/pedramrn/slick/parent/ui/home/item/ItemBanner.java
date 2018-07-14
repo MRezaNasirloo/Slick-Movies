@@ -8,6 +8,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
 import com.xwray.groupie.Item;
@@ -58,7 +59,8 @@ public class ItemBanner extends Item<RowBannerBinding> implements OnItemAction, 
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         navigator.navigateTo(ControllerVideos.newInstance(movie, null));
     }
 }

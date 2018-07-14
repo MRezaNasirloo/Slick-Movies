@@ -126,7 +126,7 @@ public abstract class RecyclerViewCardListAbs extends RecyclerView implements Vi
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(navigator, null, ((AdapterLightWeight) getAdapter()).getAdapterPosition(item), view);
+        ((OnItemAction) item).action(navigator, this, null, ((AdapterLightWeight) getAdapter()).getAdapterPosition(item), view);
     }
 
     public void setNavigator(Navigator navigator) {

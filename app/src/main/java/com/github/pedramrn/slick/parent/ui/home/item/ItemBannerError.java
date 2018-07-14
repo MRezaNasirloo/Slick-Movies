@@ -38,9 +38,9 @@ public class ItemBannerError extends ItemBanner implements OnItemAction, Removab
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
-        if (navigator instanceof Retryable)
-            ((Retryable) navigator).onRetry(tag);
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
+        retryable.onRetry(tag);
     }
 
 

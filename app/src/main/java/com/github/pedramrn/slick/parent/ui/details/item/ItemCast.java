@@ -8,6 +8,7 @@ import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastHorizontalBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.ControllerPeople;
 import com.github.pedramrn.slick.parent.ui.people.model.Person;
@@ -47,7 +48,8 @@ public class ItemCast extends ItemCastProgressive implements OnItemAction {
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         Person person = Person.create(
                 cast.id(),
                 cast.name(),

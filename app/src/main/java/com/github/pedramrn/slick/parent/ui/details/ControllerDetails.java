@@ -412,7 +412,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
         adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item)
-                .action(ControllerDetails.this, null, adapter.getAdapterPosition(item), view));
+                .action(ControllerDetails.this, this, null, adapter.getAdapterPosition(item), view));
     }
 
     @Override

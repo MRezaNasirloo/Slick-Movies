@@ -7,6 +7,7 @@ import android.view.View;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowFavoriteMovieTvBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -31,7 +32,8 @@ public class ItemFavoriteProgressive extends ItemFavorite {
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         //no-op
     }
 }

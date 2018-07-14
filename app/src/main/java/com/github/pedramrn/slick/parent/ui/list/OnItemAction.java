@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -12,5 +13,5 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
  */
 
 public interface OnItemAction {
-    void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view);
+    void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View view);
 }

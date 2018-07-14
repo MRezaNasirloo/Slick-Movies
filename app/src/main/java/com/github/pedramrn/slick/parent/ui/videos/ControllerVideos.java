@@ -131,6 +131,11 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(ControllerVideos.this, null, adapter.getAdapterPosition(item), view);
+        ((OnItemAction) item).action(ControllerVideos.this, this, null, adapter.getAdapterPosition(item), view);
+    }
+
+    @Override
+    public void onRetry(String tag) {
+        retry.onNext(tag);
     }
 }

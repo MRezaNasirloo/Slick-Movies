@@ -9,6 +9,7 @@ import com.github.pedramrn.slick.parent.databinding.RowSearchSuggestionBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemMovie;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
@@ -54,7 +55,8 @@ public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implemen
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
     }
 }

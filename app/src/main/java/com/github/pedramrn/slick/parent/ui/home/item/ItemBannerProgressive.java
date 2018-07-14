@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBannerBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -45,7 +46,8 @@ public class ItemBannerProgressive extends ItemBanner {
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         //no-op
     }
 

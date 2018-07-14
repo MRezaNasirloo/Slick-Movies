@@ -20,6 +20,7 @@ import com.github.pedramrn.slick.parent.databinding.RowFavoriteMovieTvBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.util.DateUtils;
@@ -143,7 +144,8 @@ public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnI
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         View sharedView = view.findViewById(R.id.imageView_favorite_poster);
         navigator.navigateTo(ControllerDetails.newInstance(movie, sharedView.getTransitionName()),
                 sharedView, sharedView.getTransitionName());

@@ -12,6 +12,7 @@ import com.github.pedramrn.slick.parent.databinding.RowCardBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
 
@@ -73,7 +74,8 @@ public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction,
 
     private static final String TAG = ItemCardMovie.class.getSimpleName();
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName), view.findViewById(R.id.imageView_poster),
                 transitionName);
     }

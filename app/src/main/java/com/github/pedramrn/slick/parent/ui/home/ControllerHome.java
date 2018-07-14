@@ -254,7 +254,7 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
     }
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerHome.this, null, adapter
+        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item).action(ControllerHome.this, this, null, adapter
                 .getAdapterPosition(item), view));
     }
 

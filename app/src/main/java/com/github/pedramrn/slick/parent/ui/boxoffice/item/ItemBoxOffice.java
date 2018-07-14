@@ -9,6 +9,7 @@ import com.github.pedramrn.slick.parent.databinding.RowBoxOfficeBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.xwray.groupie.Item;
@@ -53,7 +54,8 @@ public class ItemBoxOffice extends Item<RowBoxOfficeBinding> implements Removabl
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName), view.findViewById(R.id.poster),
                 transitionName);
     }

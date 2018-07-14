@@ -7,6 +7,7 @@ import android.view.View;
 import com.github.pedramrn.slick.parent.databinding.RowBackdropBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.details.model.Backdrop;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
 
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class ItemBackdrop extends ItemBackdropProgressive {
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
         navigator.navigateTo(ControllerImage.newInstance(
                 backdrop.movieTitle(),
                 ((ArrayList<String>) backdrop.allBackdrops()),

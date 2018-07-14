@@ -17,6 +17,7 @@ import com.github.pedramrn.slick.parent.databinding.ControllerListBinding;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
 import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.state.ViewStateList;
 import com.mrezanasirloo.slick.Presenter;
@@ -31,7 +32,7 @@ import javax.inject.Provider;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerList extends FragmentBase implements ViewList {
+public class ControllerList extends FragmentBase implements ViewList, Retryable {
 
     @Inject
     Provider<PresenterList> provider;
@@ -83,7 +84,7 @@ public class ControllerList extends FragmentBase implements ViewList {
 
         adapter.setOnItemClickListener((item, view) -> {
             if (item instanceof OnItemAction) {
-                ((OnItemAction) item).action(ControllerList.this, null, adapter.getAdapterPosition(item), view);
+                ((OnItemAction) item).action(ControllerList.this, this, null, adapter.getAdapterPosition(item), view);
             }
         });
 
@@ -117,5 +118,10 @@ public class ControllerList extends FragmentBase implements ViewList {
         recyclerView = null;
         adapterItems = null;
         adapter = null;
+    }
+
+    @Override
+    public void onRetry(String tag) {
+        retry.onNext(tag);
     }
 }

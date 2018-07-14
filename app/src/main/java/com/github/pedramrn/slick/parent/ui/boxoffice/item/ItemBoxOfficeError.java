@@ -46,7 +46,8 @@ public class ItemBoxOfficeError extends Item<RowBoxOfficeErrorBinding> implement
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, @Nullable Object payload, int position, @NonNull View view) {
-        ((Retryable) navigator).onRetry(MovieSmall.BOX_OFFICE);
+    public void action(@NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View
+            view) {
+        retryable.onRetry(MovieSmall.BOX_OFFICE);
     }
 }

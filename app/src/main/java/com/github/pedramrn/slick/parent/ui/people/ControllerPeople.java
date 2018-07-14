@@ -47,8 +47,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 /**
  * TODO: 2018-04-30 retain recycler views scroll position
  */
-public class ControllerPeople extends FragmentBase
-        implements ViewPeople, AppBarLayout.OnOffsetChangedListener, OnItemClickListener {
+public class ControllerPeople extends FragmentBase implements ViewPeople,
+        AppBarLayout.OnOffsetChangedListener, OnItemClickListener {
+
     @Inject
     Provider<PresenterPeople> provider;
     @Presenter
@@ -71,9 +72,9 @@ public class ControllerPeople extends FragmentBase
 
     public static ControllerPeople newInstance(Person person, String transitionName) {
         Bundle bundle = new BundleBuilder(new Bundle())
-                     .putParcelable("ITEM", person)
-                     .putString("TRANSITION_NAME", transitionName)
-                     .build();
+                .putParcelable("ITEM", person)
+                .putString("TRANSITION_NAME", transitionName)
+                .build();
         ControllerPeople fragment = new ControllerPeople();
         fragment.setArguments(bundle);
         return fragment;
@@ -236,12 +237,17 @@ public class ControllerPeople extends FragmentBase
             if (parent != null) { Snackbar.make(parent, "Under Construction...!!!", Snackbar.LENGTH_LONG).show(); }
             return;
         }
-        ((OnItemAction) item).action(this, null, adapterMovies.getAdapterPosition(item), view);
+        ((OnItemAction) item).action(this, this, null, adapterMovies.getAdapterPosition(item), view);
     }
 
     @NonNull
     @Override
     public SnackbarManager snackbarManager() {
         throw new NotImplementedException("Sorry!!!");
+    }
+
+    @Override
+    public void onRetry(String tag) {
+        retry.onNext(tag);
     }
 }

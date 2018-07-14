@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.home;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.datasource.network.ApiTmdb;
 import com.github.pedramrn.slick.parent.domain.mapper.MapperMovieSmall;
 import com.github.pedramrn.slick.parent.mock.ApiMockProvider;
@@ -64,6 +66,7 @@ public class PresenterHomeTest {
             System.out.println("PresenterHomeTest.render");
         }
 
+        @NonNull
         @Override
         public Observable<Object> retryUpcoming() {
             return Observable.never();

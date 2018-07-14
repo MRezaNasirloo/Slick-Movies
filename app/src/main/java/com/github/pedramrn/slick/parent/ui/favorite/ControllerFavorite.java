@@ -123,6 +123,6 @@ public class ControllerFavorite extends FragmentBase implements ViewFavorite, Na
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(ControllerFavorite.this, null, adapter.getAdapterPosition(item), view);
+        ((OnItemAction) item).action(ControllerFavorite.this, this, null, adapter.getAdapterPosition(item), view);
     }
 }
