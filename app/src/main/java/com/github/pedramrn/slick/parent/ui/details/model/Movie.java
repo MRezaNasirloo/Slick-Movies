@@ -7,6 +7,7 @@ import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOffice;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavorite;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemBanner;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardMovie;
@@ -21,18 +22,17 @@ import java.util.List;
 import io.reactivex.Observable;
 
 import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.BOX_OFFICE;
+import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.FAVORITE;
+import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.HEADER;
 import static com.github.pedramrn.slick.parent.ui.details.model.MovieSmall.UPCOMING;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-09
+ * Created on: 2017-06-09
  */
 
 @AutoValue
 public abstract class Movie extends AutoBase implements Parcelable, ItemView, MovieBasic {
-
-    public static final String FAVORITE = "FAVORITE";
-
     @Nullable
     public abstract String imdbId();
 
@@ -105,14 +105,13 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     public Item render(String tag) {
         if (UPCOMING.equals(tag)) {
             return new ItemBanner(uniqueId(), this);
-        }
-        else if (BOX_OFFICE.equals(tag)) {
+        } else if (BOX_OFFICE.equals(tag)) {
             return new ItemBoxOffice(uniqueId(), this, tag + uniqueId());
-        }
-        else if (FAVORITE.equals(tag)) {
+        } else if (FAVORITE.equals(tag)) {
             return new ItemFavorite(uniqueId(), this, tag + uniqueId());
-        }
-        else {
+        } else if (HEADER.equals(tag)) {
+            return new ItemHeader(this, tag + uniqueId());
+        } else {
             return new ItemCardMovie(uniqueId(), this, tag);
         }
 

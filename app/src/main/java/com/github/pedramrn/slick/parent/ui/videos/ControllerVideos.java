@@ -31,6 +31,8 @@ import javax.inject.Provider;
 
 import io.reactivex.Observable;
 
+import static com.github.pedramrn.slick.parent.ui.videos.state.Error.VIDEOS;
+
 /**
  * A simple {@link Controller} subclass.
  */
@@ -77,7 +79,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
         PresenterVideos_Slick.bind(this);
         binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
-        // binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
+        binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
         adapter = new GroupAdapter();
         adapterProgressive = new UpdatingGroup();
         adapter.add(adapterProgressive);
@@ -119,11 +121,13 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
         snackbarManager().show(ErrorHandler.message(getContext().getApplicationContext(), code));
     }
 
+    @NonNull
     @Override
     public Observable<Object> onErrorDismissed() {
         return errorDismissed;
     }
 
+    @NonNull
     @Override
     public Observable<Object> onRetry() {
         return retry;
@@ -131,7 +135,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
 
     @Override
     public void onItemClick(Item item, View view) {
-        ((OnItemAction) item).action(ControllerVideos.this, this, null, adapter.getAdapterPosition(item), view);
+        ((OnItemAction) item).action(ControllerVideos.this, this, VIDEOS, adapter.getAdapterPosition(item), view);
     }
 
     @Override

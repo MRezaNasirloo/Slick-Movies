@@ -1,6 +1,8 @@
 package com.github.pedramrn.slick.parent.ui.videos;
 
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.xwray.groupie.Item;
@@ -20,8 +22,10 @@ public interface ViewVideos extends Retryable {
 
     void error(short message);
 
+    @NonNull
     Observable<Object> onErrorDismissed();
 
+    @NonNull
     Observable<Object> onRetry();
 
 }

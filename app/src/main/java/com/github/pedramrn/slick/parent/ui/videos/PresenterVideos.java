@@ -3,7 +3,7 @@ package com.github.pedramrn.slick.parent.ui.videos;
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavoriteProgressive;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
@@ -58,14 +58,14 @@ class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
     }
 
     @Override
-    public void start(ViewVideos view) {
+    public void start(@NonNull ViewVideos view) {
         Integer id = view.movie().id();
 
         Observable<PartialViewState<ViewStateVideos>> header = command(ViewVideos::onRetry).startWith(1)
                 .flatMap(o -> routerMovie.movie(id).subscribeOn(io)
                         .map(mapper)
                         .cast(ItemView.class)
-                        .map(itemView -> itemView.render(Movie.FAVORITE))
+                        .map(itemView -> itemView.render(MovieSmall.HEADER))
                         .map((Function<Item, PartialViewState<ViewStateVideos>>) Header::new)
                         .startWith(new HeaderProgressive())
                         .onErrorReturn(Error::new)

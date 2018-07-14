@@ -260,7 +260,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
             return false;
         });*/
 
-        updatingHeader.update(Collections.singletonList(new ItemHeader(ControllerDetails.this, movie, transitionName)));
+        updatingHeader.update(Collections.singletonList(new ItemHeader(movie, transitionName)));
 
         // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
         // the animation is stopped, weirdly shared animation callback didn't work all the time.
@@ -269,7 +269,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
                 .subscribe(movieBasic -> {
                     if (updatingHeader != null) {
                         updatingHeader.update(
-                                Collections.singletonList(new ItemHeader(this, movieBasic, transitionName)));
+                                Collections.singletonList(new ItemHeader(movieBasic, transitionName)));
                     }
                 }));
 

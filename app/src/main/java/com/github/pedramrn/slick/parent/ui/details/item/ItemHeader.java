@@ -3,45 +3,48 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.View;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowHeaderBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
+import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.image.ControllerImage;
+import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
+import com.github.pedramrn.slick.parent.ui.videos.state.Error;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
-import com.jakewharton.rxbinding2.view.RxView;
 import com.orhanobut.logger.Logger;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
+import com.xwray.groupie.OnItemLongClickListener;
 import com.xwray.groupie.ViewHolder;
 
-import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author : Pedramrn@gmail.com
  * Created on: 2017-06-16
  */
 
-public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Object> {
+public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
 
-    private final WeakReference<Navigator> navigator;
     private final MovieBasic movie;
     private final String transitionName;
     private final RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.5f);
@@ -52,9 +55,8 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     private final SpannableStringBuilder voteAveSpannedTmdb;
     private final SpannableStringBuilder voteAveSpanned;
 
-    public ItemHeader(Navigator navigator, MovieBasic movie, String transitionName) {
+    public ItemHeader(MovieBasic movie, String transitionName) {
         super(1000);
-        this.navigator = new WeakReference<>(navigator);
         this.movie = movie;
         this.transitionName = transitionName;
 
@@ -91,6 +93,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         Log.d(TAG, "bind: called ");
         // TODO: 2017-06-18 use recycler view for this
         // viewBinding.textViewGenre.setText(genres);
+        viewBinding.imageViewIcon.setTransitionName(transitionName);
         viewBinding.textViewRelease.setText(releaseDate);
 
         Drawable logoTmdb = ResourcesCompat.getDrawable(resources, R.drawable.ic_tmdb_logo_stacked_black, null);
@@ -104,13 +107,8 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         viewBinding.imageViewIcon.setTransitionName(transitionName);
         viewBinding.imageViewIcon.load(movie.thumbnailPoster(), () -> {
             Logger.i("Transition Name is: %s", transitionName);
-            navigator.get().startPostponedEnterTransitionNav();
+            // navigator.get().startPostponedEnterTransitionNav();
         });
-        Disposable disposable = RxView.clicks(viewBinding.imageViewIcon)
-                .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .subscribe(this);
-
-        UtilsRx.add(compositeDisposable, disposable);
 
         if (movie.voteAverageTrakt() != null) {
             viewBinding.textViewScoreTrakt.setBackground(null);
@@ -158,18 +156,34 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
         }
         long took = System.currentTimeMillis() - before;
         Log.e(TAG, "bind: took " + took + " ms");
+        viewBinding.getRoot().setOnClickListener(null);
+    }
+
+    @Override
+    public void bind(ViewHolder<RowHeaderBinding> holder, int position, List<Object> payloads, OnItemClickListener
+            onItemClickListener, OnItemLongClickListener onItemLongClickListener) {
+        super.bind(holder, position, payloads, onItemClickListener, onItemLongClickListener);
+        holder.binding.imageViewIcon.setOnClickListener(v -> onItemClickListener.onItemClick(this, v));
+        holder.itemView.setOnClickListener(null);
+        holder.binding.getRoot().setOnClickListener(null);
+        /*
+        Disposable disposable = RxView.clicks(holder.binding.imageViewIcon)
+                .throttleFirst(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .doOnNext(o -> onItemClickListener.onItemClick(this, holder.binding.imageViewIcon)).subscribe();
+        */
     }
 
     @Override
     public void unbind(ViewHolder<RowHeaderBinding> holder) {
         Log.d(TAG, "unbind: called ");
+        holder.binding.imageViewIcon.setOnClickListener(null);
         UtilsRx.dispose(compositeDisposable);
         super.unbind(holder);
     }
 
     @Override
     public boolean isClickable() {
-        return false;
+        return true;
     }
 
     public void onDestroyView() {
@@ -177,12 +191,15 @@ public class ItemHeader extends Item<RowHeaderBinding> implements Consumer<Objec
     }
 
     @Override
-    public void accept(Object o) {
-        if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty()) {
-            Navigator navigator = this.navigator.get();
-            if (navigator == null) return;
+    public void action(@NonNull Navigator navigator, Retryable retryable,
+            @Nullable Object payload, int position, @NonNull View view) {
+        if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty() && view.getId() == R.id.imageView_icon) {
             navigator.navigateTo(ControllerImage.newInstance(ItemHeader.this.movie.title(),
                     ((ArrayList<String>) ((Movie) movie).images().posters())));
+        } else if (Error.VIDEOS.equals(payload != null ? payload.toString() : null)) {
+            // Disabled shared transition animation
+            // navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName), view, transitionName);
+            navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
         }
     }
 }

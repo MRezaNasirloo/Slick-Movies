@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.videos.state;
 
+import android.support.annotation.NonNull;
+
 import com.mrezanasirloo.slick.uni.PartialViewState;
 import com.xwray.groupie.Item;
 
@@ -14,8 +16,9 @@ public class Header implements PartialViewState<ViewStateVideos> {
         this.movie = movie;
     }
 
+    @NonNull
     @Override
-    public ViewStateVideos reduce(ViewStateVideos state) {
+    public ViewStateVideos reduce(@NonNull ViewStateVideos state) {
         return state.toBuilder().header(movie).build();
     }
 }

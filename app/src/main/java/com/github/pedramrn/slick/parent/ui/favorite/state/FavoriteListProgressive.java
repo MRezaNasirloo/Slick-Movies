@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.favorite.state;
 
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.favorite.ViewStateFavorite;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavoriteProgressive;
 import com.github.pedramrn.slick.parent.ui.item.PartialProgressive;
@@ -20,7 +20,7 @@ public class FavoriteListProgressive extends PartialProgressive implements Parti
 
 
     public FavoriteListProgressive() {
-        super(2, Movie.FAVORITE, (id, tag) -> new ItemFavoriteProgressive(id));
+        super(2, MovieSmall.FAVORITE, (id, tag) -> new ItemFavoriteProgressive(id));
     }
 
     @Override

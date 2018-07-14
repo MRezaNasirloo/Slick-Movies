@@ -1,6 +1,6 @@
 package com.github.pedramrn.slick.parent.ui.favorite.state;
 
-import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.favorite.ViewStateFavorite;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemEmptyStateFullScreen;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavorite;
@@ -30,7 +30,7 @@ public class FavoriteListEmpty implements PartialViewState<ViewStateFavorite> {
     public ViewStateFavorite reduce(ViewStateFavorite state) {
         if (forceClear) return clear(state, ItemFavorite.FORCE);
         if (!hadError) {
-            return clear(state, Movie.FAVORITE);
+            return clear(state, MovieSmall.FAVORITE);
         }
         return state;
     }

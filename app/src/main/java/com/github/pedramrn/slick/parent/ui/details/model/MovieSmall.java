@@ -25,6 +25,9 @@ public abstract class MovieSmall extends AutoBase implements Parcelable, ItemVie
 
     public static final String BOX_OFFICE = "BOX_OFFICE";
     public static final String UPCOMING = "UPCOMING";
+    public static final String HEADER = "HEADER";
+    public static final String FAVORITE = "FAVORITE";
+
 
     @Nullable
     public abstract String originalTitle();
