@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <android.support.v7.widget.CardView
+        android:layout_width="256dp"
+        android:layout_height="160dp"
+        android:layout_margin="4dp"
+        >
+
+        <io.supercharge.shimmerlayout.ShimmerLayout
+            android:id="@+id/layout_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:shimmer_animation_duration="1200"
+            app:shimmer_color="@color/color_gray_1"
+            >
+
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackground"
+                >
+
+                <com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader
+                    android:id="@+id/imageView_thumbnail"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:minHeight="100dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:background="#CCC"
+                    />
+
+                <TextView
+                    android:id="@+id/textView_title"
+                    style="@style/BoxOffice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_shadow"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="2"
+                    android:padding="8dp"
+                    android:text="# Trailer1 Rusticus lamias ducunt ad accola."
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView_thumbnail"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView_thumbnail"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/imageView_thumbnail"
+                    app:layout_constraintTop_toTopOf="@+id/imageView_thumbnail"
+                    app:layout_constraintVertical_bias="1.0"
+                    />
+
+                <ImageView
+                    android:id="@+id/imageView_play"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:tint="@color/color_gray_1"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView_thumbnail"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView_thumbnail"
+                    app:layout_constraintStart_toStartOf="@+id/imageView_thumbnail"
+                    app:layout_constraintTop_toTopOf="@+id/imageView_thumbnail"
+                    app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"
+                    tools:ignore="ContentDescription"
+                    />
+
+            </android.support.constraint.ConstraintLayout>
+        </io.supercharge.shimmerlayout.ShimmerLayout>
+    </android.support.v7.widget.CardView>
+</layout>

@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 
@@ -18,8 +20,10 @@ public interface ViewDetails extends Retryable {
 
     Observable<Object> onRetryComments();
 
+    @NonNull
     Observable<Object> onRetryAll();
 
+    @NonNull
     Observable<Object> errorDismissed();
 
     void error(short message);

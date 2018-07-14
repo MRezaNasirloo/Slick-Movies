@@ -61,7 +61,7 @@ public class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVide
         String viewTypes = view.viewType();
 
         Observable<Object> trigger = command(ViewVideos::onRetry).share().startWith(1);
-        Observable<List<Video>> videos = trigger.flatMap(o -> routerMovieVideos.get(id)
+        Observable<List<Video>> videos = trigger.flatMap(o -> routerMovieVideos.get(id).subscribeOn(io)
                 .concatMap(videoDomains -> Observable.fromIterable(videoDomains)
                         .map(vd -> Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name()))
                         .sorted((o1, o2) -> o2.type().compareTo(o1.type()))

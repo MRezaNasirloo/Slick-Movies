@@ -43,7 +43,7 @@ public class PresenterIran extends SlickPresenterUni<ViewIran, StateIran> {
                         .ipLocation(IpLocation.create(throwable.getMessage(), "", ""))
                         .build());
 
-        Observable<PartialViewState<StateIran>> seen = command(ViewIran::messageDismissed)
+        Observable<PartialViewState<StateIran>> seen = command(ViewIran::errorDismissed)
                 .map(o -> state -> state.toBuilder()
                         .seen(true)
                         .build());

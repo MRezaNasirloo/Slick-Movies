@@ -11,5 +11,5 @@ import io.reactivex.Observable;
 public interface ViewIran {
     void showWarningIran();
     @NonNull
-    Observable<Object> messageDismissed();
+    Observable<Object> errorDismissed();
 }

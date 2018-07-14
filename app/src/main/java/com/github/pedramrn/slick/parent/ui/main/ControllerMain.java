@@ -157,7 +157,7 @@ public class ControllerMain extends FragmentBase implements ViewMain, ViewIran, 
 
     @NonNull
     @Override
-    public Observable<Object> messageDismissed() {
+    public Observable<Object> errorDismissed() {
         return retry;
     }
 

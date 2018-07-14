@@ -40,6 +40,9 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemCardList;
 import com.github.pedramrn.slick.parent.ui.item.ItemViewListParcelable;
 import com.github.pedramrn.slick.parent.ui.list.ControllerList;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
+import com.github.pedramrn.slick.parent.ui.videos.PresenterVideos;
+import com.github.pedramrn.slick.parent.ui.videos.PresenterVideos_Slick;
+import com.github.pedramrn.slick.parent.ui.videos.ViewVideos;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.mrezanasirloo.slick.Presenter;
 import com.mrezanasirloo.slick.middleware.RequestStack;
@@ -51,6 +54,7 @@ import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +70,7 @@ import io.reactivex.subjects.PublishSubject;
  * Created on: 2017-04-28
  */
 
-public class ControllerDetails extends FragmentBase implements ViewDetails, MovieProvider, Screen {
+public class ControllerDetails extends FragmentBase implements ViewDetails, ViewVideos, MovieProvider, Screen {
 
     private static final String TAG = ControllerDetails.class.getSimpleName();
     private static final int RC_SIGN_IN = 123;
@@ -75,6 +79,11 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     Provider<PresenterDetails> provider;
     @Presenter
     PresenterDetails presenter;
+
+    @Inject
+    public Provider<PresenterVideos> providerVideo;
+    @Presenter
+    public PresenterVideos presenterVideo;
 
     @Inject
     BottomNavigationHandlerImpl bottomNavigationHandler;
@@ -86,10 +95,12 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     private UpdatingGroup progressiveComments;
     private UpdatingGroup progressiveSimilar;
     private UpdatingGroup progressiveCast;
+    private UpdatingGroup progressiveVideos;
     private UpdatingGroup updatingHeader;
 
     //    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
+    private ItemListHorizontal itemVideos;
     private ItemCardList itemCardListSimilar;
 
     private Section sectionOverview;
@@ -101,7 +112,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     private GroupAdapter adapterMain;
     private ItemCardHeader headerComments;
     private ItemCardHeader headerCast;
-    private PublishSubject<String> onRetry = PublishSubject.create();
+    private PublishSubject<Object> onRetry = PublishSubject.create();
     private PublishSubject<Object> onErrorDismissed = PublishSubject.create();
     private FloatingFavorite fab;
     private Snackbar snackbar;
@@ -116,6 +127,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     };
     private GroupAdapter adapterSimilar;
     private GroupAdapter adapterBackdrops;
+    private GroupAdapter adapterVideos;
 
     public static Screen newInstance(@NonNull MovieBasic movie, @Nullable String transitionName) {
         Bundle bundle = new BundleBuilder(new Bundle())
@@ -175,6 +187,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         Navigator2.bind(this);
         App.componentMain().inject(this);
         PresenterDetails_Slick.bind(this);
+        PresenterVideos_Slick.bind(this);
         ControllerDetailsBinding binding = ControllerDetailsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
             ((ToolbarHost) getActivity()).setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
@@ -188,15 +201,18 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         final Context context = getContext().getApplicationContext();
 
         adapterMain = new GroupAdapter();
+        adapterVideos = new GroupAdapter();
         adapterSimilar = new GroupAdapter();
         adapterBackdrops = new GroupAdapter();
 
         setOnItemClickListener(adapterMain);
+        setOnItemClickListener(adapterVideos);
         setOnItemClickListener(adapterSimilar);
         setOnItemClickListener(adapterBackdrops);
 
         updatingHeader = new UpdatingGroup();
         progressiveCast = new UpdatingGroup();
+        progressiveVideos = new UpdatingGroup();
         progressiveSimilar = new UpdatingGroup();
         progressiveBackdrop = new UpdatingGroup();
         progressiveComments = new UpdatingGroup();
@@ -234,12 +250,19 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         Section sectionBackdrops = new Section(new ItemCardHeader(103, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
 
-        sectionOverview = new Section(new ItemCardHeader(104, "Overview"));
+        itemVideos = new ItemListHorizontal(adapterVideos, "VIDEOS");
+        adapterVideos.add(progressiveVideos);
+
+        Section sectionVideos = new Section(new ItemCardHeader(104, "Videos"));
+        sectionVideos.add(itemVideos);
+
+        sectionOverview = new Section(new ItemCardHeader(105, "Overview"));
 
 
         adapterMain.add(updatingHeader);
         adapterMain.add(sectionOverview);
         adapterMain.add(sectionCasts);
+        adapterMain.add(sectionVideos);
         adapterMain.add(sectionComments);
         adapterMain.add(sectionBackdrops);
         adapterMain.add(sectionSimilar);
@@ -330,6 +353,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         if (itemBackdropList != null) {
+            itemVideos.onSaveViewState(outState);
             itemBackdropList.onSaveViewState(outState);
             itemCardListSimilar.onSaveViewState(outState);
         }
@@ -340,6 +364,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState == null || itemBackdropList == null) return;
+        itemVideos.onRestoreViewState(savedInstanceState);
         itemBackdropList.onRestoreViewState(savedInstanceState);
         itemCardListSimilar.onRestoreViewState(savedInstanceState);
     }
@@ -351,15 +376,18 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         super.onDestroyView();
         adapterBackdrops.setOnItemClickListener(null);
         adapterSimilar.setOnItemClickListener(null);
+        adapterVideos.setOnItemClickListener(null);
         adapterMain.setOnItemClickListener(null);
         itemCardListSimilar.onDestroyView();
         itemBackdropList.onDestroyView();
         headerComments.onDestroyView();
+        itemVideos.onDestroyView();
         headerCast.onDestroyView();
         fab.onDestroy();
 
         updatingHeader = null;
         progressiveCast = null;
+        progressiveVideos = null;
         progressiveSimilar = null;
         progressiveBackdrop = null;
         progressiveComments = null;
@@ -367,6 +395,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         itemCardListSimilar = null;
         itemBackdropList = null;
         sectionOverview = null;
+        itemVideos = null;
 
         collapsingToolbar = null;
         imageViewHeader = null;
@@ -377,6 +406,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
 
         adapterBackdrops = null;
         adapterSimilar = null;
+        adapterVideos = null;
 
         adapterMain.clear();
         adapterMain = null;
@@ -421,26 +451,57 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, Movi
         return onRetry.filter("COMMENTS_ERROR"::equals).cast(Object.class);
     }
 
+    @NonNull
     @Override
     public Observable<Object> onRetryAll() {
         Logger.i("onRetryAll called");
         return onRetry.cast(Object.class).throttleLast(200, TimeUnit.MILLISECONDS);
     }
 
+    @NonNull
     @Override
     public Observable<Object> errorDismissed() {
         return RxSnackbar.dismisses(snackbar).cast(Object.class);
     }
 
+    @NonNull
     @Override
-    public void
-    onRetry(String tag) {
-        Logger.i("onRetry called: %s", tag);
-        onRetry.onNext(tag);
+    public String viewType() {
+        return PresenterVideos.VIDEO_IN_DETAILS_PAGE;
+    }
+
+    @NonNull
+    @Override
+    public MovieBasic movie() {
+        return movie;
+    }
+
+    @Override
+    public void update(@NonNull List<Item> videos) {
+        Iterator<Item> iterator = videos.iterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (item instanceof ItemHeader) {
+                iterator.remove();
+            }
+        }
+        progressiveVideos.update(videos);
     }
 
     @Override
     public void error(short code) {
         snackbar.setText(ErrorHandler.message(getContext().getApplicationContext(), code)).show();
+    }
+
+    @NonNull
+    @Override
+    public Observable<Object> onRetry() {
+        return onRetry;
+    }
+
+    @Override
+    public void onRetry(String tag) {
+        Logger.i("retry called: %s", tag);
+        onRetry.onNext(tag);
     }
 }

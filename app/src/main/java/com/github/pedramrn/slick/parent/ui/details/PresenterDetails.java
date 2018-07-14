@@ -92,7 +92,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
 
 
     @Override
-    protected void start(ViewDetails view) {
+    protected void start(@NonNull ViewDetails view) {
         movieBasic = view.getMovie();
         final String movieId;
         if (movieBasic.id() == -1) {
@@ -102,7 +102,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
             movieId = movieBasic.id().toString();
         }
 
-        Observable<Object> triggerRetry = command(ViewDetails::onRetryAll).startWith(1);
+        Observable<Object> triggerRetry = command(ViewDetails::onRetryAll).share().startWith(1);
 
         final Observable<Movie> movieFull = triggerRetry.flatMap(o -> routerMovieDetails.get(movieId).subscribeOn(io)
                 //Maps the domains Models to View Models which have android dependency
