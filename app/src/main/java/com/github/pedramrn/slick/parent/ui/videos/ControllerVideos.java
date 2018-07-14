@@ -16,6 +16,9 @@ import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
+import com.github.pedramrn.slick.parent.ui.header.PresenterHeader;
+import com.github.pedramrn.slick.parent.ui.header.PresenterHeader_Slick;
+import com.github.pedramrn.slick.parent.ui.header.ViewHeader;
 import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.mrezanasirloo.slick.Presenter;
@@ -24,6 +27,7 @@ import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.UpdatingGroup;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,7 +40,7 @@ import static com.github.pedramrn.slick.parent.ui.videos.state.Error.VIDEOS;
 /**
  * A simple {@link Controller} subclass.
  */
-public class ControllerVideos extends FragmentBase implements ViewVideos, OnItemClickListener {
+public class ControllerVideos extends FragmentBase implements ViewVideos, ViewHeader, OnItemClickListener {
 
     private static final String TAG = ControllerVideos.class.getSimpleName();
 
@@ -45,9 +49,15 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
     @Presenter
     PresenterVideos presenter;
 
+    @Inject
+    public Provider<PresenterHeader> providerHeader;
+    @Presenter
+    public PresenterHeader presenterHeader;
+
     private String transitionName;
     private MovieBasic movie;
-    private UpdatingGroup adapterProgressive;
+    private UpdatingGroup progressiveVideos;
+    private UpdatingGroup progressiveHeader;
 
     private GroupAdapter adapter;
     private ControllerVideosBinding binding;
@@ -77,12 +87,15 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle bundle) {
         App.componentMain().inject(this);
         PresenterVideos_Slick.bind(this);
+        PresenterHeader_Slick.bind(this);
         binding = ControllerVideosBinding.inflate(inflater, container, false);
         setToolbar(binding.toolbar).setupButton(binding.toolbar, true);
         binding.toolbar.setTitle(String.format("Videos: %s", movie.title()));
         adapter = new GroupAdapter();
-        adapterProgressive = new UpdatingGroup();
-        adapter.add(adapterProgressive);
+        progressiveVideos = new UpdatingGroup();
+        progressiveHeader = new UpdatingGroup();
+        adapter.add(progressiveHeader);
+        adapter.add(progressiveVideos);
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext(), LinearLayoutManager
                 .VERTICAL,
@@ -101,7 +114,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
         super.onDestroyView();
         // binding.recyclerView.setAdapter(null);
         adapter.setOnItemClickListener(null);
-        adapterProgressive = null;
+        progressiveVideos = null;
         adapter = null;
         binding = null;
     }
@@ -112,8 +125,13 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
     }
 
     @Override
+    public void update(Item header) {
+        progressiveHeader.update(Collections.singletonList(header));
+    }
+
+    @Override
     public void update(List<Item> videos) {
-        adapterProgressive.update(videos);
+        progressiveVideos.update(videos);
     }
 
     @Override
@@ -123,7 +141,7 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, OnItem
 
     @NonNull
     @Override
-    public Observable<Object> onErrorDismissed() {
+    public Observable<Object> errorDismissed() {
         return errorDismissed;
     }
 

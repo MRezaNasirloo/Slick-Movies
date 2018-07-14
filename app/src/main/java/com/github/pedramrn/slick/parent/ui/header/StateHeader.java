@@ -3,7 +3,6 @@ package com.github.pedramrn.slick.parent.ui.header;
 import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
-import com.github.pedramrn.slick.parent.ui.videos.state.AutoValue_StateHeader;
 import com.google.auto.value.AutoValue;
 import com.xwray.groupie.Item;
 
@@ -14,7 +13,7 @@ import com.xwray.groupie.Item;
 
 @AutoValue
 public abstract class StateHeader {
-    public abstract Builder movie(MovieBasic movie);
+    public abstract MovieBasic movie();
 
     public abstract Item header();
 

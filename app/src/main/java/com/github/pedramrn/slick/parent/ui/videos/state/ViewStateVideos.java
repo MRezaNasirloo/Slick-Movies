@@ -17,8 +17,6 @@ public abstract class ViewStateVideos {
 
     public abstract List<Item> videos();
 
-    public abstract Item header();
-
     @Nullable
     public abstract Throwable error();
 
@@ -33,8 +31,6 @@ public abstract class ViewStateVideos {
         public abstract Builder videos(List<Item> videos);
 
         public abstract Builder error(Throwable errorVideos);
-
-        public abstract Builder header(Item header);
 
         public abstract ViewStateVideos build();
     }

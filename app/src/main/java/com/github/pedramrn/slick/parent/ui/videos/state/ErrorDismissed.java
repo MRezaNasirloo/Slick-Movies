@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.videos.state;
 
+import android.support.annotation.NonNull;
+
 import com.mrezanasirloo.slick.uni.PartialViewState;
 
 /**
@@ -8,8 +10,9 @@ import com.mrezanasirloo.slick.uni.PartialViewState;
  */
 public class ErrorDismissed implements PartialViewState<ViewStateVideos> {
 
+    @NonNull
     @Override
-    public ViewStateVideos reduce(ViewStateVideos state) {
+    public ViewStateVideos reduce(@NonNull ViewStateVideos state) {
         return state.toBuilder().error(null).build();
     }
 }

@@ -11,7 +11,6 @@ import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsIMDB
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavoriteProgressive;
-import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.header.state.ErrorDismissedHeader;
 import com.github.pedramrn.slick.parent.ui.header.state.ErrorHeader;
 import com.github.pedramrn.slick.parent.ui.header.state.Header;
@@ -35,14 +34,12 @@ public class PresenterHeader extends SlickPresenterUni<ViewHeader, StateHeader> 
 
     private RouterMovieDetails routerMovieDetails;
     private final RouterMovieDetails routerMovieDetailsIMDB;
-    private final RouterMovieImpl routerMovie;
     private final MapperMovieDomainMovie mapper;
 
     @Inject
     PresenterHeader(
             RouterMovieDetailsImpl routerMovieDetails,
             RouterMovieDetailsIMDBImpl routerMovieDetailsIMDB,
-            RouterMovieImpl routerMovie,
             MapperMovieDomainMovie mapper,
             @Named("io") Scheduler io,
             @Named("main") Scheduler main) {
@@ -50,7 +47,6 @@ public class PresenterHeader extends SlickPresenterUni<ViewHeader, StateHeader> 
         this.routerMovieDetails = routerMovieDetails;
         this.routerMovieDetailsIMDB = routerMovieDetailsIMDB;
 
-        this.routerMovie = routerMovie;
         this.mapper = mapper;
     }
 

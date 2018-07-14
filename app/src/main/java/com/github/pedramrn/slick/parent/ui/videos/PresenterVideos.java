@@ -3,9 +3,7 @@ package com.github.pedramrn.slick.parent.ui.videos;
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
-import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
-import com.github.pedramrn.slick.parent.ui.favorite.item.ItemFavoriteProgressive;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.home.router.RouterMovieVideosImpl;
@@ -13,8 +11,6 @@ import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.github.pedramrn.slick.parent.ui.videos.model.Video;
 import com.github.pedramrn.slick.parent.ui.videos.state.Error;
 import com.github.pedramrn.slick.parent.ui.videos.state.ErrorDismissed;
-import com.github.pedramrn.slick.parent.ui.videos.state.Header;
-import com.github.pedramrn.slick.parent.ui.videos.state.HeaderProgressive;
 import com.github.pedramrn.slick.parent.ui.videos.state.Videos;
 import com.github.pedramrn.slick.parent.ui.videos.state.VideosProgressive;
 import com.github.pedramrn.slick.parent.ui.videos.state.ViewStateVideos;
@@ -37,7 +33,7 @@ import io.reactivex.functions.Function;
 /**
  * A simple Presenter
  */
-class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
+public class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
 
     private final RouterMovieVideosImpl routerMovieVideos;
     private final RouterMovieImpl routerMovie;
@@ -61,17 +57,6 @@ class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
     public void start(@NonNull ViewVideos view) {
         Integer id = view.movie().id();
 
-        Observable<PartialViewState<ViewStateVideos>> header = command(ViewVideos::onRetry).startWith(1)
-                .flatMap(o -> routerMovie.movie(id).subscribeOn(io)
-                        .map(mapper)
-                        .cast(ItemView.class)
-                        .map(itemView -> itemView.render(MovieSmall.HEADER))
-                        .map((Function<Item, PartialViewState<ViewStateVideos>>) Header::new)
-                        .startWith(new HeaderProgressive())
-                        .onErrorReturn(Error::new)
-                );
-
-
         Observable<PartialViewState<ViewStateVideos>> videos = command(ViewVideos::onRetry).startWith(1)
                 .flatMap(o -> routerMovieVideos.get(id)
                         .concatMap(Observable::fromIterable)
@@ -88,24 +73,21 @@ class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVideos> {
                         .subscribeOn(io));
 
         Observable<PartialViewState<ViewStateVideos>> errorDismissed =
-                command(ViewVideos::onErrorDismissed).map(o -> new ErrorDismissed());
+                command(ViewVideos::errorDismissed).map(o -> new ErrorDismissed());
 
 
         ViewStateVideos initialState = ViewStateVideos.builder()
                 .videos(Collections.emptyList())
-                .header(new ItemFavoriteProgressive(0))
                 .build();
 
-        subscribe(initialState, merge(videos, header, errorDismissed));
+        subscribe(initialState, merge(videos, errorDismissed));
     }
 
     @Override
     protected void render(@NonNull ViewStateVideos state, @NonNull ViewVideos view) {
         ArrayList<Item> items = new ArrayList<>(state.videos().size() + 1);
-        items.add(state.header());
         items.addAll(state.videos());
         view.update(items);
-
         if (state.error() != null) view.error(ErrorHandler.handle(state.error()));
     }
 }

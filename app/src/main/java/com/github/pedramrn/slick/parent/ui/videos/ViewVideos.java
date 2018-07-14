@@ -23,7 +23,7 @@ public interface ViewVideos extends Retryable {
     void error(short message);
 
     @NonNull
-    Observable<Object> onErrorDismissed();
+    Observable<Object> errorDismissed();
 
     @NonNull
     Observable<Object> onRetry();
