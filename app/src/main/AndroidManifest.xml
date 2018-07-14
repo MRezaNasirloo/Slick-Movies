@@ -22,6 +22,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             >
             <tools:validation testUrl="http://www.imdb.com/title/tt1825683" />
+            <tools:validation testUrl="https://m.imdb.com/title/tt1825683" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +41,19 @@
                     android:scheme="http"
                     />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="m.imdb.com"
+                    android:pathPrefix="/title/"
+                    android:scheme="https"
+                    />
+            </intent-filter>
+
         </activity>
         <meta-data
             android:name="io.fabric.ApiKey"

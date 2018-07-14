@@ -91,9 +91,8 @@ public class ControllerHome extends FragmentBase implements ViewHome, Navigator 
     private Uri uri;
 
     public static ControllerHome newInstance(Bundle bundle) {
-        Bundle args = new Bundle();
         ControllerHome fragment = new ControllerHome();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
