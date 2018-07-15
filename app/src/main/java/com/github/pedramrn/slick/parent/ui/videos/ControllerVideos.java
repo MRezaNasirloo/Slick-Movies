@@ -97,9 +97,8 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, ViewHe
         adapter.add(progressiveHeader);
         adapter.add(progressiveVideos);
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext(), LinearLayoutManager
-                .VERTICAL,
-                false));
+        binding.recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerView.addItemDecoration(new ItemDecorationMargin(getResources().getDimensionPixelSize(R.dimen
                 .item_decoration_margin)));
         binding.recyclerView.getItemAnimator().setChangeDuration(0);
@@ -126,6 +125,11 @@ public class ControllerVideos extends FragmentBase implements ViewVideos, ViewHe
     }
 
     @NonNull
+    @Override
+    public Observable<MovieBasic> movieObservable() {
+        return Observable.just(movie).mergeWith(Observable.never());
+    }
+
     @Override
     public MovieBasic movie() {
         return movie;

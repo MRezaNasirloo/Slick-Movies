@@ -109,14 +109,14 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     private ImageViewLoader imageViewHeader;
 
     private ViewStateDetails state;
-    private GroupAdapter adapterMain;
-    private ItemCardHeader headerComments;
-    private ItemCardHeader headerCast;
-    private PublishSubject<Object> onRetry = PublishSubject.create();
-    private PublishSubject<Object> onErrorDismissed = PublishSubject.create();
-    private FloatingFavorite fab;
     private Snackbar snackbar;
-    private PublishSubject<MovieBasic> headerMoviePublish = PublishSubject.create();
+    private FloatingFavorite fab;
+    private GroupAdapter adapterMain;
+    private ItemCardHeader headerCast;
+    private ItemCardHeader headerComments;
+    private final PublishSubject<Object> onRetry = PublishSubject.create();
+    private final PublishSubject<Object> onErrorDismissed = PublishSubject.create();
+    private final PublishSubject<MovieBasic> moviePublish = PublishSubject.create();
 
     private Snackbar.Callback callback = new Snackbar.Callback() {
         @Override
@@ -287,7 +287,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
         // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
         // the animation is stopped, weirdly shared animation callback didn't work all the time.
-        add(headerMoviePublish.distinct()
+        add(moviePublish.distinct()
                 .delay(duration + 150, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe(movieBasic -> {
                     if (updatingHeader != null) {
@@ -305,16 +305,15 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         // long before = System.currentTimeMillis();
 
         movie = state.movieBasic();
+        moviePublish.onNext(movie);
 
         collapsingToolbar.setTitle(movie.title());
         imageViewHeader.loadBlur(movie.thumbnailBackdrop());
 
         /*if (animationEnded) {
-            updatingHeader.update(Collections.singletonList(new ItemHeader(this, movie, transitionName)));
+            updatingHeader.update(Collections.singletonList(new ItemHeader(this, movieObservable, transitionName)));
             Logger.d("Updated Header!");
         }*/
-
-        headerMoviePublish.onNext(movie);
 
         if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
             sectionOverview.add(new ItemOverview(movie.overview()));
@@ -472,8 +471,8 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
     @NonNull
     @Override
-    public MovieBasic movie() {
-        return movie;
+    public Observable<MovieBasic> movieObservable() {
+        return moviePublish.distinct();
     }
 
     @Override

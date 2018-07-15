@@ -20,7 +20,7 @@ public interface ViewVideos extends Retryable {
     String viewType();
 
     @NonNull
-    MovieBasic movie();
+    Observable<MovieBasic> movieObservable();
 
     void update(@NonNull List<Item> videos);
 

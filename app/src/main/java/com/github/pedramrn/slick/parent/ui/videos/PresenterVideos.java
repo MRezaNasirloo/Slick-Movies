@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.videos;
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
+import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.favorite.router.RouterMovieImpl;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
@@ -57,19 +58,21 @@ public class PresenterVideos extends SlickPresenterUni<ViewVideos, ViewStateVide
 
     @Override
     public void start(@NonNull ViewVideos view) {
-        Integer id = view.movie().id();
         String viewTypes = view.viewType();
 
+        Observable<MovieBasic> movieId = command(ViewVideos::movieObservable).replay(1).autoConnect();
         Observable<Object> trigger = command(ViewVideos::onRetry).share().startWith(1);
-        Observable<List<Video>> videos = trigger.flatMap(o -> routerMovieVideos.get(id).subscribeOn(io)
-                .concatMap(videoDomains -> Observable.fromIterable(videoDomains)
-                        .map(vd -> Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name()))
-                        .sorted((o1, o2) -> o2.type().compareTo(o1.type()))
-                        .map(new MapProgressive())
-                        .cast(Video.class)
-                        .buffer(20)
-                        .compose(new ScanList<>())
-                ))
+
+        Observable<List<Video>> videos = trigger.flatMap(o -> movieId.filter(movie -> movie.id() != -1))
+                .flatMap(movie -> routerMovieVideos.get(movie.id()).subscribeOn(io)
+                        .concatMap(videoDomains -> Observable.fromIterable(videoDomains)
+                                .map(vd -> Video.create(vd.key().hashCode(), vd.tmdb(), vd.type(), vd.key(), vd.name()))
+                                .sorted((o1, o2) -> o2.type().compareTo(o1.type()))
+                                .map(new MapProgressive())
+                                .cast(Video.class)
+                                .buffer(20)
+                                .compose(new ScanList<>())
+                        ))
                 .share()
                 // .publish()
                 // .autoConnect()

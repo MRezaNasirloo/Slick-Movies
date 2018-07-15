@@ -102,6 +102,10 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
             movieId = movieBasic.id().toString();
         }
 
+        if (movieId == null || movieId.equals("-1")) {
+            throw new IllegalStateException("movie id cannot be null: " + movieBasic.toString());
+        }
+
         Observable<Object> triggerRetry = command(ViewDetails::onRetryAll).share().startWith(1);
 
         final Observable<Movie> movieFull = triggerRetry.flatMap(o -> routerMovieDetails.get(movieId).subscribeOn(io)
