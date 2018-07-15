@@ -193,13 +193,15 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
     @Override
     public void action(@NonNull Navigator navigator, Retryable retryable,
             @Nullable Object payload, int position, @NonNull View view) {
-        if (movie instanceof Movie && !((Movie) movie).images().posters().isEmpty() && view.getId() == R.id.imageView_icon) {
-            navigator.navigateTo(ControllerImage.newInstance(ItemHeader.this.movie.title(),
-                    ((ArrayList<String>) ((Movie) movie).images().posters())));
-        } else if (Error.VIDEOS.equals(payload != null ? payload.toString() : null)) {
+        if (Error.VIDEOS.equals(payload != null ? payload.toString() : null)) {
             // Disabled shared transition animation
             // navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName), view, transitionName);
             navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName));
+        } else if (movie instanceof Movie && !((Movie) movie).images()
+                .posters()
+                .isEmpty() && view.getId() == R.id.imageView_icon) {
+            navigator.navigateTo(ControllerImage.newInstance(ItemHeader.this.movie.title(),
+                    ((ArrayList<String>) ((Movie) movie).images().posters())));
         }
     }
 }
