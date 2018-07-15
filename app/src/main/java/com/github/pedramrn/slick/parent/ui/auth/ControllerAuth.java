@@ -151,7 +151,10 @@ public class ControllerAuth extends FragmentBase implements ViewAuth {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess() && result.getSignInAccount() != null && result.getSignInAccount().getIdToken() != null) {
+            if (result != null &&
+                    result.isSuccess() &&
+                    result.getSignInAccount() != null &&
+                    result.getSignInAccount().getIdToken() != null) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 streamResult.onNext(GugleSignInResult.builder().isSuccess(true).idToken(account.getIdToken()).build());
