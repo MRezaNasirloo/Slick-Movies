@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
@@ -115,8 +116,12 @@ public class ControllerMain extends FragmentBase implements ViewMain, ViewIran, 
     }
 
     private void resetStack(int position) {
-        // Fragment item = pagerAdapter.getItem(position);
-        // TODO: 2018-04-25 Reset back stack for this fragment
+        FragmentManager fragmentManager = pagerAdapter.getItem(position).getChildFragmentManager();
+        int entryCount = fragmentManager.getBackStackEntryCount();
+        if (entryCount == 0) return;
+        for (int i = 0; i < entryCount; i++) {
+            fragmentManager.popBackStack();
+        }
     }
 
     @Override

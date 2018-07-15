@@ -57,7 +57,7 @@ public class ActivityMain extends AppCompatActivity implements ToolbarHost {
                 && intent.getBooleanExtra("IMDB_URI", true)) {
             Logger.w(TAG, "Starting with intent");
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.controller_container, ControllerMain.newInstance(intent.getData()))
+                    .replace(R.id.controller_container, ControllerMain.newInstance(intent.getData()), CONTROLLER_MAIN_TAG)
                     .commit();
             intent.putExtra("IMDB_URI", false);
             setIntent(intent);// Consumed
