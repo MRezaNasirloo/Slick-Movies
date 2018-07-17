@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/textView_title"
-                    style="@style/DetailsBlackText"
+                    style="@style/TittleItemCard"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"

@@ -13,22 +13,34 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-    
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.0V">
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="BoxOffice" parent="AppTheme">
+    <style name="TittleItemBanner" parent="AppTheme">
         <item name="android:textColor">#f2f2f2</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">2</item>
         <item name="android:shadowDy">2</item>
         <item name="android:shadowRadius">2</item>
     </style>
+
+    <style name="TittleItemCard" parent="AppTheme">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">#5f5f5f</item>
+    </style>
+
+    <style name="TittleHeader" parent="AppTheme">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">#5f5f5f</item>
+    </style>
+
 
     <style name="DetailsWhiteText" parent="AppTheme">
         <item name="android:textColor">#ffffff</item>
@@ -41,7 +53,6 @@
     <style name="DetailsBlackText" parent="AppTheme">
         <item name="android:textColor">#5f5f5f</item>
     </style>
-    
 
 
 </resources>

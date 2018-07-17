@@ -51,8 +51,8 @@ android {
         applicationId "com.mrezanasirloo.slick.movies"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 30
-        versionName "0.3.0 beta ${SHA}"
+        versionCode 31
+        versionName "0.3.1 beta ${SHA}"
         testInstrumentationRunner "com.github.pedramrn.slick.parent.utils.di.TestRunnerDagger"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
