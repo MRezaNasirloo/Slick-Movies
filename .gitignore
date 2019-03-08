@@ -9,7 +9,4 @@
 /app/src/main/assets/paperwork.json
 *.patch
 !/.idea/codeStyles/
-!/.idea/vcs.xml
-!/.idea/modules.xml
-/.idea/caches
 *.jks
