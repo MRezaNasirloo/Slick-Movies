@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-07-19
+ * Created on: 2017-07-19
  */
 public abstract class PartialProgressive {
 

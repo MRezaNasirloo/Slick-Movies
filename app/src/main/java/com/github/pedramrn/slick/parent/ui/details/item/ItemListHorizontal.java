@@ -10,15 +10,15 @@ import android.view.View;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-16
  */
 
-public class ItemListHorizontal extends Item<RowCastListBinding> {
+public class ItemListHorizontal extends BindableItem<RowCastListBinding> {
 
     private static final String TAG = ItemListHorizontal.class.getSimpleName();
 
@@ -41,7 +41,7 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
     }
 
     @Override
-    public void bind(RowCastListBinding viewBinding, int position) {
+    public void bind(@NonNull RowCastListBinding viewBinding, int position) {
         long before = System.currentTimeMillis();
         RecyclerView recyclerView = viewBinding.recyclerViewCasts;
         layoutManager = (LinearLayoutManager) layoutManager(viewBinding.getRoot());
@@ -56,7 +56,7 @@ public class ItemListHorizontal extends Item<RowCastListBinding> {
         Log.e(TAG, "bind: took " + took + " ms");
     }
     @Override
-    public void unbind(ViewHolder<RowCastListBinding> holder) {
+    public void unbind(@NonNull ViewHolder<RowCastListBinding> holder) {
         Log.d(TAG, "unbind() called with: holder = [" + holder + "]");
         RecyclerView recyclerView = holder.binding.recyclerViewCasts;
         recyclerView.setOnFlingListener(null);

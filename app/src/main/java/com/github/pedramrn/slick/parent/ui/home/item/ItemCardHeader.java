@@ -15,8 +15,8 @@ import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.view.RxView;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +28,7 @@ import io.reactivex.functions.Consumer;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItemAction {
+public class ItemCardHeader extends BindableItem<RowCardHeaderBinding> implements OnItemAction {
 
     private final String title;
     private final String buttonText;
@@ -70,7 +70,7 @@ public class ItemCardHeader extends Item<RowCardHeaderBinding> implements OnItem
     }
 
     @Override
-    public void unbind(ViewHolder<RowCardHeaderBinding> holder) {
+    public void unbind(@NonNull ViewHolder<RowCardHeaderBinding> holder) {
         Log.d(TAG, "unbind() called " + title);
         UtilsRx.dispose(disposable);
         holder.binding.button.setOnClickListener(null);

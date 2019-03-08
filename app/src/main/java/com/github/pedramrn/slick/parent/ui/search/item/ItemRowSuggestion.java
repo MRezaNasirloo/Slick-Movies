@@ -12,14 +12,14 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemMovie;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-08-11
  */
 
-public class ItemRowSuggestion extends Item<RowSearchSuggestionBinding> implements ItemMovie, OnItemAction {
+public class ItemRowSuggestion extends BindableItem<RowSearchSuggestionBinding> implements ItemMovie, OnItemAction {
     private final MovieBasic movie;
     private final String transitionName;
 

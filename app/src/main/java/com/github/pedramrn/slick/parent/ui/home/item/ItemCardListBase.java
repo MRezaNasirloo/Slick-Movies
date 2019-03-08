@@ -12,15 +12,15 @@ import com.bluelinelabs.conductor.Router;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.ui.home.cardlist.RecyclerViewCardListAbs;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-20
+ * Created on: 2017-06-20
  */
 
-public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> extends Item<T> {
+public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> extends BindableItem<T> {
     private static final String TAG = ItemCardListBase.class.getSimpleName();
 
     private final Context context;
@@ -55,12 +55,12 @@ public abstract class ItemCardListBase<T extends ViewDataBinding, RecyclerView> 
         recyclerView.addItemDecoration(margin);
         // TODO: 2018-04-25 commented out
         // recyclerView.setNavigator(router);
-//        snapHelper.attachToRecyclerView(recyclerView);
+        //        snapHelper.attachToRecyclerView(recyclerView);
     }
 
 
     @Override
-    public void unbind(ViewHolder<T> holder) {
+    public void unbind(@NonNull ViewHolder<T> holder) {
         System.out.println("ItemCardListBase.unbind");
         recyclerView = getRecyclerViewCardListAbs(holder.binding);
         recyclerView.removeItemDecoration(margin);

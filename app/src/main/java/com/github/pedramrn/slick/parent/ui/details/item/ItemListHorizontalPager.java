@@ -1,12 +1,13 @@
 package com.github.pedramrn.slick.parent.ui.details.item;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.SnapHelper;
 
 import com.github.pedramrn.slick.parent.databinding.RowCastListBinding;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
@@ -21,13 +22,13 @@ public class ItemListHorizontalPager extends ItemListHorizontal {
     }
 
     @Override
-    public void bind(RowCastListBinding viewBinding, int position) {
+    public void bind(@NonNull RowCastListBinding viewBinding, int position) {
         super.bind(viewBinding, position);
         snapHelper.attachToRecyclerView(viewBinding.recyclerViewCasts);
     }
 
     @Override
-    public void unbind(ViewHolder<RowCastListBinding> holder) {
+    public void unbind(@NonNull ViewHolder<RowCastListBinding> holder) {
         holder.binding.recyclerViewCasts.setOnFlingListener(null);
         super.unbind(holder);
     }

@@ -14,7 +14,7 @@ import com.github.pedramrn.slick.parent.ui.details.ControllerDetails;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 import java.util.Locale;
 
@@ -23,7 +23,7 @@ import java.util.Locale;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardMovie extends Item<RowCardBinding> implements OnItemAction, ItemMovie, RemovableOnError {
+public class ItemCardMovie extends BindableItem<RowCardBinding> implements OnItemAction, ItemMovie, RemovableOnError {
 
     private final MovieBasic movie;
     private final String transitionName;

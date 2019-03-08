@@ -12,7 +12,7 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 import java.util.Locale;
 
@@ -21,7 +21,7 @@ import java.util.Locale;
  *         Created on: 2017-11-16
  */
 
-public class ItemBoxOffice extends Item<RowBoxOfficeBinding> implements RemovableOnError, OnItemAction {
+public class ItemBoxOffice extends BindableItem<RowBoxOfficeBinding> implements RemovableOnError, OnItemAction {
 
     private final MovieBasic movie;
     private final String transitionName;

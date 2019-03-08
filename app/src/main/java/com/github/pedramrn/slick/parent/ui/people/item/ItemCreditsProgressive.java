@@ -9,14 +9,14 @@ import com.github.pedramrn.slick.parent.databinding.RowCardCreditBinding;
 import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-04
  */
 
-public class ItemCreditsProgressive extends Item<RowCardCreditBinding> implements OnItemAction {
+public class ItemCreditsProgressive extends BindableItem<RowCardCreditBinding> implements OnItemAction {
     public ItemCreditsProgressive() {
     }
 

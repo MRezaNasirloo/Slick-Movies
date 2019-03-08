@@ -11,14 +11,14 @@ import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.ControllerVideos;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-20
  */
 
-public class ItemBanner extends Item<RowBannerBinding> implements OnItemAction, ItemMovie, RemovableOnError {
+public class ItemBanner extends BindableItem<RowBannerBinding> implements OnItemAction, ItemMovie, RemovableOnError {
 
     private final MovieBasic movie;
 

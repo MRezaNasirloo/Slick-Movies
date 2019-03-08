@@ -12,14 +12,14 @@ import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-11-16
  */
 
-public class ItemBoxOfficeError extends Item<RowBoxOfficeErrorBinding> implements RemovableOnError, OnItemAction {
+public class ItemBoxOfficeError extends BindableItem<RowBoxOfficeErrorBinding> implements RemovableOnError, OnItemAction {
 
 
     private final short code;

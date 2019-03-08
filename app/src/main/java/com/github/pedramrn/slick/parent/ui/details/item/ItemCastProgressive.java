@@ -15,15 +15,15 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-06-16
  */
 
-public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implements OnItemAction, RemovableOnError {
+public class ItemCastProgressive extends BindableItem<RowCastHorizontalBinding> implements OnItemAction, RemovableOnError {
 
     public ItemCastProgressive(long id) {
         super(id);
@@ -35,7 +35,7 @@ public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implemen
     }
 
     @Override
-    public void bind(RowCastHorizontalBinding viewBinding, int position) {
+    public void bind(@NonNull RowCastHorizontalBinding viewBinding, int position) {
         Context context = viewBinding.imageViewProfile.getContext();
         viewBinding.imageViewProfile.setImageResource(R.drawable.circle);
         viewBinding.textViewName.setBackgroundResource(R.drawable.line);
@@ -51,7 +51,7 @@ public class ItemCastProgressive extends Item<RowCastHorizontalBinding> implemen
     }
 
     @Override
-    public void unbind(ViewHolder<RowCastHorizontalBinding> holder) {
+    public void unbind(@NonNull ViewHolder<RowCastHorizontalBinding> holder) {
         holder.binding.textViewCharacter.setBackground(null);
         holder.binding.textViewName.setBackground(null);
         super.unbind(holder);

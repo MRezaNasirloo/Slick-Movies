@@ -24,7 +24,7 @@ import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.util.DateUtils;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 import java.text.ParseException;
 
@@ -35,7 +35,7 @@ import io.reactivex.Observable;
  * Created on: 2017-06-16
  */
 
-public class ItemFavorite extends Item<RowFavoriteMovieTvBinding> implements OnItemAction, RemovableOnError {
+public class ItemFavorite extends BindableItem<RowFavoriteMovieTvBinding> implements OnItemAction, RemovableOnError {
     private static final String TAG = ItemFavorite.class.getSimpleName();
     public static final String FORCE = "Force";
 

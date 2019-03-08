@@ -25,10 +25,10 @@ import com.github.pedramrn.slick.parent.ui.videos.state.Error;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.orhanobut.logger.Logger;
-import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.OnItemLongClickListener;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * Created on: 2017-06-16
  */
 
-public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
+public class ItemHeader extends BindableItem<RowHeaderBinding> implements OnItemAction {
 
     private final MovieBasic movie;
     private final String transitionName;
@@ -160,8 +160,13 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
     }
 
     @Override
-    public void bind(ViewHolder<RowHeaderBinding> holder, int position, List<Object> payloads, OnItemClickListener
-            onItemClickListener, OnItemLongClickListener onItemLongClickListener) {
+    public void bind(
+            @NonNull ViewHolder<RowHeaderBinding> holder,
+            int position,
+            @NonNull List<Object> payloads,
+            OnItemClickListener onItemClickListener,
+            OnItemLongClickListener onItemLongClickListener
+    ) {
         super.bind(holder, position, payloads, onItemClickListener, onItemLongClickListener);
         holder.binding.imageViewIcon.setOnClickListener(v -> onItemClickListener.onItemClick(this, v));
         holder.itemView.setOnClickListener(null);
@@ -174,7 +179,7 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
     }
 
     @Override
-    public void unbind(ViewHolder<RowHeaderBinding> holder) {
+    public void unbind(@NonNull ViewHolder<RowHeaderBinding> holder) {
         Log.d(TAG, "unbind: called ");
         holder.binding.imageViewIcon.setOnClickListener(null);
         UtilsRx.dispose(compositeDisposable);
@@ -191,8 +196,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
     }
 
     @Override
-    public void action(@NonNull Navigator navigator, Retryable retryable,
-            @Nullable Object payload, int position, @NonNull View view) {
+    public void action(
+            @NonNull Navigator navigator, Retryable retryable,
+            @Nullable Object payload, int position, @NonNull View view
+    ) {
         if (Error.VIDEOS.equals(payload != null ? payload.toString() : null)) {
             // Disabled shared transition animation
             // navigator.navigateTo(ControllerDetails.newInstance(movie, transitionName), view, transitionName);
@@ -200,8 +207,10 @@ public class ItemHeader extends Item<RowHeaderBinding> implements OnItemAction {
         } else if (movie instanceof Movie && !((Movie) movie).images()
                 .posters()
                 .isEmpty() && view.getId() == R.id.imageView_icon) {
-            navigator.navigateTo(ControllerImage.newInstance(ItemHeader.this.movie.title(),
-                    ((ArrayList<String>) ((Movie) movie).images().posters())));
+            navigator.navigateTo(ControllerImage.newInstance(
+                    ItemHeader.this.movie.title(),
+                    ((ArrayList<String>) ((Movie) movie).images().posters())
+            ));
         }
     }
 }

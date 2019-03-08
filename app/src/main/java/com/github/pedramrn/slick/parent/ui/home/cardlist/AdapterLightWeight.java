@@ -2,6 +2,7 @@ package com.github.pedramrn.slick.parent.ui.home.cardlist;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
@@ -14,20 +15,19 @@ import com.github.pedramrn.slick.parent.ui.home.item.ItemError;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.OnItemLongClickListener;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-09-17
+ * Created on: 2017-09-17
  */
 public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
 
@@ -38,44 +38,39 @@ public class AdapterLightWeight extends RecyclerView.Adapter<ViewHolder> {
     private OnItemLongClickListener onItemLongClickListener;
 
     public AdapterLightWeight() {
-        updateStream.concatMap(new Function<List<Item>, Observable<Pair<DiffUtil.DiffResult, List<Item>>>>() {
-                    @Override
-                    public Observable<Pair<DiffUtil.DiffResult, List<Item>>> apply(@NonNull List<Item> items) throws Exception {
-                        Log.d(TAG, "diffCal on: " + Thread.currentThread().getName());
-                        return Observable.just(Pair.create(DiffUtil.calculateDiff(new MyCallback(items)), items));
-                    }
-                }).subscribe(new Consumer<Pair<DiffUtil.DiffResult, List<Item>>>() {
-            @Override
-            public void accept(Pair<DiffUtil.DiffResult, List<Item>> diffResult) throws Exception {
-                items.clear();
-                items.addAll(diffResult.second);
-                diffResult.first.dispatchUpdatesTo(AdapterLightWeight.this);
-            }
+        Disposable disposable = updateStream.concatMap(items -> {
+            Log.d(TAG, "diffCal on: " + Thread.currentThread().getName());
+            return Observable.just(Pair.create(DiffUtil.calculateDiff(new MyCallback(items)), items));
+        }).subscribe(diffResult -> {
+            items.clear();
+            items.addAll(diffResult.second);
+            diffResult.first.dispatchUpdatesTo(AdapterLightWeight.this);
         });
     }
 
+    @NonNull
     @Override
-    public ViewHolder<? extends ViewDataBinding> onCreateViewHolder(ViewGroup parent, int layoutResId) {
+    public ViewHolder<? extends ViewDataBinding> onCreateViewHolder(@NonNull ViewGroup parent, int layoutResId) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutResId, parent, false);
         return new ViewHolder<>(binding);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Item item = items.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        BindableItem item = (BindableItem) items.get(position);
         item.bind(viewHolder.binding, position);
         viewHolder.bind(item, onItemClickListener, onItemLongClickListener);
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(@NonNull ViewHolder holder) {
         Item contentItem = holder.getItem();
         contentItem.unbind(holder);
     }
 
     @Override
-    public boolean onFailedToRecycleView(ViewHolder holder) {
+    public boolean onFailedToRecycleView(@NonNull ViewHolder holder) {
         Item contentItem = holder.getItem();
         return contentItem.isRecyclable();
     }

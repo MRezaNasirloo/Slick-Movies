@@ -13,13 +13,13 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.videos.model.Video;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : M.Reza.Nasirloo@gmail.com
  * Created on: 2018-07-14
  */
-abstract class ItemVideoAbs<T extends ViewDataBinding> extends Item<T> implements OnItemAction {
+abstract class ItemVideoAbs<T extends ViewDataBinding> extends BindableItem<T> implements OnItemAction {
     protected final Video video;
     protected Context applicationContext;
 
@@ -40,8 +40,10 @@ abstract class ItemVideoAbs<T extends ViewDataBinding> extends Item<T> implement
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public void action(@NonNull Navigator navigator, Retryable retryable,
-            @Nullable Object payload, int position, @NonNull View view) {
+    public void action(
+            @NonNull Navigator navigator, Retryable retryable,
+            @Nullable Object payload, int position, @NonNull View view
+    ) {
         playYoutubeVideo(applicationContext, video.key());
     }
 }

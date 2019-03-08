@@ -3,14 +3,14 @@ package com.github.pedramrn.slick.parent.ui.favorite.item;
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowEmptyStateFullScreenBinding;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-11-25
  */
 
-public class ItemEmptyStateFullScreen extends Item<RowEmptyStateFullScreenBinding> implements RemovableOnError {
+public class ItemEmptyStateFullScreen extends BindableItem<RowEmptyStateFullScreenBinding> implements RemovableOnError {
     @Override
     public int getLayout() {
         return R.layout.row_empty_state_full_screen;

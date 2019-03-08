@@ -10,13 +10,13 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-09
  */
-public class ItemError extends Item<RowCardErrorBinding> implements OnItemAction, RemovableOnError {
+public class ItemError extends BindableItem<RowCardErrorBinding> implements OnItemAction, RemovableOnError {
 
     private final String tag;
     private final short code;

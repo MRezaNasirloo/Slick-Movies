@@ -7,7 +7,7 @@ import com.xwray.groupie.Item;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-22
+ * Created on: 2017-06-22
  */
 @AutoValue
 public abstract class ItemCardProgressiveImpl implements ItemView {

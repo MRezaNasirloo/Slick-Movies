@@ -91,12 +91,9 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     private MovieBasic movie;
     private String transitionName;
 
-    private UpdatingGroup progressiveBackdrop;
-    private UpdatingGroup progressiveComments;
-    private UpdatingGroup progressiveSimilar;
-    private UpdatingGroup progressiveCast;
-    private UpdatingGroup progressiveVideos;
-    private UpdatingGroup updatingHeader;
+    private Section progressiveComments;
+    private Section progressiveCast;
+    private Section updatingHeader;
 
     //    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
@@ -209,17 +206,13 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         setOnItemClickListener(adapterSimilar);
         setOnItemClickListener(adapterBackdrops);
 
-        updatingHeader = new UpdatingGroup();
-        progressiveCast = new UpdatingGroup();
-        progressiveVideos = new UpdatingGroup();
-        progressiveSimilar = new UpdatingGroup();
-        progressiveBackdrop = new UpdatingGroup();
-        progressiveComments = new UpdatingGroup();
+        updatingHeader = new Section();
+        progressiveCast = new Section();
+        progressiveComments = new Section();
 
         adapterMain.setSpanCount(6);
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
-        adapterSimilar.add(progressiveSimilar);
 
         Section sectionSimilar = new Section(new ItemCardHeader(100, "Similar"));
         sectionSimilar.add(itemCardListSimilar);
@@ -231,8 +224,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
                 navigateTo(ControllerList.newInstance(state.movieBasic().title() + "'s Casts", new ArrayList<>(casts)));
             }
         });
-        Section sectionCasts = new Section(headerCast);
-        sectionCasts.add(progressiveCast);
+        progressiveCast.setHeader(headerCast);
 
         headerComments = new ItemCardHeader(102, "Comments", "See All");
         headerComments.setOnClickListener(o -> {
@@ -244,13 +236,11 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         sectionComments.add(progressiveComments);
 
         itemBackdropList = new ItemListHorizontal(adapterBackdrops, "BACKDROPS");
-        adapterBackdrops.add(progressiveBackdrop);
 
         Section sectionBackdrops = new Section(new ItemCardHeader(103, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
 
         itemVideos = new ItemListHorizontal(adapterVideos, "VIDEOS");
-        adapterVideos.add(progressiveVideos);
 
         Section sectionVideos = new Section(new ItemCardHeader(104, "Videos"));
         sectionVideos.add(itemVideos);
@@ -260,7 +250,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
         adapterMain.add(updatingHeader);
         adapterMain.add(sectionOverview);
-        adapterMain.add(sectionCasts);
+        adapterMain.add(progressiveCast);
         adapterMain.add(sectionVideos);
         adapterMain.add(sectionComments);
         adapterMain.add(sectionBackdrops);
@@ -314,13 +304,13 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
             Logger.d("Updated Header!");
         }*/
 
-        if (sectionOverview.getGroup(1) == null && movie.overview() != null) {
-            sectionOverview.add(new ItemOverview(movie.overview()));
+        if (movie.overview() != null) {
+            sectionOverview.update(Collections.singletonList(new ItemOverview(movie.overview())));
         }
 
         progressiveCast.update(state.casts());
-        progressiveBackdrop.update(state.backdrops());
-        progressiveSimilar.update(state.similar());
+        adapterBackdrops.update(state.backdrops());
+        adapterSimilar.update(state.similar());
 
         List<Item> comments = Observable.fromIterable(state.comments())
                 .take(2)
@@ -385,9 +375,6 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
         updatingHeader = null;
         progressiveCast = null;
-        progressiveVideos = null;
-        progressiveSimilar = null;
-        progressiveBackdrop = null;
         progressiveComments = null;
 
         itemCardListSimilar = null;
@@ -483,7 +470,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
                 iterator.remove();
             }
         }
-        progressiveVideos.update(videos);
+        adapterVideos.update(videos);
     }
 
     @Override

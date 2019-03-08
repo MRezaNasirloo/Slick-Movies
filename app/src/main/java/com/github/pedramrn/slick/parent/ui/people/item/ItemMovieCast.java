@@ -13,7 +13,7 @@ import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.model.CastOrCrewPersonDetails;
 import com.github.pedramrn.slick.parent.util.DateUtils;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 import java.text.ParseException;
 
@@ -23,7 +23,7 @@ import java.text.ParseException;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class ItemMovieCast extends Item<RowCardCreditBinding> implements OnItemAction {
+public class ItemMovieCast extends BindableItem<RowCardCreditBinding> implements OnItemAction {
 
     protected final CastOrCrewPersonDetails coc;
     private final String transitionName;

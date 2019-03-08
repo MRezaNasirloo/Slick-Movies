@@ -13,8 +13,8 @@ import com.github.pedramrn.slick.parent.ui.details.ItemDecorationMargin;
 import com.github.pedramrn.slick.parent.util.UtilsRx;
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.ViewHolder;
+import com.xwray.groupie.databinding.BindableItem;
+import com.xwray.groupie.databinding.ViewHolder;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -25,7 +25,7 @@ import io.reactivex.subjects.PublishSubject;
  *         Created on: 2017-06-20
  */
 
-public class ItemCardList extends Item<RowCardListBinding> {
+public class ItemCardList extends BindableItem<RowCardListBinding> {
 
     private final String IS_LOADING;
     private final String SCROLL_POS;
@@ -63,7 +63,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
     }
 
     @Override
-    public void bind(RowCardListBinding binding, int position) {
+    public void bind(@NonNull RowCardListBinding binding, int position) {
         Log.d(TAG + tag, "bind() called with: binding = [" + binding + "], position = [" + position + "]");
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = binding.recyclerViewCard;
@@ -79,7 +79,7 @@ public class ItemCardList extends Item<RowCardListBinding> {
     }
 
     @Override
-    public void unbind(ViewHolder<RowCardListBinding> holder) {
+    public void unbind(@NonNull ViewHolder<RowCardListBinding> holder) {
         Log.d(TAG + tag, "unbind() called with: holder = [" + holder + "]");
         RecyclerView recyclerView = holder.binding.recyclerViewCard;
         recyclerView.removeItemDecoration(margin);

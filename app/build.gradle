@@ -265,7 +265,8 @@ dependencies {
     //    implementation 'com.gjiazhe:scrollparallaximageview:1.0'
 
     //    implementation 'com.fmsirvent:parallaxeverywhere:1.0.4'
-    implementation 'com.xwray:groupie:1.1.1'
+    implementation 'com.xwray:groupie:2.1.0'
+    implementation 'com.xwray:groupie-databinding:2.1.0'
     implementation 'com.lapism:searchview:4.0'
 
     //    implementation 'com.github.arimorty:floatingsearchview:2.1.1'

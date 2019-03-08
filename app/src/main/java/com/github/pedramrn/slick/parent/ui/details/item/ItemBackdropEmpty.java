@@ -2,14 +2,14 @@ package com.github.pedramrn.slick.parent.ui.details.item;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowBackdropEmptyBinding;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-15
  */
 
-public class ItemBackdropEmpty extends Item<RowBackdropEmptyBinding> {
+public class ItemBackdropEmpty extends BindableItem<RowBackdropEmptyBinding> {
 
     public ItemBackdropEmpty() {
         super(0);

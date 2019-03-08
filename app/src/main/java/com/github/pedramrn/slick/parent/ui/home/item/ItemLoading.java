@@ -2,13 +2,13 @@ package com.github.pedramrn.slick.parent.ui.home.item;
 
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.databinding.RowLoadingBinding;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-09
  */
-public class ItemLoading extends Item<RowLoadingBinding> implements RemovableOnError {
+public class ItemLoading extends BindableItem<RowLoadingBinding> implements RemovableOnError {
 
 
     public ItemLoading(long id) {

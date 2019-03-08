@@ -10,13 +10,13 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.home.item.RemovableOnError;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-09-15
  */
-public class ItemCommentError extends Item<RowCommentErrorBinding> implements OnItemAction, RemovableOnError {
+public class ItemCommentError extends BindableItem<RowCommentErrorBinding> implements OnItemAction, RemovableOnError {
 
     private final String message;
     private final String tag;

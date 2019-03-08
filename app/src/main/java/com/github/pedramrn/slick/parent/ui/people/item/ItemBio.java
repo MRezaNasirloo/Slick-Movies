@@ -10,14 +10,14 @@ import com.github.pedramrn.slick.parent.ui.Navigator;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 import com.github.pedramrn.slick.parent.ui.list.OnItemAction;
 import com.github.pedramrn.slick.parent.ui.people.model.PersonDetails;
-import com.xwray.groupie.Item;
+import com.xwray.groupie.databinding.BindableItem;
 
 /**
  * @author : Pedramrn@gmail.com
  *         Created on: 2017-08-22
  */
 
-public class ItemBio extends Item<RowPersonDetailsBinding> implements OnItemAction {
+public class ItemBio extends BindableItem<RowPersonDetailsBinding> implements OnItemAction {
 
     private final PersonDetails personDetails;
 
