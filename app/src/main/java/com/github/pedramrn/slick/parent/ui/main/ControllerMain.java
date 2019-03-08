@@ -116,11 +116,14 @@ public class ControllerMain extends FragmentBase implements ViewMain, ViewIran, 
     }
 
     private void resetStack(int position) {
-        FragmentManager fragmentManager = pagerAdapter.getItem(position).getChildFragmentManager();
-        int entryCount = fragmentManager.getBackStackEntryCount();
-        if (entryCount == 0) return;
-        for (int i = 0; i < entryCount; i++) {
-            fragmentManager.popBackStack();
+        Fragment fragment = pagerAdapter.getItem(position);
+        if (fragment.isAdded()) {
+            FragmentManager fragmentManager = fragment.getChildFragmentManager();
+            int entryCount = fragmentManager.getBackStackEntryCount();
+            if (entryCount == 0) return;
+            for (int i = 0; i < entryCount; i++) {
+                fragmentManager.popBackStack();
+            }
         }
     }
 
