@@ -54,5 +54,9 @@
         <item name="android:textColor">#5f5f5f</item>
     </style>
 
+    <style name="Splash" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/layer_list_splash</item>
+    </style>
+
 
 </resources>

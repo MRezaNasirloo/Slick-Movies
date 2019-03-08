@@ -25,11 +25,6 @@
             <tools:validation testUrl="https://m.imdb.com/title/tt1825683" />
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -55,6 +50,17 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:name=".ui.ActivitySplash"
+            android:theme="@style/Splash"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="65d05f52c2babbe22ede3809e18882a8a6be0805"
