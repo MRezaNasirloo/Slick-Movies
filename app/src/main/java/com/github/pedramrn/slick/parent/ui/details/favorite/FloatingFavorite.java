@@ -90,6 +90,7 @@ public class FloatingFavorite extends FloatingActionButton
         setImageDrawable(drawableUnFav);
     }
 
+    @NonNull
     @Override
     public Observable<Boolean> commandFavorite() {
         return RxView.clicks(this).throttleLast(1, TimeUnit.SECONDS)
@@ -97,6 +98,7 @@ public class FloatingFavorite extends FloatingActionButton
                 ;
     }
 
+    @NonNull
     @Override
     public Observable<MovieBasic> movie() {
         return movieId;

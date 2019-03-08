@@ -171,7 +171,6 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.out.println("LOG_IT_onAttach() called");
-        RequestStack.getInstance().processLastRequest();
         //noinspection ConstantConditions
         snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG)
                 .setAction("Retry?", v -> snackbar.dismiss())
