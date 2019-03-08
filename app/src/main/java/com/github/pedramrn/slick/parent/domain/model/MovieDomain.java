@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-04-11
+ * Created on: 2017-04-11
  */
 @AutoValue
 public abstract class MovieDomain implements MovieBasicDomain {
@@ -88,6 +88,8 @@ public abstract class MovieDomain implements MovieBasicDomain {
 
     public abstract List<VideoDomain> videos();
 
+    public abstract List<ReleaseDate> releaseDates();
+
     public abstract Builder toBuilder();
 
     public static MovieDomain create(
@@ -121,7 +123,8 @@ public abstract class MovieDomain implements MovieBasicDomain {
             String certification,
             List<CastDomain> casts,
             ImageDomain images,
-            List<VideoDomain> videos
+            List<VideoDomain> videos,
+            List<ReleaseDate> releaseDates
     ) {
         return builder()
                 .id(id)
@@ -155,6 +158,7 @@ public abstract class MovieDomain implements MovieBasicDomain {
                 .casts(casts)
                 .images(images)
                 .videos(videos)
+                .releaseDates(releaseDates)
                 .build();
     }
 
@@ -224,6 +228,8 @@ public abstract class MovieDomain implements MovieBasicDomain {
         public abstract Builder images(ImageDomain images);
 
         public abstract Builder videos(List<VideoDomain> videos);
+
+        public abstract Builder releaseDates(List<ReleaseDate> releaseDates);
 
         public abstract Builder year(Integer year);
 

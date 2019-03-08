@@ -19,7 +19,7 @@ import retrofit2.http.Query;
 
 public interface ApiTmdb {
 
-    @GET("movie/{movie_id}?append_to_response=credits,images,videos")
+    @GET("movie/{movie_id}?append_to_response=credits,images,videos,release_dates")
     Observable<MovieTmdb> movieFull(@Path("movie_id") Integer id);
 
     @GET("movie/{movie_id}?append_to_response=")

@@ -195,14 +195,14 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .movieBasic(movieBasic)
                 .build();
 
-        reduce(initial, merge(
+        subscribe(initial, merge(
                 film,
                 casts,
                 backdrops,
                 similar,
                 comments,
                 errorDismissed
-        )).subscribe(this);
+        ));
 
     }
 

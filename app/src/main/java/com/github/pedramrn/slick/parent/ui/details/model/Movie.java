@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.ReleaseDate;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOffice;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
@@ -71,6 +72,8 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
     public abstract Image images();
 
     public abstract List<Video> videos();
+
+    public abstract List<ReleaseDate> releaseDates();
 
     public abstract Builder toBuilder();
 
@@ -160,7 +163,8 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
             Boolean video,
             List<Cast> casts,
             Image images,
-            List<Video> videos
+            List<Video> videos,
+            List<ReleaseDate> releaseDates
     ) {
         return builder()
                 .id(id)
@@ -193,6 +197,7 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
                 .casts(casts)
                 .images(images)
                 .videos(videos)
+                .releaseDates(releaseDates)
                 .build();
     }
 
@@ -259,6 +264,8 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
         public abstract Builder voteCountTrakt(Integer voteCountTrakt);
 
         public abstract Builder certification(String certification);
+
+        public abstract Builder releaseDates(List<ReleaseDate> releaseDates);
 
         public abstract Builder year(Integer year);
 
@@ -327,7 +334,8 @@ public abstract class Movie extends AutoBase implements Parcelable, ItemView, Mo
                 md.video(),
                 casts,
                 image,
-                videos
+                videos,
+                md.releaseDates()
         );
     }
 }

@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 
@@ -124,6 +125,10 @@ public abstract class MovieTmdb {
     @SerializedName("videos")
     public abstract VideoTmdbResults videos();
 
+    @Nullable
+    @SerializedName("release_dates")
+    public abstract JsonObject releaseDates();
+
     public abstract Builder toBuilder();
 
     public static TypeAdapter<MovieTmdb> typeAdapter(Gson gson) {
@@ -189,6 +194,8 @@ public abstract class MovieTmdb {
         public abstract Builder images(ImageTmdb images);
 
         public abstract Builder videos(VideoTmdbResults videos);
+
+        public abstract Builder releaseDates(JsonObject jsonObject);
 
         public abstract MovieTmdb build();
     }

@@ -15,9 +15,14 @@ import com.github.pedramrn.slick.parent.datasource.network.models.tmdb.VideoTmdb
 import com.github.pedramrn.slick.parent.domain.model.CastDomain;
 import com.github.pedramrn.slick.parent.domain.model.ImageDomain;
 import com.github.pedramrn.slick.parent.domain.model.MovieDomain;
+import com.github.pedramrn.slick.parent.domain.model.ReleaseDate;
 import com.github.pedramrn.slick.parent.domain.model.VideoDomain;
 import com.github.pedramrn.slick.parent.util.DateUtils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +34,7 @@ import io.reactivex.functions.Function;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-06-15
+ * Created on: 2017-06-15
  */
 public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
     private final MapperCast mapperCast;
@@ -54,6 +59,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
         List<String> spokenLanguages = Collections.emptyList();
         List<CastDomain> castDomains = Collections.emptyList();
         List<VideoDomain> videosDomains = Collections.emptyList();
+        List<ReleaseDate> releaseDates = Collections.emptyList();
 
         if (images != null) {
             List<Backdrop> backdropsTemp = images.backdrops();
@@ -119,12 +125,29 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
         if (videos != null && videos.results() != null) {
             List<VideoTmdb> videoTmdb = videos.results();
             int size = videoTmdb.size();
-            videosDomains = Observable.fromIterable(videoTmdb).map(new Function<VideoTmdb, VideoDomain>() {
-                @Override
-                public VideoDomain apply(@NonNull VideoTmdb vt) throws Exception {
-                    return VideoDomain.create(mt.id(), vt.type(), vt.key(), vt.name());
+            videosDomains = Observable.fromIterable(videoTmdb)
+                    .map(vt -> VideoDomain.create(mt.id(), vt.type(), vt.key(), vt.name()))
+                    .toList(size == 0 ? 1 : size)
+                    .blockingGet();
+        }
+
+        JsonObject releaseDateJsonObject = mt.releaseDates();
+        if (releaseDateJsonObject != null) {
+            for (JsonElement result : releaseDateJsonObject.getAsJsonArray("results")) {
+                JsonObject regionReleaseDate = result.getAsJsonObject();
+                if ("US".equals(regionReleaseDate.get("iso_3166_1").getAsString())) {
+                    JsonArray dates = regionReleaseDate.getAsJsonArray("release_dates");
+                    ArrayList<ReleaseDate> list = new ArrayList<>(dates.size());
+                    for (JsonElement date : dates) {
+                        JsonObject jsonObject = date.getAsJsonObject();
+                        list.add(ReleaseDate.create(
+                                jsonObject.get("release_date").getAsString(),
+                                mapReleaseType(jsonObject)
+                        ));
+                    }
+                    releaseDates = list;
                 }
-            }).toList(size == 0 ? 1 : size).blockingGet();
+            }
         }
 
 
@@ -159,7 +182,27 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                 null,
                 castDomains,
                 ImageDomain.create(backdrops, posters),
-                videosDomains
+                videosDomains,
+                releaseDates
         );
+    }
+
+    private ReleaseDate.ReleaseType mapReleaseType(JsonObject jsonObject) {
+        switch (jsonObject.get("type").getAsInt()) {
+            case 1:
+                return ReleaseDate.ReleaseType.PREMIERE;
+            case 2:
+                return ReleaseDate.ReleaseType.THEATRICAL_LIMITED;
+            case 3:
+                return ReleaseDate.ReleaseType.THEATRICAL;
+            case 4:
+                return ReleaseDate.ReleaseType.DIGITAL;
+            case 5:
+                return ReleaseDate.ReleaseType.PHYSICAL;
+            case 6:
+                return ReleaseDate.ReleaseType.TV;
+            default:
+                return ReleaseDate.ReleaseType.THEATRICAL;
+        }
     }
 }
