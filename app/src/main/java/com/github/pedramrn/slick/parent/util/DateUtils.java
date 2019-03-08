@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -36,6 +37,11 @@ public class DateUtils {
 
     public static Date toDate(String date) throws ParseException, NullPointerException {
         SimpleDateFormat dateFormatNum = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return dateFormatNum.parse(date);
+    }
+
+    public static Date toDateISO(String date) throws ParseException, NullPointerException {
+        SimpleDateFormat dateFormatNum = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
         return dateFormatNum.parse(date);
     }
 

@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/textView_title"
-                    style="@style/TittleItemBanner"
+                    style="@style/TitleItemBanner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_shadow"

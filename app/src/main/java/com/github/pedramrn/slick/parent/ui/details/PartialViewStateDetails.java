@@ -1,5 +1,7 @@
 package com.github.pedramrn.slick.parent.ui.details;
 
+import android.support.annotation.NonNull;
+
 import com.github.pedramrn.slick.parent.R;
 import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOfficeError;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropEmpty;
@@ -142,6 +144,21 @@ public class PartialViewStateDetails {
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             return state.toBuilder().casts(new ArrayList<>(casts)).build();
+        }
+    }
+
+    static class MovieReleaseDates implements PartialViewState<ViewStateDetails> {
+
+        private final List<Item> releaseDates;
+
+        public MovieReleaseDates(List<Item> releaseDates) {
+            this.releaseDates = releaseDates;
+        }
+
+        @NonNull
+        @Override
+        public ViewStateDetails reduce(@NonNull ViewStateDetails state) {
+            return state.toBuilder().releaseDates(new ArrayList<>(releaseDates)).build();
         }
     }
 

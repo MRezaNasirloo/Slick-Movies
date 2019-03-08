@@ -141,6 +141,7 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
                     for (JsonElement date : dates) {
                         JsonObject jsonObject = date.getAsJsonObject();
                         list.add(ReleaseDate.create(
+                                -1,
                                 jsonObject.get("release_date").getAsString(),
                                 mapReleaseType(jsonObject)
                         ));

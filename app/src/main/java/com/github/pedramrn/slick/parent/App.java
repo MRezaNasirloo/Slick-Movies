@@ -90,7 +90,7 @@ public class App extends Application {
         refWatcher = RefWatcher.DISABLED;
 
         if (BuildConfig.BUILD_TYPE_DEBUG) {
-            Traceur.enableLogging();
+            // Traceur.enableLogging();
             refWatcher = LeakCanary.install(this);
             // AndroidDevMetrics.initWith(this);
             // StrictMode.enableDefaults();

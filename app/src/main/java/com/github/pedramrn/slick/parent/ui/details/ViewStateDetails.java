@@ -24,6 +24,8 @@ abstract class ViewStateDetails {
 
     public abstract List<Item> comments();
 
+    public abstract List<Item> releaseDates();
+
     public abstract MovieBasic movieBasic();
 
     @Nullable
@@ -52,6 +54,8 @@ abstract class ViewStateDetails {
         public abstract Builder backdrops(List<Item> backdrops);
 
         public abstract Builder comments(List<Item> comments);
+
+        public abstract Builder releaseDates(List<Item> releaseDates);
 
         public abstract Builder isFavorite(Boolean isFavorite);
 

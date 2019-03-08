@@ -6,6 +6,7 @@ import com.github.pedramrn.slick.parent.domain.router.RouterComments;
 import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterSimilar;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
+import com.github.pedramrn.slick.parent.ui.details.PartialViewStateDetails.MovieReleaseDates;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperCommentDomainComment;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
@@ -62,6 +63,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
     private final MapperCommentDomainComment mapperComment;
     private final MapperMovieDomainMovie mapper;
 
+    private final String RELEASE_DATES = "RELEASE_DATES";
     private final String CASTS = "CASTS";
     private final String SIMILAR = "SIMILAR";
     private final String BACKDROPS = "BACKDROPS";
@@ -141,6 +143,17 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .startWith(new MovieCastsProgressive(6, CASTS))
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 
+        Observable<PartialViewState<ViewStateDetails>> releaseDates = triggerRetry.flatMap(o -> movieFull
+                .filter(movie -> movie.releaseDates() != null && !movie.releaseDates().isEmpty())
+                .take(1)
+                .concatMap(movie -> Observable.fromIterable(movie.releaseDates()))
+                .map(new MapProgressive())
+                .cast(ItemView.class)
+                .map(itemView -> itemView.render(RELEASE_DATES))
+                .buffer(20)
+                .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) MovieReleaseDates::new)
+                .onErrorReturn(PartialViewStateDetails.Error::new));
+
 
         Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull
                 .filter(movie -> movie.imdbId() != null)
@@ -192,15 +205,17 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .backdrops(Collections.emptyList())
                 .similar(Collections.emptyList())
                 .comments(Collections.emptyList())
+                .releaseDates(Collections.emptyList())
                 .movieBasic(movieBasic)
                 .build();
 
         subscribe(initial, merge(
                 film,
                 casts,
-                backdrops,
                 similar,
                 comments,
+                backdrops,
+                releaseDates,
                 errorDismissed
         ));
 

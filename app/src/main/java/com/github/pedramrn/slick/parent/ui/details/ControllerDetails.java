@@ -45,12 +45,10 @@ import com.github.pedramrn.slick.parent.ui.videos.PresenterVideos_Slick;
 import com.github.pedramrn.slick.parent.ui.videos.ViewVideos;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.mrezanasirloo.slick.Presenter;
-import com.mrezanasirloo.slick.middleware.RequestStack;
 import com.orhanobut.logger.Logger;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
-import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,6 +92,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     private Section progressiveComments;
     private Section progressiveCast;
     private Section updatingHeader;
+    private Section releaseDates;
 
     //    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
@@ -206,11 +205,14 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         setOnItemClickListener(adapterSimilar);
         setOnItemClickListener(adapterBackdrops);
 
+        releaseDates = new Section();
         updatingHeader = new Section();
         progressiveCast = new Section();
         progressiveComments = new Section();
 
         adapterMain.setSpanCount(6);
+
+        releaseDates.setHeader(new ItemCardHeader(90, "Release Dates"));
 
         itemCardListSimilar = new ItemCardList(context, adapterSimilar, "SIMILAR");
 
@@ -249,6 +251,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
 
         adapterMain.add(updatingHeader);
+        adapterMain.add(releaseDates);
         adapterMain.add(sectionOverview);
         adapterMain.add(progressiveCast);
         adapterMain.add(sectionVideos);
@@ -277,13 +280,13 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
         // the animation is stopped, weirdly shared animation callback didn't work all the time.
         add(moviePublish.distinct()
-                .delay(duration + 150, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .subscribe(movieBasic -> {
-                    if (updatingHeader != null) {
-                        updatingHeader.update(
-                                Collections.singletonList(new ItemHeader(movieBasic, transitionName)));
-                    }
-                }));
+                    .delay(duration + 150, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                    .subscribe(movieBasic -> {
+                        if (updatingHeader != null) {
+                            updatingHeader.update(
+                                    Collections.singletonList(new ItemHeader(movieBasic, transitionName)));
+                        }
+                    }));
 
         return binding.getRoot();
     }
@@ -322,6 +325,8 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         renderError(state.errorFavorite());
 
         if (movie.id() != -1) fab.setMovie(movie);
+
+        releaseDates.update(state.releaseDates());
 
         // long delay = System.currentTimeMillis() - before;
         // int sizeCast = state.casts().size();
