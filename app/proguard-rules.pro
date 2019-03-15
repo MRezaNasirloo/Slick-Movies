@@ -46,10 +46,10 @@
 -keep class sun.misc.** { *; }
 -dontwarn sun.misc.**
 
-#Retrolambda
+# Retrolambda
 -dontwarn java.lang.invoke.*
 
-#Firebase
+# Firebase
 -keepattributes Signature
 -keepattributes *Annotation*
 
@@ -60,7 +60,7 @@
   *;
 }
 
-#Fabric
+# Fabric
 -keepattributes SourceFile,LineNumberTable
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
@@ -90,3 +90,6 @@
 
 # Arch Lifecycle
 -dontwarn android.arch.**
+
+# Prettytime
+-keep class org.ocpsoft.prettytime.i18n.**

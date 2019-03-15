@@ -9,9 +9,15 @@ import com.github.pedramrn.slick.parent.domain.model.ReleaseDate;
 import com.github.pedramrn.slick.parent.util.DateUtils;
 import com.xwray.groupie.databinding.BindableItem;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.text.ParseException;
+import java.util.Date;
+import java.util.Locale;
 
 public class ItemReleaseDate extends BindableItem<RowReleaseDatesBinding> {
+
+    private PrettyTime pretty = new PrettyTime(new Locale("us"));
 
     private final ReleaseDate releaseDate;
 
@@ -37,7 +43,15 @@ public class ItemReleaseDate extends BindableItem<RowReleaseDatesBinding> {
                 Toast.makeText(viewBinding.title.getContext(), "Clicked", Toast.LENGTH_SHORT).show();
             });
             viewBinding.title.setText(releaseDate.type().name());
-            viewBinding.date.setText(DateUtils.format_MMM_dd_yyyy(DateUtils.toDateISO(releaseDate.date())));
+            Date date = DateUtils.toDateISO(releaseDate.date());
+            Date today = new Date();
+            // long days = TimeUnit.MILLISECONDS.toDays(today.getTime() - date.getTime());
+            if (today.before(date)) {
+                viewBinding.date.setText(pretty.format(date) + "  " + DateUtils.format_MMM_dd_yyyy(date));
+            } else {
+                viewBinding.date.setText(pretty.format(date) + "  " + DateUtils.format_MMM_dd_yyyy(date));
+            }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
