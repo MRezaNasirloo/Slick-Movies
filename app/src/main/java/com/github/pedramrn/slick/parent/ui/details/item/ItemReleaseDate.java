@@ -38,23 +38,19 @@ public class ItemReleaseDate extends BindableItem<RowReleaseDatesBinding> {
 
     @Override
     public void bind(@NonNull RowReleaseDatesBinding viewBinding, int position) {
-        try {
-            viewBinding.buttonNotification.setOnClickListener(v -> {
-                Toast.makeText(viewBinding.title.getContext(), "Clicked", Toast.LENGTH_SHORT).show();
-            });
-            viewBinding.title.setText(releaseDate.type().name());
-            Date date = DateUtils.toDateISO(releaseDate.date());
-            Date today = new Date();
-            // long days = TimeUnit.MILLISECONDS.toDays(today.getTime() - date.getTime());
-            if (today.before(date)) {
-                viewBinding.date.setText(pretty.format(date) + "  " + DateUtils.format_MMM_dd_yyyy(date));
-            } else {
-                viewBinding.date.setText(pretty.format(date) + "  " + DateUtils.format_MMM_dd_yyyy(date));
-            }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
+        viewBinding.buttonNotification.setOnClickListener(v -> {
+            Toast.makeText(viewBinding.title.getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+        });
+        viewBinding.title.setText(releaseDate.type().name());
+        Date date = releaseDate.date();
+        Date today = new Date();
+        // long days = TimeUnit.MILLISECONDS.toDays(today.getTime() - date.getTime());
+        if (today.before(date)) {
+            viewBinding.date.setText(pretty.format(date) + "  " + DateUtils.format_MMM_dd_yyyy(date));
+        } else {
+            viewBinding.date.setText(pretty.format(date) + "  " + DateUtils.format_MMM_dd_yyyy(date));
         }
+
     }
 
     @Override
