@@ -193,7 +193,6 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
             case 1:
                 return ReleaseDate.ReleaseType.PREMIERE;
             case 2:
-                return ReleaseDate.ReleaseType.THEATRICAL_LIMITED;
             case 3:
                 return ReleaseDate.ReleaseType.THEATRICAL;
             case 4:
