@@ -24,10 +24,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -136,25 +133,21 @@ public class MapperMovie implements Function<MovieTmdb, MovieDomain> {
 
         JsonObject releaseDateJsonObject = mt.releaseDates();
         if (releaseDateJsonObject != null) {
-            Map<ReleaseDate.ReleaseType, ReleaseDate> map = new HashMap<>();
             for (JsonElement result : releaseDateJsonObject.getAsJsonArray("results")) {
                 JsonObject regionReleaseDate = result.getAsJsonObject();
-                JsonArray dates = regionReleaseDate.getAsJsonArray("release_dates");
-                for (JsonElement date : dates) {
-                    JsonObject jsonObject = date.getAsJsonObject();
-                    ReleaseDate.ReleaseType type = mapReleaseType(jsonObject);
-                    ReleaseDate releaseDate = map.get(type);
-                    String dateString = jsonObject.get("release_date").getAsString();
-                    Date newDate = DateUtils.toDateISO(dateString);
-                    if (releaseDate == null || releaseDate.date().after(newDate)) {
-                        map.put(type, ReleaseDate.create(
-                                newDate,
-                                type,
-                                -1
+                if ("US".equals(regionReleaseDate.get("iso_3166_1").getAsString())) {
+                    JsonArray dates = regionReleaseDate.getAsJsonArray("release_dates");
+                    ArrayList<ReleaseDate> list = new ArrayList<>(dates.size());
+                    for (JsonElement date : dates) {
+                        JsonObject jsonObject = date.getAsJsonObject();
+                        list.add(ReleaseDate.create(
+                                -1,
+                                jsonObject.get("release_date").getAsString(),
+                                mapReleaseType(jsonObject)
                         ));
                     }
+                    releaseDates = list;
                 }
-                releaseDates = new ArrayList<>(map.values());
             }
         }
 
