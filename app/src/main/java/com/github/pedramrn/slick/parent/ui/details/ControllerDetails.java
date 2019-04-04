@@ -312,7 +312,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
             Logger.d("Updated Header!");
         }*/
 
-        if (movie.overview() != null) {
+        if (movie.overview() != null && sectionOverview.getItemCount() == 1) {
             sectionOverview.update(Collections.singletonList(new ItemOverview(movie.overview())));
         }
 
@@ -331,7 +331,9 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
         if (movie.id() != -1) fab.setMovie(movie);
 
-        releaseDates.update(state.releaseDates());
+        if (releaseDates.getItemCount() != state.releaseDates().size()) {
+            releaseDates.update(state.releaseDates());
+        }
 
         // long delay = System.currentTimeMillis() - before;
         // int sizeCast = state.casts().size();
