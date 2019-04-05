@@ -19,12 +19,12 @@ public abstract class ReleaseDate extends AutoBase implements ItemView {
 
     @Override
     public Item render(String tag) {
-        return new ItemReleaseDate(uniqueId(), this);
+        return new ItemReleaseDate(type().hashCode(), this);
     }
 
     @Override
     public long itemId() {
-        return uniqueId();
+        return type().hashCode();
     }
 
     public enum ReleaseType {
@@ -41,8 +41,8 @@ public abstract class ReleaseDate extends AutoBase implements ItemView {
     public static ReleaseDate create(int uniqueId, String date, ReleaseType type, boolean isNotifEnable) {
         return builder()
                 .date(date)
+                .uniqueId(type.hashCode())
                 .isNotifEnable(isNotifEnable)
-                .uniqueId(uniqueId)
                 .type(type)
                 .build();
     }

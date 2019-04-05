@@ -23,7 +23,6 @@ import com.github.pedramrn.slick.parent.ui.ToolbarHost;
 import com.github.pedramrn.slick.parent.ui.custom.ImageViewLoader;
 import com.github.pedramrn.slick.parent.ui.details.favorite.FloatingFavorite;
 import com.github.pedramrn.slick.parent.ui.details.favorite.PresenterFloatingFavorite_Slick;
-import com.github.pedramrn.slick.parent.ui.details.item.ExpandableReleaseDate;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemComment;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
@@ -50,11 +49,9 @@ import com.github.pedramrn.slick.parent.ui.videos.ViewVideos;
 import com.jakewharton.rxbinding2.support.design.widget.RxSnackbar;
 import com.mrezanasirloo.slick.Presenter;
 import com.orhanobut.logger.Logger;
-import com.xwray.groupie.ExpandableGroup;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.Section;
-import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,8 +97,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     private Section progressiveComments;
     private Section progressiveCast;
     private Section updatingHeader;
-    private UpdatingGroup releaseDates;
-    private ExpandableGroup expandableReleaseDate = new ExpandableGroup(new ExpandableReleaseDate());
+    private Section releaseDates;
 
     //    private ItemListHorizontal itemHeader;
     private ItemListHorizontal itemBackdropList;
@@ -215,12 +211,9 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         setOnItemClickListener(adapterSimilar);
         setOnItemClickListener(adapterBackdrops);
 
-        releaseDates = new UpdatingGroup();
         updatingHeader = new Section();
         progressiveCast = new Section();
         progressiveComments = new Section();
-
-        expandableReleaseDate.add(releaseDates);
 
         adapterMain.setSpanCount(6);
 
@@ -254,6 +247,8 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         Section sectionBackdrops = new Section(new ItemCardHeader(103, "Backdrops"));
         sectionBackdrops.add(itemBackdropList);
 
+        releaseDates = new Section(new ItemCardHeader(106, "Release Dates"));
+
         itemVideos = new ItemListHorizontal(adapterVideos, "VIDEOS");
 
         Section sectionVideos = new Section(new ItemCardHeader(104, "Videos"));
@@ -267,7 +262,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         adapterMain.add(sectionVideos);
         adapterMain.add(sectionComments);
         adapterMain.add(sectionBackdrops);
-        adapterMain.add(expandableReleaseDate);
+        adapterMain.add(releaseDates);
         adapterMain.add(sectionSimilar);
         adapterMain.add(new ItemSpace());
 
@@ -342,9 +337,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
         if (movie.id() != -1) fab.setMovie(movie);
 
-        // if (releaseDates.getItemCount() != state.releaseDates().size()) {
         releaseDates.update(state.releaseDates());
-        // }
 
         // long delay = System.currentTimeMillis() - before;
         // int sizeCast = state.casts().size();
