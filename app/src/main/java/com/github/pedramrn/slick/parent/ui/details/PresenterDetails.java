@@ -7,16 +7,19 @@ import com.github.pedramrn.slick.parent.domain.router.RouterMovieDetails;
 import com.github.pedramrn.slick.parent.domain.router.RouterSimilar;
 import com.github.pedramrn.slick.parent.domain.rx.OnCompleteReturn;
 import com.github.pedramrn.slick.parent.ui.details.PartialViewStateDetails.MovieReleaseDates;
+import com.github.pedramrn.slick.parent.ui.details.PartialViewStateDetails.ReleaseDateNotif;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperCommentDomainComment;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieDomainMovie;
 import com.github.pedramrn.slick.parent.ui.details.mapper.MapperMovieSmallDomainMovieSmall;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.details.model.ReleaseDateModel;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterCommentsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsIMDBImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterMovieDetailsImpl;
 import com.github.pedramrn.slick.parent.ui.details.router.RouterSimilarImpl;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
+import com.github.pedramrn.slick.parent.ui.favorite.router.RouterReleaseDateSlick;
 import com.github.pedramrn.slick.parent.ui.home.mapper.MapProgressive;
 import com.github.pedramrn.slick.parent.ui.item.ItemView;
 import com.mrezanasirloo.slick.uni.PartialViewState;
@@ -60,6 +63,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
     private final RouterComments routerComments;
 
     private final MapperMovieSmallDomainMovieSmall mapperSmall;
+    private final RouterReleaseDateSlick routerReleaseDate;
     private final MapperCommentDomainComment mapperComment;
     private final MapperMovieDomainMovie mapper;
 
@@ -76,6 +80,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
             RouterMovieDetailsIMDBImpl routerMovieDetailsIMDB,
             RouterSimilarImpl routerSimilar,
             RouterCommentsImpl routerComments,
+            RouterReleaseDateSlick routerReleaseDate,
             MapperCommentDomainComment mapperComment,
             MapperMovieDomainMovie mapper,
             MapperMovieSmallDomainMovieSmall mapperSmall,
@@ -87,6 +92,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
         this.routerMovieDetails = routerMovieDetailsTMDB;
         this.routerSimilar = routerSimilar;
         this.routerComments = routerComments;
+        this.routerReleaseDate = routerReleaseDate;
         this.mapperComment = mapperComment;
         this.mapper = mapper;
         this.mapperSmall = mapperSmall;
@@ -146,7 +152,7 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
         Observable<PartialViewState<ViewStateDetails>> releaseDates = triggerRetry.flatMap(o -> movieFull
                 .filter(movie -> movie.releaseDates() != null && !movie.releaseDates().isEmpty())
                 .take(1)
-                .concatMap(movie -> Observable.fromIterable(movie.releaseDates()))
+                .concatMapIterable(Movie::releaseDates)
                 .map(new MapProgressive())
                 .cast(ItemView.class)
                 .map(itemView -> itemView.render(RELEASE_DATES))
@@ -154,6 +160,18 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 .map((Function<List<Item>, PartialViewState<ViewStateDetails>>) MovieReleaseDates::new)
                 .onErrorReturn(PartialViewStateDetails.Error::new));
 
+        Observable<PartialViewState<ViewStateDetails>> releaseNotif = releaseDates.flatMap(releases -> routerReleaseDate.updateStream(
+                movieBasic.id())
+                .map((Function<ReleaseDateModel, PartialViewState<ViewStateDetails>>) ReleaseDateNotif::new));
+
+        Observable<PartialViewState<ViewStateDetails>> notifCommand = command(ViewDetails::notif).flatMapCompletable(
+                model -> {
+                    if (model.isAdd) {
+                        return routerReleaseDate.add(model);
+                    } else {
+                        return routerReleaseDate.remove(model);
+                    }
+                }).toObservable().map(ignored -> new PartialViewStateDetails.NoOp());
 
         Observable<PartialViewState<ViewStateDetails>> comments = triggerRetry.flatMap(o -> movieFull
                 .filter(movie -> movie.imdbId() != null)
@@ -215,6 +233,8 @@ public class PresenterDetails extends SlickPresenterUni<ViewDetails, ViewStateDe
                 similar,
                 comments,
                 backdrops,
+                notifCommand,
+                releaseNotif,
                 releaseDates,
                 errorDismissed
         ));

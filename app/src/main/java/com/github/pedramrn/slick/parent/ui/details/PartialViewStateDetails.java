@@ -3,13 +3,16 @@ package com.github.pedramrn.slick.parent.ui.details;
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.R;
+import com.github.pedramrn.slick.parent.domain.model.ReleaseDate;
 import com.github.pedramrn.slick.parent.ui.boxoffice.item.ItemBoxOfficeError;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropEmpty;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemBackdropProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCastProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentEmpty;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemReleaseDate;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
+import com.github.pedramrn.slick.parent.ui.details.model.ReleaseDateModel;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.item.ItemCardProgressiveImpl;
 import com.github.pedramrn.slick.parent.ui.item.ItemRenderer;
@@ -25,7 +28,7 @@ import static com.github.pedramrn.slick.parent.util.Utils.removeRemovables;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-07-14
+ * Created on: 2017-07-14
  */
 
 public class PartialViewStateDetails {
@@ -244,6 +247,32 @@ public class PartialViewStateDetails {
         @Override
         public ViewStateDetails reduce(ViewStateDetails state) {
             return state.toBuilder().isFavorite(isFavorite).build();
+        }
+    }
+
+    static class ReleaseDateNotif implements PartialViewState<ViewStateDetails> {
+        private final ReleaseDateModel releaseDateModel;
+
+        public ReleaseDateNotif(ReleaseDateModel releaseDateModel) {
+            this.releaseDateModel = releaseDateModel;
+        }
+
+        @NonNull
+        @Override
+        public ViewStateDetails reduce(@NonNull ViewStateDetails state) {
+            List<Item> items = state.releaseDates();
+            List<Item> newItems = new ArrayList<>(items.size());
+            for (Item item : items) {
+                if (item instanceof ItemReleaseDate) {
+                    ReleaseDate releaseDate = ((ItemReleaseDate) item).releaseDate;
+                    if (releaseDateModel.release_dates.containsKey(releaseDate.type().name())) {
+                        newItems.add(releaseDate.toBuilder().isNotifEnable(true).build().render("RELEASE_DATES"));
+                    } else {
+                        newItems.add(releaseDate.toBuilder().isNotifEnable(false).build().render("RELEASE_DATES"));
+                    }
+                }
+            }
+            return state.toBuilder().releaseDates(newItems).build();
         }
     }
 

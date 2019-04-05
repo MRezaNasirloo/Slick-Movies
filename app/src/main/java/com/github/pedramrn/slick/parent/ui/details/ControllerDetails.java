@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.github.pedramrn.slick.parent.App;
 import com.github.pedramrn.slick.parent.databinding.ControllerDetailsBinding;
+import com.github.pedramrn.slick.parent.domain.model.ReleaseDate;
 import com.github.pedramrn.slick.parent.ui.BottomNavigationHandlerImpl;
 import com.github.pedramrn.slick.parent.ui.BundleBuilder;
 import com.github.pedramrn.slick.parent.ui.Navigator2;
@@ -28,11 +29,13 @@ import com.github.pedramrn.slick.parent.ui.details.item.ItemCommentProgressive;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemHeader;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemListHorizontal;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemOverview;
+import com.github.pedramrn.slick.parent.ui.details.item.ItemReleaseDate;
 import com.github.pedramrn.slick.parent.ui.details.item.ItemSpace;
 import com.github.pedramrn.slick.parent.ui.details.model.Cast;
 import com.github.pedramrn.slick.parent.ui.details.model.Movie;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
 import com.github.pedramrn.slick.parent.ui.details.model.MovieSmall;
+import com.github.pedramrn.slick.parent.ui.details.model.ReleaseDateModel;
 import com.github.pedramrn.slick.parent.ui.error.ErrorHandler;
 import com.github.pedramrn.slick.parent.ui.home.FragmentBase;
 import com.github.pedramrn.slick.parent.ui.home.MovieProvider;
@@ -55,8 +58,10 @@ import com.xwray.groupie.UpdatingGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -117,6 +122,7 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     private final PublishSubject<Object> onRetry = PublishSubject.create();
     private final PublishSubject<Object> onErrorDismissed = PublishSubject.create();
     private final PublishSubject<MovieBasic> moviePublish = PublishSubject.create();
+    private final PublishSubject<ReleaseDateModel> notifPublish = PublishSubject.create();
 
     private Snackbar.Callback callback = new Snackbar.Callback() {
         @Override
@@ -265,7 +271,12 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         adapterMain.add(sectionSimilar);
         adapterMain.add(new ItemSpace());
 
-        GridLayoutManager lm = new GridLayoutManager(context, adapterMain.getSpanCount(), LinearLayoutManager.VERTICAL, false);
+        GridLayoutManager lm = new GridLayoutManager(
+                context,
+                adapterMain.getSpanCount(),
+                LinearLayoutManager.VERTICAL,
+                false
+        );
         lm.setSpanSizeLookup(adapterMain.getSpanSizeLookup());
         binding.recyclerViewDetails.setLayoutManager(lm);
         binding.recyclerViewDetails.setAdapter(adapterMain);
@@ -285,13 +296,13 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
         // Since updating the header while we are in a shared transition cases the animation to stop we have to wait until
         // the animation is stopped, weirdly shared animation callback didn't work all the time.
         add(moviePublish.distinct()
-                    .delay(duration + 150, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                    .subscribe(movieBasic -> {
-                        if (updatingHeader != null) {
-                            updatingHeader.update(
-                                    Collections.singletonList(new ItemHeader(movieBasic, transitionName)));
-                        }
-                    }));
+                .delay(duration + 150, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .subscribe(movieBasic -> {
+                    if (updatingHeader != null) {
+                        updatingHeader.update(
+                                Collections.singletonList(new ItemHeader(movieBasic, transitionName)));
+                    }
+                }));
 
         return binding.getRoot();
     }
@@ -331,9 +342,9 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
 
         if (movie.id() != -1) fab.setMovie(movie);
 
-        if (releaseDates.getItemCount() != state.releaseDates().size()) {
-            releaseDates.update(state.releaseDates());
-        }
+        // if (releaseDates.getItemCount() != state.releaseDates().size()) {
+        releaseDates.update(state.releaseDates());
+        // }
 
         // long delay = System.currentTimeMillis() - before;
         // int sizeCast = state.casts().size();
@@ -438,8 +449,34 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     }
 
     private void setOnItemClickListener(final GroupAdapter adapter) {
-        adapter.setOnItemClickListener((item, view) -> ((OnItemAction) item)
-                .action(ControllerDetails.this, this, null, adapter.getAdapterPosition(item), view));
+        adapter.setOnItemClickListener((item, view) -> {
+                    if (item instanceof ItemReleaseDate) {
+                        sendCommand((ItemReleaseDate) item);
+                    }
+                    ((OnItemAction) item).action(
+                            ControllerDetails.this,
+                            this,
+                            null,
+                            adapter.getAdapterPosition(item),
+                            view
+                    );
+                }
+        );
+    }
+
+    private void sendCommand(ItemReleaseDate item) {
+        ReleaseDate releaseDate = item.releaseDate;
+        Map<String, String> map = new HashMap<>(1);
+        map.put(releaseDate.type().name(), releaseDate.date());
+        ReleaseDateModel model = new ReleaseDateModel(
+                movie.imdbId(),
+                movie.id(),
+                movie.title(),
+                map,
+                !releaseDate.isNotifEnable()
+        );
+
+        notifPublish.onNext(model);
     }
 
     @Override
@@ -459,6 +496,12 @@ public class ControllerDetails extends FragmentBase implements ViewDetails, View
     @Override
     public Observable<Object> errorDismissed() {
         return RxSnackbar.dismisses(snackbar).cast(Object.class);
+    }
+
+    @NonNull
+    @Override
+    public Observable<ReleaseDateModel> notif() {
+        return notifPublish;
     }
 
     @NonNull

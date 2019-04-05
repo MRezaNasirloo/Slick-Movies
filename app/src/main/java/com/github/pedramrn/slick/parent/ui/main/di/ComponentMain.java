@@ -20,9 +20,8 @@ import dagger.Subcomponent;
 
 /**
  * @author : Pedramrn@gmail.com
- *         Created on: 2017-03-01
+ * Created on: 2017-03-01
  */
-@ActivityScope
 @Subcomponent(modules = MainModule.class)
 public interface ComponentMain {
     void inject(ActivityMain activity);

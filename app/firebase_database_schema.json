@@ -24,6 +24,34 @@
             "name": "bar"
           }
         }
+      },
+      "release_notification": {
+        "movies": {
+          "t123": {
+            "name": "some_movie",
+            "imdb_id": "t123",
+            "tmdb_id": 123,
+            "release_dates": {
+              "physical": "2019-01-01"
+            }
+          }
+        },
+        "tv_shows": {
+          "t124": {
+            "name": "some_tv_show",
+            "season": 1,
+            "episode": 1,
+            "imdb_id": "t124",
+            "tmdb_id": 124,
+            "release_dates": {
+              "episodes": {
+                "s01e01": {
+                  "physical": "2019-01-01"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "some_user_id_2": {

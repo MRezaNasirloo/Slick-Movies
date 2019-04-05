@@ -12,7 +12,10 @@ public abstract class ReleaseDate extends AutoBase implements ItemView {
 
     public abstract ReleaseType type();
 
+    public abstract boolean isNotifEnable();
+
     public abstract Integer uniqueId();
+
 
     @Override
     public Item render(String tag) {
@@ -35,9 +38,10 @@ public abstract class ReleaseDate extends AutoBase implements ItemView {
 
     abstract public Builder toBuilder();
 
-    public static ReleaseDate create(int uniqueId, String date, ReleaseType type) {
+    public static ReleaseDate create(int uniqueId, String date, ReleaseType type, boolean isNotifEnable) {
         return builder()
                 .date(date)
+                .isNotifEnable(isNotifEnable)
                 .uniqueId(uniqueId)
                 .type(type)
                 .build();
@@ -52,6 +56,8 @@ public abstract class ReleaseDate extends AutoBase implements ItemView {
         public abstract Builder date(String date);
 
         public abstract Builder type(ReleaseType type);
+
+        public abstract Builder isNotifEnable(boolean IsEnable);
 
         public abstract Builder uniqueId(Integer id);
 

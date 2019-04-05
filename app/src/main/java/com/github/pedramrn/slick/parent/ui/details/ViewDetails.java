@@ -3,6 +3,7 @@ package com.github.pedramrn.slick.parent.ui.details;
 import android.support.annotation.NonNull;
 
 import com.github.pedramrn.slick.parent.ui.details.model.MovieBasic;
+import com.github.pedramrn.slick.parent.ui.details.model.ReleaseDateModel;
 import com.github.pedramrn.slick.parent.ui.home.Retryable;
 
 import io.reactivex.Observable;
@@ -25,6 +26,9 @@ public interface ViewDetails extends Retryable {
 
     @NonNull
     Observable<Object> errorDismissed();
+
+    @NonNull
+    Observable<ReleaseDateModel> notif();
 
     void error(short message);
 

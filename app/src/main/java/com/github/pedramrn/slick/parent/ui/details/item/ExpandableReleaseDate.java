@@ -30,7 +30,15 @@ public class ExpandableReleaseDate extends BindableItem<RowCardHeaderBinding> im
     public void bind(@NonNull RowCardHeaderBinding viewBinding, int position) {
         viewBinding.button.setText("SHOW");
         viewBinding.button.setVisibility(View.VISIBLE);
-        viewBinding.button.setOnClickListener(v -> onToggleListener.onToggleExpanded());
+        viewBinding.button.setOnClickListener(v -> {
+            onToggleListener.onToggleExpanded();
+            if (onToggleListener.isExpanded()) {
+                viewBinding.button.setText("HIDE");
+            } else {
+                viewBinding.button.setText("SHOW");
+
+            }
+        });
         viewBinding.textViewTitle.setText("Release dates");
     }
 
@@ -41,8 +49,12 @@ public class ExpandableReleaseDate extends BindableItem<RowCardHeaderBinding> im
 
     @Override
     public void action(
-            @NonNull Navigator navigator, Retryable retryable, @Nullable Object payload, int position, @NonNull View view
+            @NonNull Navigator navigator,
+            Retryable retryable,
+            @Nullable Object payload,
+            int position,
+            @NonNull View view
     ) {
-
+        //no-op
     }
 }
