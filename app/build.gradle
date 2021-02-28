@@ -169,7 +169,7 @@ dependencies {
     implementation 'com.bluelinelabs:conductor-support:2.1.5-SNAPSHOT'
 
     //image loading
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'jp.wasabeef:picasso-transformations:2.1.2'
 
     //    implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
