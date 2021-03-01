@@ -195,7 +195,7 @@ dependencies {
     }
 
     //json
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     //    implementation 'com.squareup.moshi:moshi:1.4.0'
 
