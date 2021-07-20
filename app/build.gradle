@@ -165,7 +165,7 @@ dependencies {
     annotationProcessor 'com.mrezanasirloo:slick-compiler:1.1.5'
 
     //conductor
-    implementation 'com.bluelinelabs:conductor:2.1.5-SNAPSHOT'
+    implementation 'com.bluelinelabs:conductor:3.1.2-SNAPSHOT'
     implementation 'com.bluelinelabs:conductor-support:2.1.5-SNAPSHOT'
 
     //image loading
